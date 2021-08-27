@@ -23,8 +23,7 @@ class LoginController extends Controller
      *
      * @return view
      */
-    public function main()
-    {
+    public function main(){
         return view('menu.main');
     }
 
