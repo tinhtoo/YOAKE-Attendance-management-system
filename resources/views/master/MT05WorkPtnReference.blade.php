@@ -1,7 +1,7 @@
-<!-- 勤務体系情報入力 -->
+<!-- 勤務体系情報照会 -->
 @extends('menu.main')
 
-@section('title','勤務体系情報入力 ')
+@section('title','勤務体系情報照会')
 
 @section('content')
 <div id="contents-stage">
@@ -11,7 +11,7 @@
                 <td>
                     <div id="ctl00_cphContentsArea_UpdatePanel1">
 
-                        <p class="FunctionMenu1"><a id="ctl00_cphContentsArea_hlAddEmp" href="MT05WorkPtnEditor.aspx?Id=Add">新規勤務体系登録</a></p>
+                        <p class="FunctionMenu1"><a id="ctl00_cphContentsArea_hlAddEmp" href="MT05WorkPtnEditor?Id=Add">新規勤務体系登録</a></p>
 
                         <div class="line"></div>
 

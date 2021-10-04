@@ -22,12 +22,12 @@
                                         </tr>
                                         <tr>
                                             <td>
-                                                <a id="ctl00_cphContentsArea_gvDept_ctl02_hlDept" href="MT12DeptEditor.aspx?Id=000000">000000 : アイティーエス</a>
+                                                <a id="ctl00_cphContentsArea_gvDept_ctl02_hlDept" href="MT12DeptEditor?Id=000000">000000 : アイティーエス</a>
                                             </td>
                                         </tr>
                                         <tr>
                                             <td>
-                                                <a id="ctl00_cphContentsArea_gvDept_ctl03_hlDept" href="MT12DeptEditor.aspx?Id=000010">000010 : 　　　営業部</a>
+                                                <a id="ctl00_cphContentsArea_gvDept_ctl03_hlDept" href="table_add_test?Id=000010">000010 : 　　　営業部</a>
                                             </td>
                                         </tr>
                                         <tr>
@@ -108,6 +108,19 @@
                                         <tr>
                                             <td>
                                                 <a id="ctl00_cphContentsArea_gvDept_ctl19_hlDept" href="MT12DeptEditor.aspx?Id=000072">000072 : 　　　　　　品質保証二課</a>
+                                            </td>
+                                        </tr>
+                                        <tr class="ButtonField1">
+                                            <td>
+                                                <div class="line"></div>
+                                                <ul class="HolizonListMenu1">
+                                                    <li><a id="ctl00_cphContentsArea_gvDept_ctl23_LinkButton1" href="javascript:__doPostBack('ctl00$cphContentsArea$gvDept$ctl23$LinkButton1','')">最初へ</a></li>
+                                                    <li><a id="ctl00_cphContentsArea_gvDept_ctl23_LinkButton2" href="javascript:__doPostBack('ctl00$cphContentsArea$gvDept$ctl23$LinkButton2','')">前へ</a></li>
+                                                    <li><span>(1 / 2)</span></li>
+                                                    <li><a id="ctl00_cphContentsArea_gvDept_ctl23_LinkButton3" href="javascript:__doPostBack('ctl00$cphContentsArea$gvDept$ctl23$LinkButton3','')">次へ</a></li>
+                                                    <li><a id="ctl00_cphContentsArea_gvDept_ctl23_LinkButton4" href="javascript:__doPostBack('ctl00$cphContentsArea$gvDept$ctl23$LinkButton4','')">最後へ</a></li>
+                                                </ul>
+                                                <div class="clearBoth"></div>
                                             </td>
                                         </tr>
                                     </tbody>

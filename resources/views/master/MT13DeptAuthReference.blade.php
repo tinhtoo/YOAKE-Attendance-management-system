@@ -11,7 +11,7 @@
                 <td>
                     <div id="ctl00_cphContentsArea_UpdatePanel1">
 
-                        <p class="FunctionMenu1"><a id="ctl00_cphContentsArea_hlAddDeptAuth" href="MT13DeptAuthEditor.aspx?Id=Add">新規部門権限登録</a></p>
+                        <p class="FunctionMenu1"><a id="ctl00_cphContentsArea_hlAddDeptAuth" href="MT13DeptAuthEditor?Id=Add">新規部門権限登録</a></p>
 
                         <div class="line"></div>
 

@@ -11,7 +11,7 @@
                 <td>
                     <div id="ctl00_cphContentsArea_UpdatePanel1">
 
-                        <p class="FunctionMenu1"><a id="ctl00_cphContentsArea_hlAddSplyer" href="MT23CompanyEditor.aspx?Id=Add">新規所属登録</a></p>
+                        <p class="FunctionMenu1"><a id="ctl00_cphContentsArea_hlAddSplyer" href="MT23CompanyEditor?Id=Add">新規所属登録</a></p>
 
                         <div class="line"></div>
 

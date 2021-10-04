@@ -8,6 +8,7 @@
 <body>
 @yield('login')
 @yield('main')
+@yield('content_search')
 </body>
 
 </html>
