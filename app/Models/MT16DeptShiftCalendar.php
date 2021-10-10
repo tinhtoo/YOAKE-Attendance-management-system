@@ -34,6 +34,6 @@ class MT16DeptShiftCalendar extends Model
      *
      * @var string
      */
-    protected $connection = 'sqlsrv';
+    // //protected $connection = 'sqlsrv';
 
 }

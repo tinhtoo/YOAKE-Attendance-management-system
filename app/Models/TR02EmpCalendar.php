@@ -30,6 +30,6 @@ class TR02EmpCalendar extends Model
      *
      * @var string
      */
-    protected $connection = 'sqlsrv';
+    //protected $connection = 'sqlsrv';
 
 }

@@ -50,6 +50,6 @@ class MT11Login extends Model
      *
      * @var string
      */
-    protected $connection = 'sqlsrv';
+    // //protected $connection = 'sqlsrv';
 
 }

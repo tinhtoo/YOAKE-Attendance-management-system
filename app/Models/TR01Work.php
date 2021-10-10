@@ -113,6 +113,6 @@ class TR01_Work extends Model
      * 
      * @var string
      */
-    protected $connection = 'sqlsrv';
+    //protected $connection = 'sqlsrv';
 
 }

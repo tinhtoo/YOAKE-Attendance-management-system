@@ -17,6 +17,7 @@ use App\Http\Controllers\Work_Time\TempController;
 
 use function PHPUnit\Framework\returnSelf;
 
+use App\Http\Requests\WorkTimeRequest;
 class WorkTimeEditorController extends Controller
 {
     //////***** 勤怠管理 *****//////
@@ -257,5 +258,11 @@ class WorkTimeEditorController extends Controller
 
         //return view('work_time.WorkTimeEditor',compact('check_messsage'));
         //return view('work_time.WorkTimeEditor',compact('check_2','msg_2000','msg_2002','intput_val','DeptCdCompare','emp_cd'));
+    }
+
+
+    public function search(WorkTimeRequest $request)
+    {
+         return view('work_time.WorkTimeEditor');
     }
 }

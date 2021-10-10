@@ -12,7 +12,7 @@
                     <div id="UpdatePanel1">
                         <!-- header -->
 
-                        <form action="{{ route('WTE')}}" method="get">
+                        <form action="{{ route('wte.search')}}" method="POST">
                             <!-- @method('PUT') -->
 
                             {{ csrf_field() }}
@@ -53,10 +53,12 @@
                                             <input name="txtEmpCd" tabindex="3" class="imeDisabled" id="txtEmpCd" style="width: 80px;" type="text" maxlength="10" value = "{{ session('txtEmpCd')}}">
                                             <input name="btnSearchEmpCd" tabindex="4" class="SearchButton" id="btnSearchEmpCd" type="button" value="?">
                                             <span class="OutlineLabel" id="lblEmpName" style="width: 200px; height: 17px; display: inline-block;"></span>
-                                            @if(session()->has('error'))
-                                            <span class="alert-danger">{{ session('error') }}</span>
-                                            <!-- <span class="alert-danger">{{ session()->forget('error') }}</span> -->
-                                            
+                                            <!-- @if(session()->has('error'))
+                                                <span class="alert-danger">{{ session('error') }}</span>
+                                            @endif -->
+
+                                            @if ($errors->has('txtEmpCd'))
+                                                <span class="alert-danger">{{ $errors->first('txtEmpCd')  }}</span>
                                             @endif
 
 

@@ -29,25 +29,25 @@ class UserAuthController extends Controller
         //     'passward' =>'required'
         // ]);
 
-    /* 画面名->login.blade.php */
-    // $loginUser = $request->input('txtLoginId');
-    // dd($loginUser);
-    $loginUser = MT11Login::WHERE('LOGIN_ID', '=', $request->txtLoginId)->first();
-    //dd($loginUser->LOGIN_ID);
-    $request->session()->put('id',$loginUser->LOGIN_ID);
-    
-    //dd(session('id'));
-    if($loginUser){
-        if($request->password==$loginUser->PASSWORD){
-            $request->session()->put('LoggedUser', $loginUser->EMP_CD);
-            //成功の時はメインメニュー画面表示
-            return redirect('main');
+        /* 画面名->login.blade.php */
+        // $loginUser = $request->input('txtLoginId');
+        // dd($loginUser);
+        $loginUser = MT11Login::WHERE('LOGIN_ID', '=', $request->txtLoginId)->first();
+        //dd($loginUser->LOGIN_ID);
+        $request->session()->put('id',$loginUser->LOGIN_ID);
+        
+        //dd(session('id'));
+        if($loginUser){
+            if($request->password==$loginUser->PASSWORD){
+                $request->session()->put('LoggedUser', $loginUser->EMP_CD);
+                //成功の時はメインメニュー画面表示
+                return redirect('main');
+            }else{
+                return back();
+            }
         }else{
             return back();
         }
-    }else{
-        return back();
-    }
 
     }
 

@@ -50,6 +50,6 @@ class MT21_PDHOLIDAY_GRT extends Model
      *
      * @var string
      */
-    protected $connection = 'sqlsrv';
+    // //protected $connection = 'sqlsrv';
 
 }

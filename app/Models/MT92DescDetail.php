@@ -28,6 +28,6 @@ class MT92DescDetail extends Model
      *
      * @var string
      */
-    protected $connection = 'sqlsrv';
+    //protected $connection = 'sqlsrv';
 
 }

@@ -42,6 +42,7 @@ Route::get('main',[UserAuthController::class, 'main']);
 //Route::post('/work_time/WorkTimeEditor',[WorkTimeEditorController::class, 'WTE']) ->name('WorkTimeEditor_post');
 //Route::post('/work_time/WorkTimeEditor','App\Http\Controllers\Work_Time\WorkTimeEditorController@WTE') ->name('WorkTimeEditor_post');
 Route::get('/work_time/WorkTimeEditor',[WorkTimeEditorController::class, 'WTE']) ->name('WTE');
+Route::post('/work_time/WorkTimeEditor',[WorkTimeEditorController::class, 'search']) ->name('wte.search');
 //Route::get('/work_time/WorkTimeEditor',[TempController::class, 'login_data']) ->name('login_data');
 
 

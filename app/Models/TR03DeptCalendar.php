@@ -31,6 +31,6 @@ class TR03DeptCalendar extends Model
      *
      * @var string
      */
-    protected $connection = 'sqlsrv';
+    //protected $connection = 'sqlsrv';
 
 }
