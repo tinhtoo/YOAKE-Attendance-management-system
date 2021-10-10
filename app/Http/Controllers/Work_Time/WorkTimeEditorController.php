@@ -263,6 +263,6 @@ class WorkTimeEditorController extends Controller
 
     public function search(WorkTimeRequest $request)
     {
-         return view('work_time.WorkTimeEditor');
+        return view('work_time.WorkTimeEditor');
     }
 }
