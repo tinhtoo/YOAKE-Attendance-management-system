@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Work_Time\WorkTimeEditorController;
+use App\Http\Controllers\Work_Time\EmpWorkTimeReferenceController;
 use App\Http\Controllers\UserAuthController;
 use App\Http\Controllers\Work_Time\TempController;
 use Illuminate\Support\Facades\Auth;
@@ -37,12 +38,12 @@ Route::get('main',[UserAuthController::class, 'main']);
 //Route::get('/work_time/WorkTimeEditor',[WorkTimeEditorController::class, 'WorkTimeEditor']) ->name('WorkTimeEditor');
 
 //出退勤入力 (post) 
-//Route::post('/work_time','App\Http\Controllers\Work_Time\WorkTimeEditorController@Emp_Check') ->name('WTE_post');
-//Route::post('/work_time/WorkTimeEditor','App\Http\Controllers\Work_Time\WorkTimeEditorController@WorkTimeEditor') ->name('WorkTimeEditor');
-//Route::post('/work_time/WorkTimeEditor',[WorkTimeEditorController::class, 'WTE']) ->name('WorkTimeEditor_post');
-//Route::post('/work_time/WorkTimeEditor','App\Http\Controllers\Work_Time\WorkTimeEditorController@WTE') ->name('WorkTimeEditor_post');
-Route::get('/work_time/WorkTimeEditor',[WorkTimeEditorController::class, 'WTE']) ->name('WTE');
-//Route::get('/work_time/WorkTimeEditor',[TempController::class, 'login_data']) ->name('login_data');
+
+Route::get('/work_time/WorkTimeEditor',[WorkTimeEditorController::class, 'worktimeeditor']) ->name('worktimeeditor');
+Route::post('/work_time/WorkTimeEditor',[WorkTimeEditorController::class, 'search']) ->name('wte.search');
+// Route::get('/work_time/WorkTimeEditorEdit',[WorkTimeEditorController::class, 'edit']) ->name('wte.edit');
+Route::put('/work_time/WorkTimeEditor',[WorkTimeEditorController::class, 'update']) ->name('wte.update');
+
 
 
 //test
@@ -62,8 +63,9 @@ Route::get('work_time/EmpWorkStatusReference','App\Http\Controllers\HomeControll
 Route::get('work_time/WorkTimeReference','App\Http\Controllers\HomeController@WorkTimeReference');
 
 //勤務状況照会(管理者用) 画面表示
-Route::get('work_time/EmpWorkTimeReference','App\Http\Controllers\HomeController@EmpWorkTimeReference');
-
+//Route::get('work_time/EmpWorkTimeReference','App\Http\Controllers\HomeController@EmpWorkTimeReference');
+Route::get('/work_time/EmpWorkTimeReference',[EmpWorkTimeReferenceController::class, 'EmpWorkTimeReference']) ->name('empworktime_ref');
+Route::post('/work_time/EmpWorkTimeReference',[EmpWorkTimeReferenceController::class, 'search']) ->name('emp.search');
 
 /////***** 帳票 *****/////
 

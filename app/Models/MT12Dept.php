@@ -14,7 +14,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property string $RSV2_CLS_CD
  * @property string $UPD_DATE
  */
-class MT12_DEPT extends Model
+class MT12Dept extends Model
 {
     /**
      * The table associated with the model.

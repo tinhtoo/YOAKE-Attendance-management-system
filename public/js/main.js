@@ -304,6 +304,12 @@ $('#contents-stage').on('click', '#btnAddNationalHoliday', function add() {
     }
 
 })
+
+//キャンセルボタンクリック
+function SetEmpItem(){
+    $("#gridview-warp").empty();
+}
+
 //line++;
 
 
@@ -445,14 +451,102 @@ $('#contents-stage').on('click', '#btnAddNationalHoliday', function add() {
 
 
 /**
+ * 年
+*/
+$(function () {
+    //DropDownListを参照します。
+    var ddlYears = $("#ddlTargetYear");
+
+    //現在の年を決定します。
+    var currentYear = (new Date()).getFullYear();
+
+    //ループして、Year値をDropDownListに追加します。
+    for (var i = currentYear - 3; i <= currentYear + 3; i++) {
+        var option = $("<option />");
+        option.html(i);
+        option.val(i);
+        ddlYears.append(option);
+    }
+
+});
+
+/**
+ * 月
+*/
+$(function () {
+    //DropDownListを参照します。
+    var ddlYears = $("#ddlTargetMonth");
+
+    //ループして、Month値をDropDownListに追加します。
+    for (var i = 1; i <= 12; i++) {
+        var option = $("<option />");
+        option.html(i);
+        option.val(i);
+        ddlYears.append(option);
+    }
+});
+
+
+
+/**
+ * 勤務状況照会（管理者）
+ */
+
+$('input:radio').on('click', function () {
+    $("#txtEmpCd, #btnSearchEmpCd").prop("disabled", true);
+    $("#txtDeptCd, #ddlStartCompany, #ddlEndCompany, #ddlClosingDate, #btnSearchDeptCd").prop("disabled", false);
+    if ($(this).hasClass('rbSearchEmp')) {
+        $("#txtEmpCd, #btnSearchEmpCd").prop("disabled", false);
+        $("#txtDeptCd, #ddlStartCompany, #ddlEndCompany, #ddlClosingDate, #btnSearchDeptCd").prop("disabled", true);
+    }
+})
+
+
+
+/**
  * 出退勤入力画面詳細枠の表示
 **/
 
-$('#btnDisp').on('click', function () {
+$("#btnDisp").on('click', function () {
     //var table = document.getElementById('#gridview-warp');
     $('#gridview-warp').show('slow');
-    $(this).attr('disabled','disabled');
+    $(this).attr('disabled', 'disabled');
 
 });
+
+// function wte_edit() {
+//     if ($("#td_1")) {
+//         if ($("#td_1").style.display == 'none') {
+//             $("#td_1").style.display == 'block';
+//             $("#td_2").style.display == 'none';
+//         } else {
+//             $("#td_1").style.display == 'none';
+//             $("#td_2").style.display == 'block';
+//         }
+//     }
+// }
+
+// $("#td_1").on('click', function(){
+
+//     // $("#td_2").hide();
+//     $("#td_1").show();
+//     $(this).hide();
+// })
+$("#btnEdit").on('click', function () {
+    $("#btnUpdate,[id = 'a']").show();
+    //$('[id = "a"]').show();
+
+    $("#btnEdit,[id = 'b']").hide();
+
+});
+// $("#btnUpdate").on('click', function () {
+//     $("#btnEdit,[id = 'b']").show();
+
+//     $("#btnUpdate,[id = 'a']").hide();
+
+// });
+
+
+
 
 

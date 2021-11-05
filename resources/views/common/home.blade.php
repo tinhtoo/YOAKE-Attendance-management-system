@@ -9,6 +9,7 @@
 @yield('login')
 @yield('main')
 @yield('content_search')
+@yield('details_edit')
 </body>
 
 </html>

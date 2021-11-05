@@ -94,7 +94,7 @@ use Illuminate\Database\Eloquent\Model;
  * @property float $SUBHOL_CNT
  * @property float $SUBWORK_CNT
  */
-class TR01_Work extends Model
+class TR01Work extends Model
 {
     /**
      * The table associated with the model.

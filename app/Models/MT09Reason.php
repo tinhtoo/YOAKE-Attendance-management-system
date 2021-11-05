@@ -56,7 +56,24 @@ class MT09Reason extends Model
     /**
      * @var array
      */
-    protected $fillable = ['REASON_NAME', 'WORKDAY_CLS_CD', 'HOLWORK_CLS_CD', 'SPCHOL_CLS_CD', 'PADHOL_CLS_CD', 'ABCWORK_CLS_CD', 'COMPDAY_CLS_CD', 'WORKDAY_NO', 'REASON_PTN_CD', 'RSV1_CLS_CD', 'RSV2_CLS_CD', 'RSV1_NUM', 'RSV2_NUM', 'SUBHOL_CLS_CD', 'SUBWORK_CLS_CD', 'REASON_MARK'];
+    protected $fillable = [
+        'REASON_NAME',
+         'WORKDAY_CLS_CD', 
+         'HOLWORK_CLS_CD', 
+         'SPCHOL_CLS_CD', 
+         'PADHOL_CLS_CD', 
+         'ABCWORK_CLS_CD', 
+         'COMPDAY_CLS_CD', 
+         'WORKDAY_NO', 
+         'REASON_PTN_CD', 
+         'RSV1_CLS_CD', 
+         'RSV2_CLS_CD', 
+         'RSV1_NUM', 
+         'RSV2_NUM', 
+         'SUBHOL_CLS_CD', 
+         'SUBWORK_CLS_CD', 
+         'REASON_MARK'
+        ];
 
     /**
      * The connection name for the model.
