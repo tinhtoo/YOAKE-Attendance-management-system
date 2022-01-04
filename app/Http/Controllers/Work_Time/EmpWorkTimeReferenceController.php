@@ -7,6 +7,8 @@ use Illuminate\Http\Request;
 
 use App\Http\Requests\EmpWorkTimeReferenceRequest;
 use App\Repositories\Work_Time\EmpWorkTimeReferenceRepository;
+use App\Filters\EmpWorkTimeRefFilter;
+
 
 class EmpWorkTimeReferenceController extends Controller
 {
@@ -35,32 +37,38 @@ class EmpWorkTimeReferenceController extends Controller
      * @param  int  $request
      * @return view
      */
-    public function EmpWorkTimeReference(Request $request)
+    public function empworktime_ref(Request $request)
     {
-        return view('work_time.EmpWorkTimeReference');   
+        $haken_kaisha = $this->emp_repo->kaisha();
+        $closing_dates = $this->emp_repo->shimebi();
+
+        return view('work_time.EmpWorkTimeReference',compact('closing_dates', 'haken_kaisha'));  
     }
 
     /**
-     * 指定ユーザーのプロファイル表示
+     * 指定ユーザーの詳細データの表示
      *
      * @param  int  $request
      * @return Response
      */
-    public function search(EmpWorkTimeReferenceRequest $request)
+    public function search(EmpWorkTimeReferenceRequest $request, EmpWorkTimeRefFilter $filter)
     {
-
-        $results = $this->emp_repo->select($request);
+        $data = $request->only('filter');
+        $search_data = $data['filter'];
+        $results = $this->emp_repo->select($request, $filter);
         $messages = $this->emp_repo->messages();
-        
+        $haken_kaisha = $this->emp_repo->kaisha();
+        $closing_dates = $this->emp_repo->shimebi();
 
-        
-        $week = array( "日", "月", "火", "水", "木", "金", "土" );
-
-        
-        return view('work_time.EmpWorkTimeReference',compact('results','week','messages'));
-        
+        return view('work_time.EmpWorkTimeReference',compact('search_data', 'results', 'messages', 'closing_dates', 'haken_kaisha'));    
     }
 
-    
+    public function cancel(Request $request)
+    {
+        return redirect()->back()->withInput($request->only([
+            'filter.ddlTargetYear',
+            'filter.ddlTargetMonth'
+        ]));
+    }
     
 }

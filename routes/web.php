@@ -2,8 +2,12 @@
 
 use App\Http\Controllers\Work_Time\WorkTimeEditorController;
 use App\Http\Controllers\Work_Time\EmpWorkTimeReferenceController;
+use App\Http\Controllers\Work_Time\WorkTimeDeptEditorController;
+
+use App\Http\Controllers\Search\MT10EmpSearchController;
+use App\Http\Controllers\Search\MT12DeptSearchController;
+
 use App\Http\Controllers\UserAuthController;
-use App\Http\Controllers\Work_Time\TempController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
@@ -41,20 +45,20 @@ Route::get('main',[UserAuthController::class, 'main']);
 
 Route::get('/work_time/WorkTimeEditor',[WorkTimeEditorController::class, 'worktimeeditor']) ->name('worktimeeditor');
 Route::post('/work_time/WorkTimeEditor',[WorkTimeEditorController::class, 'search']) ->name('wte.search');
-// Route::get('/work_time/WorkTimeEditorEdit',[WorkTimeEditorController::class, 'edit']) ->name('wte.edit');
-Route::put('/work_time/WorkTimeEditor',[WorkTimeEditorController::class, 'update']) ->name('wte.update');
-
-
-
-//test
-Route::get('/work_time/test','App\Http\Controllers\TestController@show') ->name('test_tmp');
-
-Route::post('/work_time/test','App\Http\Controllers\TestController@store') ->name('test_tmp');
+//Route::match(['get', 'post'], '/work_time/WorkTimeEditorEdit',[WorkTimeEditorController::class, 'edit']) ->name('wte.edit');
+Route::post('/work_time/WorkTimeEditorEdit',[WorkTimeEditorController::class, 'edit']) ->name('wte.edit');
+Route::post('/work_time/WorkTimeEditorUpdate',[WorkTimeEditorController::class, 'update']) ->name('wte.update');
+Route::post('/work_time/WorkTimeEditorCancel',[WorkTimeEditorController::class, 'cancel']) ->name('wte.cancel');
 
 
 
 //出退勤入力（部門別）画面表示
-Route::get('work_time/WorkTimeDeptEditor','App\Http\Controllers\HomeController@WorkTimeDeptEditor');
+//Route::get('work_time/WorkTimeDeptEditor','App\Http\Controllers\HomeController@WorkTimeDeptEditor');
+Route::get('/work_time/WorkTimeDeptEditor',[WorkTimeDeptEditorController::class, 'WorkTimeDeptEditor']) ->name('wtdepteditor');
+Route::post('/work_time/WorkTimeDeptEditor',[WorkTimeDeptEditorController::class, 'search']) ->name('wtde.search');
+Route::post('/work_time/WorkTimeDeptEditorEdit',[WorkTimeDeptEditorController::class, 'edit']) ->name('wtde.edit');
+Route::post('/work_time/WorkTimeDeptEditorUpdate',[WorkTimeDeptEditorController::class, 'update']) ->name('wtde.update');
+Route::post('/work_time/WorkTimeDeptEditorCancel',[WorkTimeDeptEditorController::class, 'cancel']) ->name('wtde.cancel');
 
 //出退勤照会　画面表示
 Route::get('work_time/EmpWorkStatusReference','App\Http\Controllers\HomeController@EmpWorkStatusReference');
@@ -64,8 +68,9 @@ Route::get('work_time/WorkTimeReference','App\Http\Controllers\HomeController@Wo
 
 //勤務状況照会(管理者用) 画面表示
 //Route::get('work_time/EmpWorkTimeReference','App\Http\Controllers\HomeController@EmpWorkTimeReference');
-Route::get('/work_time/EmpWorkTimeReference',[EmpWorkTimeReferenceController::class, 'EmpWorkTimeReference']) ->name('empworktime_ref');
-Route::post('/work_time/EmpWorkTimeReference',[EmpWorkTimeReferenceController::class, 'search']) ->name('emp.search');
+Route::get('/work_time/EmpWorkTimeReference',[EmpWorkTimeReferenceController::class, 'empworktime_ref']) ->name('empworktime_ref');
+Route::post('/work_time/EmpWorkTimeReference',[EmpWorkTimeReferenceController::class, 'search']) ->name('ewtr.search');
+Route::post('/work_time/EmpWorkTimeReferenceCancel',[EmpWorkTimeReferenceController::class, 'cancel']) ->name('ewtr.cancel');
 
 /////***** 帳票 *****/////
 
@@ -226,7 +231,9 @@ Route::get('master/MT23CompanyEditor','App\Http\Controllers\HomeController@MT23C
 //***** sub-画面追加*****//
 
 //部門情報検索（MT12DeptSearch）
-Route::get('search/MT12DeptSearch','App\Http\Controllers\HomeController@MT12DeptSearch');
+Route::get('search/MT12DeptSearch',[MT12DeptSearchController::class, 'search']) ->name('dep.search');
 
 //社員情報検索（MT10EmpSearch）
-Route::get('search/MT10EmpSearch','App\Http\Controllers\HomeController@MT10EmpSearch');
+//Route::get('/search/MT10EmpSearch',[MT10EmpSearchController::class, 'inisearch']) ->name('ini.search');
+Route::get('/search/MT10EmpSearch',[MT10EmpSearchController::class, 'search']) ->name('emp.search');
+

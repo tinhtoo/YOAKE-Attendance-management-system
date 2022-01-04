@@ -89,4 +89,12 @@ class MT10Emp extends Model
      */
     protected $connection = 'sqlsrv';
 
+    /**
+     * Query scope.
+     */
+    public function scopeFilter($query, $filter)
+    {
+        $filter->apply($query);
+    }
+
 }

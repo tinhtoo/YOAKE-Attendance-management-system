@@ -103,6 +103,7 @@ class TR01Work extends Model
      */
     protected $table = 'TR01_WORK';
 
+    const UPDATED_AT = 'UPD_DATE';
     /**
      * @var array
      */
@@ -114,5 +115,13 @@ class TR01Work extends Model
      * @var string
      */
     protected $connection = 'sqlsrv';
+
+    /**
+     * Query scope.
+     */
+    public function scopeFilter($query, $filter)
+    {
+        $filter->apply($query);
+    }
 
 }

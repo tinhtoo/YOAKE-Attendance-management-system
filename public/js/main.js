@@ -219,28 +219,28 @@ function SetUpDeptItem() {
 //部門情報検索サブ画面
 $(function () {
     $("#btnSearchDeptCd").on('click', function () {
-        window.open('/search/MT12DeptSearch', '', 'width=550,height=650');
+        window.open('/search/MT12DeptSearch', '', 'width=400, height=550, top=90, left=400');
     });
 });
 
-//社員情報書出処理 _「test方法２」
-function SetDeptItem() {
+// //社員情報書出処理 _「test方法２」
+// function SetDeptItem() {
 
-    window.open('/search/MT12DeptSearch', '', 'width=550,height=650');
-    // return false;
-};
-//社員情報書出処理_test「test方法２」
-function SetEmpItem() {
+//     window.open('/search/MT12DeptSearch', '', 'width=400,height=650');
+//     // return false;
+// };
+// //社員情報書出処理_test「test方法２」
+// function SetEmpItem() {
 
-    window.open('/search/MT10EmpSearch', '', 'width=600,height=750');
-    // return false;
-};
+//     window.open('/search/MT10EmpSearch', '', 'width=550,height=750');
+//     // return false;
+// };
 
 
 //社員情報検索サブ画面
 $(function () {
     $("#btnSearchEmpCd").on('click', function () {
-        window.open('/search/MT10EmpSearch', '', 'width=600,height=750');
+        window.open('/search/MT10EmpSearch', '', 'width=500, height=650, top=90, left=350');
     });
 });
 
@@ -453,38 +453,38 @@ function SetEmpItem(){
 /**
  * 年
 */
-$(function () {
-    //DropDownListを参照します。
-    var ddlYears = $("#ddlTargetYear");
+// $(function () {
+//     //DropDownListを参照します。
+//     var ddlYears = $("#ddlTargetYear");
 
-    //現在の年を決定します。
-    var currentYear = (new Date()).getFullYear();
+//     //現在の年を決定します。
+//     var currentYear = (new Date()).getFullYear();
 
-    //ループして、Year値をDropDownListに追加します。
-    for (var i = currentYear - 3; i <= currentYear + 3; i++) {
-        var option = $("<option />");
-        option.html(i);
-        option.val(i);
-        ddlYears.append(option);
-    }
+//     //ループして、Year値をDropDownListに追加します。
+//     for (var i = currentYear - 3; i <= currentYear + 3; i++) {
+//         var option = $("<option />");
+//         option.html(i);
+//         option.val(i);
+//         ddlYears.append(option);
+//     }
 
-});
+// });
 
 /**
  * 月
 */
-$(function () {
-    //DropDownListを参照します。
-    var ddlYears = $("#ddlTargetMonth");
+// $(function () {
+//     //DropDownListを参照します。
+//     var ddlYears = $("#ddlTargetMonth");
 
-    //ループして、Month値をDropDownListに追加します。
-    for (var i = 1; i <= 12; i++) {
-        var option = $("<option />");
-        option.html(i);
-        option.val(i);
-        ddlYears.append(option);
-    }
-});
+//     //ループして、Month値をDropDownListに追加します。
+//     for (var i = 1; i <= 12; i++) {
+//         var option = $("<option />");
+//         option.html(i);
+//         option.val(i);
+//         ddlYears.append(option);
+//     }
+// });
 
 
 
@@ -492,14 +492,14 @@ $(function () {
  * 勤務状況照会（管理者）
  */
 
-$('input:radio').on('click', function () {
-    $("#txtEmpCd, #btnSearchEmpCd").prop("disabled", true);
-    $("#txtDeptCd, #ddlStartCompany, #ddlEndCompany, #ddlClosingDate, #btnSearchDeptCd").prop("disabled", false);
-    if ($(this).hasClass('rbSearchEmp')) {
-        $("#txtEmpCd, #btnSearchEmpCd").prop("disabled", false);
-        $("#txtDeptCd, #ddlStartCompany, #ddlEndCompany, #ddlClosingDate, #btnSearchDeptCd").prop("disabled", true);
-    }
-})
+// $('input:radio').on('click', function () {
+//     $("#txtEmpCd, #btnSearchEmpCd").prop("disabled", true);
+//     $("#txtDeptCd, #ddlStartCompany, #ddlEndCompany, #ddlClosingDate, #btnSearchDeptCd").prop("disabled", false);
+//     if ($(this).hasClass('rbSearchEmp')) {
+//         $("#txtEmpCd, #btnSearchEmpCd").prop("disabled", false);
+//         $("#txtDeptCd, #ddlStartCompany, #ddlEndCompany, #ddlClosingDate, #btnSearchDeptCd").prop("disabled", true);
+//     }
+// })
 
 
 
@@ -532,13 +532,6 @@ $("#btnDisp").on('click', function () {
 //     $("#td_1").show();
 //     $(this).hide();
 // })
-$("#btnEdit").on('click', function () {
-    $("#btnUpdate,[id = 'a']").show();
-    //$('[id = "a"]').show();
-
-    $("#btnEdit,[id = 'b']").hide();
-
-});
 // $("#btnUpdate").on('click', function () {
 //     $("#btnEdit,[id = 'b']").show();
 
