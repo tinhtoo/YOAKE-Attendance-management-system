@@ -31,12 +31,13 @@
                                 <!-- <span>id="txtDeptCd"</span> -->
                                 <input name="filter[txtDeptCd]" 
                                 class="imeDisabled" 
-                                id="deptcd" 
+                                id="txtDeptCd" 
                                 style="width: 50px;" 
                                 type="text" 
                                 maxlength="6"
                                 value="{{ old('filter[txtDeptCd]', !empty($search_data['txtDeptCd']) ? $search_data['txtDeptCd']:'') }}">
-                                <input name="btnSearchDeptCd" class="SearchButton" id="btnSearchDeptCd" type="button" value="?" >
+                                <!-- <input name="btnSearchDeptCd" class="SearchButton" id="btnSearchDeptCd" type="button" value="?" > -->
+                                <input name="btnSearchDeptCd" class="SearchButton" id="btnSearchDeptCd" type="button" value="?" onclick="SearchDept();return false">
                                 <!-- <span>id="lblDeptName"</span> -->
                                 <!-- <span 
                                 class="OutlineLabel" 
@@ -47,8 +48,8 @@
                                 class="OutlineLabel" 
                                 type="text" 
                                 style="width: 200px; height: 17px; display: inline-block;" 
-                                id="deptname" 
-                                value="{{ session()->get('deptname') }}"
+                                id="deptName" 
+                                value="{{ old('deptName', !empty($request_data['deptName']) ? $request_data['deptName']:'') }}"
                                 readonly="readonly">
                     
                                 @if ($errors->has('filter.txtDeptCd'))
@@ -56,17 +57,18 @@
                                 @endif
                             </td>
                         </tr>
-                        <tr>
+                        <!-- <tr>
                             <td></td>
                             <td>
 
                             </td>
-                        </tr>
+                        </tr> -->
                     </tbody>
                 </table>
 
                 <p class="FunctionMenu1">
                     <!-- <input name="btnSearch" class="SearchButton" id="btnSearch" type="button" value="検索"> -->
+                    @if (Session()->has('id'))
                     <input 
                         name="btnSearch" 
                         id="btnSearch" 　
@@ -75,7 +77,17 @@
                         value="検索"
                         data-url = "{{ route('emp.search')}}"
                     >
-                    <input name="btnCancel" class="SearchButton" id="btnCancel" type="button" value="キャンセル">
+                    @else
+                    <input 
+                        name="btnSearch" 
+                        id="btnSearch" 　
+                        class="SearchButton submit-form" 
+                        type="button" 
+                        value="検索"
+                        onclick="window.opener.location.reload(true);window.close();"
+                    >
+                    @endif
+                    <input name="btnCancel" class="SearchButton" id="btnCancel" type="button" onclick="Cancel()" value="キャンセル">
                 </p>
 
                 <div class="clearBoth"></div>
@@ -100,11 +112,14 @@
 
                 <div class="clearBoth"></div>
                 <div class="line"></div>
-
+                <div>
+                    
+                </div>
                 <div class="GridViewStyle1 mg10" id="search-gridview-container">
                     <div class="GridViewPanelStyle6" id="pnlEmp">
 
                         <div>
+                        @if(!empty($request_data))
                         @isset($search_result)
                             <table class="GridViewPadding" id="gvEmp" style="border-collapse: collapse;" border="1" cellspacing="0">
                                 <tbody>
@@ -143,7 +158,7 @@
                                                         <span id="lblDeptName">{{ $item->DEPT_NAME }}</span>
                                                     </td>
                                                 </tr> -->
-                                                <tr style="cursor: pointer; background-color: transparent;" backgroundColor="transparent">
+                                                <tr class="empSearch" style="cursor: pointer; background-color: transparent;" backgroundColor="transparent">
                                                     <td style="width: 30px; white-space: nowrap;">
                                                         <input 
                                                             name="rbSelectRow" 
@@ -178,20 +193,23 @@
                                     </tr> -->
                                 </tbody>
                             </table>
-                            @endisset
+                        @endisset
+                        @endif
                         </div>
 
                     </div>
                 </div>
-                <div class="line"></div>
-                    <div class="d-flex justify-content-center">
+                @if(!empty($request_data)) 
+                    <div class="line"></div>
+                    <div class="d-flex justify-content-center" id="pegination">
                     @isset($search_result)
                         {{ $search_result->links() }}
                     @endisset
                     </div>
+                @endif     
                 <div class="line"></div>
                 <p class="ButtonField1">
-                    <input name="btnCancel" id="btnCancel" type="button" value="キャンセル">
+                <input name="btnCancel" class="SearchButton" id="btnCancel" type="button" onclick="Cancel()" value="キャンセル">
                 </p>
 
             </div>
@@ -218,7 +236,7 @@
         }
         var ele = $(this);
         var MT10sendCD = window.opener.document.getElementById('txtEmpCd'); 
-        var MT10sendName = window.opener.document.getElementById('lblEmpName');
+        var MT10sendName = window.opener.document.getElementById('empName');
         var MT10DeptName = window.opener.document.getElementById('lblDeptName');
         if(ele.is(':checked')){
             var tr = ele.closest('tr');
@@ -269,9 +287,20 @@
     //     window.close();
     // }
     // Deptfunc();
+//**削除　2022/02/01 S 「ティン」 */
+    // $(document).on('click', '#btnCancel', function() {
+    // $(this).closest('form').find("input[type=text], textarea").val("");
+    
+    // });
+//**削除　2022/02/01 E 「ティン」 */    
 
-    $(document).on('click', '#btnCancel', function() {
-    $(this).closest('form').find("input[type=text], textarea").val("");
-    });
+    function Cancel(){
+    $("#txtEmpKana, #txtDeptCd, #deptName").val('');
+    var tbl = document.getElementById('gvEmp');
+    tbl.remove();
+    var ftr = document.getElementById('pegination');
+    ftr.remove();
+    }
+
 </script>
 @endsection

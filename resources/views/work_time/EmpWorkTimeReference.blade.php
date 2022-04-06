@@ -12,12 +12,22 @@
                     <div id="UpdatePanel1">
                         <!-- header -->
                         <form action="" method="post" id="form">
-                            {{ csrf_field() }}
+                            @csrf
                             <table class="InputFieldStyle1">
                                 <tbody>
                                     <tr>
                                         <th>対象月度</th>
                                         <td>
+                                            <input name="filter[ddlDate]" 
+                                            id="YearMonth" 
+                                            class="imeDisabled" 
+                                            type="text" 
+                                            autocomplete = "off"
+                                            value="{{ old('filter.ddlDate', !empty($search_data['ddlDate']) ? $search_data['ddlDate']: date('Y/m') ) }}"
+                                            />
+                                        </td>
+                                        <!-- 2022/03/04 ティン Start -->
+                                        <!-- <td>
                                             <select name="filter[ddlTargetYear]" id="ddlTargetYear" tabindex="1" class="imeDisabled" style="width: 70px;">
                                                 @for($y=date('Y')-3; $y<=date('Y')+3; $y++) 
                                                 <option 
@@ -40,7 +50,8 @@
                                                 @endfor
                                             </select>
                                             &nbsp;月度
-                                        </td>
+                                        </td> -->
+                                        <!-- 2022/03/04 ティン End -->
                                     </tr>
                                 
                                     <tr>
@@ -49,9 +60,11 @@
                                             <div class="GroupBox1">
                                                 <input 
                                                     name="filter[SearchCondition]" 
-                                                    checked id="rbSearchDept" 
+                                                    id="rbSearchDept" 
                                                     type="radio" 
-                                                    value="rbSearchDept" {{ old("filter.SearchCondition", !empty($search_data["SearchCondition"]) ? $search_data["SearchCondition"] : "" ) == 'rbSearchDept' ? "checked" : ""}}>
+                                                    value="rbSearchDept" {{ old("filter.SearchCondition", !empty($search_data["SearchCondition"]) ? $search_data["SearchCondition"] : "" ) == 'rbSearchDept' ? "checked" : ""}}
+                                                    checked 
+                                                >
                                                     <label for="rbSearchDept">部門</label>
                                                 <input 
                                                     name="filter[SearchCondition]" 
@@ -67,7 +80,7 @@
                                     <tr>
                                         <th>締日</th>
                                         <td>
-                                            <select name="filter[ddlClosingDate]" id="ddlStartCompany" style="width: 300px;">
+                                            <select name="filter[ddlClosingDate]" id="ddlClosingDate" style="width: 300px;">
                                             @isset($closing_dates)
                                             @foreach ($closing_dates as $closing_date)
                                                 <option 
@@ -86,15 +99,23 @@
                                         <th>部門</th>
                                         <td>
                                             <input name="filter[txtDeptCd]" 
-                                            class="imeDisabled" 
-                                            id="txtDeptCd" 
-                                            style="width: 50px;" 
-                                            type="text" 
-                                            value="{{ old('filter[txtDeptCd]', !empty($search_data['txtDeptCd']) ? $search_data['txtDeptCd']:'') }}"
-                                            maxlength="6">
-                                            <input name="btnSearchDeptCd" class="SearchButton" id="btnSearchDeptCd"  type="button" value="?">
-                                            <span class="OutlineLabel" id="lblDeptName" style="width: 200px; height: 17px; display: inline-block;"></span>
-
+                                                class="imeDisabled" 
+                                                id="txtDeptCd" 
+                                                style="width: 50px;" 
+                                                type="text" 
+                                                value="{{ old('filter.txtDeptCd', !empty($search_data['txtDeptCd']) ? $search_data['txtDeptCd']:'') }}"
+                                                maxlength="6"
+                                            >
+                                            <input name="btnSearchDeptCd" class="SearchButton" id="btnSearchDeptCd" type="button" value="?" onclick="SearchDept();return false">
+                                            <input class="OutlineLabel"
+                                                name="deptName" 
+                                                type="text"
+                                                style="width: 200px; height: 17px; display: inline-block;" 
+                                                id="deptName"
+                                                value="{{ (!empty($search_data['txtDeptCd']) ? $name[0] : '')}}"
+                                                readonly="readonly"
+                                            >
+                                            <!-- value="{{ old('deptName', !empty($input_datas['deptName']) ? session()->get('deptName') :'') }}" -->
                                             @if ($errors->has('filter.txtDeptCd'))
                                             <span class="alert-danger">{{ $errors->first('filter.txtDeptCd') }}</span>
                                             @endif
@@ -147,12 +168,19 @@
                                                 name="filter[txtEmpCd]"
                                                 class="imeDisabled" 
                                                 id="txtEmpCd"
-                                                value="{{ old('filter[txtEmpCd]', !empty($search_data['txtEmpCd']) ? $search_data['txtEmpCd']:'') }}" 
+                                                value="{{ old('filter.txtEmpCd', !empty($search_data['txtEmpCd']) ? $search_data['txtEmpCd']:'') }}" 
                                                 style="width: 80px;" 
                                                 type="text" maxlength="10">
-                                            <input name="btnSearchEmpCd" class="SearchButton" id="btnSearchEmpCd" type="button" value="?">
-                                            <span class="OutlineLabel" id="lblEmpName" style="width: 200px; height: 17px; display: inline-block;"></span>
-
+                                            <input name="btnSearchEmpCd" class="SearchButton" id="btnSearchEmpCd" type="button" value="?" onclick="SearchEmp();return false">
+                                            <input name="empName" 
+                                                   class="OutlineLabel" 
+                                                   type="text" 
+                                                   style="width: 200px; height: 17px; display: inline-block;" 
+                                                   id="empName"
+                                                   value="{{ (!empty($search_data['txtEmpCd']) ? $name[0] : '')}}" 
+                                                   readonly="readonly"
+                                            >
+                                            <!-- value="{{ old('empName', !empty($input_datas['empName']) ? $input_datas['empName']:'') }}" -->
                                             @if ($errors->has('filter.txtEmpCd'))
                                             <span class="alert-danger">{{ $errors->first('filter.txtEmpCd') }}</span>
                                             @endif
@@ -184,7 +212,17 @@
                                                 data-url = "{{ route('ewtr.cancel')}}"
                                             >
                                             &nbsp;
-                                            <span class="font-style2" id="lblFixMsg"></span>        
+                                            <span class="font-style2" id="lblFixMsg"></span>
+                                            @isset($results)
+                                                @if(count($results) > 0)
+                                                    @if (isset($confirm_check))
+                                                        <span class="font-style2">確定済み</span>
+                                                    @endif
+                                                @endif 
+                                            @endisset
+                                            <!-- @if (isset($confirm_check))
+                                                <span class="font-style2">確定済み</span>
+                                            @endif      -->
                                         </td>
                                     </tr>
                                 </tbody>
@@ -195,7 +233,7 @@
                                 <div class="GridViewPanelStyle1" id="pnlEmpWorkTime" style="width: 911px;">
                                     <div id="pnlWorkTime">
                                         <div>
-                                            <table class="GridViewBorder GridViewPadding GridViewRowCenter GridViewRowCut" id="gvEmpWorkTime" style="border-collapse: collapse;" border="1" rules="all" cellspacing="0">
+                                            <table class="GridViewBorder GridViewPadding GridViewRowCenter GridViewRowCut yoko-tate" id="gvEmpWorkTime" style="border-collapse:separate;" border="1" rules="all" cellspacing="0">
                                                 <tbody id="gridview-warp">
                                                     @isset($results)
                                                         @if(count($results) < 1) 
@@ -203,20 +241,20 @@
                                                             <td><span>{{ $messages }}</span></td>
                                                         </tr>
                                                         @else
-                                                        <tr>
-                                                            <th scope="col">
+                                                        <tr class="sticky-top">
+                                                            <th class="fixed01" scope="col" style="background: #4682B4; left: 0px;">
                                                                 部門コード
                                                             </th>
-                                                            <th scope="col">
+                                                            <th class="fixed02" scope="col" style="background: #4682B4; left: 80px;">
                                                                 部門名
                                                             </th>
-                                                            <th scope="col">
+                                                            <th class="fixed03" scope="col" style="background: #4682B4; left: 210px;">
                                                                 社員番号
                                                             </th>
-                                                            <th scope="col">
+                                                            <th class="fixed04" scope="col" style="background: #4682B4; left: 290px;">
                                                                 社員名
                                                             </th>
-                                                            <th scope="col">
+                                                            <th class="fixed05" scope="col" style="background: #4682B4; left: 420px;">
                                                                 カレンダー名称
                                                             </th>
                                                             <th scope="col">
@@ -261,19 +299,19 @@
                                                         </tr>
                                                             @foreach($results as $result)
                                                             <tr>
-                                                                <td class="GridViewRowLeft">
+                                                                <td class="fixed01" style="width: 80px; left: 0;">
                                                                     <span id="lblDeptCd" style="width: 80px; display: inline-block;">{{ $result->DEPT_CD }}</span>
                                                                 </td>
-                                                                <td class="GridViewRowLeft">
+                                                                <td class="fixed02" style="width: 130px; left: 80px;">
                                                                     <span id="lblDeptName" style="width: 130px; display: inline-block;">{{ $result->DEPT_NAME }}</span>
                                                                 </td>
-                                                                <td class="GridViewRowLeft">
+                                                                <td class="fixed03" style="width: 80px; left: 210px;">
                                                                     <span id="lblEmpCd" style="width: 80px; display: inline-block;">{{ $result->EMP_CD }}</span>
                                                                 </td>
-                                                                <td class="GridViewRowLeft">
+                                                                <td class="fixed04" style="width: 130px; left: 290px;">
                                                                     <span id="lblEmpName" style="width: 130px; display: inline-block;">{{ $result->EMP_NAME }}</span>
                                                                 </td>
-                                                                <td class="GridViewRowLeft">
+                                                                <td class="fixed05" style="width: 130px; left: 420px;">
                                                                     <span id="lblCalendarName" style="width: 150px; display: inline-block;">{{ $result->CALENDAR_NAME }}</span>
                                                                 </td>
                                                                 <td>
@@ -381,16 +419,24 @@
         })
 
     }); 
+
     function toggleRadio(ele) {
         $("#txtEmpCd, #btnSearchEmpCd").prop("disabled", true);
         $("#txtDeptCd, #ddlStartCompany, #ddlEndCompany, #ddlClosingDate, #btnSearchDeptCd").prop("disabled", false);
         if (ele.hasClass('rbSearchEmp')) {
             $("#txtEmpCd, #btnSearchEmpCd").prop("disabled", false);
             $("#txtDeptCd, #ddlStartCompany, #ddlEndCompany, #ddlClosingDate, #btnSearchDeptCd").prop("disabled", true);
-            $("#txtDeptCd, #lblDeptName").val('');
+            $("#txtDeptCd, #deptName, #ddlStartCompany, #ddlEndCompany").val('');
         }else{
-            $("#txtEmpCd, #lblEmpName").val('');
+            $("#txtEmpCd, #empName").val('');
         }
     }
+
+    $('#YearMonth').datepicker({
+      format: 'yyyy/mm',
+      autoclose: true ,
+      language: 'ja',       // カレンダー日本語化のため
+      minViewMode : 1
+    });
 </script>
 @endsection

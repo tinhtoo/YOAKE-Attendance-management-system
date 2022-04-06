@@ -6,6 +6,9 @@ use Illuminate\Http\Request;
 
 use App\Models\TR01Work;
 use App\Models\MT99Msg;
+use App\Models\MT10Emp;
+use App\Models\MT12Dept;
+use App\Models\TR04WorkTimeFix;
 use App\Models\MT23Company;
 use App\Models\MT22ClosingDate;
 use App\Http\Requests\EmpWorkTimeReferenceRequest;
@@ -86,4 +89,97 @@ class EmpWorkTimeReferenceRepository
         return $close_date;
     }
 
+    /**
+     *  部門名・社員名の取得
+     *
+     * @param Request $request
+     * @return void
+     */
+    public function name(Request $request){
+        $search_name =  $request->Input(['filter']);
+        if(!empty($search_name['txtEmpCd'])){
+            $empName = MT10Emp::where('EMP_CD', $search_name['txtEmpCd'])->pluck('EMP_NAME');
+            return $empName;
+        }
+
+        if($search_name['txtDeptCd']){
+            $deptName = MT12Dept::where('DEPT_CD', $search_name['txtDeptCd'])->pluck('DEPT_NAME');
+            return $deptName;
+        }
+    }
+    
+    // public function empName(Request $request){
+
+    //     $search_name =  $request->Input(['filter']);
+    //     $empName = MT10Emp::where('EMP_CD', $search_name['txtEmpCd'])->pluck('EMP_NAME');
+    //     return $empName;
+    // }
+
+    // public function deptName(Request $request){
+
+    //     $search_name =  $request->Input(['filter']);
+    //     $deptName = MT12Dept::where('DEPT_CD', $search_name['txtDeptCd'])->pluck('DEPT_NAME');
+    //     return $deptName;
+    // }
+    
+    /**
+     * 確定済みチェック
+     * @return EmpWorkTimeReferenceController
+     */
+    public function confirm(Request $request){
+        //$datas = $this->all();
+        //dd($data);
+        $prepare =  $request->Input(['filter']);
+        //dd($prepare);
+        $chk = $prepare['SearchCondition'];
+        //dd($chk);
+        if ($chk ='rbSearchEmp' && $chk != 'rbSearchDept'){
+
+                $input = $request->Input(['filter']);
+                /** 2022/03/03 tin 追加　start */
+                // $all_input = $request->all();
+                $year = substr(($input['ddlDate']), 0, 4);
+                $month = substr(($input['ddlDate']), 5, 2);
+                // dd($month);
+                /** 2022/03/03 tin 追加　end */
+
+                $deptCd = MT10Emp::where('MT10_EMP.EMP_CD', $input['txtEmpCd'])->pluck('DEPT_CD')->first();
+                $closingDate = MT10Emp::where('MT10_EMP.EMP_CD', $input['txtEmpCd'])->pluck('CLOSING_DATE_CD')->first();
+                //dd($closingDate);
+                $Confirm = TR04WorkTimeFix::where('CALD_YEAR', (int)$year)
+                    ->where('CALD_MONTH', (int)$month)
+                    ->where('CLOSING_DATE_CD', $closingDate )
+                    ->where('DEPT_CD', $deptCd)
+                    //->get();
+                    //->exists();
+                    ->first();
+                    //dd($Confirm);
+                return $Confirm;
+            }
+
+        if ($chk = 'rbSearchDept' && $chk != 'rbSearchEmp'){
+            $input = $request->Input(['filter']);
+            // dd($input);
+            /** 2022/03/03 tin 追加　start */
+            // $all_input = $request->all();
+            $year = substr(($input['ddlDate']), 0, 4);
+            $month = substr(($input['ddlDate']), 5, 2);
+            // dd($month);
+            /** 2022/03/03 tin 追加　end */
+
+            $Confirm = TR04WorkTimeFix::where('CALD_YEAR', (int)$year)
+                ->where('CALD_MONTH', (int)$month)
+                ->where('CLOSING_DATE_CD', $input['ddlClosingDate'])
+                ->where('DEPT_CD', $input['txtDeptCd'])
+                //->get();
+                //->exists();
+                ->first();
+                //dd($Confirm);
+            return $Confirm;
+        }
+    }
+
+        
 }
+        
+

@@ -36,14 +36,14 @@ class MT10EmpSearchController extends Controller
      * @param  int  $request
      * @return view
      */
-    // public function inisearch(Request $request)
-    // {
+    public function index(Request $request)
+    {
         //$emp_search = $this->emp_repository->initialsearch();
         
-        //dd($emp_search);
-        //return view('search.MT10EmpSearch', compact('emp_search'));
-    //     return view('search.MT10EmpSearch');
-    // }
+        // dd($emp_search);
+        // return view('search.MT10EmpSearch', compact('emp_search'));
+        return view('search.MT10EmpSearch');
+    }
 
     /**
      * 指定ユーザーのプロファイル表示
@@ -54,16 +54,17 @@ class MT10EmpSearchController extends Controller
     
     public function search(MT10EmpSearchRequest $request, MT10EmpSearchFilter $filter)
     {
+        $request_data = $request->all();
         $search_data = $request->input(['filter']);
-        $dept_name=$request->input('deptName');
+        //$dept_name=$request->input('deptName');
         $search_result = $this->emp_repository->search($request, $filter);
         $messages = $this->emp_repository->messages();
 
-        $request->session()->put('deptname',$dept_name);
+        //$request->session()->put('deptname',$dept_name);
 
         //dd($dept_name);
         
-        return view('search.MT10EmpSearch', compact('search_data', 'search_result', 'messages', 'dept_name'));
+        return view('search.MT10EmpSearch', compact('request_data', 'search_data', 'search_result', 'messages'));
         //return view('search.MT10EmpSearch', compact('messages'));
     }
 

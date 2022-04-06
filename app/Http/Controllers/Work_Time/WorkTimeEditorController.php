@@ -67,9 +67,13 @@ class WorkTimeEditorController extends Controller
         $search_data = $request->all();
         // $emp_name=$request->input('empName');
         // $dept_name=$request->input('deptName');
+        //dd($search_data);
+        // $year = substr(($search_data['ddlDate']), 0, 4);
+        // $month = substr(($search_data['ddlDate']), 7, 2);
+        // dd($year);
 
         $results = $this->wtime_Repository->select($request); //対象データ表示
-
+        // dd($results);
         $workdaycnt = $this->wtime_Repository->workdaycnt($request); //出勤回数の合計
         $holdaycnt = $this->wtime_Repository->holworkcnt($request); //休出回数の合計
         $spcholcnt = $this->wtime_Repository->spcholcnt($request); //特休回数の合計
@@ -98,6 +102,8 @@ class WorkTimeEditorController extends Controller
         $workptn_names = $this->wtime_Repository->workptns(); //勤務体系
         $reason_names = $this->wtime_Repository->reasons(); //事由
 
+        $name = $this->wtime_Repository->name($request);
+
         // $emp_dates = $this->wtime_Repository->date($request);
         // $hld_dates = $this->wtime_Repository->holidays()->toArray();
 
@@ -105,15 +111,17 @@ class WorkTimeEditorController extends Controller
         
         $request->session()->put('empname',$request->input('empName'));
         $request->session()->put('deptname',$request->input('deptName'));
-        $request->session()->put('year',$search_data['ddlTargetYear']);
-        $request->session()->put('month',$search_data['ddlTargetMonth']);
+        // $request->session()->put('year',$year);
+        // $request->session()->put('month',$month);
+        $request->session()->put('date', $search_data['ddlDate']);
         $request->session()->put('emp_cd',$search_data['txtEmpCd']);
+        
         //dd($workdaycnt);
         //dd(compact('results','messages','workptn_names','reason_names', 'search_data','dateCompare','hld_dates'));
         return view('work_time.WorkTimeEditor', compact('results', 'messages', 'workptn_names', 'reason_names', 'search_data', 
                                                         'workdaycnt', 'holdaycnt', 'spcholcnt', 'padholcnt', 'abcworkcnt', 'compdaycnt',
                                                         'worktime', 'tardtime', 'leavetime', 'outtime', 'ovtm1time', 'ovtm2time', 'ovtm3time', 'ovtm4time', 'ovtm5time', 'ovtm6time',
-                                                        'ext1time', 'ext2time', 'ext3time', 'GetSumTimes', 'GetSumExtTimes'));
+                                                        'ext1time', 'ext2time', 'ext3time', 'GetSumTimes', 'GetSumExtTimes', 'name'));
     }
 
     public function edit(WorkTimeRequest $request)
@@ -172,8 +180,10 @@ class WorkTimeEditorController extends Controller
         // $dept_name=$request->input('deptName');
 
         // sessionの削除
-        $request->session()->flush('empname',$request->input('empName'));
-        $request->session()->flush('deptname',$request->input('deptName'));
+        // $request->session()->flush('empname',$request->input('empName'));
+        // $request->session()->flush('deptname',$request->input('deptName'));
+        $request->session()->forget('empname',$request->input('empName'));
+        $request->session()->forget('deptname',$request->input('deptName'));
         return redirect()->route('worktimeeditor')->withInput($request->only([
             'ddlTargetYear',
             'ddlTargetMonth'

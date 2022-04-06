@@ -17,7 +17,19 @@
                                 <tbody>
                                     <tr>
                                         <th>対象月度</th>
+                                        <!-- 2022/03/07 追加 ティン Start -->
                                         <td>
+                                            <input name="ddlDate" 
+                                            id="YearMonth" 
+                                            class="imeDisabled" 
+                                            type="text"
+                                            autocomplete="off"
+                                            value="{{ old('ddlDate', !empty($inputSearchData['ddlDate']) ? $inputSearchData['ddlDate']: date('Y年m月d日') ) }}"
+                                            />
+                                        </td>
+                                        <!-- 2022/03/07 追加 ティン End -->
+                                        <!-- 2022/03/07 削除 ティン Start -->
+                                        <!-- <td>
                                             <select name="ddlTargetYear" tabindex="1" class="imeDisabled"
                                                 id="ddlTargetYear" style="width: 70px;">
                                                 @for ($year = date('Y') - 3; $year <= date('Y') + 3; $year++)
@@ -48,27 +60,28 @@
                                                 @endfor
                                             </select>
                                             &nbsp;日
-                                        </td>
+                                        </td> -->
+                                        <!-- 2022/03/07 削除 ティン End -->
                                     </tr>
                                     <tr>
                                         <th>部門</th>
                                         <td>
                                             <input name="txtDeptCd" 
-                                                class="OutlineLabel"
-                                                id="deptcd" 
+                                                class="imeDisabled"
+                                                id="txtDeptCd" 
                                                 style="width: 80px;" 
                                                 type="text"
                                                 maxlength="10"
                                                 value="{{ old('txtDeptCd', !empty($inputSearchData['txtDeptCd']) ? $inputSearchData['txtDeptCd'] : '') }}"
                                                 >
-                                            <input name="btnSearchDeptCd" class="SearchButton" id="btnSearchDeptCd" type="button" value="?" >
+                                            <input name="btnSearchDeptCd" class="SearchButton" id="btnSearchDeptCd" type="button" value="?" onclick="SearchDept();return false">
                                             <!-- <input class="SearchButton" type="button" id="MT12DeptSearch" onclick="SetDeptItem();" value="?"> -->
                                             <input class="OutlineLabel"
-                                                name="deptname" 
+                                                name="deptName" 
                                                 type="text"
                                                 style="width: 200px; height: 17px; display: inline-block;" 
-                                                id="deptname"
-                                                value="{{ session()->get('deptname') }}"
+                                                id="deptName"
+                                                value="{{ (!empty($inputSearchData['txtDeptCd']) ? $name[0] : '')}}"
                                                 readonly="readonly"
                                                 >
                                             @if ($errors->has('txtDeptCd'))
@@ -405,6 +418,16 @@
         $('#form').attr('action', url);
         $('#form').submit();
     });
+
+    // 2022/03/07 追加 ティン Start
+    //bootstrap date picker
+    $('#YearMonth').datepicker({
+      format: 'yyyy年mm月dd日',
+      autoclose: true,
+      language: 'ja',       // カレンダー日本語化のため
+    //   minViewMode : 1
+    });
+    // 2022/03/07 追加 ティン End
 </script>
 
 @endsection

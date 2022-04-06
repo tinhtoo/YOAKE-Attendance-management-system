@@ -53,7 +53,7 @@
                                                 value="{{ session('deptcd') }}"
                                                 disabled
                                                 >
-                                            <input name="btnSearchDeptCd" class="SearchButton" id="btnSearchDeptCd" type="button" value="?" disabled>
+                                            <input name="btnSearchDeptCd" class="SearchButton" id="btnSearchDeptCd" type="button" value="?" onclick="SearchDept();return false" disabled>
                                             <!-- <input class="SearchButton" type="button" id="MT12DeptSearch" onclick="SetDeptItem();" value="?"> -->
                                             <input class="OutlineLabel"
                                                 name="deptname" 
@@ -63,13 +63,14 @@
                                                 value="{{ session()->get('deptname') }}"
                                                 readonly="readonly"
                                                 >
-                                            @if ($errors->has('txtDeptCd'))
+                                            <!-- @if ($errors->has('txtDeptCd'))
                                                 <span class="alert-danger">{{ $errors->first('txtDeptCd') }}</span>
-                                            @endif
+                                            @endif -->
                                         </td>
                                     </tr>
                                     <tr>
                                         <th>開始所属</th>
+                                        {{ session()->get('startcompany') }}
                                         <td>
                                             <select name="filter[ddlStartCompany]" tabindex="6" id="ddlStartCompany"
                                                 style="width: 300px;" disabled>
@@ -128,7 +129,7 @@
                                                 id="btnCancel2"
                                                 type="submit" 
                                                 value="キャンセル"
-                                                data-url = "{{ URL::previous() }}"
+                                                onclick="history.back();"
                                             >
                                             @if(!empty($results))
                                             <input 

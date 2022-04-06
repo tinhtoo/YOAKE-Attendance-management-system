@@ -7,10 +7,14 @@ use App\Http\Controllers\Work_Time\WorkTimeDeptEditorController;
 use App\Http\Controllers\Search\MT10EmpSearchController;
 use App\Http\Controllers\Search\MT12DeptSearchController;
 
+use App\Http\Controllers\Master\MT11LoginRefController;
+
 use App\Http\Controllers\UserAuthController;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Route;
 
+// use App\Http\Controllers\TestController;
+use App\Http\Controllers\TestController;
 /*
 |--------------------------------------------------------------------------
 | Web Routes
@@ -21,19 +25,38 @@ use Illuminate\Support\Facades\Route;
 | contains the "web" middleware group. Now create something great!
 |
 */
-
+// Route::get('/test/index',[TestController::class,'dll']);
 
 /**Routeの設定をしました。 */
 
 Auth::routes();
 
 //ログイン画面表示
-Route::get('/','App\Http\Controllers\UserAuthController@login');
-Route::post('check',[UserAuthController::class,'check'])->name('auth.check');
+// Route::get('/','App\Http\Controllers\UserAuthController@login');
+Route::group(['middleware' => 'AlreadyLoggedIn'],function(){
+    //start_16
+// Route::get('/',[UserAuthController::class,'login'])->name('login');
+Route::get('/',[UserAuthController::class,'login']);
+// Route::post('check',[UserAuthController::class,'check'])->name('auth.check');
+Route::post('check',[UserAuthController::class,'loginCheck'])->name('auth.check');
+    //end_16
+
+// Route::get('/test/index', );    
+
+// Route::get('/test/index',[TestController::class,'dll']);
+});
 
 //メインメニュー画面の表示
-Route::get('main',[UserAuthController::class, 'main']);
+//Route::get('main',[UserAuthController::class, 'main']);
+Route::group(['middleware' => 'islogged'],function(){
 
+    Route::get('/test/index',[TestController::class,'dll']);
+    Route::post('/test/index',[TestController::class,'dll']);
+
+    Auth::routes();
+    Route::get('main',[UserAuthController::class, 'main'])->name('main');
+    Route::post('/logout', [UserAuthController::class, 'logout'])->name('logout.form');
+    //Route::get('/', [UserAuthController::class, 'logout'])->name('logout.perform');
 
 
 /////***** 勤怠管理 *****/////
@@ -57,6 +80,7 @@ Route::post('/work_time/WorkTimeEditorCancel',[WorkTimeEditorController::class, 
 Route::get('/work_time/WorkTimeDeptEditor',[WorkTimeDeptEditorController::class, 'WorkTimeDeptEditor']) ->name('wtdepteditor');
 Route::post('/work_time/WorkTimeDeptEditor',[WorkTimeDeptEditorController::class, 'search']) ->name('wtde.search');
 Route::post('/work_time/WorkTimeDeptEditorEdit',[WorkTimeDeptEditorController::class, 'edit']) ->name('wtde.edit');
+//Route::get('/work_time/WorkTimeDeptEditorEdit',[WorkTimeDeptEditorController::class, 'edit']) ->name('wtde.edit');
 Route::post('/work_time/WorkTimeDeptEditorUpdate',[WorkTimeDeptEditorController::class, 'update']) ->name('wtde.update');
 Route::post('/work_time/WorkTimeDeptEditorCancel',[WorkTimeDeptEditorController::class, 'cancel']) ->name('wtde.cancel');
 
@@ -142,7 +166,10 @@ Route::get('master/MT10EmpReference','App\Http\Controllers\HomeController@MT10Em
 Route::get('master/MT10EmpEditor','App\Http\Controllers\HomeController@MT10EmpEditor');
 
 //ログイン情報入力
-Route::get('master/MT11LoginReference','App\Http\Controllers\HomeController@MT11LoginReference');
+//Route::get('master/MT11LoginReference','App\Http\Controllers\HomeController@MT11LoginReference');
+Route::get('master/MT11LoginReference',[MT11LoginRefController::class, 'search']) ->name('MT11LoginRef.search');
+Route::get('master/MT11LoginEditor/{id}',[MT11LoginRefController::class, 'edit']) ->name('MT11LoginEdit.edit');
+Route::post('master/MT11LoginEditor/{id}',[MT11LoginRefController::class, 'update']) ->name('MT11LoginEdit.update');
 
 //ログイン情報照会
 Route::get('master/MT11LoginEditor','App\Http\Controllers\HomeController@MT11LoginEditor');
@@ -226,14 +253,16 @@ Route::get('master/MT23CompanyReference','App\Http\Controllers\HomeController@MT
 
 //所属情報入力
 Route::get('master/MT23CompanyEditor','App\Http\Controllers\HomeController@MT23CompanyEditor'); 
+});
 
-
-//***** sub-画面追加*****//
+//***** sub-画面処理*****//
 
 //部門情報検索（MT12DeptSearch）
 Route::get('search/MT12DeptSearch',[MT12DeptSearchController::class, 'search']) ->name('dep.search');
 
 //社員情報検索（MT10EmpSearch）
-//Route::get('/search/MT10EmpSearch',[MT10EmpSearchController::class, 'inisearch']) ->name('ini.search');
+// Route::get('/search/MT10EmpSearch',[MT10EmpSearchController::class, 'index']) ->name('index');
 Route::get('/search/MT10EmpSearch',[MT10EmpSearchController::class, 'search']) ->name('emp.search');
+
+
 

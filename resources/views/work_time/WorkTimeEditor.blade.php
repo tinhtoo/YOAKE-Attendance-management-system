@@ -17,6 +17,15 @@
                                     <tr>
                                         <th>対象月度</th>
                                         <td>
+                                            <input name="ddlDate" 
+                                            id="YearMonth" 
+                                            class="imeDisabled" 
+                                            type="text"
+                                            autocomplete="off"
+                                            value="{{ old('ddlDate', !empty($search_data['ddlDate']) ? $search_data['ddlDate']: date('Y年m月') ) }}"
+                                            />
+                                        </td>
+                                        <!-- <td>
                                             <select name="ddlTargetYear" id="ddlTargetYear" class="imeDisabled" style="width: 70px;">
                                                 @for($y=date('Y')-3; $y<=date('Y')+3; $y++) 
                                                 <option 
@@ -37,15 +46,28 @@
                                                 @endfor
                                             </select>
                                             &nbsp;月度
-                                        </td>
+                                        </td> -->
                                     </tr>
                                     <tr>
                                         <th>社員番号</th>
                                         <td>
                                             <!-- <input name="txtEmpCd" name="emp_no" class="imeDisabled" id="txtEmpCd" style="width: 80px;" onkeypress="if (WebForm_TextBoxKeyHandler(event) == false) return false;" onfocus="this.select();"  type="text" maxlength="10"> -->
                                             <input name="txtEmpCd" class="imeDisabled" id="txtEmpCd" style="width: 80px;" type="text" maxlength="10" value="{{ old('txtEmpCd', !empty($search_data['txtEmpCd'])?$search_data['txtEmpCd']:'') }}">
-                                            <input name="btnSearchEmpCd" class="SearchButton" id="btnSearchEmpCd" type="button" value="?">
-                                            <input name="empName" class="OutlineLabel" type="text" style="width: 200px; height: 17px; display: inline-block;" id="lblEmpName" value="{{ session()->get('empname') }}" readonly="readonly">
+                                            <!-- <input name="btnSearchEmpCd" class="SearchButton" id="btnSearchEmpCd" type="button" value="?"> -->
+                                            @if (Session()->has('id'))
+                                                <input name="btnSearchEmpCd" class="SearchButton" id="btnSearchEmpCd" type="button" value="?" onclick="SearchEmp();return false">
+                                            @else
+                                                <input name="btnSearchEmpCd" class="SearchButton" id="btnSearchEmpCd" type="button" value="??" onclick="history.back()">
+                                            @endif
+                                            
+                                            <input name="empName" 
+                                            class="OutlineLabel" 
+                                            type="text" 
+                                            style="width: 200px; height: 17px; display: inline-block;" 
+                                            id="empName"
+                                            value="{{ (!empty($search_data['txtEmpCd']) ? $name[0]->EMP_NAME : '')}}" 
+                                            readonly="readonly"
+                                            >
                                             <!-- <span class="OutlineLabel" id="lblEmpName" style="width: 200px; height: 17px; display: inline-block;"></span> -->
                                             
                                             @if ($errors->has('txtEmpCd'))
@@ -61,7 +83,14 @@
                                     <tr>
                                         <th>部門</th>
                                         <td>
-                                        <input name ="deptName" class="OutlineLabel" type="text" style="width: 200px; height: 17px; display: inline-block;" id="lblDeptName" value="{{ session()->get('deptname') }}" readonly="readonly">
+                                        <input name ="deptName" 
+                                        class="OutlineLabel" 
+                                        type="text" 
+                                        style="width: 200px; height: 17px; display: inline-block;" 
+                                        id="lblDeptName"
+                                        value="{{ (!empty($search_data['txtEmpCd']) ? $name[0]->DEPT_NAME : '')}}"
+                                        readonly="readonly">
+                                        <!-- value="{{ session()->get('deptname') }}"  -->
                                             <!-- <span class="OutlineLabel" id="lblDeptName" style="width: 200px; height: 17px; display: inline-block;"></span> -->
                                         </td>
                                     </tr>
@@ -135,7 +164,7 @@
                                 <div class="GridViewPanelStyle1">
                                     <div id="pnlWorkTime">
                                         <div>
-                                            <table class="GridViewBorder GridViewRowCenter GridViewPadding" id="gvWorkTime" style="border-collapse: collapse;" border="1" rules="all" cellspacing="0">
+                                            <table class="GridViewBorder GridViewRowCenter GridViewPadding yoko-tate" id="gvWorkTime" style="border-collapse: separate;" rules="all" cellspacing="0">
                                                 <tbody id="gridview-warp">
                                                     @isset($results)
                                                         @if(count($results) < 1) 
@@ -143,76 +172,76 @@
                                                                 <td><span>{{ $messages }}</span></td>
                                                             </tr>
                                                         @else
-                                                            <tr>
-                                                                <th scope="col">
+                                                            <tr class="sticky-head">
+                                                                <th class="fixed01" scope="col" style="background: #4682B4; left: 0px;">
                                                                     日付
                                                                 </th>
-                                                                <th scope="col">
+                                                                <th class="fixed02" scope="col" style="background: #4682B4; left: 80px;">
                                                                     曜日
                                                                 </th>
                                                                 <!-- <th scope="col">&nbsp;</th> -->
-                                                                <th scope="col">
+                                                                <th class="fixed03" scope="col" style="background: #4682B4; left: 110px;">
                                                                     勤務体系
                                                                 </th>
-                                                                <th scope="col">
+                                                                <th class="fixed04" scope="col" style="background: #4682B4; left: 260px;">
                                                                     事由
                                                                 </th>
-                                                                <th scope="col">
+                                                                <th class="" scope="col">
                                                                     出勤
                                                                 </th>
-                                                                <th scope="col">
+                                                                <th class="" scope="col">
                                                                     退出
                                                                 </th>
-                                                                <th scope="col">
+                                                                <th class="" scope="col">
                                                                     外出1
                                                                 </th>
-                                                                <th scope="col">
+                                                                <th class="" scope="col">
                                                                     再入１
                                                                 </th>
-                                                                <th scope="col">
+                                                                <th class="" scope="col">
                                                                     外出２
                                                                 </th>
-                                                                <th scope="col">
+                                                                <th class="" scope="col">
                                                                     再入２
                                                                 </th>
-                                                                <th scope="col">
+                                                                <th class="" scope="col">
                                                                     出勤時間
                                                                 </th>
-                                                                <th scope="col">
+                                                                <th class="" scope="col">
                                                                     遅刻時間
                                                                 </th>
-                                                                <th scope="col">
+                                                                <th class="" scope="col">
                                                                     早退時間
                                                                 </th>
-                                                                <th scope="col">
+                                                                <th class="" scope="col">
                                                                     外出時間
                                                                 </th>
-                                                                <th scope="col">早出時間</th>
-                                                                <th scope="col">普通残業時間</th>
-                                                                <th scope="col">深夜残業時間</th>
-                                                                <th scope="col">休日残業時間</th>
-                                                                <th scope="col">休日深夜残業時間</th>
-                                                                <th scope="col"></th>
-                                                                <th scope="col">深夜割増</th>
-                                                                <th scope="col"></th>
-                                                                <th scope="col"></th>
-                                                                <th scope="col">
+                                                                <th class="" scope="col">早出時間</th>
+                                                                <th class="" scope="col">普通残業時間</th>
+                                                                <th class="" scope="col">深夜残業時間</th>
+                                                                <th class="" scope="col">休日残業時間</th>
+                                                                <th class="" scope="col">休日深夜残業時間</th>
+                                                                <th class="" scope="col"></th>
+                                                                <th class="" scope="col">深夜割増</th>
+                                                                <th class="" scope="col"></th>
+                                                                <th class="" scope="col"></th>
+                                                                <th class="" scope="col">
                                                                     備考
                                                                 </th>
                                                                 <!-- <th scope="col">&nbsp;</th> -->
                                                             </tr>
                                                             @foreach($results as $result)
                                                                 <tr>
-                                                                    <td id="b" style="width: 80px;">
+                                                                    <td class="fixed01" style="width: 80px; left: 0px;">
                                                                         <span id="lblCaldDate" class="{{ $result->WORKPTN_CD == '002'?'text-danger':''}}" style="width: 80px; display: inline-block;">{{ date('Y/m/d', strtotime($result->CALD_DATE)) }}</span>
                                                                     </td>
-                                                                    <td id="b" style="width: 30px;">
+                                                                    <td class="fixed02" style="width: 30px; left: 80px;">
                                                                         <span id="lblDayOfWeek" class="{{ config('consts.weeks') == '土' && '日'?'text-danger':''}}" style="width: 30px; display: inline-block;">{{ config('consts.weeks')[date('w', strtotime($result->CALD_DATE))] }}</span>
                                                                     </td>
                                                                     <!-- <td id="b">
                                                                                                             <input name="btnEdit" id="btnEdit" onclick="javascript:__doPostBack('btnEdit','')" type="button" value="編集">
                                                                                                         </td> -->
-                                                                    <td id="b" style="width: 150px;">
+                                                                    <td class="fixed03" style="width: 150px; left: 110px;">
                                                                         <span id="lblWorkPtnName" name="lblWorkPtnName" class="{{ $result->WORK_CLS_CD == '00'?'text-danger':''}}" style="width: 150px; display: inline-block;">{{ $result->WORKPTN_NAME }}</span>
 
                                                                         <!-- <td id="a" style="width: 150px; display: none;">
@@ -225,7 +254,7 @@
                                                                                                                 </select>
                                                                                                             </td> -->
                                                                     </td>
-                                                                    <td id="b" style="width: 70px;">
+                                                                    <td class="fixed04" style="width: 70px; left: 260px;">
                                                                         <span id="lblReasonName" class="{{ $result->REASON_PTN_CD == '01'?'text-danger':''}} && {{ $result->REASON_PTN_CD == '02'?'text-primary':''}}" style="width: 70px; display: inline-block;">{{ $result->REASON_NAME }}</span>
                                                                         <!-- <td id="a" style="width: 70px; display: none;">
                                                                                                                 <select name="ddlReason" id="ddlReason" style="width: 70px;" onchange="javascript:setTimeout('__doPostBack(\'ddlReason\',\'\')', 0)">
@@ -237,121 +266,121 @@
                                                                                                                 </select>
                                                                                                             </td> -->
                                                                     </td>
-                                                                    <td id="b" style="white-space: nowrap;">
+                                                                    <td class="" style="white-space: nowrap;">
                                                                         <span id="lblOfcTime" style="width: 40px; display: inline-block;">{{ $result->OFC_TIME }}</span>
                                                                         <!-- <td id="a" style="display: none;">
                                                                                                                                                 <input name="txtOfcTime" class="imeDisabled" id="txtOfcTime" style="width: 40px;" type="text" maxlength="5" value="{{ $result->OFC_TIME }}">
                                                                                                                                             </td> -->
                                                                     </td>
-                                                                    <td id="b" style="white-space: nowrap;">
+                                                                    <td class="" style="white-space: nowrap;">
                                                                         <span id="lblLevTime" style="width: 40px; display: inline-block;">{{ $result->LEV_TIME }}</span>
                                                                         <!-- <td id="a" style="display: none;">
                                                                                                                                                     <input name="txtLevTime" class="imeDisabled" id="txtLevTime" style="width: 40px;" type="text" maxlength="5" value="{{ $result->LEV_TIME }}">
                                                                                                                                                 </td> -->
                                                                     </td>
-                                                                    <td id="b" style="white-space: nowrap;">
+                                                                    <td class="" style="white-space: nowrap;">
                                                                         <span id="lblOut1Time" style="width: 40px; display: inline-block;">{{ $result->OUT1_TIME }}</span>
                                                                         <!-- <td id="a" style="display: none;">
                                                                                                                                                     <input name="txtIn1Time" class="imeDisabled" id="txtIn1Time" style="width: 40px;" type="text" maxlength="5" value="{{ $result->OUT1_TIME }}">
                                                                                                                                                 </td> -->
                                                                     </td>
-                                                                    <td id="b" style="white-space: nowrap;">
+                                                                    <td class="" style="white-space: nowrap;">
                                                                         <span id="lblIn1Time" style="width: 40px; display: inline-block;">{{ $result->IN1_TIME }}</span>
                                                                         <!-- <td id="a" style="display: none;">
                                                                                                                                                     <input name="txtIn1Time" class="imeDisabled" id="txtIn1Time" style="width: 40px;" type="text" maxlength="5" value="{{ $result->IN1_TIME }}">
                                                                                                                                                 </td> -->
                                                                     </td>
-                                                                    <td id="b" style="white-space: nowrap;">
+                                                                    <td class="" style="white-space: nowrap;">
                                                                         <span id="lblOut2Time" style="width: 40px; display: inline-block;">{{ $result->OUT2_TIME }}</span>
                                                                         <!-- <td id="a" style="display: none;">
                                                                                                                                                     <input name="txtOut2Time" class="imeDisabled" id="txtOut2Time" style="width: 40px;" type="text" maxlength="5" value="{{ $result->OUT2_TIME }}">
                                                                                                                                                 </td> -->
                                                                     </td>
-                                                                    <td id="b" style="white-space: nowrap;">
+                                                                    <td class="" style="white-space: nowrap;">
                                                                         <span id="lblIn2Time" style="width: 40px; display: inline-block;">{{ $result->IN2_TIME }}</span>
                                                                         <!-- <td id="a" style="display: none;">
                                                                                                                                                     <input name="txtIn2Time" class="imeDisabled" id="txtIn2Time" style="width: 40px;" type="text" maxlength="5" value="{{ $result->IN2_TIME }}">
                                                                                                                                                 </td> -->
                                                                     </td>
-                                                                    <td id="b" style="white-space: nowrap;">
+                                                                    <td class="" style="white-space: nowrap;">
                                                                         <span id="lblWorkTime" style="width: 40px; display: inline-block;">{{ $result->WORK_TIME }}</span>
                                                                         <!-- <td id="a" style="display: none;">
                                                                                                                                                     <input name="txtWorkTime" class="imeDisabled" id="txtWorkTime" style="width: 40px;" type="text" maxlength="5" value="{{ $result->WORK_TIME }}">
                                                                                                                                                 </td> -->
                                                                     </td>
-                                                                    <td id="b" style="white-space: nowrap;">
+                                                                    <td class="" style="white-space: nowrap;">
                                                                         <span id="lblTardTime" style="width: 40px; display: inline-block;">{{ $result->TARD_TIME }}</span>
                                                                         <!-- <td id="a" style="display: none;">
                                                                                                                                                     <input name="txtTardTime" class="imeDisabled" id="txtTardTime" style="width: 40px;" type="text" maxlength="5" value="{{ $result->TARD_TIME }}">
                                                                                                                                                 </td> -->
                                                                     </td>
-                                                                    <td id="b" style="white-space: nowrap;">
+                                                                    <td class="" style="white-space: nowrap;">
                                                                         <span id="lblLeaveTime" style="width: 40px; display: inline-block;">{{ $result->LEAVE_TIME }}</span>
                                                                         <!-- <td id="a" style="display: none;">
                                                                                                                                                     <input name="txtLeaveTime" class="imeDisabled" id="txtLeaveTime" style="width: 40px;" type="text" maxlength="5" value="{{ $result->LEAVE_TIME }}">
                                                                                                                                                 </td> -->
                                                                     </td>
-                                                                    <td id="b" style="white-space: nowrap;">
+                                                                    <td class="" style="white-space: nowrap;">
                                                                         <span id="lblOutTime" style="width: 40px; display: inline-block;">{{ $result->OUT_TIME }}</span>
                                                                         <!-- <td id="a" style="display: none;">
                                                                                                                                                     <input name="txtOutTime" class="imeDisabled" id="txtOutTime" style="width: 40px;" type="text" maxlength="5" value="{{ $result->OUT_TIME }}">
                                                                                                                                                 </td> -->
                                                                     </td>
-                                                                    <td id="b" style="white-space: nowrap;">
+                                                                    <td class="" style="white-space: nowrap;">
                                                                         <span id="lblOvtm1Time" style="width: 40px; display: inline-block;">{{ $result->OVTM1_TIME }}</span>
                                                                         <!-- <td id="a" style="display: none;">
                                                                                                                                                     <input name="txtOvtm1Time" class="imeDisabled" id="txtOvtm1Time" style="width: 40px;" type="text" maxlength="5" value="{{ $result->OVTM1_TIME }}">
                                                                                                                                                 </td> -->
                                                                     </td>
-                                                                    <td id="b" style="white-space: nowrap;">
+                                                                    <td class="" style="white-space: nowrap;">
                                                                         <span id="lblOvtm2Time" style="width: 40px; display: inline-block;" autopostback="True" ontextchanged="WorkTimes_TextChanged">{{ $result->OVTM2_TIME }}</span>
                                                                         <!-- <td id="a" style="display: none;">
                                                                                                                                                     <input name="txtOvtm2Time" class="imeDisabled" id="txtOvtm2Time" style="width: 40px;" type="text" maxlength="5" value="{{ $result->OVTM2_TIME }}">
                                                                                                                                                 </td> -->
                                                                     </td>
-                                                                    <td id="b" style="white-space: nowrap;">
+                                                                    <td class="" style="white-space: nowrap;">
                                                                         <span id="lblOvtm3Time" style="width: 40px; display: inline-block;" autopostback="True" ontextchanged="WorkTimes_TextChanged">{{ $result->OVTM3_TIME }}</span>
                                                                         <!-- <td id="a" style="display: none;">
                                                                                                                                                     <input name="txtOvtm3Time" class="imeDisabled" id="txtOvtm3Time" style="width: 40px;" type="text" maxlength="5" value="{{ $result->OVTM3_TIME }}">
                                                                                                                                                 </td> -->
                                                                     </td>
-                                                                    <td id="b" style="white-space: nowrap;">
+                                                                    <td class="" style="white-space: nowrap;">
                                                                         <span id="lblOvtm4Time" style="width: 40px; display: inline-block;">{{ $result->OVTM4_TIME }}</span>
                                                                         <!-- <td id="a" style="display: none;">
                                                                                                                                                     <input name="txtOvtm4Time" class="imeDisabled" id="txtOvtm4Time" style="width: 40px;" type="text" maxlength="5" value="{{ $result->OVTM4_TIME }}">
                                                                                                                                                 </td> -->
                                                                     </td>
-                                                                    <td id="b" style="white-space: nowrap;">
+                                                                    <td class="" style="white-space: nowrap;">
                                                                         <span id="lblOvtm5Time" style="width: 40px; display: inline-block;">{{ $result->OVTM5_TIME }}</span>
                                                                         <!-- <td id="a" style="display: none;">
                                                                                                                                                     <input name="txtOvtm5Time" class="imeDisabled" id="txtOvtm5Time" style="width: 40px;" type="text" maxlength="5" value="{{ $result->OVTM5_TIME }}">
                                                                                                                                                 </td> -->
                                                                     </td>
-                                                                    <td id="b" style="white-space: nowrap;">
+                                                                    <td class="" style="white-space: nowrap;">
                                                                         <span id="lblOvtm6Time" style="width: 40px; display: inline-block;">{{ $result->OVTM6_TIME }}</span>
                                                                         <!-- <td id="a" style="display: none;">
                                                                                                                                                     <input name="txtOvtm6Time" class="imeDisabled" id="txtOvtm6Time" style="width: 40px;" type="text" maxlength="5" value="{{ $result->OVTM6_TIME }}">
                                                                                                                                                 </td> -->
                                                                     </td>
-                                                                    <td id="b" style="white-space: nowrap;">
+                                                                    <td class="" style="white-space: nowrap;">
                                                                         <span id="lblExt1Time" style="width: 40px; display: inline-block;">{{ $result->EXT1_TIME }}</span>
                                                                         <!-- <td id="a" style="display: none;">
                                                                                                                                                     <input name="txtExt1Time" class="imeDisabled" id="txtExt1Time" style="width: 40px;" type="text" maxlength="5" value="{{ $result->EXT1_TIME }}">
                                                                                                                                                 </td> -->
                                                                     </td>
-                                                                    <td id="b" style="white-space: nowrap;">
+                                                                    <td class="" style="white-space: nowrap;">
                                                                         <span id="lblExt2Time" style="width: 40px; display: inline-block;">{{ $result->EXT2_TIME }}</span>
                                                                         <!-- <td id="a" style="display: none;">
                                                                                                                                                     <input name="txtExt2Time" class="imeDisabled" id="txtExt2Time" style="width: 40px;" type="text" maxlength="5" value="{{ $result->EXT2_TIME }}">
                                                                                                                                                 </td> -->
                                                                     </td>
-                                                                    <td id="b" style="white-space: nowrap;">
+                                                                    <td class="" style="white-space: nowrap;">
                                                                         <span id="lblExt3Time" style="width: 40px; display: inline-block;">{{ $result->EXT3_TIME }}</span>
                                                                         <!-- <td id="a" style="display: none;">
                                                                                                                                                     <input name="txtExt3Time" class="imeDisabled" id="txtExt3Time" style="width: 40px;" type="text" maxlength="5" value="{{ $result->EXT3_TIME }}">
                                                                                                                                                 </td> -->
                                                                     </td>
-                                                                    <td id="b" class="GridViewRowLeft" style="white-space: nowrap;">
+                                                                    <td class="" class="GridViewRowLeft" style="white-space: nowrap;">
                                                                         <span id="lblRemark" style="width: 250px; display: inline-block;">{{ $result->RSV1_TIME }}</span>
                                                                         <!-- <td id="a" style="display: none;">
                                                                                                                                                     <input name="txtRemark" class="imeDisabled" id="txtRemark" style="width: 250px;" type="text" maxlength="" value="{{ $result->RSV1_TIME }}">
@@ -597,6 +626,14 @@
     $(document).on('click', '#btnShow', function(){
         
         $('#btnShow, #ddlTargetYear, #ddlTargetMonth, #txtEmpCd, #btnSearchEmpCd').attr('disabled', true);
+    });
+
+    //bootstrap date picker
+    $('#YearMonth').datepicker({
+      format: 'yyyy年mm月',
+      autoclose: true,
+      language: 'ja',       // カレンダー日本語化のため
+      minViewMode : 1
     });
 </script>
 

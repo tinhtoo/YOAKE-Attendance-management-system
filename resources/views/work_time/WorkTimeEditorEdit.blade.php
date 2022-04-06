@@ -5,7 +5,8 @@
 @section('content')
 <div id="contents-stage">
 @if ($errors->has('worktime.*.OFC_TIME'))
-<span class="alert-danger">{{ getArrValue($error_messages, 2003) }}</span>
+<!-- <span class="alert-danger">{{ getArrValue($error_messages, 2003) }}</span> -->
+<span class="text-danger d-block">{{ $errors->first('worktime.*.OFC_TIME')  }}</span>
 @endif
     <table>
         <tbody>
@@ -20,6 +21,15 @@
                                     <tr>
                                         <th>対象月度</th>
                                         <td>
+                                            <input name="ddlDate" 
+                                            id="YearMonth" 
+                                            class="imeDisabled" 
+                                            type="text"
+                                            autocomplete="off"
+                                            value="{{ session('date') }}"
+                                            />
+                                        </td>
+                                        <!-- <td>
                                             <select name="ddlTargetYear" id="ddlTargetYear" class="imeDisabled" style="width: 70px;">
                                                 <option>
                                                 {{ session('year') }}
@@ -37,13 +47,13 @@
                                                 
                                             </select>
                                             &nbsp;月度
-                                        </td>
+                                        </td> -->
                                     </tr>
                                     <tr>
                                         <th>社員番号</th>
                                         <td>
                                             <input name="txtEmpCd" class="imeDisabled" id="txtEmpCd" style="width: 80px;" type="text" maxlength="10" value="{{ session('emp_cd') }}">
-                                            <input name="btnSearchEmpCd" class="SearchButton" id="btnSearchEmpCd" type="button" value="?">
+                                            <input name="btnSearchEmpCd" class="SearchButton" id="btnSearchEmpCd" type="button" value="?" onclick="SearchEmp();return false">
                                             <!-- <span name="empName" class="OutlineLabel" id="lblEmpName" style="width: 200px; height: 17px; display: inline-block;" value="{{ session()->get('empname') }}" readonly="readonly"></span> -->
                                             <input name="empName" class="OutlineLabel" type="text" style="width: 200px; height: 17px; display: inline-block;" id="lblEmpName" value="{{ session()->get('empname') }}" readonly="readonly">
 

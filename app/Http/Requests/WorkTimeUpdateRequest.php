@@ -16,7 +16,7 @@ class WorkTimeUpdateRequest extends FormRequest
 
         $rules = [
             
-            'worktime.*.OFC_TIME' => 'date_format:H:i'
+            'worktime.*.OFC_TIME' => 'nullable|date_format:H:i'
         ];
         return $rules;
     }
@@ -25,7 +25,7 @@ class WorkTimeUpdateRequest extends FormRequest
     {
         $msg_2003 = MT99Msg::where('MSG_NO', '2003')->pluck('MSG_CONT')->first();
         return [
-            'worktime.*.OFC_TIME.required' => $msg_2003
+            'worktime.*.OFC_TIME.date_format' => "error がありました❣❣❣"
 
         ];
     }

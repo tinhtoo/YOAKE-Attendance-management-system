@@ -34,6 +34,7 @@
 </script> -->
 <div id="search-container">
     <form id="DeptModal" runat="server" name="DeptModal">
+        {{ csrf_field() }}
         <div id="contents-stage">
             <input name="btnBack" id="btnBack" style="width: 80px; height: 21px;" onclick="window.close();" type="button" value="戻る">
 
@@ -91,11 +92,11 @@
             }
         }
 
-        var MT10sendCD = window.opener.document.getElementById('deptcd'); //値をセットするオブジェクトを取得
+        var MT10sendCD = window.opener.document.getElementById('txtDeptCd'); //値をセットするオブジェクトを取得
         if (MT10sendCD != null) { //値をセットする先が存在する場合は値をセットする
             MT10sendCD.value = deptCD
         }
-        var MT10sendName = window.opener.document.getElementById('deptname');
+        var MT10sendName = window.opener.document.getElementById('deptName');
         if (MT10sendName != null) { 
             MT10sendName.value = deptName
         }

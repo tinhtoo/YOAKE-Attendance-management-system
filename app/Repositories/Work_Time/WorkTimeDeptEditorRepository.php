@@ -9,6 +9,7 @@ use App\Models\MT99Msg;
 use App\Models\MT23Company;
 use App\Models\MT05Workptn;
 use App\Models\MT09Reason;
+use App\Models\MT12Dept;
 use App\Http\Requests\WorkTimeDeptEditorRequest;
 use App\Filters\WorkTimeDeptEditorFilter;
 
@@ -22,14 +23,23 @@ class WorkTimeDeptEditorRepository
     public function select(WorkTimeDeptEditorRequest $request, WorkTimeDeptEditorFilter $filter)
     {
         $inputEmpData = $request->all();
+        // dd($inputEmpData);
         $inputReason = $request->Input(['filter']);
-        $inputYear = $inputEmpData['ddlTargetYear'];
-        $inputMonth = $inputEmpData['ddlTargetMonth'];
+        // 2022/03/07 削除 ティン Start
+        // $inputYear = $inputEmpData['ddlTargetYear'];
+        // $inputMonth = $inputEmpData['ddlTargetMonth'];
+        // $inputDay = $inputEmpData['ddlTargetDay'];
+        // $totalDate = $inputYear . '-' . $inputMonth . '-' . $inputDay;
+        // 2022/03/07 削除 ティン End
+
+        $year = substr(($inputEmpData['ddlDate']), 0, 4);
+        $month = substr(($inputEmpData['ddlDate']), 7, 2);
+        $day = mb_substr(($inputEmpData['ddlDate']), 8, 2);
+        // dd($day);
+        $joinDate = $year . '-' . $month . '-' . $day;
         
-        $inputDay = $inputEmpData['ddlTargetDay'];
-        $totalDate = $inputYear . '-' . $inputMonth . '-' . $inputDay;
-        $changeDateType = date('Y-m-d H:i:s', strtotime($totalDate));
-        //dd($changeDateType);
+        $changeDateType = date('Y-m-d H:i:s', strtotime($joinDate));
+        // dd($changeDateType);
         
         $targetdata_search = TR01Work::join('MT10_EMP', 'TR01_WORK.EMP_CD', '=','MT10_EMP.EMP_CD')
             ->join('MT05_WORKPTN', 'TR01_WORK.WORKPTN_CD', '=', 'MT05_WORKPTN.WORKPTN_CD')
@@ -140,5 +150,24 @@ class WorkTimeDeptEditorRepository
     {
         $reason_names = MT09Reason::all();
         return $reason_names;
+    }
+
+    /**
+     *  部門名・社員名の取得
+     *
+     * @param Request $request
+     * @return void
+     */
+    public function name(Request $request){
+        $search_name =  $request->Input();
+        // if(!empty($search_name['txtEmpCd'])){
+        //     $empName = MT10Emp::where('EMP_CD', $search_name['txtEmpCd'])->pluck('EMP_NAME');
+        //     return $empName;
+        // }
+
+        if($search_name['txtDeptCd']){
+            $deptName = MT12Dept::where('DEPT_CD', $search_name['txtDeptCd'])->pluck('DEPT_NAME');
+            return $deptName;
+        }
     }
 }

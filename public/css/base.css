@@ -78,7 +78,10 @@ p,td,th
 {
 	height:1px;
 	font-size:0px;
-	margin:10px 0px;
+	/* **22/01/27** S*/
+	/* margin:10px 0px;*/
+	margin:5px 0px;
+	/* **22/01/27** E*/
 	border-bottom:1px solid #333;
 }
 

@@ -175,74 +175,80 @@ $(".ButtonField1").on("click", '#btnDelete', function () {
     }
 });
 
-
-/**
- * subwindow処理
-*/
-
-// var subWindowSearchUpDept;
-// function SetUpDeptItem() {
-//     var lblDeptCd = document.getElementById('<%= lblDeptCd.ClientID %>');
-
-
-//     if (subWindowSearchUpDept && !subWindowSearchUpDept.closed) {
-//         subWindowSearchUpDept.close();
-//     }
-
-//     var windowW = 380;
-//     var windowH = 565;
-//     var windowX = (screen.width - windowW) / 2;
-//     var windowY = (screen.height - windowH) / 2;
-
-//     var param = '';
-
-//     param += 'DeptCd=' + lblDeptCd.innerText;
-//     param += '&UpDeptCdClienId=' + '<%= lblUpDeptCd.ClientID %>';
-//     param += '&UpDeptNameClienId=' + '<%= lblUpDeptName.ClientID %>';
-//     param += '&HidUpDeptCdClienId=' + '<%= hidUpDeptCd.ClientID %>';
-//     param += '&DispClsCd=01';
-
-//     subWindowSearchUpDept = window.open('UpDeptSearch.blade.php' + param, 'UpDeptSearch', 'left=' + windowX + ', top=' + windowY + ', width=' + windowW + ', height=' + windowH + 'scrollbars=no, resizable=yes');
-
-// }
-
 /**
  * sub-window処理
 */
+// 削除*********start2022/01/26*********
 //新部門選択サブ画面
-function SetUpDeptItem() {
+// function SetUpDeptItem() {
 
-    window.open('UpDeptSearch', '', 'width=600,height=750');
-    // return false;
-};
+//     window.open('UpDeptSearch', '', 'width=600,height=750');
+//     // return false;
+// };
 
+// 削除*********end2022/01/26*********
+
+// 削除*********2022/2/1 S「ティン」*********
+// //部門情報検索サブ画面
+// $(function () {
+//     $("#btnSearchDeptCd").on('click', function () {
+//         window.open('/search/MT12DeptSearch', '', 'width=400, height=550, top=90, left=400');
+//     });
+// });
+
+// //社員情報検索サブ画面
+// $(function () {
+//     $("#btnSearchEmpCd").on('click', function () {
+//         window.open('/search/MT10EmpSearch', '', 'width=500, height=650, top=90, left=350');
+//     });
+// });
+// 削除*********2022/2/1 E 「ティン」*********
+
+// 追加*********2022/2/1 S 「ティン」*********
+// アンロード時にサブ画面を閉じる
+window.onunload = function() {
+    closeWindow();
+}
+var popupDept;
 //部門情報検索サブ画面
-$(function () {
-    $("#btnSearchDeptCd").on('click', function () {
-        window.open('/search/MT12DeptSearch', '', 'width=400, height=550, top=90, left=400');
-    });
+function SearchDept() {
+    popupDept = window.open('/search/MT12DeptSearch','部門情報検索','height=550,width=400,left=400,top=90,resizable=yes,scrollbars=yes,toolbar=yes,menubar=no,location=no,directories=no, status=yes');
+    window.focus();
+    popupDept.focus();        
+}
+
+//ポップアップ画面を閉じる
+window.addEventListener('unload', function(event) {
+    if (typeof popupDept != "undefined") {
+        popupDept.close();
+    }
 });
-
-// //社員情報書出処理 _「test方法２」
-// function SetDeptItem() {
-
-//     window.open('/search/MT12DeptSearch', '', 'width=400,height=650');
-//     // return false;
-// };
-// //社員情報書出処理_test「test方法２」
-// function SetEmpItem() {
-
-//     window.open('/search/MT10EmpSearch', '', 'width=550,height=750');
-//     // return false;
-// };
-
 
 //社員情報検索サブ画面
-$(function () {
-    $("#btnSearchEmpCd").on('click', function () {
-        window.open('/search/MT10EmpSearch', '', 'width=500, height=650, top=90, left=350');
-    });
+
+var popupEmp;
+//ポップアップ画面を開く
+function SearchEmp() {
+    popupEmp = window.open('/search/MT10EmpSearch','社員情報検索','height=650,width=500,left=350,top=90,resizable=yes,scrollbars=yes,toolbar=yes,menubar=no,location=no,directories=no, status=yes'); 
+    window.focus();
+    popupEmp.focus();
+}
+//ポップアップ画面を閉じる
+window.addEventListener('unload', function(event) {
+    if (typeof popupEmp != "undefined") {
+        popupEmp.close();
+    }
 });
+
+// 追加*********2022/2/1 E 「ティン」*********
+
+// function OpenPopupWindow()
+// {
+//  var url = "/search/MT10EmpSearch";
+// myRef = window.open(url ,'mywin','width=500, height=650, top=90, left=350');
+// myRef.focus()
+
+// }
 
 
 

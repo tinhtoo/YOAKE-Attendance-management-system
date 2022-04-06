@@ -62,7 +62,9 @@
     vertical-align: top;
     padding: 2px 0px 0px 2px;
     white-space: nowrap;
-    height: 15px;
+    /* 2022/03/01 ティン Start*/
+    /* height: 15px; */
+    /* 2022/03/01 ティン End*/
 }
 
 
@@ -145,11 +147,11 @@
     border-bottom: 1px solid #ddd;
 }
 
-.GridViewStyle1 .GridViewSpace th,
+/* .GridViewStyle1 .GridViewSpace th,
 .GridViewStyle1 .GridViewSpace td {
     border-left: 5px solid #fff;
     border-right: 5px solid #fff;
-}
+} */
 
 .GridViewStyle1 .GridViewBorder th,
 .GridViewStyle1 .GridViewBorder td {
@@ -364,7 +366,10 @@
 /* --------- LinkMenu LinkButton --------- */
 
 .HolizonListMenu1 {
-    margin: 5px auto 10px auto;
+    /* **22/01/27** S*/
+    /* margin: 5px auto 10px auto; */
+    margin: 5px auto;
+    /* **22/01/27** E*/
     padding: 0;
     list-style: none;
 }

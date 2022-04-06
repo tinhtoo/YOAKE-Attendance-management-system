@@ -9,6 +9,7 @@ use App\Models\MT05Workptn;
 use App\Models\MT09Reason;
 use App\Models\MT99Msg;
 use App\Models\MT08Holiday;
+use App\Models\MT10Emp;
 
 
 class WorkTimeRepository
@@ -17,14 +18,27 @@ class WorkTimeRepository
     public function select(Request $request)
     {
         $input = $request->all();
-        // $targetdata = TR01Work::where('CALD_YEAR', $input['ddlTargetYear'])
-        //     ->where('CALD_MONTH', $input['ddlTargetMonth'])
+        $year = substr(($input['ddlDate']), 0, 4);
+        $month = substr(($input['ddlDate']), 7, 2);
+        
+        // dd($month);
+        // $targetdata = TR01Work::where('CALD_YEAR', $year)
+        //     ->where('CALD_MONTH', $month)
         //     ->where('EMP_CD', $input['txtEmpCd'])->get();
+        // $data = TR01Work::join('MT05_WORKPTN', 'TR01_WORK.WORKPTN_CD', '=', 'MT05_WORKPTN.WORKPTN_CD')
+        //     ->join('MT09_REASON', 'TR01_WORK.REASON_CD', '=', 'MT09_REASON.REASON_CD')
+        //     ->where('CALD_YEAR', (int)$year)
+        //     ->where('CALD_MONTH', (int)$month)
+        //     ->where('EMP_CD', $input['txtEmpCd'])
+        //     ->select('TR01_WORK.CALD_YEAR')->get();
+        // dd($data);    
 
         $targetdata = TR01Work::join('MT05_WORKPTN', 'TR01_WORK.WORKPTN_CD', '=', 'MT05_WORKPTN.WORKPTN_CD')
             ->join('MT09_REASON', 'TR01_WORK.REASON_CD', '=', 'MT09_REASON.REASON_CD')
-            ->where('CALD_YEAR', $input['ddlTargetYear'])
-            ->where('CALD_MONTH', $input['ddlTargetMonth'])
+            // ->where('CALD_YEAR', $year)
+            // ->where('CALD_MONTH', $month)
+            ->where('CALD_YEAR', (int)$year)
+            ->where('CALD_MONTH', (int)$month)
             ->where('EMP_CD', $input['txtEmpCd'])
             ->select('TR01_WORK.*', 'MT05_WORKPTN.WORKPTN_NAME', 'MT05_WORKPTN.WORK_CLS_CD', 'MT09_REASON.REASON_NAME', 'MT09_REASON.REASON_PTN_CD')
             ->selectRaw("Case When TR01_WORK.OFC_TIME_HH = '0' OR TR01_WORK.OFC_TIME_HH Is Null THEN ''
@@ -90,17 +104,40 @@ class WorkTimeRepository
 
             ->get();
 
-        //dd($targetdata);
+        // dd($targetdata);
         return $targetdata;
     }
+
+    //2022.02.05 tin add start
+    /**
+     *  部門名・社員名の取得
+     *
+     * @param Request $request
+     * @return void
+     */
+    public function name(Request $request){
+        $search_name =  $request->Input();
+        // dd($search_name);
+        if(!empty($search_name['txtEmpCd'])){
+            $empName = MT10Emp::join('MT12_DEPT', 'MT10_EMP.DEPT_CD', 'MT12_DEPT.DEPT_CD',)
+            ->where('EMP_CD', $search_name['txtEmpCd'])->get();
+            // dd($empName);
+            return $empName;
+        }
+
+    }
+
+    //2022.02.05 tin add end
 
     //出勤回数の合計
     public function workdaycnt(Request $request)
     {
         $input = $request->all();
-
-        $workdaycnt = TR01Work::where('CALD_YEAR', $input['ddlTargetYear'])
-            ->where('CALD_MONTH', $input['ddlTargetMonth'])
+        $year = substr(($input['ddlDate']), 0, 4);
+        $month = substr(($input['ddlDate']), 7, 2);
+        
+        $workdaycnt = TR01Work::where('CALD_YEAR', (int)$year)
+            ->where('CALD_MONTH', (int)$month)
             ->where('EMP_CD', $input['txtEmpCd'])
             ->selectraw('Sum(WORKDAY_CNT) as SUM_WORKDAY_CNT')
             // ->selectRaw("Case When WORKDAY_CNT = 0 THEN ''
@@ -116,9 +153,11 @@ class WorkTimeRepository
     public function holworkcnt(Request $request)
     {
         $input = $request->all();
+        $year = substr(($input['ddlDate']), 0, 4);
+        $month = substr(($input['ddlDate']), 7, 2);
 
-        $holworkcnt = TR01Work::where('CALD_YEAR', $input['ddlTargetYear'])
-            ->where('CALD_MONTH', $input['ddlTargetMonth'])
+        $holworkcnt = TR01Work::where('CALD_YEAR', (int)$year)
+            ->where('CALD_MONTH', (int)$month)
             ->where('EMP_CD', $input['txtEmpCd'])
             // ->selectRaw("Case When TR01_WORK.OVTM1_TIME_HH + TR01_WORK.OVTM1_TIME_MI = 0 Then ''
             //             Else Cast(TR01_WORK.OVTM1_TIME_HH As VarChar) + ':' + RIGHT('00' + Cast(TR01_WORK.OVTM1_TIME_MI As VarChar), 2)
@@ -136,9 +175,11 @@ class WorkTimeRepository
     public function spcholcnt(Request $request)
     {
         $input = $request->all();
+        $year = substr(($input['ddlDate']), 0, 4);
+        $month = substr(($input['ddlDate']), 7, 2);
 
-        $spcholcnt = TR01Work::where('CALD_YEAR', $input['ddlTargetYear'])
-            ->where('CALD_MONTH', $input['ddlTargetMonth'])
+        $spcholcnt = TR01Work::where('CALD_YEAR', (int)$year)
+            ->where('CALD_MONTH', (int)$month)
             ->where('EMP_CD', $input['txtEmpCd'])
             ->selectRaw('Sum(SPCHOL_CNT) as SUM_SPCHOL_CNT')
             ->first();
@@ -150,9 +191,11 @@ class WorkTimeRepository
     public function padholcnt(Request $request)
     {
         $input = $request->all();
+        $year = substr(($input['ddlDate']), 0, 4);
+        $month = substr(($input['ddlDate']), 7, 2);
 
-        $padholcnt = TR01Work::where('CALD_YEAR', $input['ddlTargetYear'])
-            ->where('CALD_MONTH', $input['ddlTargetMonth'])
+        $padholcnt = TR01Work::where('CALD_YEAR', (int)$year)
+            ->where('CALD_MONTH', (int)$month)
             ->where('EMP_CD', $input['txtEmpCd'])
             ->selectRaw('Sum(PADHOL_CNT) as SUM_PADHOL_CNT')
             ->first();
@@ -164,9 +207,11 @@ class WorkTimeRepository
     public function abcworkcnt(Request $request)
     {
         $input = $request->all();
+        $year = substr(($input['ddlDate']), 0, 4);
+        $month = substr(($input['ddlDate']), 7, 2);
 
-        $abcworkcnt = TR01Work::where('CALD_YEAR', $input['ddlTargetYear'])
-            ->where('CALD_MONTH', $input['ddlTargetMonth'])
+        $abcworkcnt = TR01Work::where('CALD_YEAR', (int)$year)
+            ->where('CALD_MONTH', (int)$month)
             ->where('EMP_CD', $input['txtEmpCd'])
             ->selectRaw('Sum(ABCWORK_CNT) as SUM_ABCWORK_CNT')
             ->first();
@@ -178,9 +223,11 @@ class WorkTimeRepository
     public function compdaycnt(Request $request)
     {
         $input = $request->all();
+        $year = substr(($input['ddlDate']), 0, 4);
+        $month = substr(($input['ddlDate']), 7, 2);
 
-        $compdaycnt = TR01Work::where('CALD_YEAR', $input['ddlTargetYear'])
-            ->where('CALD_MONTH', $input['ddlTargetMonth'])
+        $compdaycnt = TR01Work::where('CALD_YEAR', (int)$year)
+            ->where('CALD_MONTH', (int)$month)
             ->where('EMP_CD', $input['txtEmpCd'])
             ->selectRaw('Sum(COMPDAY_CNT) as SUM_COMPDAY_CNT')
             ->first();
@@ -192,9 +239,11 @@ class WorkTimeRepository
     public function worktime(Request $request)
     {
         $input = $request->all();
+        $year = substr(($input['ddlDate']), 0, 4);
+        $month = substr(($input['ddlDate']), 7, 2);
 
-        $worktime = TR01Work::where('CALD_YEAR', $input['ddlTargetYear'])
-            ->where('CALD_MONTH', $input['ddlTargetMonth'])
+        $worktime = TR01Work::where('CALD_YEAR', (int)$year)
+            ->where('CALD_MONTH', (int)$month)
             ->where('EMP_CD', $input['txtEmpCd'])
             ->selectRaw("Cast(IsNull(Sum(WORK_TIME_HH), 0) + IsNull(Sum(WORK_TIME_MI) / 60, 0) As VarChar) + ':' + Right('00' + Cast(IsNull(Sum(WORK_TIME_MI) % 60, 0) As VarChar), 2) SUM_WORK_TIME")
             ->first();
@@ -206,9 +255,11 @@ class WorkTimeRepository
     public function tardtime(Request $request)
     {
         $input = $request->all();
+        $year = substr(($input['ddlDate']), 0, 4);
+        $month = substr(($input['ddlDate']), 7, 2);
 
-        $tardtime = TR01Work::where('CALD_YEAR', $input['ddlTargetYear'])
-            ->where('CALD_MONTH', $input['ddlTargetMonth'])
+        $tardtime = TR01Work::where('CALD_YEAR', (int)$year)
+            ->where('CALD_MONTH', (int)$month)
             ->where('EMP_CD', $input['txtEmpCd'])
             ->selectRaw("Cast(IsNull(Sum(TARD_TIME_HH), 0) + IsNull(Sum(TARD_TIME_MI) / 60, 0) As VarChar) + ':' + Right('00' + Cast(IsNull(Sum(TARD_TIME_MI) % 60, 0) As VarChar), 2) SUM_TARD_TIME")
             ->first();
@@ -220,9 +271,11 @@ class WorkTimeRepository
     public function leavetime(Request $request)
     {
         $input = $request->all();
+        $year = substr(($input['ddlDate']), 0, 4);
+        $month = substr(($input['ddlDate']), 7, 2);
 
-        $leavetime = TR01Work::where('CALD_YEAR', $input['ddlTargetYear'])
-            ->where('CALD_MONTH', $input['ddlTargetMonth'])
+        $leavetime = TR01Work::where('CALD_YEAR', (int)$year)
+            ->where('CALD_MONTH', (int)$month)
             ->where('EMP_CD', $input['txtEmpCd'])
             ->selectRaw("Cast(IsNull(Sum(LEAVE_TIME_HH), 0) + IsNull(Sum(LEAVE_TIME_MI) / 60, 0) As VarChar) + ':' + Right('00' + Cast(IsNull(Sum(LEAVE_TIME_MI) % 60, 0) As VarChar), 2) SUM_LEAVE_TIME")
             ->first();
@@ -234,9 +287,11 @@ class WorkTimeRepository
     public function outtime(Request $request)
     {
         $input = $request->all();
+        $year = substr(($input['ddlDate']), 0, 4);
+        $month = substr(($input['ddlDate']), 7, 2);
 
-        $outtime = TR01Work::where('CALD_YEAR', $input['ddlTargetYear'])
-            ->where('CALD_MONTH', $input['ddlTargetMonth'])
+        $outtime = TR01Work::where('CALD_YEAR', (int)$year)
+            ->where('CALD_MONTH', (int)$month)
             ->where('EMP_CD', $input['txtEmpCd'])
             ->selectRaw("Cast(IsNull(Sum(OUT_TIME_HH), 0) + IsNull(Sum(OUT_TIME_MI) / 60, 0) As VarChar) + ':' + Right('00' + Cast(IsNull(Sum(OUT_TIME_MI) % 60, 0) As VarChar), 2) SUM_OUT_TIME")
             ->first();
@@ -248,9 +303,11 @@ class WorkTimeRepository
     public function ovtm1time(Request $request)
     {
         $input = $request->all();
+        $year = substr(($input['ddlDate']), 0, 4);
+        $month = substr(($input['ddlDate']), 7, 2);
 
-        $ovtm1time = TR01Work::where('CALD_YEAR', $input['ddlTargetYear'])
-            ->where('CALD_MONTH', $input['ddlTargetMonth'])
+        $ovtm1time = TR01Work::where('CALD_YEAR', (int)$year)
+            ->where('CALD_MONTH', (int)$month)
             ->where('EMP_CD', $input['txtEmpCd'])
             ->selectRaw("Cast(IsNull(Sum(OVTM1_TIME_HH), 0) + IsNull(Sum(OVTM1_TIME_MI) / 60, 0) As VarChar) + ':' + Right('00' + Cast(IsNull(Sum(OVTM1_TIME_MI) % 60, 0) As VarChar), 2) SUM_OVTM1_TIME")
             ->first();
@@ -262,9 +319,11 @@ class WorkTimeRepository
     public function ovtm2time(Request $request)
     {
         $input = $request->all();
+        $year = substr(($input['ddlDate']), 0, 4);
+        $month = substr(($input['ddlDate']), 7, 2);
 
-        $ovtm2time = TR01Work::where('CALD_YEAR', $input['ddlTargetYear'])
-            ->where('CALD_MONTH', $input['ddlTargetMonth'])
+        $ovtm2time = TR01Work::where('CALD_YEAR', (int)$year)
+            ->where('CALD_MONTH', (int)$month)
             ->where('EMP_CD', $input['txtEmpCd'])
             ->selectRaw("Cast(IsNull(Sum(OVTM2_TIME_HH), 0) + IsNull(Sum(OVTM2_TIME_MI) / 60, 0) As VarChar) + ':' + Right('00' + Cast(IsNull(Sum(OVTM2_TIME_MI) % 60, 0) As VarChar), 2) SUM_OVTM2_TIME")
             ->first();
@@ -276,9 +335,11 @@ class WorkTimeRepository
     public function ovtm3time(Request $request)
     {
         $input = $request->all();
+        $year = substr(($input['ddlDate']), 0, 4);
+        $month = substr(($input['ddlDate']), 7, 2);
 
-        $ovtm3time = TR01Work::where('CALD_YEAR', $input['ddlTargetYear'])
-            ->where('CALD_MONTH', $input['ddlTargetMonth'])
+        $ovtm3time = TR01Work::where('CALD_YEAR', (int)$year)
+            ->where('CALD_MONTH', (int)$month)
             ->where('EMP_CD', $input['txtEmpCd'])
             ->selectRaw("Cast(IsNull(Sum(OVTM3_TIME_HH), 0) + IsNull(Sum(OVTM3_TIME_MI) / 60, 0) As VarChar) + ':' + Right('00' + Cast(IsNull(Sum(OVTM3_TIME_MI) % 60, 0) As VarChar), 2) SUM_OVTM3_TIME")
             ->first();
@@ -290,9 +351,11 @@ class WorkTimeRepository
     public function ovtm4time(Request $request)
     {
         $input = $request->all();
+        $year = substr(($input['ddlDate']), 0, 4);
+        $month = substr(($input['ddlDate']), 7, 2);
 
-        $ovtm4time = TR01Work::where('CALD_YEAR', $input['ddlTargetYear'])
-            ->where('CALD_MONTH', $input['ddlTargetMonth'])
+        $ovtm4time = TR01Work::where('CALD_YEAR', (int)$year)
+            ->where('CALD_MONTH', (int)$month)
             ->where('EMP_CD', $input['txtEmpCd'])
             ->selectRaw("Cast(IsNull(Sum(OVTM4_TIME_HH), 0) + IsNull(Sum(OVTM4_TIME_MI) / 60, 0) As VarChar) + ':' + Right('00' + Cast(IsNull(Sum(OVTM4_TIME_MI) % 60, 0) As VarChar), 2) SUM_OVTM4_TIME")
             ->first();
@@ -304,9 +367,11 @@ class WorkTimeRepository
     public function ovtm5time(Request $request)
     {
         $input = $request->all();
+        $year = substr(($input['ddlDate']), 0, 4);
+        $month = substr(($input['ddlDate']), 7, 2);
 
-        $ovtm5time = TR01Work::where('CALD_YEAR', $input['ddlTargetYear'])
-            ->where('CALD_MONTH', $input['ddlTargetMonth'])
+        $ovtm5time = TR01Work::where('CALD_YEAR', (int)$year)
+            ->where('CALD_MONTH', (int)$month)
             ->where('EMP_CD', $input['txtEmpCd'])
             ->selectRaw("Cast(IsNull(Sum(OVTM5_TIME_HH), 0) + IsNull(Sum(OVTM5_TIME_MI) / 60, 0) As VarChar) + ':' + Right('00' + Cast(IsNull(Sum(OVTM5_TIME_MI) % 60, 0) As VarChar), 2) SUM_OVTM5_TIME")
             ->first();
@@ -318,9 +383,11 @@ class WorkTimeRepository
     public function ovtm6time(Request $request)
     {
         $input = $request->all();
+        $year = substr(($input['ddlDate']), 0, 4);
+        $month = substr(($input['ddlDate']), 7, 2);
 
-        $ovtm6time = TR01Work::where('CALD_YEAR', $input['ddlTargetYear'])
-            ->where('CALD_MONTH', $input['ddlTargetMonth'])
+        $ovtm6time = TR01Work::where('CALD_YEAR', (int)$year)
+            ->where('CALD_MONTH', (int)$month)
             ->where('EMP_CD', $input['txtEmpCd'])
             ->selectRaw("Cast(IsNull(Sum(OVTM6_TIME_HH), 0) + IsNull(Sum(OVTM6_TIME_MI) / 60, 0) As VarChar) + ':' + Right('00' + Cast(IsNull(Sum(OVTM6_TIME_MI) % 60, 0) As VarChar), 2) SUM_OVTM6_TIME")
             ->first();
@@ -332,9 +399,11 @@ class WorkTimeRepository
     public function ext1time(Request $request)
     {
         $input = $request->all();
+        $year = substr(($input['ddlDate']), 0, 4);
+        $month = substr(($input['ddlDate']), 7, 2);
 
-        $ext1time = TR01Work::where('CALD_YEAR', $input['ddlTargetYear'])
-            ->where('CALD_MONTH', $input['ddlTargetMonth'])
+        $ext1time = TR01Work::where('CALD_YEAR', (int)$year)
+            ->where('CALD_MONTH', (int)$month)
             ->where('EMP_CD', $input['txtEmpCd'])
             ->selectRaw("Cast(IsNull(Sum(EXT1_TIME_HH), 0) + IsNull(Sum(EXT1_TIME_MI) / 60, 0) As VarChar) + ':' + Right('00' + Cast(IsNull(Sum(EXT1_TIME_MI) % 60, 0) As VarChar), 2) SUM_EXT1_TIME")
             ->first();
@@ -346,9 +415,11 @@ class WorkTimeRepository
     public function ext2time(Request $request)
     {
         $input = $request->all();
+        $year = substr(($input['ddlDate']), 0, 4);
+        $month = substr(($input['ddlDate']), 7, 2);
 
-        $ext2time = TR01Work::where('CALD_YEAR', $input['ddlTargetYear'])
-            ->where('CALD_MONTH', $input['ddlTargetMonth'])
+        $ext2time = TR01Work::where('CALD_YEAR', (int)$year)
+            ->where('CALD_MONTH', (int)$month)
             ->where('EMP_CD', $input['txtEmpCd'])
             ->selectRaw("Cast(IsNull(Sum(EXT2_TIME_HH), 0) + IsNull(Sum(EXT2_TIME_MI) / 60, 0) As VarChar) + ':' + Right('00' + Cast(IsNull(Sum(EXT2_TIME_MI) % 60, 0) As VarChar), 2) SUM_EXT2_TIME")
             ->first();
@@ -360,9 +431,11 @@ class WorkTimeRepository
     public function ext3time(Request $request)
     {
         $input = $request->all();
+        $year = substr(($input['ddlDate']), 0, 4);
+        $month = substr(($input['ddlDate']), 7, 2);
 
-        $ext3time = TR01Work::where('CALD_YEAR', $input['ddlTargetYear'])
-            ->where('CALD_MONTH', $input['ddlTargetMonth'])
+        $ext3time = TR01Work::where('CALD_YEAR', (int)$year)
+            ->where('CALD_MONTH', (int)$month)
             ->where('EMP_CD', $input['txtEmpCd'])
             ->selectRaw("Cast(IsNull(Sum(EXT3_TIME_HH), 0) + IsNull(Sum(EXT3_TIME_MI) / 60, 0) As VarChar) + ':' + Right('00' + Cast(IsNull(Sum(EXT3_TIME_MI) % 60, 0) As VarChar), 2) SUM_EXT3_TIME")
             ->first();
@@ -374,9 +447,11 @@ class WorkTimeRepository
     public function GetSumTime(Request $request)
     {
         $input = $request->all();
+        $year = substr(($input['ddlDate']), 0, 4);
+        $month = substr(($input['ddlDate']), 7, 2);
 
-        $sumtime = TR01Work::where('CALD_YEAR', $input['ddlTargetYear'])
-            ->where('CALD_MONTH', $input['ddlTargetMonth'])
+        $sumtime = TR01Work::where('CALD_YEAR', (int)$year)
+            ->where('CALD_MONTH', (int)$month)
             ->where('EMP_CD', $input['txtEmpCd'])
             ->selectRaw("Cast(IsNull(Sum(WORK_TIME_HH) + Sum(OVTM1_TIME_HH) + Sum(OVTM2_TIME_HH) + Sum(OVTM3_TIME_HH) + Sum(OVTM4_TIME_HH) + Sum(OVTM5_TIME_HH) + Sum(OVTM6_TIME_HH),0) +
                          IsNull((Sum(WORK_TIME_MI) + Sum(OVTM1_TIME_MI)  + Sum(OVTM2_TIME_MI) + Sum(OVTM3_TIME_MI) + Sum(OVTM4_TIME_MI) + Sum(OVTM5_TIME_MI) + Sum(OVTM6_TIME_MI)) /60, 0) As VarChar) + ':' + 
@@ -390,9 +465,11 @@ class WorkTimeRepository
     public function GetSumExtTimes(Request $request)
     {
         $input = $request->all();
+        $year = substr(($input['ddlDate']), 0, 4);
+        $month = substr(($input['ddlDate']), 7, 2);
 
-        $sumext_time = TR01Work::where('CALD_YEAR', $input['ddlTargetYear'])
-            ->where('CALD_MONTH', $input['ddlTargetMonth'])
+        $sumext_time = TR01Work::where('CALD_YEAR', (int)$year)
+            ->where('CALD_MONTH', (int)$month)
             ->where('EMP_CD', $input['txtEmpCd'])
             ->selectRaw("Cast(IsNull(Sum(EXT1_TIME_HH) + Sum(EXT2_TIME_HH) + Sum(EXT3_TIME_HH),0) +
                          IsNull((Sum(EXT1_TIME_MI) + Sum(EXT2_TIME_MI)  + Sum(EXT3_TIME_MI)) /60, 0) As VarChar) + ':' + 
@@ -438,8 +515,8 @@ class WorkTimeRepository
 
     //     $edit_data = TR01Work::join('MT05_WORKPTN', 'TR01_WORK.WORKPTN_CD', '=', 'MT05_WORKPTN.WORKPTN_CD')
     //     ->join('MT09_REASON', 'TR01_WORK.REASON_CD', '=', 'MT09_REASON.REASON_CD')
-    //     ->where('CALD_YEAR', $input['ddlTargetYear'])
-    //     ->where('CALD_MONTH', $input['ddlTargetMonth'])
+    //     ->where('CALD_YEAR', $year)
+    //     ->where('CALD_MONTH', $month)
     //     ->where('EMP_CD', $input['txtEmpCd'])
     //     ->find($emp_cd);
 
@@ -467,8 +544,8 @@ class WorkTimeRepository
     //     $date = TR01Work::join('MT05_WORKPTN', 'TR01_WORK.WORKPTN_CD', '=', 'MT05_WORKPTN.WORKPTN_CD')
     //         ->join('MT09_REASON', 'TR01_WORK.REASON_CD', '=', 'MT09_REASON.REASON_CD')
     //         //->join('MT08_HOLIDAY', 'date(TR01_WORK.CALD_DATE)', '=' ,'MT08_HOLIDAY.HLD_DATE')
-    //         ->where('CALD_YEAR', $input['ddlTargetYear'])
-    //         ->where('CALD_MONTH', $input['ddlTargetMonth'])
+    //         ->where('CALD_YEAR', $year)
+    //         ->where('CALD_MONTH', $month)
     //         ->where('EMP_CD', $input['txtEmpCd'])
     //         ->select('TR01_WORK.CALD_DATE')
     //         ->get();
