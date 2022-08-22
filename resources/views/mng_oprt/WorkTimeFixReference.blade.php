@@ -7,108 +7,118 @@
             <tbody>
                 <tr>
                     <td>
-
                         <div id="ctl00_cphContentsArea_upWorkTimeFix">
+                            <form action="" method="post" id="form">
+                                @csrf
+                                <table class="InputFieldStyle1">
+                                    <tbody>
+                                        <tr>
+                                            <th>対象月度</th>
+                                            <td>
+                                                <input type="text" id="yearMonth" class="yearMonth" name="yearMonth" autocomplete="off" onfocus="this.select();"
+                                                    tabindex="1" style="width: 100px;"
+                                                    value="{{ ((isset($search_data) ? $search_data['yearMonth'] : null ) ?? $view_data['def_year'].'年'.sprintf('%02d', $view_data['def_month']).'月') }}" />
+                                                <span class="text-danger error" id="dateError">
+                                                @error('yearMonth')
+                                                    {{ getArrValue($error_messages, $message) }}
+                                                @enderror
+                                                </span>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <th>締日</th>
+                                            <td>
+                                                <select name="closingDateCd" tabindex="3"
+                                                    id="closingDateCd" style="width: 150px;">
+                                                    @foreach ($view_data['closing_dates'] as $closing_date)
+                                                    <option value="{{ $closing_date->CLOSING_DATE_CD }}"
+                                                        {{ $closing_date->CLOSING_DATE_CD == (( isset($search_data) ? $search_data['closingDateCd'] : null ) ?? $view_data['def_closing_date_cd']) ? 'selected' : '' }}>
+                                                        {{ $closing_date->CLOSING_DATE_NAME }}
+                                                    </option>
+                                                    @endforeach
+                                                </select>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
 
-                            <table class="InputFieldStyle1">
-                                <tbody>
-                                    <tr>
-                                        <th>対象月度</th>
-                                        <td>
-                                            <select name="ctl00$cphContentsArea$ddlTargetYear" tabindex="1"
-                                                class="imeDisabled" id="ctl00_cphContentsArea_ddlTargetYear"
-                                                style="width: 70px;">
-                                                <option value="2020">2020</option>
-                                                <option selected="selected" value="2021">2021</option>
+                                <label for="noFix" style="position:relative;padding-left:1.5em;line-height:1.4em;">
+                                    <input name="noFix" tabindex="4" id="noFix" type="checkbox" {{ isset($search_data) && !key_exists('noFix', $search_data) ? '' : 'checked' }}
+                                        style = "position:absolute;top:2px;bottom:0;left:2px;margin:auto;">
+                                    未確定のみ表示
+                                </label>
 
-                                            </select>
-                                            &nbsp;年&nbsp;
-                                            <select name="ctl00$cphContentsArea$ddlTargetMonth" tabindex="2"
-                                                class="imeDisabled" id="ctl00_cphContentsArea_ddlTargetMonth"
-                                                style="width: 50px;">
-                                                <option value="1">1</option>
-                                                <option value="2">2</option>
-                                                <option value="3">3</option>
-                                                <option selected="selected" value="4">4</option>
-                                                <option value="5">5</option>
-                                                <option value="6">6</option>
-                                                <option value="7">7</option>
-                                                <option value="8">8</option>
-                                                <option value="9">9</option>
-                                                <option value="10">10</option>
-                                                <option value="11">11</option>
-                                                <option value="12">12</option>
-
-                                            </select>
-                                            &nbsp;月度&nbsp;
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <th>締日</th>
-                                        <td>
-                                            <select name="ctl00$cphContentsArea$ddlClosingDate" tabindex="3"
-                                                id="ctl00_cphContentsArea_ddlClosingDate" style="width: 150px;">
-                                                <option selected="selected" value="15">１５日締</option>
-                                                <option value="25">２５日締</option>
-                                                <option value="31">末締</option>
-
-                                            </select>
-                                            <span id="ctl00_cphContentsArea_cvClosingDate"
-                                                style="color: red; display: none;">ErrorMessage</span>
-
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                            <table>
-                                <tbody>
-                                    <tr>
-                                        <td>
-                                            <input name="ctl00$cphContentsArea$chkNoFix" tabindex="4"
-                                                id="ctl00_cphContentsArea_chkNoFix" type="checkbox" checked="checked"><label
-                                                for="ctl00_cphContentsArea_chkNoFix">未確定のみ表示</label>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
-
-                            <div class="line"></div>
-
-                            <input name="ctl00$cphContentsArea$btnDisp" tabindex="5" class="ButtonStyle1"
-                                id="ctl00_cphContentsArea_btnDisp"
-                                onclick='javascript:WebForm_DoPostBackWithOptions(new WebForm_PostBackOptions("ctl00$cphContentsArea$btnDisp", "", true, "Search", "", false, true))'
-                                type="button" value="表示">
-                            <input name="ctl00$cphContentsArea$btnCancel2" tabindex="6" class="ButtonStyle1"
-                                id="ctl00_cphContentsArea_btnCancel2"
-                                onclick="javascript:__doPostBack('ctl00$cphContentsArea$btnCancel2','')" type="button"
-                                value="キャンセル">
+                                <div class="line"></div>
+                                <p class="ButtonField2">
+                                    <input type="button" value="表示" tabindex="5"
+                                        id="btnView" name="btnView" class="ButtonStyle1 view"
+                                        data-url="{{ url('mng_oprt/WorkTimeFixReference') }}">
+                                    <input type="button" value="キャンセル" tabindex="6"
+                                        id="btnCancel" name="btnCancel" class="ButtonStyle1"
+                                        onclick="location.href='{{ url('mng_oprt/WorkTimeFixReference') }}'">
+                                </p>
+                            </form>
 
                             <div class="GridViewStyle1 mg10" id="gridview-container">
                                 <div class="GridViewPanelStyle5" id="ctl00_cphContentsArea_pnlWorkTimeFixReference">
-
                                     <div>
-                                        <table tabindex="7" class="GridViewBorder GridViewPadding"
-                                            id="ctl00_cphContentsArea_gvWorkTimeFixReference"
-                                            style="border-collapse: collapse;" border="1" rules="all" cellspacing="0">
+                                        <table tabindex="7" class="GridViewBorder" id="ctl00_cphContentsArea_gvWorkTimeFixReference" style="border-collapse: collapse;" border="1" rules="all" cellspacing="0">
                                             <tbody>
-                                                <tr>
-                                                    <td>
-
-                                                    </td>
-                                                </tr>
+                                                @isset($results)
+                                                    @if($results->isEmpty())
+                                                        <tr style="width:70px;">
+                                                            <td><span>{{ getArrValue($error_messages, '4029') }}</span></td>
+                                                        </tr>
+                                                    @else
+                                                        <tr class="sticky-head">
+                                                            <th class="fixed01" scope="col" style="width: 60px; background: #4682B4; left: 0px;">
+                                                                部門コード
+                                                            </th>
+                                                            <th class="fixed01" scope="col" style="width: 140px; background: #4682B4; left: 0px;">
+                                                                部門名
+                                                            </th>
+                                                            <th class="fixed01" scope="col" style="width: 60px; background: #4682B4; left: 0px;">
+                                                                社員番号
+                                                            </th>
+                                                            <th class="fixed01" scope="col" style="width: 140px; background: #4682B4; left: 0px;">
+                                                                社員名
+                                                            </th>
+                                                            <th class="fixed01" scope="col" style="width: 40px; background: #4682B4; left: 0px;">
+                                                                確定
+                                                            </th>
+                                                        </tr>
+                                                        @foreach($results as $result)
+                                                        <tr>
+                                                            <td class="fixed01" style="left: 0px;">
+                                                                {{ $result->DEPT_CD }}
+                                                            </td>
+                                                            <td class="fixed01" style="left: 0px;">
+                                                                {{ $result->DEPT_NAME }}
+                                                            </td>
+                                                            <td class="fixed01" style="left: 0px;">
+                                                                {{ $result->EMP_CD }}
+                                                            </td>
+                                                            <td class="fixed01" style="left: 0px;">
+                                                                {{ $result->EMP_NAME }}
+                                                            </td>
+                                                            <td class="fixed01" style="left: 0px;">
+                                                                {{ $result->FIXED }}
+                                                            </td>
+                                                        </tr>
+                                                        @endforeach
+                                                    @endif
+                                                @endisset
                                             </tbody>
                                         </table>
                                     </div>
-
                                 </div>
                             </div>
 
                             <div class="line"></div>
                             <p class="ButtonField2">
-                                <input name="ctl00$cphContentsArea$btnCancel" tabindex="8"
-                                    id="ctl00_cphContentsArea_btnCancel"
-                                    onclick="javascript:__doPostBack('ctl00$cphContentsArea$btnCancel','')" type="button"
-                                    value="キャンセル">
+                                <input type="button" value="キャンセル" tabindex="8"
+                                    id="btnCancel" name="btnCancel" class="ButtonStyle1"
+                                    onclick="location.href='{{ url('mng_oprt/WorkTimeFixReference') }}'">
                             </p>
                         </div>
                     </td>
@@ -116,4 +126,34 @@
             </tbody>
         </table>
     </div>
+@endsection
+
+@section('script')
+<script>
+    $(function() {
+        // ENTER時に送信されないようにする
+        $('input').not('[type="button"]').keypress(function(e) {
+            if (e.which == 13) {
+                return false;
+            }
+        });
+
+        // 明細表示
+        $(document).on('click', '.view', function() {
+            var url = $(this).data('url');
+            $('#form').attr('action', url);
+            $('#form').submit();
+        });
+
+        // カレンダー機能の設定
+        $('#yearMonth').datepicker({
+            format: 'yyyy年mm月',
+            autoclose: true,
+            language: 'ja',
+            minViewMode: 1,
+            startDate: '{{ $view_data['def_year'] - 1 }}年01月',
+            endDate: '{{ $view_data['def_year']}}年12月'
+        });
+    });
+</script>
 @endsection

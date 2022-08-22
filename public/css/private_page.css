@@ -37,12 +37,11 @@ div#header {
     position: relative;
     width: 100%;
     /* height: 100%; */
-    background: #fff url('../images/header-bg-color.gif') repeat-x 0px bottom;
+    background: url('../images/WorkTmMngMenuSecondOn-bg.gif') repeat-x 0px bottom;
 }
 
 div#header-inner {
-    height: 66px;
-    background: url('../images/header-inner-bg.gif') repeat-y right bottom;
+    height: 65px;
     text-align: left;
 }
 
@@ -178,7 +177,7 @@ td#contents div#contents-container {
 
 td#contents div#contents-container div#contents-sitemap {
     padding: 6px;
-    background: #AED7FF url('../images/contents-sitemap-bg.gif');
+    background: url('../images/contents-sitemap-bg.gif');
     border-bottom: 1px solid #ddd;
 }
 

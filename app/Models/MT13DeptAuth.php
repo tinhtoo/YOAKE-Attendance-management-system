@@ -24,7 +24,15 @@ class MT13DeptAuth extends Model
     /**
      * @var array
      */
-    protected $fillable = ['DEPT_AUTH_NAME', 'RSV1_CLS_CD', 'RSV2_CLS_CD', 'UPD_DATE'];
+    protected $fillable = ['DEPT_AUTH_CD','DEPT_AUTH_NAME','DEPT_CD', 'RSV1_CLS_CD', 'RSV2_CLS_CD', 'UPD_DATE'];
+
+    /**
+     * The primary key for the model.
+     *
+     * @var string
+     */
+    protected $primaryKey = ['DEPT_AUTH_CD','DEPT_CD'];
+    public $incrementing = false;
 
     /**
      * The connection name for the model.

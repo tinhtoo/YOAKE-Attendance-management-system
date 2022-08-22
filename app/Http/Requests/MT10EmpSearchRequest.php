@@ -15,28 +15,28 @@ class MT10EmpSearchRequest extends FormRequest
         $rules = [];
 
         $rules = [
-            'filter.txtDeptCd' =>[ 
+            'filter.txtDeptCd' => [
                 'nullable',
                 function ($attribute, $value, $fail) {
 
-                    //**チェック1処理（E-1） */
+                    // チェック1処理（E-1）
                     $check = MT12Dept::where(['DEPT_CD' => $value])->exists();
 
                     $msg_2000 = MT99Msg::where('MSG_NO', '2000')->pluck('MSG_CONT')->first();
-                    
-                    //** 判定処理 */
+
+                    // 判定処理
                     if (!($check)) {
                         $fail($msg_2000);
                     }
                 },
             ],
-            'filter.txtEmpKana' =>[ 
+            'filter.txtEmpKana' => [
                 'nullable'
-            ]    
+            ]
         ];
         return $rules;
     }
-    
+
 
     public function messages()
     {

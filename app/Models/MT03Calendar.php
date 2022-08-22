@@ -25,6 +25,14 @@ class MT03Calendar extends Model
     protected $table = 'MT03_CALENDAR';
 
     /**
+     * The primary key for the model.
+     *
+     * @var string
+     */
+    protected $primaryKey = ['CALENDAR_CD','CALD_YEAR','CALD_MONTH','CLOSING_DATE_CD','CALD_DATE'];
+    public $incrementing = false;
+
+    /**
      * @var array
      */
     protected $fillable = ['WORKPTN_CD', 'RSV1_CLS_CD', 'RSV2_CLS_CD', 'UPD_DATE'];
@@ -36,4 +44,15 @@ class MT03Calendar extends Model
      */
     protected $connection = 'sqlsrv';
 
+    /**
+     * Query scope.
+     */
+    public function scopeFilter($query, $filter)
+    {
+        $filter->apply($query);
+    }
+
+    protected $casts = [
+        'CALD_DATE' => 'date',
+    ];
 }

@@ -7,219 +7,237 @@
             <tbody>
                 <tr>
                     <td>
-                        <div id="ctl00_cphContentsArea_UpdatePanel1">
-
-                            <table class="InputFieldStyle1">
-                                <tbody>
-                                    <tr>
-                                        <th>削除区分</th>
-                                        <td>
-                                            <div class="GroupBox1">
-                                                <input name="ctl00$cphContentsArea$DeleteCategory" tabindex="1"
-                                                    id="ctl00_cphContentsArea_rbEmpCls" type="radio" checked="checked"
-                                                    value="rbEmpCls"><label for="ctl00_cphContentsArea_rbEmpCls">社員</label>
-                                                <input name="ctl00$cphContentsArea$DeleteCategory" tabindex="2"
-                                                    id="ctl00_cphContentsArea_rbDeptCls"
-                                                    onclick="javascript:setTimeout('__doPostBack(\'ctl00$cphContentsArea$rbDeptCls\',\'\')', 0)"
-                                                    type="radio" value="rbDeptCls"><label
-                                                    for="ctl00_cphContentsArea_rbDeptCls">部門</label>
-                                                <div class="clearBoth"></div>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                            <table class="InputFieldStyle1">
-                                <tbody>
-                                    <tr>
-                                        <th>開始対象日</th>
-                                        <td>
-                                            <input name="ctl00$cphContentsArea$txtStartTargetYear" tabindex="3"
-                                                class="imeDisabled" id="ctl00_cphContentsArea_txtStartTargetYear"
-                                                style="width: 40px;" onfocus="this.select();"
-                                                onchange="AddDropDownList('ctl00_cphContentsArea_txtStartTargetYear', 'ctl00_cphContentsArea_ddlStartTargetMonth', 'ctl00_cphContentsArea_ddlStartTargetDay')"
-                                                type="text" maxlength="4" value="2021">
-
-                                            &nbsp;年&nbsp;
-                                            <select name="ctl00$cphContentsArea$ddlStartTargetMonth" tabindex="4"
-                                                class="imeDisabled" id="ctl00_cphContentsArea_ddlStartTargetMonth"
-                                                style="width: 50px;"
-                                                onchange="AddDropDownList('ctl00_cphContentsArea_txtStartTargetYear', 'ctl00_cphContentsArea_ddlStartTargetMonth', 'ctl00_cphContentsArea_ddlStartTargetDay')">
-                                                <option value="1">1</option>
-                                                <option value="2">2</option>
-                                                <option value="3">3</option>
-                                                <option value="4">4</option>
-                                                <option selected="selected" value="5">5</option>
-                                                <option value="6">6</option>
-                                                <option value="7">7</option>
-                                                <option value="8">8</option>
-                                                <option value="9">9</option>
-                                                <option value="10">10</option>
-                                                <option value="11">11</option>
-                                                <option value="12">12</option>
-
-                                            </select>
-                                            &nbsp;月&nbsp;
-                                            <select name="ctl00$cphContentsArea$ddlStartTargetDay" tabindex="5"
-                                                class="imeDisabled" id="ctl00_cphContentsArea_ddlStartTargetDay"
-                                                style="width: 50px;">
-                                                <option value="1">1</option>
-                                                <option value="2">2</option>
-                                                <option value="3">3</option>
-                                                <option value="4">4</option>
-                                                <option value="5">5</option>
-                                                <option value="6">6</option>
-                                                <option value="7">7</option>
-                                                <option value="8">8</option>
-                                                <option value="9">9</option>
-                                                <option value="10">10</option>
-                                                <option value="11">11</option>
-                                                <option selected="selected" value="12">12</option>
-                                                <option value="13">13</option>
-                                                <option value="14">14</option>
-                                                <option value="15">15</option>
-                                                <option value="16">16</option>
-                                                <option value="17">17</option>
-                                                <option value="18">18</option>
-                                                <option value="19">19</option>
-                                                <option value="20">20</option>
-                                                <option value="21">21</option>
-                                                <option value="22">22</option>
-                                                <option value="23">23</option>
-                                                <option value="24">24</option>
-                                                <option value="25">25</option>
-                                                <option value="26">26</option>
-                                                <option value="27">27</option>
-                                                <option value="28">28</option>
-                                                <option value="29">29</option>
-                                                <option value="30">30</option>
-                                                <option value="31">31</option>
-
-                                            </select>
-                                            &nbsp;日&nbsp;
-                                            <span id="ctl00_cphContentsArea_cvStartTargetDate"
-                                                style="color: red; display: none;">ErrorMessage</span>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <th>終了対象日</th>
-                                        <td>
-                                            <input name="ctl00$cphContentsArea$txtEndTargetYear" tabindex="6"
-                                                class="imeDisabled" id="ctl00_cphContentsArea_txtEndTargetYear"
-                                                style="width: 40px;" onfocus="this.select();"
-                                                onchange="AddDropDownList('ctl00_cphContentsArea_txtEndTargetYear', 'ctl00_cphContentsArea_ddlEndTargetMonth', 'ctl00_cphContentsArea_ddlEndTargetDay')"
-                                                type="text" maxlength="4" value="2021">
-
-                                            &nbsp;年&nbsp;
-                                            <select name="ctl00$cphContentsArea$ddlEndTargetMonth" tabindex="7"
-                                                class="imeDisabled" id="ctl00_cphContentsArea_ddlEndTargetMonth"
-                                                style="width: 50px;"
-                                                onchange="AddDropDownList('ctl00_cphContentsArea_txtEndTargetYear', 'ctl00_cphContentsArea_ddlEndTargetMonth', 'ctl00_cphContentsArea_ddlEndTargetDay')">
-                                                <option value="1">1</option>
-                                                <option value="2">2</option>
-                                                <option value="3">3</option>
-                                                <option value="4">4</option>
-                                                <option selected="selected" value="5">5</option>
-                                                <option value="6">6</option>
-                                                <option value="7">7</option>
-                                                <option value="8">8</option>
-                                                <option value="9">9</option>
-                                                <option value="10">10</option>
-                                                <option value="11">11</option>
-                                                <option value="12">12</option>
-
-                                            </select>
-                                            &nbsp;月&nbsp;
-                                            <select name="ctl00$cphContentsArea$ddlEndTargetDay" tabindex="8"
-                                                class="imeDisabled" id="ctl00_cphContentsArea_ddlEndTargetDay"
-                                                style="width: 50px;">
-                                                <option value="1">1</option>
-                                                <option value="2">2</option>
-                                                <option value="3">3</option>
-                                                <option value="4">4</option>
-                                                <option value="5">5</option>
-                                                <option value="6">6</option>
-                                                <option value="7">7</option>
-                                                <option value="8">8</option>
-                                                <option value="9">9</option>
-                                                <option value="10">10</option>
-                                                <option value="11">11</option>
-                                                <option selected="selected" value="12">12</option>
-                                                <option value="13">13</option>
-                                                <option value="14">14</option>
-                                                <option value="15">15</option>
-                                                <option value="16">16</option>
-                                                <option value="17">17</option>
-                                                <option value="18">18</option>
-                                                <option value="19">19</option>
-                                                <option value="20">20</option>
-                                                <option value="21">21</option>
-                                                <option value="22">22</option>
-                                                <option value="23">23</option>
-                                                <option value="24">24</option>
-                                                <option value="25">25</option>
-                                                <option value="26">26</option>
-                                                <option value="27">27</option>
-                                                <option value="28">28</option>
-                                                <option value="29">29</option>
-                                                <option value="30">30</option>
-                                                <option value="31">31</option>
-
-                                            </select>
-                                            &nbsp;日&nbsp;
-                                            <span id="ctl00_cphContentsArea_cvEndTargetDate"
-                                                style="color: red; display: none;">ErrorMessage</span>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
-
-                            <div class="line"></div>
-
-                            <div id="ctl00_cphContentsArea_pnlEmpCls">
-
+                        <form action="" method="POST" id="form" >
+                            {{ csrf_field() }}
+                            <div id="UpdatePanel1">
                                 <table class="InputFieldStyle1">
                                     <tbody>
                                         <tr>
-                                            <th>社員番号</th>
+                                            <th>削除区分</th>
                                             <td>
-                                                <input name="ctl00$cphContentsArea$txtEmpCd" tabindex="9"
-                                                    class="imeDisabled" id="ctl00_cphContentsArea_txtEmpCd"
-                                                    style="width: 80px;"
-                                                    onkeypress="if (WebForm_TextBoxKeyHandler(event) == false) return false;"
-                                                    onfocus="this.select();"
-                                                    onchange="javascript:setTimeout('__doPostBack(\'ctl00$cphContentsArea$txtEmpCd\',\'\')', 0)"
-                                                    type="text" maxlength="10">
-                                                <input name="ctl00$cphContentsArea$btnSearchEmpCd" tabindex="10"
-                                                    class="SearchButton" id="ctl00_cphContentsArea_btnSearchEmpCd"
-                                                    onclick="SetEmpItem();__doPostBack('ctl00$cphContentsArea$btnSearchEmpCd','')"
-                                                    type="button" value="?">
-                                                <span class="OutlineLabel" id="ctl00_cphContentsArea_lblEmpName"
-                                                    style="width: 200px; height: 17px; display: inline-block;"></span>
-
+                                                <div class="GroupBox1">
+                                                    <input type="radio"
+                                                            name="clearCategory"
+                                                            id="rbEmpCls"
+                                                            value="0"
+                                                            tabindex="1"
+                                                            class="clearCategory"
+                                                            data-category="#emp"
+                                                            {{ !old('clearCategory') ? 'checked' : '' }}>
+                                                    <label for="rbEmpCls">社員</label>
+                                                    <input type="radio"
+                                                            name="clearCategory"
+                                                            id="rbDeptCls"
+                                                            value="1"
+                                                            tabindex="2"
+                                                            class="clearCategory"
+                                                            data-category="#dept"
+                                                            {{ old('clearCategory') ? 'checked' : '' }}>
+                                                    <label for="rbDeptCls">部門</label>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <th>開始対象日</th>
+                                            <td>
+                                                <input type="text"
+                                                        name="filter[startDate]"
+                                                        id="startDate"
+                                                        class="date"
+                                                        autocomplete="off"
+                                                        autofocus
+                                                        onfocus="this.select();"
+                                                        tabindex="3"
+                                                        value="{{ old('filter.startDate', date('Y年m月d日')) }}"
+                                                />
+                                                @error('filter.startDate')
+                                                <span class="text-danger">{{ getArrValue($error_messages, $message) }}</span>
+                                                @enderror
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <th>終了対象日</th>
+                                            <td>
+                                                <input type="text"
+                                                        name="filter[endDate]"
+                                                        id="endDate"
+                                                        class="date"
+                                                        autocomplete="off"
+                                                        onfocus="this.select();"
+                                                        tabindex="4"
+                                                        value="{{ old('filter.endDate', date('Y年m月d日') ) }}"
+                                                />
+                                                @error('filter.endDate')
+                                                <span class="text-danger">{{ getArrValue($error_messages, $message) }}</span>
+                                                @enderror
                                             </td>
                                         </tr>
                                     </tbody>
                                 </table>
 
+                                <div class="line"></div>
+
+                                <div id="emp"
+                                    {{ old('clearCategory') ? 'style=display:none' : '' }}>
+                                    <table class="InputFieldStyle1">
+                                        <tbody>
+                                            <tr>
+                                                <th>社員番号</th>
+                                                <td>
+                                                    <input name="txtEmpCd"
+                                                        id="txtEmpCd"
+                                                        class="searchEmpCd txtEmpCd"
+                                                        style="width: 80px;"
+                                                        type="text"
+                                                        maxlength="10"
+                                                        onfocus="this.select();"
+                                                        value="{{ old('txtEmpCd') }}"
+                                                        oninput="value=onlyHalfNumWord(value)"
+                                                        tabindex="5"
+                                                        >
+                                                    <input name="btnSearchEmpCd"
+                                                        class="SearchButton"
+                                                        id="btnSearchEmpCd"
+                                                        type="button"
+                                                        value="?"
+                                                        onclick="SearchEmp(this);return false"
+                                                        tabindex="6"
+                                                    >
+                                                    <input name="empName"
+                                                        class="txtEmpName"
+                                                        type="text"
+                                                        style="width: 200px; display: inline-block;"
+                                                        id="empName"
+                                                        data-regclscd=00,01 data-isdeptauth=true
+                                                        disabled="disabled"
+                                                    >
+                                                    @error('txtEmpCd')
+                                                    <span class="text-danger" id="EmpCdValidError">{{ getArrValue($error_messages, $message) }}</span>
+                                                    @enderror
+                                                    <span class="text-danger" id="EmpCdError"></span>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+
+                                <div id="dept"
+                                    {{ old('clearCategory') ? '' : 'style=display:none' }}>
+                                    <input type="button" class="checkControl" data-check="1" value="全選択" tabindex="7">
+                                    <input type="button" class="checkControl" data-check="0" value="全解除" tabindex="8">
+
+                                    @error('deptCd')
+                                    <span class="text-danger">{{ getArrValue($error_messages, $message) }}</span>
+                                    @enderror
+
+                                    <div class="GridViewStyle1 mg10" id="gridview-container">
+                                        <div class="GridViewPanelStyle7" style="height: 645px;">
+
+                                            <div>
+                                                <table class="GridViewBorder GridViewPadding" style="border-collapse: collapse;" border="1" rules="all" cellspacing="0">
+                                                    <tbody>
+                                                        <tr>
+                                                            <th scope="col">&nbsp;</th>
+                                                            <th scope="col">部門</th>
+                                                        </tr>
+                                                        @foreach ($dept_list as $dept)
+                                                        <tr>
+                                                            <td class="GridViewRowCenter" style="width: 30px; white-space: nowrap; padding-top: 3px;">
+                                                                @if(in_array($dept->DEPT_CD, $changeable_dept_cd_list))
+                                                                <input type="checkbox"
+                                                                        id="checkbox{{ $dept->DEPT_CD }}"
+                                                                        class="deptCheckbox"
+                                                                        name="deptCd[]"
+                                                                        tabindex="9"
+                                                                        value="{{ $dept->DEPT_CD }}"
+                                                                        {{ in_array($dept->DEPT_CD, old('deptCd', []), true) ? 'checked' : '' }}>
+                                                                @endif
+                                                            </td>
+                                                            <td class="GridViewRowLeft">
+                                                                <label class="OutlineLabel" style="width: 100%; height: 17px; display: inline-block;
+                                                                    @if(in_array($dept->DEPT_CD, $changeable_dept_cd_list))
+                                                                    cursor: pointer;" for="checkbox{{ $dept->DEPT_CD }}@endif">
+                                                                @for ($i = 0; $i < $dept->LEVEL_NO; $i++)
+                                                                　　　
+                                                                @endfor
+                                                                {{ $dept->DEPT_NAME }}
+                                                                </span>
+                                                            </td>
+                                                        </tr>
+                                                        @endforeach
+                                                    </tbody>
+                                                </table>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="line"></div>
+
+                                <p class="ButtonField1">
+                                    <input name="btnDataClear" tabindex="10"
+                                        id="btnDataClear"
+                                        class="clear"
+                                        data-url = "{{ route('WorkTimeClear.clear')}}"
+                                        type="button" value="データクリア">
+                                    <input name="btnCancel" tabindex="11"
+                                        id="btnCancel"
+                                        class="cancel"
+                                        onclick="location.href='{{ url('mng_oprt/WorkTimeClear') }}'"
+                                        type="button" value="キャンセル">
+                                </p>
                             </div>
-
-                            <div class="line"></div>
-
-                            <p class="ButtonField1">
-                                <input name="ctl00$cphContentsArea$btnDataClear" tabindex="15"
-                                    id="ctl00_cphContentsArea_btnDataClear"
-                                    onclick="if(confirm('データをクリアしますか？') ==  false){ return false;};WebForm_DoPostBackWithOptions(new WebForm_PostBackOptions(&quot;ctl00$cphContentsArea$btnDataClear&quot;, &quot;&quot;, true, &quot;DataClear&quot;, &quot;&quot;, false, true))"
-                                    type="button" value="データクリア">
-                                <input name="ctl00$cphContentsArea$btnCancel" tabindex="16"
-                                    id="ctl00_cphContentsArea_btnCancel"
-                                    onclick="CloseSubWindow();__doPostBack('ctl00$cphContentsArea$btnCancel','')"
-                                    type="button" value="キャンセル">
-                            </p>
-                        </div>
+                        </form>
                     </td>
                 </tr>
             </tbody>
         </table>
     </div>
+@endsection
+
+@section('script')
+<script>
+$(function() {
+
+    // 入力可能文字：半角英数字・文字
+    onlyHalfNumWord = n => n.replace(/[０-９Ａ-Ｚａ-ｚ]/g, s => String.fromCharCode(s.charCodeAt(0) - 65248))
+        .replace(/[^0-9a-zA-Z]/g, '');
+
+    // 更新時ダイアログ
+    $(document).on('click', '.clear', function() {
+        if (!window.confirm("{{ getArrValue($error_messages, 3001) }}")) {
+            $(this).focus();
+            return false;
+        }
+        var url = $(this).data('url');
+        $('#form').attr('action', url);
+        $('#form').submit();
+    });
+
+    $('.date').datepicker({
+        format: 'yyyy年mm月dd日',
+        autoclose: true,
+        language: 'ja', // カレンダー日本語化のため
+        startDate: '1900年01月01日',
+        endDate: '2100年12月31日'
+    });
+
+    $(document).on('click', '#rbEmpCls', function() {
+        $("#emp").show();
+        $("#dept").hide();
+        $(".text-danger").text("");
+    });
+
+    $(document).on('click', '#rbDeptCls', function() {
+        $("#emp").hide();
+        $("#dept").show();
+        $(".text-danger").text("");
+    });
+
+    // 全チェックor全チェック外し
+    $(document).on('click', '.checkControl', function() {
+        $(".deptCheckbox").prop("checked", $(this).data().check);
+    });
+})
+</script>
 @endsection

@@ -100,6 +100,14 @@ return [
         'emergency' => [
             'path' => storage_path('logs/laravel.log'),
         ],
+
+        'workTimeSvcError' => [
+            'driver' => 'custom',
+            'via' => App\Logging\WorkTimeSvcErrorLogger::class,
+            'path' => storage_path('logs/workTimeError.log'),
+            'level' => 'debug',
+            'days' => 0
+        ],
     ],
 
 ];

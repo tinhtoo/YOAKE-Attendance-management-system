@@ -36,4 +36,16 @@ class MT16DeptShiftCalendar extends Model
      */
     protected $connection = 'sqlsrv';
 
+    /**
+     * The primary key for the model.
+     *
+     * @var string
+     */
+    protected $primaryKey = ['CALD_YEAR','CALD_MONTH','CLOSING_DATE_CD','DEPT_CD','CALD_DATE'];
+
+    protected $casts = [
+        'CALD_DATE' => 'date',
+    ];
+    public $incrementing = false;
+    public $timestamps = false;
 }

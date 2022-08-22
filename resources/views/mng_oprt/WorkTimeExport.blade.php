@@ -2,311 +2,256 @@
 @extends('menu.main')
 @section('title', '勤務実績情報出力')
 @section('content')
-    <div id="contents-stage">
-        <table class="BaseContainerStyle2">
-            <tbody>
-                <tr>
-                    <td>
-
-                        <div id="ctl00_cphContentsArea_UpdatePanel4">
-
-                            <div class="clearBoth"></div>
-
+<div id="contents-stage">
+    <table class="BaseContainerStyle1">
+        <tbody>
+            <tr>
+                <td>
+                    <form action="" method="POST" id="form" >
+                        {{ csrf_field() }}
+                        <div id="UpdatePanel1">
                             <table class="InputFieldStyle1">
                                 <tbody>
                                     <tr>
                                         <th>出力区分</th>
                                         <td>
-                                            <div class="GroupBox3">
-                                                <input name="ctl00$cphContentsArea$ExportCategory" tabindex="1"
-                                                    id="ctl00_cphContentsArea_rbDetail" type="radio" checked="checked"
-                                                    value="rbDetail"><label for="ctl00_cphContentsArea_rbDetail">明細</label>
-                                                <input name="ctl00$cphContentsArea$ExportCategory" tabindex="2"
-                                                    id="ctl00_cphContentsArea_rbTotal" type="radio" value="rbTotal"><label
-                                                    for="ctl00_cphContentsArea_rbTotal">集計</label>
-                                                <div class="clearBoth"></div>
+                                            <div class="GroupBox1" style="width: 220px">
+                                                <input type="radio"
+                                                        name="filter[exportCategory]"
+                                                        id="detailCls"
+                                                        value="0"
+                                                        tabindex="1"
+                                                        class="exportCategory"
+                                                        @if(empty($errors->all())) autofocus @endif
+                                                        {{ old('filter.exportCategory') ? '' : 'checked' }}>
+                                                <label for="detailCls" style="padding: 1.5px 0 0 3px;">明細</label>
+                                                <input type="radio"
+                                                        name="filter[exportCategory]"
+                                                        id="totalCls"
+                                                        value="1"
+                                                        tabindex="2"
+                                                        class="exportCategory"
+                                                        {{ old('filter.exportCategory') ? 'checked' : '' }}>
+                                                <label for="totalCls" style="padding: 1.5px 0 0 3px;">集計</label>
                                             </div>
                                         </td>
                                     </tr>
-                                </tbody>
-                            </table>
-
-                            <table class="InputFieldStyle1">
-                                <tbody>
                                     <tr>
                                         <th>開始対象日</th>
                                         <td>
-                                            <input name="ctl00$cphContentsArea$txtStartTargetYear" tabindex="3"
-                                                class="imeDisabled" id="ctl00_cphContentsArea_txtStartTargetYear"
-                                                style="width: 40px;" onfocus="this.select();"
-                                                onchange="AddDropDownList('ctl00_cphContentsArea_txtStartTargetYear', 'ctl00_cphContentsArea_ddlStartTargetMonth', 'ctl00_cphContentsArea_ddlStartTargetDay')"
-                                                type="text" maxlength="4">
-
-                                            &nbsp;年&nbsp;
-                                            <select name="ctl00$cphContentsArea$ddlStartTargetMonth" tabindex="4"
-                                                class="imeDisabled" id="ctl00_cphContentsArea_ddlStartTargetMonth"
-                                                style="width: 50px;"
-                                                onchange="AddDropDownList('ctl00_cphContentsArea_txtStartTargetYear', 'ctl00_cphContentsArea_ddlStartTargetMonth', 'ctl00_cphContentsArea_ddlStartTargetDay')">
-                                                <option selected="selected" value=""></option>
-                                                <option value="1">1</option>
-                                                <option value="2">2</option>
-                                                <option value="3">3</option>
-                                                <option value="4">4</option>
-                                                <option value="5">5</option>
-                                                <option value="6">6</option>
-                                                <option value="7">7</option>
-                                                <option value="8">8</option>
-                                                <option value="9">9</option>
-                                                <option value="10">10</option>
-                                                <option value="11">11</option>
-                                                <option value="12">12</option>
-
-                                            </select>
-                                            &nbsp;月&nbsp;
-                                            <select name="ctl00$cphContentsArea$ddlStartTargetDay" tabindex="5"
-                                                class="imeDisabled" id="ctl00_cphContentsArea_ddlStartTargetDay"
-                                                style="width: 50px;">
-                                                <option selected="selected" value=""></option>
-                                                <option value="1">1</option>
-                                                <option value="2">2</option>
-                                                <option value="3">3</option>
-                                                <option value="4">4</option>
-                                                <option value="5">5</option>
-                                                <option value="6">6</option>
-                                                <option value="7">7</option>
-                                                <option value="8">8</option>
-                                                <option value="9">9</option>
-                                                <option value="10">10</option>
-                                                <option value="11">11</option>
-                                                <option value="12">12</option>
-                                                <option value="13">13</option>
-                                                <option value="14">14</option>
-                                                <option value="15">15</option>
-                                                <option value="16">16</option>
-                                                <option value="17">17</option>
-                                                <option value="18">18</option>
-                                                <option value="19">19</option>
-                                                <option value="20">20</option>
-                                                <option value="21">21</option>
-                                                <option value="22">22</option>
-                                                <option value="23">23</option>
-                                                <option value="24">24</option>
-                                                <option value="25">25</option>
-                                                <option value="26">26</option>
-                                                <option value="27">27</option>
-                                                <option value="28">28</option>
-                                                <option value="29">29</option>
-                                                <option value="30">30</option>
-                                                <option value="31">31</option>
-
-                                            </select>
-                                            &nbsp;日&nbsp;
-                                            <span id="ctl00_cphContentsArea_cvStartTargetDate"
-                                                style="color: red; display: none;">ErrorMessage</span>
+                                            <input type="text"
+                                                    name="filter[startDate]"
+                                                    id="startDate"
+                                                    class="date"
+                                                    autocomplete="off"
+                                                    onfocus="this.select();"
+                                                    tabindex="3"
+                                                    value="{{ old('filter.startDate') }}">
+                                            <span class="text-danger error">
+                                                @error('filter.startDate')
+                                                {{ getArrValue($error_messages, $message) }}
+                                                @enderror
+                                            </span>
                                         </td>
                                     </tr>
                                     <tr>
                                         <th>終了対象日</th>
                                         <td>
-                                            <input name="ctl00$cphContentsArea$txtEndTargetYear" tabindex="6"
-                                                class="imeDisabled" id="ctl00_cphContentsArea_txtEndTargetYear"
-                                                style="width: 40px;" onfocus="this.select();"
-                                                onchange="AddDropDownList('ctl00_cphContentsArea_txtEndTargetYear', 'ctl00_cphContentsArea_ddlEndTargetMonth', 'ctl00_cphContentsArea_ddlEndTargetDay')"
-                                                type="text" maxlength="4">
-
-                                            &nbsp;年&nbsp;
-                                            <select name="ctl00$cphContentsArea$ddlEndTargetMonth" tabindex="7"
-                                                class="imeDisabled" id="ctl00_cphContentsArea_ddlEndTargetMonth"
-                                                style="width: 50px;"
-                                                onchange="AddDropDownList('ctl00_cphContentsArea_txtEndTargetYear', 'ctl00_cphContentsArea_ddlEndTargetMonth', 'ctl00_cphContentsArea_ddlEndTargetDay')">
-                                                <option selected="selected" value=""></option>
-                                                <option value="1">1</option>
-                                                <option value="2">2</option>
-                                                <option value="3">3</option>
-                                                <option value="4">4</option>
-                                                <option value="5">5</option>
-                                                <option value="6">6</option>
-                                                <option value="7">7</option>
-                                                <option value="8">8</option>
-                                                <option value="9">9</option>
-                                                <option value="10">10</option>
-                                                <option value="11">11</option>
-                                                <option value="12">12</option>
-
-                                            </select>
-                                            &nbsp;月&nbsp;
-                                            <select name="ctl00$cphContentsArea$ddlEndTargetDay" tabindex="8"
-                                                class="imeDisabled" id="ctl00_cphContentsArea_ddlEndTargetDay"
-                                                style="width: 50px;">
-                                                <option selected="selected" value=""></option>
-                                                <option value="1">1</option>
-                                                <option value="2">2</option>
-                                                <option value="3">3</option>
-                                                <option value="4">4</option>
-                                                <option value="5">5</option>
-                                                <option value="6">6</option>
-                                                <option value="7">7</option>
-                                                <option value="8">8</option>
-                                                <option value="9">9</option>
-                                                <option value="10">10</option>
-                                                <option value="11">11</option>
-                                                <option value="12">12</option>
-                                                <option value="13">13</option>
-                                                <option value="14">14</option>
-                                                <option value="15">15</option>
-                                                <option value="16">16</option>
-                                                <option value="17">17</option>
-                                                <option value="18">18</option>
-                                                <option value="19">19</option>
-                                                <option value="20">20</option>
-                                                <option value="21">21</option>
-                                                <option value="22">22</option>
-                                                <option value="23">23</option>
-                                                <option value="24">24</option>
-                                                <option value="25">25</option>
-                                                <option value="26">26</option>
-                                                <option value="27">27</option>
-                                                <option value="28">28</option>
-                                                <option value="29">29</option>
-                                                <option value="30">30</option>
-                                                <option value="31">31</option>
-
-                                            </select>
-                                            &nbsp;日&nbsp;
-                                            <span id="ctl00_cphContentsArea_cvEndTargetDate"
-                                                style="color: red; display: none;">ErrorMessage</span>
+                                            <input type="text"
+                                                    name="filter[endDate]"
+                                                    id="endDate"
+                                                    class="date"
+                                                    autocomplete="off"
+                                                    onfocus="this.select();"
+                                                    tabindex="4"
+                                                    value="{{ old('filter.endDate') }}">
+                                            <span class="text-danger error">
+                                                @error('filter.endDate')
+                                                {{ getArrValue($error_messages, $message) }}
+                                                @enderror
+                                            </span>
                                         </td>
                                     </tr>
                                     <tr>
                                         <th>開始部門コード</th>
                                         <td>
-                                            <input name="ctl00$cphContentsArea$txtStartDeptCd" tabindex="9"
-                                                class="imeDisabled" id="ctl00_cphContentsArea_txtStartDeptCd"
+                                            <input name="filter[txtStartDeptCd]"
+                                                type="text"
+                                                tabindex="5"
+                                                id="txtDeptCd"
+                                                class="txtDeptCd searchDeptCd startDeptCd allErrorRemoveWhenChange"
                                                 style="width: 50px;"
-                                                onkeypress="if (WebForm_TextBoxKeyHandler(event) == false) return false;"
                                                 onfocus="this.select();"
-                                                onchange="javascript:setTimeout('__doPostBack(\'ctl00$cphContentsArea$txtStartDeptCd\',\'\')', 0)"
-                                                type="text" maxlength="6">
-                                            <input name="ctl00$cphContentsArea$btnSearchStartDeptCd" tabindex="10"
-                                                class="SearchButton" id="ctl00_cphContentsArea_btnSearchStartDeptCd"
-                                                onclick="SetDeptItem('ctl00_cphContentsArea_txtStartDeptCd', 'ctl00_cphContentsArea_lblStartDeptName');__doPostBack('ctl00$cphContentsArea$btnSearchStartDeptCd','')"
-                                                type="button" value="?">
-                                            <span class="OutlineLabel" id="ctl00_cphContentsArea_lblStartDeptName"
-                                                style="width: 200px; display: inline-block;"></span>
-
+                                                oninput="value=onlyHalfNumWord(value)"
+                                                autocomplete="off"
+                                                maxlength="6"
+                                                value="{{ old('filter.txtStartDeptCd') }}">
+                                            <input name="btnSearchStartDeptCd"
+                                                type="button"
+                                                tabindex="6"
+                                                id="btnSearchStartDeptCd"
+                                                class="SearchButton allErrorRemoveWhenClick"
+                                                onclick="SearchDept(this);return false"
+                                                value="?">
+                                            <input class="txtDeptName" id="deptName"
+                                                data-dispclscd=01 data-isdeptauth=true
+                                                style="width: 200px; display: inline-block;">
+                                            <span class="text-danger" id="deptNameError"></span>
+                                            @error('filter.txtStartDeptCd')
+                                            <span class="text-danger error" id="DeptCdValidError">{{ getArrValue($error_messages, $message) }}</span>
+                                            @enderror
                                         </td>
                                     </tr>
                                     <tr>
                                         <th>終了部門コード</th>
                                         <td>
-                                            <input name="ctl00$cphContentsArea$txtEndDeptCd" tabindex="11"
-                                                class="imeDisabled" id="ctl00_cphContentsArea_txtEndDeptCd"
+                                            <input name="filter[txtEndDeptCd]"
+                                                type="text"
+                                                tabindex="7"
+                                                id="txtDeptCd"
+                                                class="txtDeptCd searchDeptCd endDeptCd allErrorRemoveWhenChange"
                                                 style="width: 50px;"
-                                                onkeypress="if (WebForm_TextBoxKeyHandler(event) == false) return false;"
                                                 onfocus="this.select();"
-                                                onchange="javascript:setTimeout('__doPostBack(\'ctl00$cphContentsArea$txtEndDeptCd\',\'\')', 0)"
-                                                type="text" maxlength="6">
-                                            <input name="ctl00$cphContentsArea$btnSearchEndDeptCd" tabindex="12"
-                                                class="SearchButton" id="ctl00_cphContentsArea_btnSearchEndDeptCd"
-                                                onclick="SetDeptItem('ctl00_cphContentsArea_txtEndDeptCd', 'ctl00_cphContentsArea_lblEndDeptName');__doPostBack('ctl00$cphContentsArea$btnSearchEndDeptCd','')"
-                                                type="button" value="?">
-                                            <span class="OutlineLabel" id="ctl00_cphContentsArea_lblEndDeptName"
-                                                style="width: 200px; display: inline-block;"></span>
-
+                                                oninput="value=onlyHalfNumWord(value)"
+                                                autocomplete="off"
+                                                maxlength="6"
+                                                value="{{ old('filter.txtEndDeptCd') }}">
+                                            <input name="btnSearchEndDeptCd"
+                                                type="button"
+                                                tabindex="8"
+                                                id="btnSearchEndDeptCd"
+                                                class="SearchButton allErrorRemoveWhenClick"
+                                                onclick="SearchDept(this);return false"
+                                                value="?">
+                                            <input class="txtDeptName" id="deptName"
+                                                data-dispclscd=01 data-isdeptauth=true
+                                                style="width: 200px; display: inline-block;">
+                                            <span class="text-danger" id="deptNameError"></span>
+                                            @error('filter.txtEndDeptCd')
+                                            <span class="text-danger error" id="DeptCdValidError">{{ getArrValue($error_messages, $message) }}</span>
+                                            @enderror
                                         </td>
                                     </tr>
                                     <tr>
                                         <th>開始所属</th>
                                         <td>
-                                            <select name="ctl00$cphContentsArea$ddlStartCompany" tabindex="13"
-                                                id="ctl00_cphContentsArea_ddlStartCompany" style="width: 300px;">
-                                                <option selected="selected" value=""></option>
-                                                <option value="001">A派遣</option>
-                                                <option value="002">B派遣</option>
-                                                <option value="003">C派遣</option>
-
+                                            <select name="filter[startCompany]"
+                                                tabindex="9"
+                                                id="startCompany"
+                                                style="width: 300px;">
+                                                <option value=""></option>
+                                                @foreach ($company_list as $company)
+                                                    <option value="{{ $company->COMPANY_CD }}"
+                                                        {{ old('filter.startCompany') === $company->COMPANY_CD ? 'selected' : ''}}>
+                                                        {{ $company->COMPANY_ABR }}
+                                                    </option>
+                                                @endforeach
                                             </select>
-
+                                            <span class="text-danger error">
+                                                @error('filter.startCompany')
+                                                {{ getArrValue($error_messages, $message) }}
+                                                @enderror
+                                            </span>
                                         </td>
                                     </tr>
                                     <tr>
                                         <th>終了所属</th>
                                         <td>
-                                            <select name="ctl00$cphContentsArea$ddlEndCompany" tabindex="14"
-                                                id="ctl00_cphContentsArea_ddlEndCompany" style="width: 300px;">
-                                                <option selected="selected" value=""></option>
-                                                <option value="001">A派遣</option>
-                                                <option value="002">B派遣</option>
-                                                <option value="003">C派遣</option>
-
+                                            <select name="filter[endCompany]"
+                                                tabindex="10"
+                                                id="endCompany"
+                                                style="width: 300px;">
+                                                <option value=""></option>
+                                                @foreach ($company_list as $company)
+                                                    <option value="{{ $company->COMPANY_CD }}"
+                                                        {{ old('filter.endCompany') === $company->COMPANY_CD ? 'selected' : ''}}>
+                                                        {{ $company->COMPANY_ABR }}
+                                                    </option>
+                                                @endforeach
                                             </select>
-
+                                            <span class="text-danger error">
+                                                @error('filter.endCompany')
+                                                {{ getArrValue($error_messages, $message) }}
+                                                @enderror
+                                            </span>
                                         </td>
                                     </tr>
                                     <tr>
                                         <th>開始社員番号 </th>
                                         <td>
-                                            <input name="ctl00$cphContentsArea$txtStartEmpCd" tabindex="15"
-                                                class="imeDisabled" id="ctl00_cphContentsArea_txtStartEmpCd"
+                                            <input name="filter[txtStartEmpCd]"
+                                                type="text"
+                                                tabindex="11"
+                                                id="txtEmpCd"
+                                                class="txtEmpCd searchEmpCd allErrorRemoveWhenChange"
                                                 style="width: 80px;"
-                                                onkeypress="if (WebForm_TextBoxKeyHandler(event) == false) return false;"
                                                 onfocus="this.select();"
-                                                onchange="javascript:setTimeout('__doPostBack(\'ctl00$cphContentsArea$txtStartEmpCd\',\'\')', 0)"
-                                                type="text" maxlength="10">
-                                            <input name="ctl00$cphContentsArea$btnSearchStartEmpCd" tabindex="16"
-                                                class="SearchButton" id="ctl00_cphContentsArea_btnSearchStartEmpCd"
-                                                onclick="SetEmpItem('ctl00_cphContentsArea_txtStartEmpCd', 'ctl00_cphContentsArea_lblStartEmpName');__doPostBack('ctl00$cphContentsArea$btnSearchStartEmpCd','')"
-                                                type="button" value="?">
-                                            <span class="OutlineLabel" id="ctl00_cphContentsArea_lblStartEmpName"
-                                                style="width: 200px; height: 17px; display: inline-block;"></span>
-
+                                                oninput="value=onlyHalfNumWord(value)"
+                                                autocomplete="off"
+                                                maxlength="10"
+                                                value="{{ old('filter.txtStartEmpCd') }}">
+                                            <input name="btnSearchStartEmpCd"
+                                                type="button"
+                                                tabindex="12"
+                                                id="btnSearchStartEmpCd"
+                                                class="SearchButton allErrorRemoveWhenClick"
+                                                onclick="SearchEmp(this);return false"
+                                                value="?">
+                                            <input class="txtEmpName" id="empName"
+                                                @if(old('filter.regCls', empty($errors->all()))) data-regclscd=00 @endif
+                                                data-isdeptauth=true
+                                                style="width: 200px; display: inline-block;">
+                                            <span class="text-danger" id="EmpCdError"></span>
+                                            @error('filter.txtStartEmpCd')
+                                            <span class="text-danger error" id="EmpCdValidError">{{ getArrValue($error_messages, $message) }}</span>
+                                            @enderror
                                         </td>
                                     </tr>
                                     <tr>
                                         <th>終了社員番号</th>
                                         <td>
-                                            <input name="ctl00$cphContentsArea$txtEndEmpCd" tabindex="17"
-                                                class="imeDisabled" id="ctl00_cphContentsArea_txtEndEmpCd"
+                                            <input name="filter[txtEndEmpCd]"
+                                                type="text"
+                                                tabindex="13"
+                                                id="txtEmpCd"
+                                                class="txtEmpCd searchEmpCd allErrorRemoveWhenChange"
                                                 style="width: 80px;"
-                                                onkeypress="if (WebForm_TextBoxKeyHandler(event) == false) return false;"
                                                 onfocus="this.select();"
-                                                onchange="javascript:setTimeout('__doPostBack(\'ctl00$cphContentsArea$txtEndEmpCd\',\'\')', 0)"
-                                                type="text" maxlength="10">
-                                            <input name="ctl00$cphContentsArea$btnSearchEndEmpCd" tabindex="18"
-                                                class="SearchButton" id="ctl00_cphContentsArea_btnSearchEndEmpCd"
-                                                onclick="SetEmpItem('ctl00_cphContentsArea_txtEndEmpCd', 'ctl00_cphContentsArea_lblEndEmpName');__doPostBack('ctl00$cphContentsArea$btnSearchEndEmpCd','')"
-                                                type="button" value="?">
-                                            <span class="OutlineLabel" id="ctl00_cphContentsArea_lblEndEmpName"
-                                                style="width: 200px; height: 17px; display: inline-block;"></span>
-
+                                                oninput="value=onlyHalfNumWord(value)"
+                                                autocomplete="off"
+                                                maxlength="10"
+                                                value="{{ old('filter.txtEndEmpCd') }}">
+                                            <input name="btnSearchEndEmpCd"
+                                                type="button"
+                                                tabindex="14"
+                                                id="btnSearchEndEmpCd"
+                                                class="SearchButton allErrorRemoveWhenClick"
+                                                onclick="SearchEmp(this);return false"
+                                                value="?">
+                                            <input class="txtEmpName" id="empName"
+                                                @if(old('filter.regCls', empty($errors->all()))) data-regclscd=00 @endif
+                                                data-isdeptauth=true
+                                                style="width: 200px; display: inline-block;">
+                                            <span class="text-danger" id="EmpCdError"></span>
+                                            @error('filter.txtEndEmpCd')
+                                            <span class="text-danger error" id="EmpCdValidError">{{ getArrValue($error_messages, $message) }}</span>
+                                            @enderror
                                         </td>
                                     </tr>
                                 </tbody>
                             </table>
 
-                            <table>
-                                <tbody>
-                                    <tr>
-                                        <td>
-                                            <input name="ctl00$cphContentsArea$chkRegCls" tabindex="19"
-                                                id="ctl00_cphContentsArea_chkRegCls" type="checkbox"
-                                                checked="checked"><label
-                                                for="ctl00_cphContentsArea_chkRegCls">在籍のみ表示</label>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
+
+                            <input type="checkbox" id="regCls" name="filter[regCls]" tabindex="15" value="00"
+                                @if(old('filter.regCls', empty($errors->all()))) checked="checked" @endif style="vertical-align: middle;">
+                            <label for="regCls">在籍のみ表示</label>
 
                             <div class="line"></div>
                             <p class="ButtonField1">
-                                <input name="ctl00$cphContentsArea$btnExport" tabindex="20"
-                                    id="ctl00_cphContentsArea_btnExport"
-                                    onclick='if (confirm(GetQuesMessage()) == false) {return false;};WebForm_DoPostBackWithOptions(new WebForm_PostBackOptions("ctl00$cphContentsArea$btnExport", "", true, "Export", "", false, true))'
-                                    type="button" value="出力">
-                                <input name="ctl00$cphContentsArea$btnCancel" tabindex="21"
-                                    id="ctl00_cphContentsArea_btnCancel"
-                                    onclick="CloseSubWindow();__doPostBack('ctl00$cphContentsArea$btnCancel','')"
-                                    type="button" value="キャンセル">
+                                <input type="button" id="export" tabindex="16" value="出力"
+                                        @if(!empty($errors->all())) autofocus @endif>
+                                <input type="button" id="cancel" tabindex="17" value="キャンセル"
+                                    onclick="location.href='{{ url('mng_oprt/WorkTimeExport') }}'">
                             </p>
                         </div>
                     </td>
@@ -314,4 +259,53 @@
             </tbody>
         </table>
     </div>
+@endsection
+
+@section('script')
+<script>
+$(function() {
+
+    // 入力可能文字：半角英数字・文字
+    onlyHalfNumWord = n => n.replace(/[０-９Ａ-Ｚａ-ｚ]/g, s => String.fromCharCode(s.charCodeAt(0) - 65248))
+        .replace(/[^0-9a-zA-Z]/g, '');
+
+    // CSV出力
+    $('#export').click(() => {
+        if (!window.confirm("{{ str_replace('{0}', 'ファイル', getArrValue($error_messages, 1013)) }}")) {
+            return false;
+        }
+        var url = $(this).data('url');
+        $('#form').attr('action', url);
+        $('#form').submit();
+    });
+
+    $('.date').datepicker({
+        format: 'yyyy年mm月dd日',
+        autoclose: true,
+        language: 'ja', // カレンダー日本語化のため
+        startDate: '1900年01月01日',
+        endDate: '2100年12月31日'
+    });
+
+    $('#regCls').change(ele => {
+        if (ele.target.checked) {
+            $(".txtEmpName").data('regclscd', '00');
+        } else {
+            $(".txtEmpName").data('regclscd', '')
+        }
+    })
+
+    $('.date').change(ele => {
+        ele.currentTarget.nextElementSibling.textContent = '';
+    });
+
+    $('.allErrorRemoveWhenChange').change(() => {
+        $('.error').text('');
+    });
+
+    $('.allErrorRemoveWhenClick').click(() => {
+        $('.error').text('');
+    });
+})
+</script>
 @endsection

@@ -1,120 +1,225 @@
-<!-- 所属情報入力  -->
+<!-- 所属情報入力 -->
 @extends('menu.main')
 
-@section('title','所属情報入力 ')
+@section('title', '所属情報入力')
 
 @section('content')
-<div id="contents-stage">
-    <table class="BaseContainerStyle1">
-        <tbody>
-            <tr>
-                <td>
+    <div id="contents-stage">
+        <table class="BaseContainerStyle1">
+            <tbody>
+                <tr>
+                    <td>
+                        <div id="UpdatePanel1">
+                            <form action="" method="POST" id="form">
+                                @csrf
+                                <table class="InputFieldStyle1">
+                                    <tbody>
+                                        <tr>
+                                            <th>所属番号</th>
+                                            <td>
+                                                <input type="hidden" name="COMPANY_CD"
+                                                    value="{{ $search_result->COMPANY_CD }}">
+                                                <input name="companyCd" tabindex="1"
+                                                    id="editCompanyCd" style="width: 80px;" type="text"
+                                                    maxlength="6" onfocus="this.select();"
+                                                    oninput="value = onlyHalfNumAlf(value)" onfocus="this.select();"
+                                                    @if(isset($search_result->COMPANY_CD)) disabled @else autofocus @endif
+                                                    value="{{ old('companyCd', $search_result->COMPANY_CD) }}">
+                                                @error('companyCd')
+                                                    <span class="text-danger">{{ getArrValue($error_messages, $message) }}</span>
+                                                @endif
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <th>所属先名</th>
+                                            <td>
+                                                <input name="companyName" tabindex="2" onfocus="this.select();"
+                                                    id="editCompanyName" style="width: 370px;" type="text"
+                                                    maxlength="20" oninput="value = ngVerticalBar(value)"
+                                                    @if(isset($search_result->COMPANY_CD)) autofocus @endif
+                                                    value="{{ old('companyName', $search_result->COMPANY_NAME) }}">
+                                                @error('companyName')
+                                                    <span class="text-danger">{{ getArrValue($error_messages, $message) }}</span>
+                                                @endif
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <th>所属先カナ名</th>
+                                            <td>
+                                                <input name="companyKana" tabindex="3" onfocus="this.select();"
+                                                    id="editCompanyKana" style="width: 370px;" type="text"
+                                                    maxlength="20"
+                                                    value="{{ old('companyKana', $search_result->COMPANY_KANA) }}">
+                                                @error('companyKana')
+                                                    <span class="text-danger">{{ getArrValue($error_messages, $message) }}</span>
+                                                @endif
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <th>所属先略名</th>
+                                            <td>
+                                                <input name="companyAbr" tabindex="4" onfocus="this.select();"
+                                                    id="editCompanyAbr" style="width: 180px;" type="text"
+                                                    maxlength="10"
+                                                    value="{{ old('companyAbr', $search_result->COMPANY_ABR) }}">
+                                                @error('companyAbr')
+                                                    <span class="text-danger">{{ getArrValue($error_messages, $message) }}</span>
+                                                @endif
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <th>郵便番号</th>
+                                            <td>
+                                                <input name="txtPostCd" tabindex="5" id="txtPostCd" onfocus="this.select();"
+                                                    style="width: 70px;" type="text" maxlength="8"
+                                                    value="{{ old('txtPostCd', $search_result->POST_CD) }}"
+                                                    oninput="value = onlyNubersBar(value)">
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <th>住所１</th>
+                                            <td>
+                                                <input name="txtAddress1" tabindex="6" onfocus="this.select();"
+                                                    id="txtAddress1" style="width: 430px;" type="text"
+                                                    maxlength="30"
+                                                    value="{{ old('txtAddress1', $search_result->ADDRESS1) }}">
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <th>住所２</th>
+                                            <td>
+                                                <input name="txtAddress2" tabindex="7" onfocus="this.select();"
+                                                    id="txtAddress2" style="width: 430px;" type="text"
+                                                    maxlength="30"
+                                                    value="{{ old('txtAddress2', $search_result->ADDRESS2) }}">
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <th>住所３</th>
+                                            <td>
+                                                <input name="txtAddress3" tabindex="8" onfocus="this.select();"
+                                                    id="txtAddress3" style="width: 430px;" type="text"
+                                                    maxlength="30"
+                                                    value="{{ old('txtAddress3', $search_result->ADDRESS3) }}">
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <th>電話番号</th>
+                                            <td>
+                                                <input name="txtTel" tabindex="9" id="txtTel" onfocus="this.select();"
+                                                    style="width: 120px;" type="text" maxlength="15"
+                                                    value="{{ old('txtTel', $search_result->TEL) }}"
+                                                    oninput="value = onlyNubersBarParen(value)">
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <th>ＦＡＸ番号</th>
+                                            <td>
+                                                <input name="txtFax" tabindex="10" id="txtFax" onfocus="this.select();"
+                                                    style="width: 120px;" type="text" maxlength="15"
+                                                    value="{{ old('txtFax', $search_result->FAX) }}"
+                                                    oninput="value = onlyNubersBarParen(value)">
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <th>表示区分</th>
+                                            <td>
+                                                <select name="ddlDispCls" tabindex="11" id="ddlDispCls"
+                                                    style="width: 100px;">
+                                                    @foreach ($dispcls_cd as $dispclsCd)
+                                                        <option value="{{ $dispclsCd->CLS_DETAIL_CD }}"
+                                                            {{ $dispclsCd->CLS_DETAIL_CD == (old('ddlDispCls') ?? $search_result->DISP_CLS_CD) ? 'selected' : '' }}>
+                                                            {{ $dispclsCd->CLS_DETAIL_NAME }}
+                                                        </option>
+                                                    @endforeach
+                                                </select>
+                                            </td>
+                                        </tr>
 
-                    <div id="ctl00_cphContentsArea_UpdatePanel1">
+                                    </tbody>
+                                </table>
 
+                                <div class="line"></div>
 
-                        <table class="InputFieldStyle1">
-                            <tbody>
-                                <tr>
-                                    <th>所属番号</th>
-                                    <td>
-                                        <input name="ctl00$cphContentsArea$txtCompanyCd" tabindex="1" class="imeDisabled" id="ctl00_cphContentsArea_txtCompanyCd" style="width: 80px;" onfocus="this.select();" type="text" maxlength="6">
+                                <div class="ButtonField1">
+                                    <input type="button" class="ButtonStyle1 cancel-form" id="btnUpdate" name="btnUpdate"
+                                        onclick="return checkSubmit();" tabindex="12" value="更新"
+                                        @if(isset($search_result->COMPANY_CD))
+                                        data-url="{{ route('MT23.update', ['id' => isset($search_result->COMPANY_CD) ? $search_result->COMPANY_CD : 'add']) }}">
+                                        @else
+                                        data-url="{{ route('MT23.companyRegister') }}">
+                                        @endif
 
-                                        <span id="ctl00_cphContentsArea_cvCompanyCd" style="color: red; display: none;">ErrorMessage</span>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <th>所属先名</th>
-                                    <td>
-                                        <input name="ctl00$cphContentsArea$txtCompanyName" tabindex="2" class="imeOn" id="ctl00_cphContentsArea_txtCompanyName" style="width: 370px;" onfocus="this.select();" type="text" maxlength="20">
+                                    <input name="btnCancel" tabindex="13" id="btnCancel" type="button"
+                                        class="ButtonStyle1" value="キャンセル"
+                                        onclick="location.reload();">
+                                    <input type="button" name="btnDelete" tabindex="14" id="btnDelete"
+                                        class="ButtonStyle1 submit-form" value="削除"
+                                        onclick="return checkDelete(this)"
+                                        @if(isset($search_result->COMPANY_CD))
+                                        data-url="{{ route('MT23.delete', isset($search_result->COMPANY_CD) ? $search_result->COMPANY_CD : 'add') }}">
+                                        @else
+                                        disabled
+                                        @endif
+                                </div>
+                            </form>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+@endsection
+@section('script')
 
-                                        <span id="ctl00_cphContentsArea_cvCompanyName" style="color: red; display: none;">ErrorMessage</span>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <th>所属先カナ名</th>
-                                    <td>
-                                        <input name="ctl00$cphContentsArea$txtCompanyKana" tabindex="3" class="imeOn" id="ctl00_cphContentsArea_txtCompanyKana" style="width: 370px;" onfocus="this.select();" type="text" maxlength="20">
-                                        <span id="ctl00_cphContentsArea_cvCompanyKana" style="color: red; display: none;">ErrorMessage</span>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <th>所属先略名</th>
-                                    <td>
-                                        <input name="ctl00$cphContentsArea$txtCompanyAbr" tabindex="4" class="imeOn" id="ctl00_cphContentsArea_txtCompanyAbr" style="width: 180px;" onfocus="this.select();" type="text" maxlength="10">
-                                        <span id="ctl00_cphContentsArea_cvCompanyAbr" style="color: red; display: none;">ErrorMessage</span>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <th>郵便番号</th>
-                                    <td>
-                                        <input name="ctl00$cphContentsArea$txtPostCd" tabindex="5" class="imeDisabled" id="ctl00_cphContentsArea_txtPostCd" style="width: 70px;" onfocus="this.select();" type="text" maxlength="8">
+    <script>
 
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <th>住所１</th>
-                                    <td>
-                                        <input name="ctl00$cphContentsArea$txtAddress1" tabindex="6" class="imeOn" id="ctl00_cphContentsArea_txtAddress1" style="width: 430px;" onfocus="this.select();" type="text" maxlength="30">
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <th>住所２</th>
-                                    <td>
-                                        <input name="ctl00$cphContentsArea$txtAddress2" tabindex="7" class="imeOn" id="ctl00_cphContentsArea_txtAddress2" style="width: 430px;" onfocus="this.select();" type="text" maxlength="30">
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <th>住所３</th>
-                                    <td>
-                                        <input name="ctl00$cphContentsArea$txtAddress3" tabindex="8" class="imeOn" id="ctl00_cphContentsArea_txtAddress3" style="width: 430px;" onfocus="this.select();" type="text" maxlength="30">
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <th>電話番号</th>
-                                    <td>
-                                        <input name="ctl00$cphContentsArea$txtTel" tabindex="9" class="imeDisabled" id="ctl00_cphContentsArea_txtTel" style="width: 120px;" onfocus="this.select();" type="text" maxlength="15">
+        // 確認ダイアログ(更新処理)
+        function checkSubmit() {
+            var check = window.confirm("{{ getArrValue($error_messages, '1005') }}");
+            if (check == true) {
+                $(document).on('click', '.cancel-form', function() {
+                    var url = $(this).data('url');
+                    $('#form').attr('action', url);
+                    $('#form').submit();
+                });
+            } else {
+                return false;
+            }
+        }
 
+        // 確認ダイアログ（削除処理）
+        function checkDelete() {
+            if (window.confirm("{{ getArrValue($error_messages, '1004') }}")) {
+                // ボタンクリック
+                $(document).on('click', '.submit-form', function(){
+                    var url = $(this).data('url');
+                    $('#form').attr('action', url);
+                    $('#form').submit();
+                });
+            } else {
+            return false;
+            }
+        }
 
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <th>ＦＡＸ番号</th>
-                                    <td>
-                                        <input name="ctl00$cphContentsArea$txtFax" tabindex="10" class="imeDisabled" id="ctl00_cphContentsArea_txtFax" style="width: 120px;" onfocus="this.select();" type="text" maxlength="15">
+        $(function() {
+            // 入力可能文字：半角
+            onlyHalfNumAlf = n => n.replace(/[０-９Ａ-Ｚａ-ｚ]/g, s => String.fromCharCode(s.charCodeAt(0) - 65248))
+                .replace(/[^a-zA-Z0-9]/g, '');
 
+            // 入力可能文字：数値、ハイフン
+            onlyNubersBar = n => n.replace(/[０-９]/g, s => String.fromCharCode(s.charCodeAt(0) - 65248))
+                .replace(/[ー]/g, '-')
+                .replace(/[^-\d]/g, '');
 
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <th>表示区分</th>
-                                    <td>
-                                        <select name="ctl00$cphContentsArea$ddlDispCls" tabindex="11" id="ctl00_cphContentsArea_ddlDispCls" style="width: 100px;">
-                                            <option value="00">非表示</option>
-                                            <option selected="selected" value="01">表示</option>
+            // 入力不可能文字：|
+            ngVerticalBar = n => n.replace(/\|/g, '');
 
-                                        </select>
-                                        <span id="ctl00_cphContentsArea_cvDispCls" style="color: red; display: none;">ErrorMessage</span>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
+            // 入力可能文字：数値、ハイフン、括弧
+            onlyNubersBarParen = n => n.replace(/[０-９（）]/g, s => String.fromCharCode(s.charCodeAt(0) - 65248))
+                .replace(/[ー]/g, '-')
+                .replace(/[^-()\d]/g, '');
+        });
+    </script>
 
-                        <div class="line"></div>
-                        <p class="ButtonField1">
-                            <input name="ctl00$cphContentsArea$btnUpdate" tabindex="12" id="ctl00_cphContentsArea_btnUpdate" onclick="if(confirm('更新します。よろしいですか?') ==  false){ return false;};WebForm_DoPostBackWithOptions(new WebForm_PostBackOptions(&quot;ctl00$cphContentsArea$btnUpdate&quot;, &quot;&quot;, true, &quot;Update&quot;, &quot;&quot;, false, true))" type="button" value="更新">
-                            <input name="ctl00$cphContentsArea$btnCancel" tabindex="13" id="ctl00_cphContentsArea_btnCancel" onclick="javascript:__doPostBack('ctl00$cphContentsArea$btnCancel','')" type="button" value="キャンセル">
-                            <input name="ctl00$cphContentsArea$btnDelete" tabindex="14" disabled="disabled" id="ctl00_cphContentsArea_btnDelete" type="button" value="削除">
-                        </p>
-
-
-
-
-                    </div>
-
-                </td>
-            </tr>
-        </tbody>
-    </table>
-</div>
 @endsection

@@ -18,9 +18,6 @@ class AlreadyLoggedIn
     {
         if( session()->has('id') && ( url('/') == $request->url()) ){
             return back();
-            // return Redirect::back();
-            // $temp = $redirect->external;
-            // return redirect($temp);
         }
         return $next($request);
     }

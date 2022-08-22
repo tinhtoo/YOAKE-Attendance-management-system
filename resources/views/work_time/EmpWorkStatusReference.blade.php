@@ -1,8 +1,6 @@
-<!-- 出退勤入力（部門別）画面 -->
+<!-- 出退勤照会画面 -->
 @extends('menu.main')
-
 @section('title', '出退勤照会')
-
 @section('content')
     <div id="contents-stage">
         <table>
@@ -10,7 +8,6 @@
                 <tr>
                     <td>
                         <div id="UpdatePanel1">
-                            <!-- header -->
                             <form action="" method="POST" id="form">
                                 {{ csrf_field() }}
                                 <table class="InputFieldStyle1">
@@ -18,65 +15,42 @@
                                         <tr>
                                             <th>対象年月日</th>
                                             <td>
-                                                <select name="ddlTargetYear" tabindex="1" class="imeDisabled"
-                                                    id="ddlTargetYear" style="width: 70px;">
-                                                    @for ($year = date('Y') - 3; $year <= date('Y') + 3; $year++)
-                                                        <option value="{{ $year }}"
-                                                            {{ old('ddlTargetYear', !empty($inputSearchData['ddlTargetYear']) ? $inputSearchData['ddlTargetYear'] : date('Y')) == $year ? 'selected' : '' }}>
-                                                            {{ $year }}
-                                                        </option>
-                                                    @endfor
-                                                </select>
-                                                &nbsp;年
-                                                <select name="ddlTargetMonth" tabindex="2" class="imeDisabled"
-                                                    id="ddlTargetMonth">
-                                                    @for ($month = 01; $month <= 12; $month++)
-                                                        <option value="{{ $month }}"
-                                                            {{ old('ddlTargetMonth', !empty($inputSearchData['ddlTargetMonth']) ? $inputSearchData['ddlTargetMonth'] : date('m')) == $month ? 'selected' : '' }}>
-                                                            {{ $month }}
-                                                        </option>
-                                                    @endfor
-                                                </select>
-                                                &nbsp;月
-                                                <select name="ddlTargetDay" tabindex="3" class="imeDisabled"
-                                                    id="ddlTargetDay">
-                                                    @for ($day = 01; $day <= 31; $day++)
-                                                        <option value="{{ $day }}"
-                                                            {{ old('ddlTargetDay', !empty($inputSearchData['ddlTargetDay']) ? $inputSearchData['ddlTargetDay'] : date('d')) == $day ? 'selected' : '' }}>
-                                                            {{ $day }}
-                                                        </option>
-                                                    @endfor
-                                                </select>
-                                                &nbsp;日
+                                                {{ csrf_field() }}
+                                                <input type="text" id="YearMonthDay" name="filter[ddlDate]" tabindex="1" autocomplete="off"
+                                                    @if(!isset($empWorkTimeResults) || $empWorkTimeResults->isEmpty()) autofocus @endif
+                                                    value="{{ old('filter.ddlDate', !empty($search_data['filter']) ? $search_data['filter']['ddlDate'] : date('Y年m月d日')) }}" />
+                                                <span class="text-danger ">
+                                                @error('filter.ddlDate')
+                                                {{ getArrValue($error_messages, $message) }}
+                                                @endif
+                                                </span>
                                             </td>
                                         </tr>
                                         <tr>
                                             <th>部門</th>
                                             <td>
-                                                <input name="filter[txtDeptCd]" tabindex="3" class="imeDisabled"
-                                                    id="txtDeptCd" style="width: 50px;" type="text" maxlength="6"
-                                                    value="{{ old('filter[txtDeptCd]', !empty($searchData['txtDeptCd']) ? $searchData['txtDeptCd'] :'') }}">
-                                                <input name="btnSearchDeptCd" class="SearchButton" id="btnSearchDeptCd" type="button" value="?" onclick="SearchDept();return false">
-                                                <input class="OutlineLabel" type="text" name="deptName" id="deptName"
-                                                    style="width: 200px; height: 17px; display: inline-block;"
-                                                    value="{{ old('deptName', !empty($inputSearchData['deptName']) ? $inputSearchData['deptName']:'') }}"
-                                                    readonly="readonly">
-
-                                                    @if ($errors->has('filter.txtDeptCd'))
-                                                        <span class="alert-danger">{{ $errors->first('filter.txtDeptCd') }}</span>
-                                                    @endif
+                                                <input name="filter[txtDeptCd]" tabindex="2" class="txtDeptCd searchDeptCd"
+                                                    id="txtDeptCd" style="width: 50px;" type="text" maxlength="6" oninput="value=onlyHalfWord(value)"
+                                                    value="{{ old('filter.txtDeptCd', (!empty($search_data['filter']) ? $search_data['filter']['txtDeptCd'] : '')) }}">
+                                                <input name="btnSearchDeptCd" class="SearchButton" id="btnSearchDeptCd"
+                                                    tabindex="3" type="button" value="?" onclick="SearchDept(this);return false">
+                                                <input name="deptName" id="deptName" class="txtDeptName" type="text"
+                                                    data-dispclscd=01 data-isdeptauth=True
+                                                    style="width: 200px; display: inline-block;"
+                                                    disabled="disabled">
+                                                <span class="text-danger" id="deptNameError"></span>
                                             </td>
                                         </tr>
                                         <tr>
                                             <th>開始所属</th>
                                             <td>
-                                                <select name="filter[ddlStartCompany]" tabindex="6" id="ddlStartCompany"
-                                                    style="width: 300px;">
+                                                <select name="filter[ddlStartCompany]" tabindex="4"
+                                                    id="ddlStartCompany" style="width: 300px;">
                                                     <option value=""></option>
                                                     @isset($haken_company)
                                                         @foreach ($haken_company as $companyName)
                                                             <option value="{{ $companyName->COMPANY_CD }}"
-                                                                {{ old('filter.ddlStartCompany', !empty($searchData['ddlStartCompany']) ? $searchData['ddlStartCompany'] : '') == $companyName->COMPANY_CD ? 'selected' : '' }}>
+                                                                {{ old('filter.ddlStartCompany', !empty($search_data['filter']) ? $search_data['filter']['ddlStartCompany'] : '') == $companyName->COMPANY_CD ? 'selected' : '' }}>
                                                                 {{ $companyName->COMPANY_ABR }}
                                                             </option>
                                                         @endforeach
@@ -89,13 +63,13 @@
                                         <tr>
                                             <th>終了所属</th>
                                             <td>
-                                                <select name="filter[ddlEndCompany]" tabindex="7" id="ddlEndCompany"
-                                                    style="width: 300px;">
+                                                <select name="filter[ddlEndCompany]" tabindex="5"
+                                                    id="ddlEndCompany" style="width: 300px;">
                                                     <option value=""></option>
                                                     @isset($haken_company)
                                                         @foreach ($haken_company as $companyName)
                                                             <option value="{{ $companyName->COMPANY_CD }}"
-                                                                {{ old('filter.ddlEndCompany', !empty($searchData['ddlEndCompany']) ? $searchData['ddlEndCompany'] : '') == $companyName->COMPANY_CD ? 'selected' : '' }}>
+                                                                {{ old('filter.ddlEndCompany', !empty($search_data['filter']) ? $search_data['filter']['ddlEndCompany'] : '') == $companyName->COMPANY_CD ? 'selected' : '' }}>
                                                                 {{ $companyName->COMPANY_ABR }}
                                                             </option>
                                                         @endforeach
@@ -107,20 +81,18 @@
                                         <tr>
                                             <th>社員番号</th>
                                             <td>
-                                                <input name="filter[txtEmpCd]" tabindex="3" class="OutlineLabel"
-                                                    id="txtEmpCd" style="width: 80px;" type="text" maxlength="10"
-                                                    value="{{ old('filter.txtEmpCd', !empty($searchData['txtEmpCd']) ? $searchData['txtEmpCd'] : '') }}">
-                                                <input name="btnSearchEmpCd" tabindex="4" class="SearchButton"
-                                                    id="btnSearchEmpCd"
-                                                    onclick="SearchEmp();return false"
-                                                    type="button" value="?">
-                                                <input name="empName" class="OutlineLabel" type="text"
-                                                    style="width: 200px; height: 17px; display: inline-block;" id="empName"
+                                                <input name="filter[txtEmpCd]" tabindex="6" class="txtEmpCd searchEmpCd"
+                                                    id="txtEmpCd" style="width: 80px;" type="text" maxlength="10" oninput="value=onlyHalfWord(value)"
+                                                    value="{{ old('filter.txtEmpCd', !empty($search_data['filter']) ? $search_data['filter']['txtEmpCd'] : '') }}">
+                                                <input name="btnSearchEmpCd" tabindex="7" class="SearchButton"
+                                                    id="btnSearchEmpCd" onclick="SearchEmp(this);return false" type="button"
+                                                    value="?">
+                                                <input name="empName" id="empName" class="txtEmpName" type="text"
+                                                    data-regclscd=00 data-isdeptauth=true
+                                                    style="width: 200px; display: inline-block;"
                                                     disabled="disabled">
                                                 &nbsp;
-                                                @if ($errors->has('filter.txtEmpCd'))
-                                                    <span class="alert-danger">{{ $errors->first('filter.txtEmpCd') }}</span>
-                                                @endif
+                                                <span class="text-danger" id="EmpCdError"></span>
                                             </td>
                                         </tr>
                                     </tbody>
@@ -128,9 +100,9 @@
 
 
                                 <div class="mg10" style="text-align:left;border-bottom: 4px solid #fff;">
-                                    <input tabindex="10" id="btnSelectAll" onclick="ChangeAllCheckBoxStates1();"
+                                    <input tabindex="7" id="btnSelectAll" onclick="changeAllCheckBoxStates(true);"
                                         type="button" value="全選択">
-                                    <input tabindex="11" id="btnNotSelectAll" onclick="ChangeAllCheckBoxStates2();"
+                                    <input tabindex="8" id="btnNotSelectAll" onclick="changeAllCheckBoxStates(false);"
                                         type="button" value="全解除">
                                 </div>
                                 <table>
@@ -142,78 +114,105 @@
                                                         <tbody>
                                                             <tr>
                                                                 <td>
-                                                                    <input name="filter[ckWorkd]" value="01"
-                                                                    {{ old('filter.ckWorkd', !empty($search_data['ckWorkd']) ? $search_data['ckWorkd'] : '') == '01' ? 'checked' : '' }}
-                                                                    id="ckWorkd" tabindex="12" class="check" type="checkbox" checked>
-                                                                    <label>通常</label>
+                                                                    <input type="checkbox" name="filter[check][ckWorkd]" value="01"
+                                                                        {{ (!empty($errors->all()) && !old('filter.check.ckWorkd') ||
+                                                                            !empty($search_data['filter']) && !empty($search_data['filter']['check']) && !key_exists('ckWorkd', $search_data['filter']['check']))
+                                                                             ? '' : 'checked' }}
+                                                                        id="ckWorkd" tabindex="9" class="check">
+                                                                    <label for="ckWorkd">通常</label>
+                                                                    <input type="checkbox" name="filter[check][ckPadh]" value="02"
+                                                                        {{ (!empty($errors->all()) && !old('filter.check.ckPadh') ||
+                                                                            !empty($search_data['filter']) && !empty($search_data['filter']['check']) && !key_exists('ckPadh', $search_data['filter']['check']))
+                                                                             ? '' : 'checked' }}
+                                                                        id="ckPadh" tabindex="10" class="check">
+                                                                    <label for="ckPadh">有休</label>
 
-                                                                    <input name="filter[ckPadh]" value="02"
-                                                                    {{ old('filter.ckPadh', !empty($search_data['ckPadh']) ? $search_data['ckPadh'] : '') == '02' ? 'checked' : '' }}
-                                                                    id="ckPadh" tabindex="13" class="check" type="checkbox" checked>
-                                                                    <label>有休</label>
+                                                                    <input type="checkbox" name="filter[check][ckPadbh]" value="03"
+                                                                        {{ (!empty($errors->all()) && !old('filter.check.ckPadbh') ||
+                                                                            !empty($search_data['filter']) && !empty($search_data['filter']['check']) && !key_exists('ckPadbh', $search_data['filter']['check']))
+                                                                             ? '' : 'checked' }}
+                                                                        id="ckPadbh" tabindex="11" class="check">
+                                                                    <label for="ckPadbh">前休</label>
 
-                                                                    <input name="filter[ckPadbh]" value="03"
-                                                                    {{ old('filter.ckPadbh', !empty($search_data['ckPadbh']) ? $search_data['ckPadbh'] : '') == '03' ? 'checked' : '' }}
-                                                                    id="ckPadbh" tabindex="14" class="check" type="checkbox" checked>
-                                                                    <label>前休</label>
+                                                                    <input type="checkbox" name="filter[check][ckPadah]" value="04"
+                                                                        {{ (!empty($errors->all()) && !old('filter.check.ckPadah') ||
+                                                                            !empty($search_data['filter']) && !empty($search_data['filter']['check']) && !key_exists('ckPadah', $search_data['filter']['check']))
+                                                                             ? '' : 'checked' }}
+                                                                        id="ckPadah" tabindex="12" class="check">
+                                                                    <label for="ckPadah">後休</label>
 
-                                                                    <input name="filter[ckPadah]" value="04"
-                                                                    {{ old('filter.ckPadah', !empty($search_data['ckPadah']) ? $search_data['ckPadah'] : '') == '04' ? 'checked' : '' }}
-                                                                    id="ckPadah" tabindex="15" class="check" type="checkbox" checked>
-                                                                    <label>後休</label>
+                                                                    <input type="checkbox" name="filter[check][ckCompd]" value="05"
+                                                                        {{ (!empty($errors->all()) && !old('filter.check.ckCompd') ||
+                                                                            !empty($search_data['filter']) && !empty($search_data['filter']['check']) && !key_exists('ckCompd', $search_data['filter']['check']))
+                                                                             ? '' : 'checked' }}
+                                                                        id="ckCompd" tabindex="13" class="check">
+                                                                    <label for="ckCompd">代休</label>
 
-                                                                    <input name="filter[ckCompd]" value="05"
-                                                                    {{ old('filter.ckCompd', !empty($search_data['ckCompd']) ? $search_data['ckCompd'] : '') == '05' ? 'checked' : '' }}
-                                                                    id="ckCompd" tabindex="16" class="check" type="checkbox" checked>
-                                                                    <label>代休</label>
+                                                                    <input type="checkbox" name="filter[check][ckCompbd]" value="06"
+                                                                        {{ (!empty($errors->all()) && !old('filter.check.ckCompbd') ||
+                                                                            !empty($search_data['filter']) && !empty($search_data['filter']['check']) && !key_exists('ckCompbd', $search_data['filter']['check']))
+                                                                             ? '' : 'checked' }}
+                                                                        id="ckCompbd" tabindex="14" class="check">
+                                                                    <label for="ckCompbd">前代</label>
 
-                                                                    <input name="filter[ckCompbd]" value="06"
-                                                                    {{ old('filter.ckCompbd', !empty($search_data['ckCompbd']) ? $search_data['ckCompbd'] : '') == '06' ? 'checked' : '' }}
-                                                                    id="ckCompbd" tabindex="17" class="check" type="checkbox" checked>
-                                                                    <label>前代</label>
-
-                                                                    <input name="filter[ckCompad]" value="07"
-                                                                    {{ old('filter.ckCompad', !empty($search_data['ckCompad']) ? $search_data['ckCompad'] : '') == '07' ? 'checked' : '' }}
-                                                                    id="ckCompad" tabindex="18" class="check" type="checkbox" checked>
-                                                                    <label>後代</label>
+                                                                    <input type="checkbox" name="filter[check][ckCompad]" value="07"
+                                                                        {{ (!empty($errors->all()) && !old('filter.check.ckCompad') ||
+                                                                            !empty($search_data['filter']) && !empty($search_data['filter']['check']) && !key_exists('ckCompad', $search_data['filter']['check']))
+                                                                             ? '' : 'checked' }}
+                                                                        id="ckCompad" tabindex="15" class="check">
+                                                                    <label for="ckCompad">後代</label>
                                                                 </td>
                                                             </tr>
                                                             <tr>
                                                                 <td>
-                                                                    <input name="filter[ckSpch]" value="08"
-                                                                    {{ old('filter.ckSpch', !empty($search_data['ckSpch']) ? $search_data['ckSpch'] : '') == '08' ? 'checked' : '' }}
-                                                                    id="ckSpch" tabindex="19" class="check" type="checkbox" checked>
-                                                                    <label>特休</label>
+                                                                    <input type="checkbox" name="filter[check][ckSpch]" value="08"
+                                                                        {{ (!empty($errors->all()) && !old('filter.check.ckSpch') ||
+                                                                            !empty($search_data['filter']) && !empty($search_data['filter']['check']) && !key_exists('ckSpch', $search_data['filter']['check']))
+                                                                             ? '' : 'checked' }}
+                                                                        id="ckSpch" tabindex="16" class="check">
+                                                                    <label for="ckSpch">特休</label>
 
-                                                                    <input name="filter[ckAbcd]" value="09"
-                                                                    {{ old('filter.ckAbcd', !empty($search_data['ckAbcd']) ? $search_data['ckAbcd'] : '') == '09' ? 'checked' : '' }}
-                                                                    id="ckAbcd" tabindex="20" class="check" type="checkbox" checked>
-                                                                    <label>欠勤</label>
+                                                                    <input type="checkbox" name="filter[check][ckAbcd]" value="09"
+                                                                        {{ (!empty($errors->all()) && !old('filter.check.ckAbcd') ||
+                                                                            !empty($search_data['filter']) && !empty($search_data['filter']['check']) && !key_exists('ckAbcd', $search_data['filter']['check']))
+                                                                             ? '' : 'checked' }}
+                                                                        id="ckAbcd" tabindex="17" class="check">
+                                                                    <label for="ckAbcd">欠勤</label>
 
-                                                                    <input name="filter[ckDirg]" value="10"
-                                                                    {{ old('filter.ckDirg', !empty($search_data['ckDirg']) ? $search_data['ckDirg'] : '') == '10' ? 'checked' : '' }}
-                                                                    id="ckDirg" tabindex="21" class="check" type="checkbox" checked>
-                                                                    <label>直行</label>
+                                                                    <input type="checkbox" name="filter[check][ckDirg]" value="10"
+                                                                        {{ (!empty($errors->all()) && !old('filter.check.ckDirg') ||
+                                                                            !empty($search_data['filter']) && !empty($search_data['filter']['check']) && !key_exists('ckDirg', $search_data['filter']['check']))
+                                                                             ? '' : 'checked' }}
+                                                                        id="ckDirg" tabindex="18" class="check">
+                                                                    <label for="ckDirg">直行</label>
 
-                                                                    <input name="filter[ckDirr]" value="11"
-                                                                    {{ old('filter.ckDirr', !empty($search_data['ckDirr']) ? $search_data['ckDirr'] : '') == '11' ? 'checked' : '' }}
-                                                                    id="ckDirr" tabindex="22" class="check" type="checkbox" checked>
-                                                                    <label>直帰</label>
+                                                                    <input type="checkbox" name="filter[check][ckDirr]" value="11"
+                                                                        {{ (!empty($errors->all()) && !old('filter.check.ckDirr') ||
+                                                                            !empty($search_data['filter']) && !empty($search_data['filter']['check']) && !key_exists('ckDirr', $search_data['filter']['check']))
+                                                                             ? '' : 'checked' }}
+                                                                        id="ckDirr" tabindex="19" class="check">
+                                                                    <label for="ckDirr">直帰</label>
 
-                                                                    <input name="filter[ckDirqr]" value="12"
-                                                                    {{ old('filter.ckDirqr', !empty($search_data['ckDirqr']) ? $search_data['ckDirqr'] : '') == '12' ? 'checked' : '' }}
-                                                                    id="ckDirqr" tabindex="23" class="check" type="checkbox" checked>
-                                                                    <label>直直</label>
+                                                                    <input type="checkbox" name="filter[check][ckDirqr]" value="12"
+                                                                        {{ (!empty($errors->all()) && !old('filter.check.ckDirqr') ||
+                                                                            !empty($search_data['filter']) && !empty($search_data['filter']['check']) && !key_exists('ckDirqr', $search_data['filter']['check']))
+                                                                             ? '' : 'checked' }}
+                                                                        id="ckDirqr" tabindex="20" class="check">
+                                                                    <label for="ckDirqr">直直</label>
 
-                                                                    <input name="filter[ckBusj]" value="13"
-                                                                    {{ old('filter.ckBusj', !empty($search_data['ckBusj']) ? $search_data['ckBusj'] : '') == '13' ? 'checked' : '' }}
-                                                                    id="ckBusj" tabindex="24" class="check" type="checkbox" checked>
-                                                                    <label>出張</label>
+                                                                    <input type="checkbox" name="filter[check][ckBusj]" value="13"
+                                                                        {{ (!empty($errors->all()) && !old('filter.check.ckBusj') ||
+                                                                            !empty($search_data['filter']) && !empty($search_data['filter']['check']) && !key_exists('ckBusj', $search_data['filter']['check']))
+                                                                             ? '' : 'checked' }}
+                                                                        id="ckBusj" tabindex="21" class="check">
+                                                                    <label for="ckBusj">出張</label>
 
-                                                                    <input name="filter[ckDelay]" value="14"
-                                                                    {{ old('filter.ckDelay', !empty($search_data['ckDelay']) ? $search_data['ckDelay'] : '') == '14' ? 'checked' : '' }}
-                                                                    id="ckDelay" tabindex="25" class="check" type="checkbox" checked>
-                                                                    <label>遅延</label>
+                                                                    <input type="checkbox" name="filter[check][ckDelay]" value="14"
+                                                                        {{ (!empty($errors->all()) && !old('filter.check.ckDelay') ||
+                                                                            !empty($search_data['filter']) && !empty($search_data['filter']['check']) && !key_exists('ckDelay', $search_data['filter']['check']))
+                                                                             ? '' : 'checked' }}
+                                                                        id="ckDelay" tabindex="22" class="check">
+                                                                    <label for="ckDelay">遅延</label>
                                                                 </td>
                                                             </tr>
                                                         </tbody>
@@ -221,9 +220,10 @@
                                                 </form>
                                             </td>
                                             <td class="pd5Left">
-                                                @if ($errors->has('filter.ckWorkd','filter.ckPadh', 'filter.ckPadbh', 'filter.ckPadah', 'filter.ckCompd', 'filter.ckCompbd', 'filter.ckCompad',
-                                                'filter.ckSpch', 'filter.ckAbcd', 'filter.ckDirg', 'filter.ckDirr', 'filter.ckDirqr', 'filter.ckBusj', 'filter.ckDelay'))
-                                                    <span class="alert-danger">{{ $errors->first('filter.ckWorkd') }}</span>
+                                                @error('filter.check')
+                                                <span
+                                                    <span class="text-danger">{{ getArrValue($error_messages, $message) }}</span>
+                                                </span>
                                                 @endif
                                             </td>
                                         </tr>
@@ -239,11 +239,11 @@
                                         <tr>
                                             <td style="width: auto;">
                                                 <input name="btnDisp" class="ButtonStyle1 submit-form" id="btnShow"
-                                                    type="button" value="表示" onclick="return"
+                                                    type="button" value="表示" onclick="return" tabindex="23"
                                                     data-url="{{ route('empworkstatusRef.search') }}"
                                                     style="width: 80px;">
-                                                <input name="btnCancel2" class="ButtonStyle1 submit-form" id="btnCancel2"
-                                                    type="button" value="キャンセル"
+                                                <input name="btnCancel2" class="ButtonStyle1 cancel-submit" id="btnCancel2"
+                                                    type="button" value="キャンセル" tabindex="24"
                                                     data-url="{{ route('empworkstatusRef.cancel') }}"
                                                     style="width: 80px;">
                                                 &nbsp;
@@ -253,8 +253,9 @@
                                                 <span id="lblDbStampColor"
                                                     style="background-color: lightskyblue;">　　　</span>
                                                 <span id="lblDbStamp">二重打刻</span>
-                                                &nbsp;
-                                                <span class="font-style2" id="lblFixMsg"></span>
+                                                @if(isset($empWorkTimeResults) && !$empWorkTimeResults->isEmpty() && isset($work_count))
+                                                <span class="font-style2" id="lblFixMsg" style="margin-left:20em">{{ $work_count }}</span>
+                                                @endif
                                             </td>
                                             <td class="right">
                                                 <span class="font-style1" id="lblDispCaldDate"></span>
@@ -271,149 +272,83 @@
                                 <div class="GridViewStyle1" id="gridview-container">
                                     <div class="GridViewPanelStyle2" id="pnlEmpWorkStatus" style="width: 990px;">
                                         <div>
-                                            <table tabindex="28" class="GridViewBorder GridViewPadding" id="gvEmpWorkStatus"
+                                            <table tabindex="25" class="GridViewBorder" id="gvEmpWorkStatus"
                                                 style="border-collapse: collapse;" border="1" rules="all" cellspacing="0">
                                                 <tbody>
                                                     @isset($empWorkTimeResults)
-                                                        @if (count($empWorkTimeResults) < 1)
+                                                        @if($empWorkTimeResults->isEmpty())
                                                             <tr style="width: 70px;">
-                                                                <td><span>{{ $errMsg_4029 }}</span></td>
+                                                                <td><span>{{ getArrValue($error_messages, '4029') }}</span></td>
                                                             </tr>
                                                         @else
                                                             <tr>
-                                                                <th scope="col">
-                                                                    部門コード
-                                                                </th>
-                                                                <th scope="col">
-                                                                    部門名
-                                                                </th>
-                                                                <th scope="col">
-                                                                    社員番号
-                                                                </th>
-                                                                <th scope="col">
-                                                                    社員名
-                                                                </th>
-                                                                <th scope="col">
-                                                                    勤務体系
-                                                                </th>
-                                                                <th scope="col">
-                                                                    事由
-                                                                </th>
-                                                                <th scope="col">
-                                                                    出勤打刻場所
-                                                                </th>
-                                                                <th scope="col">
-                                                                    出勤
-                                                                </th>
-                                                                <th scope="col">
-                                                                    退出
-                                                                </th>
-                                                                <th scope="col">
-                                                                    退出打刻場所
-                                                                </th>
+                                                                <th scope="col">部門コード</th>
+                                                                <th scope="col">部門名</th>
+                                                                <th scope="col">社員番号</th>
+                                                                <th scope="col">社員名</th>
+                                                                <th scope="col">勤務体系</th>
+                                                                <th scope="col">事由</th>
+                                                                <th scope="col">出勤打刻場所</th>
+                                                                <th scope="col">出勤</th>
+                                                                <th scope="col">退出</th>
+                                                                <th scope="col">退出打刻場所</th>
                                                             </tr>
-                                                            @foreach ($empWorkTimeResults->unique('EMP_CD') as $empWorkTimeResult)
+                                                            @foreach ($empWorkTimeResults as $empWorkTimeResult)
                                                                 <tr>
                                                                     <td style="width: 70px;">
-                                                                        <span
-                                                                            id="lblDeptCd">{{ $empWorkTimeResult->DEPT_CD }}</span>
+                                                                        <span id="lblDeptCd">{{ $empWorkTimeResult->DEPT_CD }}</span>
                                                                     </td>
                                                                     <td style="width: 130px;">
-                                                                        <span
-                                                                            id="lblDeptName">{{ $empWorkTimeResult->DEPT_NAME }}</span>
+                                                                        <span id="lblDeptName">{{ $empWorkTimeResult->DEPT_NAME }}</span>
                                                                     </td>
                                                                     <td style="width: 80px;">
-                                                                        <span
-                                                                            id="lblEmpCd">{{ $empWorkTimeResult->EMP_CD }}</span>
+                                                                        <span id="lblEmpCd">{{ $empWorkTimeResult->EMP_CD }}</span>
                                                                     </td>
                                                                     <td style="width: 130px;">
-                                                                        <span
-                                                                            id="lblEmpName">{{ $empWorkTimeResult->EMP_NAME }}</span>
+                                                                        <span id="lblEmpName">{{ $empWorkTimeResult->EMP_NAME }}</span>
                                                                     </td>
                                                                     <td style="width: 130px;">
-                                                                        <span id="lblWorkPtn"
-                                                                            class="{{ $empWorkTimeResult->WORK_CLS_CD == '00' ? 'text-danger' : '' }}"
+                                                                        <span id="lblWorkPtn" @if($empWorkTimeResult->WORK_CLS_CD == '00')class="text-danger"@endif
                                                                             style="width: 160px; display: inline-block;">{{ $empWorkTimeResult->WORKPTN_NAME }}</span>
                                                                     </td>
                                                                     <td class="GridViewRowCenter" style="width: 50px;">
                                                                         <span id="lblReason"
-                                                                            class="{{ $empWorkTimeResult->REASON_PTN_CD == '01' ? 'text-danger' : '' }} &&
-                                                                            {{ $empWorkTimeResult->REASON_PTN_CD == '02' ? 'text-primary' : '' }}">
+                                                                            @if($empWorkTimeResult->REASON_PTN_CD == '01') class="text-danger"
+                                                                            @elseif($empWorkTimeResult->REASON_PTN_CD == '02') class="text-primary"
+                                                                            @else style="color:black;" @endif>
                                                                             {{ $empWorkTimeResult->REASON_NAME }}
                                                                         </span>
                                                                     </td>
+                                                                    <td class="GridViewRowCenter" style="width: 130px;">
+                                                                        <span id="lblTeamName">{{ $empWorkTimeResult->OFC_TERM_NAME }}</span>
+                                                                    </td>
 
-                                                                    @if ($empWorkTimeResult->WORKTIME_CLS_CD == 00)
-                                                                        <td class="GridViewRowCenter" style="width: 130px;">
-                                                                            <span
-                                                                                id="lblTeamName">{{ $empWorkTimeResult->TERM_NAME }}
-                                                                            </span>
-                                                                        </td>
-                                                                    @else
-                                                                        <td class="GridViewRowCenter" style="width: 130px;">
-                                                                            <span id="lblTeamName"></span>
-                                                                        </td>
-                                                                    @endif
+                                                                    <td class="GridViewRowCenter" style="width: 40px;
+                                                                        @if ($empWorkTimeResult->OFC_CNT >= 2 && empty($empWorkTimeResult->OFC_TIME_HH))
+                                                                        background-color: lightskyblue;
+                                                                        @elseif (empty($empWorkTimeResult->OFC_TIME_HH) && isset($empWorkTimeResult->LEV_TIME_HH))
+                                                                        background-color: tomato;
+                                                                        @endif
+                                                                        ">
+                                                                        <span id="lblOfcTime">{{ $empWorkTimeResult->OFC_TIME }}</span>
+                                                                    </td>
+                                                                    <td class="GridViewRowCenter" style="width: 40px;
+                                                                        @if ($empWorkTimeResult->LEV_CNT >= 2 && empty($empWorkTimeResult->LEV_TIME_HH))
+                                                                        background-color: lightskyblue;
+                                                                        @elseif (isset($empWorkTimeResult->OFC_TIME_HH) && empty($empWorkTimeResult->LEV_TIME_HH))
+                                                                        background-color: tomato;
+                                                                        @endif
+                                                                        ">
+                                                                        <span id="lblLevTime">{{ $empWorkTimeResult->LEV_TIME }}</span>
+                                                                    </td>
 
-                                                                    @if ($empWorkTimeResult->OFC_CNT >= 2 && empty($empWorkTimeResult->OFC_TIME_HH))
-                                                                        <td style="width: 40px; background-color: lightskyblue;"
-                                                                            <span id="lblOfcTime">
-                                                                            {{ $empWorkTimeResult->OFC_TIME }}</span>
-                                                                        </td>
-                                                                    @elseif (empty($empWorkTimeResult->OFC_TIME_HH) &&
-                                                                        isset($empWorkTimeResult->LEV_TIME_HH))
-                                                                        <td style="width: 40px; background-color: tomato;" <span
-                                                                            id="lblOfcTime">
-                                                                            {{ $empWorkTimeResult->OFC_TIME }}</span>
-                                                                        </td>
-                                                                    @elseif (empty($empWorkTimeResult->OFC_TIME_HH) &&
-                                                                        empty($empWorkTimeResult->LEV_TIME_HH))
-                                                                        <td style="width: 40px;" <span id="lblOfcTime">
-                                                                            {{ $empWorkTimeResult->OFC_TIME }}</span>
-                                                                        </td>
-                                                                    @else
-                                                                        <td style="width: 40px;" <span id="lblOfcTime">
-                                                                            {{ $empWorkTimeResult->OFC_TIME }}</span>
-                                                                        </td>
-                                                                    @endif
-
-                                                                    @if ($empWorkTimeResult->LEV_CNT >= 2 && empty($empWorkTimeResult->LEV_TIME_HH))
-                                                                        <td style="width: 40px; background-color: lightskyblue;"
-                                                                            <span id="lblLevTime">
-                                                                            {{ $empWorkTimeResult->LEV_TIME }}</span>
-                                                                        </td>
-                                                                    @elseif (isset($empWorkTimeResult->OFC_TIME_HH) &&
-                                                                        empty($empWorkTimeResult->LEV_TIME_HH))
-                                                                        <td style="width: 40px; background-color: tomato;" <span
-                                                                            id="lblLevTime">
-                                                                            {{ $empWorkTimeResult->LEV_TIME }}</span>
-                                                                        </td>
-                                                                    @elseif (empty($empWorkTimeResult->OFC_TIME_HH) &&
-                                                                        empty($empWorkTimeResult->LEV_TIME_HH))
-                                                                        <td style="width: 40px;" <span id="lblLevTime">
-                                                                            {{ $empWorkTimeResult->LEV_TIME }}</span>
-                                                                        </td>
-                                                                    @else
-                                                                        <td style="width: 40px;" <span id="lblLevTime">
-                                                                            {{ $empWorkTimeResult->LEV_TIME }}</span>
-                                                                        </td>
-                                                                    @endif
-
-                                                                    @if ($empWorkTimeResult->WORKTIME_CLS_CD == 01)
-                                                                        <td class="GridViewRowCenter" style="width: 130px;">
-                                                                            <span
-                                                                                id="lblTeamName">{{ $empWorkTimeResult->TERM_NAME }}
-                                                                            </span>
-                                                                        </td>
-                                                                    @else
-                                                                        <td class="GridViewRowCenter" style="width: 130px;">
-                                                                            <span id="lblTeamName"></span>
-                                                                        </td>
-                                                                    @endif
+                                                                    <td class="GridViewRowCenter" style="width: 130px;">
+                                                                        <span id="lblTeamName">{{ $empWorkTimeResult->LEV_TERM_NAME }}</span>
+                                                                    </td>
                                                                 </tr>
                                                             @endforeach
-                                                        @endisset
-                                                    @endif
+                                                        @endif
+                                                    @endisset
                                                 </tbody>
                                             </table>
                                         </div>
@@ -421,14 +356,13 @@
                                     </div>
 
                                     <!-- footer -->
-                                    <div class="line">
-                                        <hr>
-                                    </div>
+                                    <div class="line"><hr></div>
                                     <p class="ButtonField2">
-                                        <input name="ctl00$cphContentsArea$btnCancel" tabindex="9"
-                                        id="ctl00_cphContentsArea_btnCancel"
-                                        onclick="CloseSubWindow();__doPostBack('ctl00$cphContentsArea$btnCancel','')"
-                                        type="button" value="キャンセル">
+                                        <input type="button" value="キャンセル" name="btnCancel1"
+                                            tabindex="26" id="btnCancel1" class="ButtonStyle1 cancel-submit"
+                                            data-url="{{ route('empworkstatusRef.cancel') }}"
+                                            @if(isset($empWorkTimeResults) && !$empWorkTimeResults->isEmpty()) autofocus @endif
+                                            >
                                     </p>
                             </form>
                         </div>
@@ -442,33 +376,37 @@
 
     <script>
         $(document).on('click', '.submit-form', function() {
+            if ($("#deptNameError,#EmpCdError").text()) {
+                return false;
+            }
+            $('#btnShow').attr('disabled', true);
             var url = $(this).data('url');
             $('#form').attr('action', url);
             $('#form').submit();
         });
 
-        //検索の際ボンタン機能無効
-        $(document).on('click', '#btnShow', function load() {
-            $('#btnShow, #ddlTargetYear, #ddlTargetMonth, #ddlTargetDay, #txtEmpCd, #btnSearchEmpCd').attr(
-                'disabled', true);
+        $(document).on('click', '.cancel-submit', function() {
+            var url = $(this).data('url');
+            $('#form').attr('action', url);
+            $('#form').submit();
         });
 
-        function ChangeAllCheckBoxStates1() {
-            //チャックボックスのid
-            const ElementsCount = document.getElementsByClassName("check");
-            //全選択を切り替え
-            for (let i = 0; i < ElementsCount.length; i++) {
-                ElementsCount[i].checked = true;
-            }
+        // 全チェックor全チェック外し
+        changeAllCheckBoxStates = function(check) {
+            $(".check").prop("checked", check);
         }
 
-        function ChangeAllCheckBoxStates2() {
-            //チャックボックスのid
-            const ElementsCount = document.getElementsByClassName("check");
-            //全解除を切り替え
-            for (let i = 0; i < ElementsCount.length; i++) {
-                ElementsCount[i].checked = false;
-            }
-        }
+        // カレンダーの設定
+        $(function() {
+            $('#YearMonthDay').datepicker({
+                format: 'yyyy年mm月dd日',
+                autoclose: true,
+                language: 'ja', // カレンダー日本語化のため
+            });
+        });
+
+        // 入力可能文字：半角英数
+        onlyHalfWord = n => n.replace(/[０-９Ａ-Ｚａ-ｚ]/g, s => String.fromCharCode(s.charCodeAt(0) - 65248))
+            .replace(/[^0-9a-zA-Z]/g, '');
     </script>
 @endsection

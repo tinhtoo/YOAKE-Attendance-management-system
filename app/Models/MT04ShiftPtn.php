@@ -28,10 +28,17 @@ class MT04ShiftPtn extends Model
     protected $fillable = ['SHIFTPTN_NAME', 'WORKPTN_CD', 'RSV1_CLS_CD', 'RSV2_CLS_CD', 'UPD_DATE'];
 
     /**
+     * The primary key for the model.
+     *
+     * @var string
+     */
+    protected $primaryKey = ['SHIFTPTN_CD','DAY_NO'];
+    public $incrementing = false;
+
+    /**
      * The connection name for the model.
      *
      * @var string
      */
     protected $connection = 'sqlsrv';
-
 }

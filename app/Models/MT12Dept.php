@@ -55,5 +55,4 @@ class MT12Dept extends Model
      * @var string
      */
     protected $connection = 'sqlsrv';
-
 }

@@ -1,106 +1,67 @@
-<!-- 部門権限情報入力 -->
+<!-- 部門権限情報照会 -->
 @extends('menu.main')
 
-@section('title','部門権限情報入力')
+@section('title', '部門権限情報照会')
 
 @section('content')
-<div id="contents-stage">
-    <table class="BaseContainerStyle1">
-        <tbody>
-            <tr>
-                <td>
-                    <div id="ctl00_cphContentsArea_UpdatePanel1">
+    <div id="contents-stage">
+        <table class="BaseContainerStyle1">
+            <tbody>
+                <tr>
+                    <td>
+                        <div id="ctl00_cphContentsArea_UpdatePanel1">
 
-                        <p class="FunctionMenu1"><a id="ctl00_cphContentsArea_hlAddDeptAuth" href="MT13DeptAuthEditor?Id=Add">新規部門権限登録</a></p>
+                            <p class="FunctionMenu1">
+                                <a id="ctl00_cphContentsArea_hlAddDeptAuth" href="MT13DeptAuthEditor?Id=Add">新規部門権限登録</a>
+                            </p>
 
-                        <div class="line"></div>
+                            <div class="line"></div>
+                            <div class="GridViewStyle1">
+                                <div>
+                                    <table class="GridViewSpace" id="ctl00_cphContentsArea_gvDeptAuth"
+                                        style="border-collapse: collapse;" border="1" rules="all" cellspacing="0">
+                                        <tbody>
 
-                        <div class="GridViewStyle1">
-                            <div>
-                                <table class="GridViewSpace" id="ctl00_cphContentsArea_gvDeptAuth" style="border-collapse: collapse;" border="1" rules="all" cellspacing="0">
-                                    <tbody>
-                                        <tr>
-                                            <th scope="col">
-                                                部門権限
-                                            </th>
-                                            <th scope="col">
-                                                部門権限
-                                            </th>
-                                        </tr>
-                                        <tr style="background-color: white;">
-                                            <td style="width: 350px;">
-                                                <a id="ctl00_cphContentsArea_gvDeptAuth_ctl02_hlDeptAuth1" href="MT13DeptAuthEditor.aspx?Id=000010">000010 : 営業部管理者</a>
-                                            </td>
-                                            <td style="width: 350px;">
+                                            <tr>
+                                                <th scope="col">
+                                                    部門権限
+                                                </th>
+                                                <th scope="col">
+                                                    部門権限
+                                                </th>
+                                            </tr>
 
-                                            </td>
-                                        </tr>
-                                        <tr style="background-color: white;">
-                                            <td style="width: 350px;">
-                                                <a id="ctl00_cphContentsArea_gvDeptAuth_ctl03_hlDeptAuth1" href="MT13DeptAuthEditor.aspx?Id=000020">000020 : 製造部管理者</a>
-                                            </td>
-                                            <td style="width: 350px;">
+                                            @for($i = 0; $i < count($dept_data) && $i < 20; $i++)
+                                            <tr style="background-color: white;">
+                                                <td class="col-sm-4">
+                                                        <a href="{{ url('master/MT13DeptAuthEditor/'. $dept_data[$i]->DEPT_AUTH_CD )}}">
+                                                            {{ $dept_data[$i]->DEPT_AUTH_CD }} : {{ $dept_data[$i]->DEPT_AUTH_NAME }}
+                                                        </a>
+                                                </td>
+                                                <td class="col-sm-4">
+                                                    @if($dept_data[$i + 20] != null )
+                                                    <a href="{{ url('master/MT13DeptAuthEditor/'. $dept_data[$i + 20]->DEPT_AUTH_CD )}}">
+                                                        {{ $dept_data[$i + 20]->DEPT_AUTH_CD }} : {{ $dept_data[$i + 20]->DEPT_AUTH_NAME }}
+                                                    </a>
+                                                    @endif
+                                                </td>
+                                            </tr>
+                                            @endfor
 
-                                            </td>
-                                        </tr>
-                                        <tr style="background-color: white;">
-                                            <td style="width: 350px;">
-                                                <a id="ctl00_cphContentsArea_gvDeptAuth_ctl04_hlDeptAuth1" href="MT13DeptAuthEditor.aspx?Id=000030">000030 : 経理部管理者</a>
-                                            </td>
-                                            <td style="width: 350px;">
-
-                                            </td>
-                                        </tr>
-                                        <tr style="background-color: white;">
-                                            <td style="width: 350px;">
-                                                <a id="ctl00_cphContentsArea_gvDeptAuth_ctl05_hlDeptAuth1" href="MT13DeptAuthEditor.aspx?Id=000040">000040 : 総務部管理者</a>
-                                            </td>
-                                            <td style="width: 350px;">
-
-                                            </td>
-                                        </tr>
-                                        <tr style="background-color: white;">
-                                            <td style="width: 350px;">
-                                                <a id="ctl00_cphContentsArea_gvDeptAuth_ctl06_hlDeptAuth1" href="MT13DeptAuthEditor.aspx?Id=000050">000050 : 購買部管理者</a>
-                                            </td>
-                                            <td style="width: 350px;">
-
-                                            </td>
-                                        </tr>
-                                        <tr style="background-color: white;">
-                                            <td style="width: 350px;">
-                                                <a id="ctl00_cphContentsArea_gvDeptAuth_ctl07_hlDeptAuth1" href="MT13DeptAuthEditor.aspx?Id=000060">000060 : 資材部管理者</a>
-                                            </td>
-                                            <td style="width: 350px;">
-
-                                            </td>
-                                        </tr>
-                                        <tr style="background-color: white;">
-                                            <td style="width: 350px;">
-                                                <a id="ctl00_cphContentsArea_gvDeptAuth_ctl08_hlDeptAuth1" href="MT13DeptAuthEditor.aspx?Id=000070">000070 : 品質保証部管理者</a>
-                                            </td>
-                                            <td style="width: 350px;">
-
-                                            </td>
-                                        </tr>
-                                        <tr style="background-color: white;">
-                                            <td style="width: 350px;">
-                                                <a id="ctl00_cphContentsArea_gvDeptAuth_ctl09_hlDeptAuth1" href="MT13DeptAuthEditor.aspx?Id=999999">999999 : 管理者</a>
-                                            </td>
-                                            <td style="width: 350px;">
-
-                                            </td>
-                                        </tr>
-                                    </tbody>
-                                </table>
+                                        </tbody>
+                                    </table>
+                                </div>
                             </div>
+
+                            <div class="line"></div>
+                            <div class="d-flex justify-content-center" id="pegination">
+                                    {{ $dept_data->links() }}
+                            </div>
+
                         </div>
-
-
-                    </div>
-                </td>
-            </tr>
-        </tbody>
-    </table>
-</div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
 @endsection

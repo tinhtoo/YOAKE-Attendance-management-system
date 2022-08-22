@@ -53,7 +53,9 @@ class MT02CalendarPtn extends Model
     /**
      * @var array
      */
-    protected $fillable = ['CALENDAR_NAME', 'CALENDAR_CLS_CD', 'MON_WORKPTN_CD', 'TUE_WORKPTN_CD', 'WED_WORKPTN_CD', 'THU_WORKPTN_CD', 'FRI_WORKPTN_CD', 'SAT_WORKPTN_CD', 'SUN_WORKPTN_CD', 'HLD_WORKPTN_CD', 'RSV1_CLS_CD', 'RSV2_CLS_CD', 'UPD_DATE'];
+    protected $fillable = ['CALENDAR_NAME', 'CALENDAR_CLS_CD', 'MON_WORKPTN_CD', 'TUE_WORKPTN_CD',
+                           'WED_WORKPTN_CD', 'THU_WORKPTN_CD', 'FRI_WORKPTN_CD', 'SAT_WORKPTN_CD',
+                           'SUN_WORKPTN_CD', 'HLD_WORKPTN_CD', 'RSV1_CLS_CD', 'RSV2_CLS_CD', 'UPD_DATE'];
 
     /**
      * The connection name for the model.
@@ -61,5 +63,4 @@ class MT02CalendarPtn extends Model
      * @var string
      */
     protected $connection = 'sqlsrv';
-
 }

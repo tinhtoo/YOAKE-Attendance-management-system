@@ -23,6 +23,20 @@ class MT17PdHoliday extends Model
     protected $table = 'MT17_PDHOLIDAY';
 
     /**
+     * The primary key for the model.
+     *
+     * @var string
+     */
+    protected $primaryKey = ['EMP_CD', 'PD_YEAR', 'MONTH_NO'];
+
+    /**
+     * The "type" of the auto-incrementing ID.
+     *
+     * @var string
+     */
+    protected $keyType = 'string';
+
+    /**
      * @var array
      */
     protected $fillable = ['NUM_CARRYOVER', 'PD_MONTH', 'PD_OFFSET', 'PD_USED'];
@@ -34,4 +48,7 @@ class MT17PdHoliday extends Model
      */
     protected $connection = 'sqlsrv';
 
+    // created_atとupdated_atを無効化
+    public $timestamps = false;
+    public $incrementing = false;
 }

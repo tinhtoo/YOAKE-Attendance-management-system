@@ -7,7 +7,7 @@ use App\Filters\Filter;
 class WorkTimeDeptEditorFilter extends Filter
 {
     /**
-     *filter properties
+     * filter properties
      */
     protected $filters = [
         'filter' => [

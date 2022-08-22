@@ -52,4 +52,11 @@ class MT11Login extends Model
      */
     protected $connection = 'sqlsrv';
 
+    public function EmpDept()
+    {
+        return $this->hasMany('App\Models\MT10Emp');
+    }
+
+    // created_atとupdated_atを無効化
+    public $timestamps = false;
 }

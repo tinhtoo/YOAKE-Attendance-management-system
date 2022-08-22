@@ -1,2648 +1,3149 @@
 <!-- 勤務体系情報入力   -->
 @extends('menu.main')
 
-@section('title','勤務体系情報入力 ')
+@section('title', '勤務体系情報入力 ')
 
 @section('content')
-<div id="contents-stage">
-    <table class="BaseContainerStyle1">
-        <tbody>
-            <tr>
-                <td>
-                    <div id="ctl00_cphContentsArea_UpdatePanel1">
-
-                        <!-- header block -->
-                        <table class="InputFieldStyle1">
-                            <tbody>
-                                <tr>
-                                    <th>
-                                        勤務体系コード
-                                    </th>
-                                    <td>
-                                        <input name="ctl00$cphContentsArea$txtWorkPtnCd" tabindex="1" class="imeDisabled" id="ctl00_cphContentsArea_txtWorkPtnCd" style="width: 50px;" onfocus="this.select();" type="text" maxlength="3">
-
-
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <th>
-                                        勤務体系名
-                                    <td>
-                                        <input name="ctl00$cphContentsArea$txtWorkPtnName" tabindex="2" class="imeOn" id="ctl00_cphContentsArea_txtWorkPtnName" style="width: 300px;" onfocus="this.select();" type="text" maxlength="20">
-
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <th>
-                                        勤務体系略名
-                                    <td>
-                                        <input name="ctl00$cphContentsArea$txtWorkPtnAbrName" tabindex="3" class="imeOn" id="ctl00_cphContentsArea_txtWorkPtnAbrName" style="width: 70px;" onfocus="this.select();" type="text" maxlength="5">
-
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <th>
-                                        出勤区分
-                                    </th>
-                                    <td>
-                                        <div class="GroupBox1">
-                                            <input name="ctl00$cphContentsArea$WorkCls" tabindex="4" id="ctl00_cphContentsArea_rbRegularWork" type="radio" checked="checked" value="rbRegularWork"><label for="ctl00_cphContentsArea_rbRegularWork">通常出勤</label>
-                                            <input name="ctl00$cphContentsArea$WorkCls" tabindex="5" id="ctl00_cphContentsArea_rbHolidayWork" onclick="javascript:setTimeout('__doPostBack(\'ctl00$cphContentsArea$rbHolidayWork\',\'\')', 0)" type="radio" value="rbHolidayWork"><label for="ctl00_cphContentsArea_rbHolidayWork">休日出勤</label>
-                                            <div class="clearBoth">
-                                            </div>
-                                        </div>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <th>
-                                        休日区分
-                                    </th>
-                                    <td>
-                                        <div class="GroupBox1">
-                                            <span disabled="disabled"><input name="ctl00$cphContentsArea$HolidayCls" tabindex="6" disabled="disabled" id="ctl00_cphContentsArea_rbLeg" type="radio" checked="checked" value="rbLeg"><label for="ctl00_cphContentsArea_rbLeg">法定</label></span>
-                                            <span disabled="disabled"><input name="ctl00$cphContentsArea$HolidayCls" tabindex="7" disabled="disabled" id="ctl00_cphContentsArea_rbOutLeg" type="radio" value="rbOutLeg"><label for="ctl00_cphContentsArea_rbOutLeg">法定外</label></span>
-                                            <div class="clearBoth">
-                                            </div>
-                                        </div>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <th>
-                                        職務種別
-                                    </th>
-                                    <td>
-                                        <div class="GroupBox1">
-                                            <input name="ctl00$cphContentsArea$DutyCls" tabindex="8" id="ctl00_cphContentsArea_rbDutyTime" type="radio" checked="checked" value="rbDutyTime"><label for="ctl00_cphContentsArea_rbDutyTime">時間帯</label>
-                                            <input name="ctl00$cphContentsArea$DutyCls" tabindex="9" id="ctl00_cphContentsArea_rbDutyHours" onclick="javascript:setTimeout('__doPostBack(\'ctl00$cphContentsArea$rbDutyHours\',\'\')', 0)" type="radio" value="rbDutyHours"><label for="ctl00_cphContentsArea_rbDutyHours">時間数</label>
-                                            <div class="clearBoth">
-                                            </div>
-                                        </div>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                        <!-- header block end -->
-                        <!-- detail block -->
-                        <div id="ctl00_cphContentsArea_pnlTime">
-
-                            <!-- 時間帯設定 -->
-                            <p class="CategoryTitle1">
-                                時間帯設定</p>
-
-
-                            <table class="GridViewStyle2">
-                                <tbody>
-                                    <tr>
-                                        <th>
-                                            勤怠項目
-                                        </th>
-                                        <th>
-                                            開始時間
-                                        </th>
-                                        <td>
-                                        </td>
-                                        <th>
-                                            終了時間
-                                        </th>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            <select name="ctl00$cphContentsArea$ddlPTimeWk1" tabindex="10" id="ctl00_cphContentsArea_ddlPTimeWk1" style="width: 150px;">
-                                                <option selected="selected" value=""></option>
-                                                <option value="001">就業時間</option>
-                                                <option value="100">早出時間</option>
-                                                <option value="101">普通残業時間</option>
-                                                <option value="102">深夜残業時間</option>
-                                                <option value="103">休日残業時間</option>
-                                                <option value="104">休日深夜残業時間</option>
-
-                                            </select>
-                                        </td>
-                                        <td>
-                                            <select name="ctl00$cphContentsArea$ddlPTimeWk1StrHh" tabindex="11" class="imeDisabled" id="ctl00_cphContentsArea_ddlPTimeWk1StrHh" style="width: 50px;">
-                                                <option selected="selected" value=""></option>
-                                                <option value="0">0</option>
-                                                <option value="1">1</option>
-                                                <option value="2">2</option>
-                                                <option value="3">3</option>
-                                                <option value="4">4</option>
-                                                <option value="5">5</option>
-                                                <option value="6">6</option>
-                                                <option value="7">7</option>
-                                                <option value="8">8</option>
-                                                <option value="9">9</option>
-                                                <option value="10">10</option>
-                                                <option value="11">11</option>
-                                                <option value="12">12</option>
-                                                <option value="13">13</option>
-                                                <option value="14">14</option>
-                                                <option value="15">15</option>
-                                                <option value="16">16</option>
-                                                <option value="17">17</option>
-                                                <option value="18">18</option>
-                                                <option value="19">19</option>
-                                                <option value="20">20</option>
-                                                <option value="21">21</option>
-                                                <option value="22">22</option>
-                                                <option value="23">23</option>
-                                                <option value="24">24</option>
-                                                <option value="25">25</option>
-                                                <option value="26">26</option>
-                                                <option value="27">27</option>
-                                                <option value="28">28</option>
-                                                <option value="29">29</option>
-                                                <option value="30">30</option>
-                                                <option value="31">31</option>
-                                                <option value="32">32</option>
-                                                <option value="33">33</option>
-                                                <option value="34">34</option>
-                                                <option value="35">35</option>
-
-                                            </select>
-                                            &nbsp;時
-                                            <select name="ctl00$cphContentsArea$ddlPTimeWk1StrMi" tabindex="12" class="imeDisabled" id="ctl00_cphContentsArea_ddlPTimeWk1StrMi" style="width: 50px;">
-                                                <option selected="selected" value=""></option>
-                                                <option value="0">0</option>
-                                                <option value="5">5</option>
-                                                <option value="10">10</option>
-                                                <option value="15">15</option>
-                                                <option value="20">20</option>
-                                                <option value="25">25</option>
-                                                <option value="30">30</option>
-                                                <option value="35">35</option>
-                                                <option value="40">40</option>
-                                                <option value="45">45</option>
-                                                <option value="50">50</option>
-                                                <option value="55">55</option>
-
-                                            </select>
-                                            &nbsp;分<br>
-                                        </td>
-                                        <td>
-                                            &nbsp;～
-                                        </td>
-                                        <td>
-                                            <select name="ctl00$cphContentsArea$ddlPTimeWk1EndHh" tabindex="13" class="imeDisabled" id="ctl00_cphContentsArea_ddlPTimeWk1EndHh" style="width: 50px;">
-                                                <option selected="selected" value=""></option>
-                                                <option value="0">0</option>
-                                                <option value="1">1</option>
-                                                <option value="2">2</option>
-                                                <option value="3">3</option>
-                                                <option value="4">4</option>
-                                                <option value="5">5</option>
-                                                <option value="6">6</option>
-                                                <option value="7">7</option>
-                                                <option value="8">8</option>
-                                                <option value="9">9</option>
-                                                <option value="10">10</option>
-                                                <option value="11">11</option>
-                                                <option value="12">12</option>
-                                                <option value="13">13</option>
-                                                <option value="14">14</option>
-                                                <option value="15">15</option>
-                                                <option value="16">16</option>
-                                                <option value="17">17</option>
-                                                <option value="18">18</option>
-                                                <option value="19">19</option>
-                                                <option value="20">20</option>
-                                                <option value="21">21</option>
-                                                <option value="22">22</option>
-                                                <option value="23">23</option>
-                                                <option value="24">24</option>
-                                                <option value="25">25</option>
-                                                <option value="26">26</option>
-                                                <option value="27">27</option>
-                                                <option value="28">28</option>
-                                                <option value="29">29</option>
-                                                <option value="30">30</option>
-                                                <option value="31">31</option>
-                                                <option value="32">32</option>
-                                                <option value="33">33</option>
-                                                <option value="34">34</option>
-                                                <option value="35">35</option>
-                                                <option value="36">36</option>
-
-                                            </select>
-                                            &nbsp;時
-                                            <select name="ctl00$cphContentsArea$ddlPTimeWk1EndMi" tabindex="14" class="imeDisabled" id="ctl00_cphContentsArea_ddlPTimeWk1EndMi" style="width: 50px;">
-                                                <option selected="selected" value=""></option>
-                                                <option value="0">0</option>
-                                                <option value="5">5</option>
-                                                <option value="10">10</option>
-                                                <option value="15">15</option>
-                                                <option value="20">20</option>
-                                                <option value="25">25</option>
-                                                <option value="30">30</option>
-                                                <option value="35">35</option>
-                                                <option value="40">40</option>
-                                                <option value="45">45</option>
-                                                <option value="50">50</option>
-                                                <option value="55">55</option>
-
-                                            </select>
-                                            &nbsp;分
-                                        </td>
-                                        <td>
-                                            <span id="ctl00_cphContentsArea_cvPTimeWk1" style="color: red; display: none;">ErrorMessage</span>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            <select name="ctl00$cphContentsArea$ddlPTimeWk2" tabindex="15" id="ctl00_cphContentsArea_ddlPTimeWk2" style="width: 150px;">
-                                                <option selected="selected" value=""></option>
-                                                <option value="001">就業時間</option>
-                                                <option value="100">早出時間</option>
-                                                <option value="101">普通残業時間</option>
-                                                <option value="102">深夜残業時間</option>
-                                                <option value="103">休日残業時間</option>
-                                                <option value="104">休日深夜残業時間</option>
-
-                                            </select>
-                                        </td>
-                                        <td>
-                                            <select name="ctl00$cphContentsArea$ddlPTimeWk2StrHh" tabindex="16" class="imeDisabled" id="ctl00_cphContentsArea_ddlPTimeWk2StrHh" style="width: 50px;">
-                                                <option selected="selected" value=""></option>
-                                                <option value="0">0</option>
-                                                <option value="1">1</option>
-                                                <option value="2">2</option>
-                                                <option value="3">3</option>
-                                                <option value="4">4</option>
-                                                <option value="5">5</option>
-                                                <option value="6">6</option>
-                                                <option value="7">7</option>
-                                                <option value="8">8</option>
-                                                <option value="9">9</option>
-                                                <option value="10">10</option>
-                                                <option value="11">11</option>
-                                                <option value="12">12</option>
-                                                <option value="13">13</option>
-                                                <option value="14">14</option>
-                                                <option value="15">15</option>
-                                                <option value="16">16</option>
-                                                <option value="17">17</option>
-                                                <option value="18">18</option>
-                                                <option value="19">19</option>
-                                                <option value="20">20</option>
-                                                <option value="21">21</option>
-                                                <option value="22">22</option>
-                                                <option value="23">23</option>
-                                                <option value="24">24</option>
-                                                <option value="25">25</option>
-                                                <option value="26">26</option>
-                                                <option value="27">27</option>
-                                                <option value="28">28</option>
-                                                <option value="29">29</option>
-                                                <option value="30">30</option>
-                                                <option value="31">31</option>
-                                                <option value="32">32</option>
-                                                <option value="33">33</option>
-                                                <option value="34">34</option>
-                                                <option value="35">35</option>
-
-                                            </select>
-                                            &nbsp;時
-                                            <select name="ctl00$cphContentsArea$ddlPTimeWk2StrMi" tabindex="17" class="imeDisabled" id="ctl00_cphContentsArea_ddlPTimeWk2StrMi" style="width: 50px;">
-                                                <option selected="selected" value=""></option>
-                                                <option value="0">0</option>
-                                                <option value="5">5</option>
-                                                <option value="10">10</option>
-                                                <option value="15">15</option>
-                                                <option value="20">20</option>
-                                                <option value="25">25</option>
-                                                <option value="30">30</option>
-                                                <option value="35">35</option>
-                                                <option value="40">40</option>
-                                                <option value="45">45</option>
-                                                <option value="50">50</option>
-                                                <option value="55">55</option>
-
-                                            </select>
-                                            &nbsp;分
-                                        </td>
-                                        <td>
-                                            &nbsp;～
-                                        </td>
-                                        <td>
-                                            <select name="ctl00$cphContentsArea$ddlPTimeWk2EndHh" tabindex="18" class="imeDisabled" id="ctl00_cphContentsArea_ddlPTimeWk2EndHh" style="width: 50px;">
-                                                <option selected="selected" value=""></option>
-                                                <option value="0">0</option>
-                                                <option value="1">1</option>
-                                                <option value="2">2</option>
-                                                <option value="3">3</option>
-                                                <option value="4">4</option>
-                                                <option value="5">5</option>
-                                                <option value="6">6</option>
-                                                <option value="7">7</option>
-                                                <option value="8">8</option>
-                                                <option value="9">9</option>
-                                                <option value="10">10</option>
-                                                <option value="11">11</option>
-                                                <option value="12">12</option>
-                                                <option value="13">13</option>
-                                                <option value="14">14</option>
-                                                <option value="15">15</option>
-                                                <option value="16">16</option>
-                                                <option value="17">17</option>
-                                                <option value="18">18</option>
-                                                <option value="19">19</option>
-                                                <option value="20">20</option>
-                                                <option value="21">21</option>
-                                                <option value="22">22</option>
-                                                <option value="23">23</option>
-                                                <option value="24">24</option>
-                                                <option value="25">25</option>
-                                                <option value="26">26</option>
-                                                <option value="27">27</option>
-                                                <option value="28">28</option>
-                                                <option value="29">29</option>
-                                                <option value="30">30</option>
-                                                <option value="31">31</option>
-                                                <option value="32">32</option>
-                                                <option value="33">33</option>
-                                                <option value="34">34</option>
-                                                <option value="35">35</option>
-                                                <option value="36">36</option>
-
-                                            </select>
-                                            &nbsp;時
-                                            <select name="ctl00$cphContentsArea$ddlPTimeWk2EndMi" tabindex="19" class="imeDisabled" id="ctl00_cphContentsArea_ddlPTimeWk2EndMi" style="width: 50px;">
-                                                <option selected="selected" value=""></option>
-                                                <option value="0">0</option>
-                                                <option value="5">5</option>
-                                                <option value="10">10</option>
-                                                <option value="15">15</option>
-                                                <option value="20">20</option>
-                                                <option value="25">25</option>
-                                                <option value="30">30</option>
-                                                <option value="35">35</option>
-                                                <option value="40">40</option>
-                                                <option value="45">45</option>
-                                                <option value="50">50</option>
-                                                <option value="55">55</option>
-
-                                            </select>
-                                            &nbsp;分
-                                        </td>
-                                        <td>
-
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            <select name="ctl00$cphContentsArea$ddlPTimeWk3" tabindex="20" id="ctl00_cphContentsArea_ddlPTimeWk3" style="width: 150px;">
-                                                <option selected="selected" value=""></option>
-                                                <option value="001">就業時間</option>
-                                                <option value="100">早出時間</option>
-                                                <option value="101">普通残業時間</option>
-                                                <option value="102">深夜残業時間</option>
-                                                <option value="103">休日残業時間</option>
-                                                <option value="104">休日深夜残業時間</option>
-
-                                            </select>
-                                        </td>
-                                        <td>
-                                            <select name="ctl00$cphContentsArea$ddlPTimeWk3StrHh" tabindex="21" class="imeDisabled" id="ctl00_cphContentsArea_ddlPTimeWk3StrHh" style="width: 50px;">
-                                                <option selected="selected" value=""></option>
-                                                <option value="0">0</option>
-                                                <option value="1">1</option>
-                                                <option value="2">2</option>
-                                                <option value="3">3</option>
-                                                <option value="4">4</option>
-                                                <option value="5">5</option>
-                                                <option value="6">6</option>
-                                                <option value="7">7</option>
-                                                <option value="8">8</option>
-                                                <option value="9">9</option>
-                                                <option value="10">10</option>
-                                                <option value="11">11</option>
-                                                <option value="12">12</option>
-                                                <option value="13">13</option>
-                                                <option value="14">14</option>
-                                                <option value="15">15</option>
-                                                <option value="16">16</option>
-                                                <option value="17">17</option>
-                                                <option value="18">18</option>
-                                                <option value="19">19</option>
-                                                <option value="20">20</option>
-                                                <option value="21">21</option>
-                                                <option value="22">22</option>
-                                                <option value="23">23</option>
-                                                <option value="24">24</option>
-                                                <option value="25">25</option>
-                                                <option value="26">26</option>
-                                                <option value="27">27</option>
-                                                <option value="28">28</option>
-                                                <option value="29">29</option>
-                                                <option value="30">30</option>
-                                                <option value="31">31</option>
-                                                <option value="32">32</option>
-                                                <option value="33">33</option>
-                                                <option value="34">34</option>
-                                                <option value="35">35</option>
-
-                                            </select>
-                                            &nbsp;時
-                                            <select name="ctl00$cphContentsArea$ddlPTimeWk3StrMi" tabindex="22" class="imeDisabled" id="ctl00_cphContentsArea_ddlPTimeWk3StrMi" style="width: 50px;">
-                                                <option selected="selected" value=""></option>
-                                                <option value="0">0</option>
-                                                <option value="5">5</option>
-                                                <option value="10">10</option>
-                                                <option value="15">15</option>
-                                                <option value="20">20</option>
-                                                <option value="25">25</option>
-                                                <option value="30">30</option>
-                                                <option value="35">35</option>
-                                                <option value="40">40</option>
-                                                <option value="45">45</option>
-                                                <option value="50">50</option>
-                                                <option value="55">55</option>
-
-                                            </select>
-                                            &nbsp;分
-                                        </td>
-                                        <td>
-                                            &nbsp;～
-                                        </td>
-                                        <td>
-                                            <select name="ctl00$cphContentsArea$ddlPTimeWk3EndHh" tabindex="23" class="imeDisabled" id="ctl00_cphContentsArea_ddlPTimeWk3EndHh" style="width: 50px;">
-                                                <option selected="selected" value=""></option>
-                                                <option value="0">0</option>
-                                                <option value="1">1</option>
-                                                <option value="2">2</option>
-                                                <option value="3">3</option>
-                                                <option value="4">4</option>
-                                                <option value="5">5</option>
-                                                <option value="6">6</option>
-                                                <option value="7">7</option>
-                                                <option value="8">8</option>
-                                                <option value="9">9</option>
-                                                <option value="10">10</option>
-                                                <option value="11">11</option>
-                                                <option value="12">12</option>
-                                                <option value="13">13</option>
-                                                <option value="14">14</option>
-                                                <option value="15">15</option>
-                                                <option value="16">16</option>
-                                                <option value="17">17</option>
-                                                <option value="18">18</option>
-                                                <option value="19">19</option>
-                                                <option value="20">20</option>
-                                                <option value="21">21</option>
-                                                <option value="22">22</option>
-                                                <option value="23">23</option>
-                                                <option value="24">24</option>
-                                                <option value="25">25</option>
-                                                <option value="26">26</option>
-                                                <option value="27">27</option>
-                                                <option value="28">28</option>
-                                                <option value="29">29</option>
-                                                <option value="30">30</option>
-                                                <option value="31">31</option>
-                                                <option value="32">32</option>
-                                                <option value="33">33</option>
-                                                <option value="34">34</option>
-                                                <option value="35">35</option>
-                                                <option value="36">36</option>
-
-                                            </select>
-                                            &nbsp;時
-                                            <select name="ctl00$cphContentsArea$ddlPTimeWk3EndMi" tabindex="24" class="imeDisabled" id="ctl00_cphContentsArea_ddlPTimeWk3EndMi" style="width: 50px;">
-                                                <option selected="selected" value=""></option>
-                                                <option value="0">0</option>
-                                                <option value="5">5</option>
-                                                <option value="10">10</option>
-                                                <option value="15">15</option>
-                                                <option value="20">20</option>
-                                                <option value="25">25</option>
-                                                <option value="30">30</option>
-                                                <option value="35">35</option>
-                                                <option value="40">40</option>
-                                                <option value="45">45</option>
-                                                <option value="50">50</option>
-                                                <option value="55">55</option>
-
-                                            </select>
-                                            &nbsp;分
-                                        </td>
-                                        <td>
-
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            <select name="ctl00$cphContentsArea$ddlPTimeWk4" tabindex="25" id="ctl00_cphContentsArea_ddlPTimeWk4" style="width: 150px;">
-                                                <option selected="selected" value=""></option>
-                                                <option value="001">就業時間</option>
-                                                <option value="100">早出時間</option>
-                                                <option value="101">普通残業時間</option>
-                                                <option value="102">深夜残業時間</option>
-                                                <option value="103">休日残業時間</option>
-                                                <option value="104">休日深夜残業時間</option>
-
-                                            </select>
-                                        </td>
-                                        <td>
-                                            <select name="ctl00$cphContentsArea$ddlPTimeWk4StrHh" tabindex="26" class="imeDisabled" id="ctl00_cphContentsArea_ddlPTimeWk4StrHh" style="width: 50px;">
-                                                <option selected="selected" value=""></option>
-                                                <option value="0">0</option>
-                                                <option value="1">1</option>
-                                                <option value="2">2</option>
-                                                <option value="3">3</option>
-                                                <option value="4">4</option>
-                                                <option value="5">5</option>
-                                                <option value="6">6</option>
-                                                <option value="7">7</option>
-                                                <option value="8">8</option>
-                                                <option value="9">9</option>
-                                                <option value="10">10</option>
-                                                <option value="11">11</option>
-                                                <option value="12">12</option>
-                                                <option value="13">13</option>
-                                                <option value="14">14</option>
-                                                <option value="15">15</option>
-                                                <option value="16">16</option>
-                                                <option value="17">17</option>
-                                                <option value="18">18</option>
-                                                <option value="19">19</option>
-                                                <option value="20">20</option>
-                                                <option value="21">21</option>
-                                                <option value="22">22</option>
-                                                <option value="23">23</option>
-                                                <option value="24">24</option>
-                                                <option value="25">25</option>
-                                                <option value="26">26</option>
-                                                <option value="27">27</option>
-                                                <option value="28">28</option>
-                                                <option value="29">29</option>
-                                                <option value="30">30</option>
-                                                <option value="31">31</option>
-                                                <option value="32">32</option>
-                                                <option value="33">33</option>
-                                                <option value="34">34</option>
-                                                <option value="35">35</option>
-
-                                            </select>
-                                            &nbsp;時
-                                            <select name="ctl00$cphContentsArea$ddlPTimeWk4StrMi" tabindex="27" class="imeDisabled" id="ctl00_cphContentsArea_ddlPTimeWk4StrMi" style="width: 50px;">
-                                                <option selected="selected" value=""></option>
-                                                <option value="0">0</option>
-                                                <option value="5">5</option>
-                                                <option value="10">10</option>
-                                                <option value="15">15</option>
-                                                <option value="20">20</option>
-                                                <option value="25">25</option>
-                                                <option value="30">30</option>
-                                                <option value="35">35</option>
-                                                <option value="40">40</option>
-                                                <option value="45">45</option>
-                                                <option value="50">50</option>
-                                                <option value="55">55</option>
-
-                                            </select>
-                                            &nbsp;分
-                                        </td>
-                                        <td>
-                                            &nbsp;～
-                                        </td>
-                                        <td>
-                                            <select name="ctl00$cphContentsArea$ddlPTimeWk4EndHh" tabindex="28" class="imeDisabled" id="ctl00_cphContentsArea_ddlPTimeWk4EndHh" style="width: 50px;">
-                                                <option selected="selected" value=""></option>
-                                                <option value="0">0</option>
-                                                <option value="1">1</option>
-                                                <option value="2">2</option>
-                                                <option value="3">3</option>
-                                                <option value="4">4</option>
-                                                <option value="5">5</option>
-                                                <option value="6">6</option>
-                                                <option value="7">7</option>
-                                                <option value="8">8</option>
-                                                <option value="9">9</option>
-                                                <option value="10">10</option>
-                                                <option value="11">11</option>
-                                                <option value="12">12</option>
-                                                <option value="13">13</option>
-                                                <option value="14">14</option>
-                                                <option value="15">15</option>
-                                                <option value="16">16</option>
-                                                <option value="17">17</option>
-                                                <option value="18">18</option>
-                                                <option value="19">19</option>
-                                                <option value="20">20</option>
-                                                <option value="21">21</option>
-                                                <option value="22">22</option>
-                                                <option value="23">23</option>
-                                                <option value="24">24</option>
-                                                <option value="25">25</option>
-                                                <option value="26">26</option>
-                                                <option value="27">27</option>
-                                                <option value="28">28</option>
-                                                <option value="29">29</option>
-                                                <option value="30">30</option>
-                                                <option value="31">31</option>
-                                                <option value="32">32</option>
-                                                <option value="33">33</option>
-                                                <option value="34">34</option>
-                                                <option value="35">35</option>
-                                                <option value="36">36</option>
-
-                                            </select>
-                                            &nbsp;時
-                                            <select name="ctl00$cphContentsArea$ddlPTimeWk4EndMi" tabindex="29" class="imeDisabled" id="ctl00_cphContentsArea_ddlPTimeWk4EndMi" style="width: 50px;">
-                                                <option selected="selected" value=""></option>
-                                                <option value="0">0</option>
-                                                <option value="5">5</option>
-                                                <option value="10">10</option>
-                                                <option value="15">15</option>
-                                                <option value="20">20</option>
-                                                <option value="25">25</option>
-                                                <option value="30">30</option>
-                                                <option value="35">35</option>
-                                                <option value="40">40</option>
-                                                <option value="45">45</option>
-                                                <option value="50">50</option>
-                                                <option value="55">55</option>
-
-                                            </select>
-                                            &nbsp;分
-                                        </td>
-                                        <td>
-
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            <select name="ctl00$cphContentsArea$ddlPTimeWk5" tabindex="30" id="ctl00_cphContentsArea_ddlPTimeWk5" style="width: 150px;">
-                                                <option selected="selected" value=""></option>
-                                                <option value="001">就業時間</option>
-                                                <option value="100">早出時間</option>
-                                                <option value="101">普通残業時間</option>
-                                                <option value="102">深夜残業時間</option>
-                                                <option value="103">休日残業時間</option>
-                                                <option value="104">休日深夜残業時間</option>
-
-                                            </select>
-                                        </td>
-                                        <td>
-                                            <select name="ctl00$cphContentsArea$ddlPTimeWk5StrHh" tabindex="31" class="imeDisabled" id="ctl00_cphContentsArea_ddlPTimeWk5StrHh" style="width: 50px;">
-                                                <option selected="selected" value=""></option>
-                                                <option value="0">0</option>
-                                                <option value="1">1</option>
-                                                <option value="2">2</option>
-                                                <option value="3">3</option>
-                                                <option value="4">4</option>
-                                                <option value="5">5</option>
-                                                <option value="6">6</option>
-                                                <option value="7">7</option>
-                                                <option value="8">8</option>
-                                                <option value="9">9</option>
-                                                <option value="10">10</option>
-                                                <option value="11">11</option>
-                                                <option value="12">12</option>
-                                                <option value="13">13</option>
-                                                <option value="14">14</option>
-                                                <option value="15">15</option>
-                                                <option value="16">16</option>
-                                                <option value="17">17</option>
-                                                <option value="18">18</option>
-                                                <option value="19">19</option>
-                                                <option value="20">20</option>
-                                                <option value="21">21</option>
-                                                <option value="22">22</option>
-                                                <option value="23">23</option>
-                                                <option value="24">24</option>
-                                                <option value="25">25</option>
-                                                <option value="26">26</option>
-                                                <option value="27">27</option>
-                                                <option value="28">28</option>
-                                                <option value="29">29</option>
-                                                <option value="30">30</option>
-                                                <option value="31">31</option>
-                                                <option value="32">32</option>
-                                                <option value="33">33</option>
-                                                <option value="34">34</option>
-                                                <option value="35">35</option>
-
-                                            </select>
-                                            &nbsp;時
-                                            <select name="ctl00$cphContentsArea$ddlPTimeWk5StrMi" tabindex="32" class="imeDisabled" id="ctl00_cphContentsArea_ddlPTimeWk5StrMi" style="width: 50px;">
-                                                <option selected="selected" value=""></option>
-                                                <option value="0">0</option>
-                                                <option value="5">5</option>
-                                                <option value="10">10</option>
-                                                <option value="15">15</option>
-                                                <option value="20">20</option>
-                                                <option value="25">25</option>
-                                                <option value="30">30</option>
-                                                <option value="35">35</option>
-                                                <option value="40">40</option>
-                                                <option value="45">45</option>
-                                                <option value="50">50</option>
-                                                <option value="55">55</option>
-
-                                            </select>
-                                            &nbsp;分
-                                        </td>
-                                        <td>
-                                            &nbsp;～
-                                        </td>
-                                        <td>
-                                            <select name="ctl00$cphContentsArea$ddlPTimeWk5EndHh" tabindex="33" class="imeDisabled" id="ctl00_cphContentsArea_ddlPTimeWk5EndHh" style="width: 50px;">
-                                                <option selected="selected" value=""></option>
-                                                <option value="0">0</option>
-                                                <option value="1">1</option>
-                                                <option value="2">2</option>
-                                                <option value="3">3</option>
-                                                <option value="4">4</option>
-                                                <option value="5">5</option>
-                                                <option value="6">6</option>
-                                                <option value="7">7</option>
-                                                <option value="8">8</option>
-                                                <option value="9">9</option>
-                                                <option value="10">10</option>
-                                                <option value="11">11</option>
-                                                <option value="12">12</option>
-                                                <option value="13">13</option>
-                                                <option value="14">14</option>
-                                                <option value="15">15</option>
-                                                <option value="16">16</option>
-                                                <option value="17">17</option>
-                                                <option value="18">18</option>
-                                                <option value="19">19</option>
-                                                <option value="20">20</option>
-                                                <option value="21">21</option>
-                                                <option value="22">22</option>
-                                                <option value="23">23</option>
-                                                <option value="24">24</option>
-                                                <option value="25">25</option>
-                                                <option value="26">26</option>
-                                                <option value="27">27</option>
-                                                <option value="28">28</option>
-                                                <option value="29">29</option>
-                                                <option value="30">30</option>
-                                                <option value="31">31</option>
-                                                <option value="32">32</option>
-                                                <option value="33">33</option>
-                                                <option value="34">34</option>
-                                                <option value="35">35</option>
-                                                <option value="36">36</option>
-
-                                            </select>
-                                            &nbsp;時
-                                            <select name="ctl00$cphContentsArea$ddlPTimeWk5EndMi" tabindex="34" class="imeDisabled" id="ctl00_cphContentsArea_ddlPTimeWk5EndMi" style="width: 50px;">
-                                                <option selected="selected" value=""></option>
-                                                <option value="0">0</option>
-                                                <option value="5">5</option>
-                                                <option value="10">10</option>
-                                                <option value="15">15</option>
-                                                <option value="20">20</option>
-                                                <option value="25">25</option>
-                                                <option value="30">30</option>
-                                                <option value="35">35</option>
-                                                <option value="40">40</option>
-                                                <option value="45">45</option>
-                                                <option value="50">50</option>
-                                                <option value="55">55</option>
-
-                                            </select>
-                                            &nbsp;分
-                                        </td>
-                                        <td>
-
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            <select name="ctl00$cphContentsArea$ddlPTimeWk6" tabindex="35" id="ctl00_cphContentsArea_ddlPTimeWk6" style="width: 150px;">
-                                                <option selected="selected" value=""></option>
-                                                <option value="001">就業時間</option>
-                                                <option value="100">早出時間</option>
-                                                <option value="101">普通残業時間</option>
-                                                <option value="102">深夜残業時間</option>
-                                                <option value="103">休日残業時間</option>
-                                                <option value="104">休日深夜残業時間</option>
-
-                                            </select>
-                                        </td>
-                                        <td>
-                                            <select name="ctl00$cphContentsArea$ddlPTimeWk6StrHh" tabindex="36" class="imeDisabled" id="ctl00_cphContentsArea_ddlPTimeWk6StrHh" style="width: 50px;">
-                                                <option selected="selected" value=""></option>
-                                                <option value="0">0</option>
-                                                <option value="1">1</option>
-                                                <option value="2">2</option>
-                                                <option value="3">3</option>
-                                                <option value="4">4</option>
-                                                <option value="5">5</option>
-                                                <option value="6">6</option>
-                                                <option value="7">7</option>
-                                                <option value="8">8</option>
-                                                <option value="9">9</option>
-                                                <option value="10">10</option>
-                                                <option value="11">11</option>
-                                                <option value="12">12</option>
-                                                <option value="13">13</option>
-                                                <option value="14">14</option>
-                                                <option value="15">15</option>
-                                                <option value="16">16</option>
-                                                <option value="17">17</option>
-                                                <option value="18">18</option>
-                                                <option value="19">19</option>
-                                                <option value="20">20</option>
-                                                <option value="21">21</option>
-                                                <option value="22">22</option>
-                                                <option value="23">23</option>
-                                                <option value="24">24</option>
-                                                <option value="25">25</option>
-                                                <option value="26">26</option>
-                                                <option value="27">27</option>
-                                                <option value="28">28</option>
-                                                <option value="29">29</option>
-                                                <option value="30">30</option>
-                                                <option value="31">31</option>
-                                                <option value="32">32</option>
-                                                <option value="33">33</option>
-                                                <option value="34">34</option>
-                                                <option value="35">35</option>
-
-                                            </select>
-                                            &nbsp;時
-                                            <select name="ctl00$cphContentsArea$ddlPTimeWk6StrMi" tabindex="37" class="imeDisabled" id="ctl00_cphContentsArea_ddlPTimeWk6StrMi" style="width: 50px;">
-                                                <option selected="selected" value=""></option>
-                                                <option value="0">0</option>
-                                                <option value="5">5</option>
-                                                <option value="10">10</option>
-                                                <option value="15">15</option>
-                                                <option value="20">20</option>
-                                                <option value="25">25</option>
-                                                <option value="30">30</option>
-                                                <option value="35">35</option>
-                                                <option value="40">40</option>
-                                                <option value="45">45</option>
-                                                <option value="50">50</option>
-                                                <option value="55">55</option>
-
-                                            </select>
-                                            &nbsp;分
-                                        </td>
-                                        <td>
-                                            &nbsp;～
-                                        </td>
-                                        <td>
-                                            <select name="ctl00$cphContentsArea$ddlPTimeWk6EndHh" tabindex="38" class="imeDisabled" id="ctl00_cphContentsArea_ddlPTimeWk6EndHh" style="width: 50px;">
-                                                <option selected="selected" value=""></option>
-                                                <option value="0">0</option>
-                                                <option value="1">1</option>
-                                                <option value="2">2</option>
-                                                <option value="3">3</option>
-                                                <option value="4">4</option>
-                                                <option value="5">5</option>
-                                                <option value="6">6</option>
-                                                <option value="7">7</option>
-                                                <option value="8">8</option>
-                                                <option value="9">9</option>
-                                                <option value="10">10</option>
-                                                <option value="11">11</option>
-                                                <option value="12">12</option>
-                                                <option value="13">13</option>
-                                                <option value="14">14</option>
-                                                <option value="15">15</option>
-                                                <option value="16">16</option>
-                                                <option value="17">17</option>
-                                                <option value="18">18</option>
-                                                <option value="19">19</option>
-                                                <option value="20">20</option>
-                                                <option value="21">21</option>
-                                                <option value="22">22</option>
-                                                <option value="23">23</option>
-                                                <option value="24">24</option>
-                                                <option value="25">25</option>
-                                                <option value="26">26</option>
-                                                <option value="27">27</option>
-                                                <option value="28">28</option>
-                                                <option value="29">29</option>
-                                                <option value="30">30</option>
-                                                <option value="31">31</option>
-                                                <option value="32">32</option>
-                                                <option value="33">33</option>
-                                                <option value="34">34</option>
-                                                <option value="35">35</option>
-                                                <option value="36">36</option>
-
-                                            </select>
-                                            &nbsp;時
-                                            <select name="ctl00$cphContentsArea$ddlPTimeWk6EndMi" tabindex="39" class="imeDisabled" id="ctl00_cphContentsArea_ddlPTimeWk6EndMi" style="width: 50px;">
-                                                <option selected="selected" value=""></option>
-                                                <option value="0">0</option>
-                                                <option value="5">5</option>
-                                                <option value="10">10</option>
-                                                <option value="15">15</option>
-                                                <option value="20">20</option>
-                                                <option value="25">25</option>
-                                                <option value="30">30</option>
-                                                <option value="35">35</option>
-                                                <option value="40">40</option>
-                                                <option value="45">45</option>
-                                                <option value="50">50</option>
-                                                <option value="55">55</option>
-
-                                            </select>
-                                            &nbsp;分
-                                        </td>
-                                        <td>
-
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            <select name="ctl00$cphContentsArea$ddlPTimeWk7" tabindex="40" id="ctl00_cphContentsArea_ddlPTimeWk7" style="width: 150px;">
-                                                <option selected="selected" value=""></option>
-                                                <option value="001">就業時間</option>
-                                                <option value="100">早出時間</option>
-                                                <option value="101">普通残業時間</option>
-                                                <option value="102">深夜残業時間</option>
-                                                <option value="103">休日残業時間</option>
-                                                <option value="104">休日深夜残業時間</option>
-
-                                            </select>
-                                        </td>
-                                        <td>
-                                            <select name="ctl00$cphContentsArea$ddlPTimeWk7StrHh" tabindex="41" class="imeDisabled" id="ctl00_cphContentsArea_ddlPTimeWk7StrHh" style="width: 50px;">
-                                                <option selected="selected" value=""></option>
-                                                <option value="0">0</option>
-                                                <option value="1">1</option>
-                                                <option value="2">2</option>
-                                                <option value="3">3</option>
-                                                <option value="4">4</option>
-                                                <option value="5">5</option>
-                                                <option value="6">6</option>
-                                                <option value="7">7</option>
-                                                <option value="8">8</option>
-                                                <option value="9">9</option>
-                                                <option value="10">10</option>
-                                                <option value="11">11</option>
-                                                <option value="12">12</option>
-                                                <option value="13">13</option>
-                                                <option value="14">14</option>
-                                                <option value="15">15</option>
-                                                <option value="16">16</option>
-                                                <option value="17">17</option>
-                                                <option value="18">18</option>
-                                                <option value="19">19</option>
-                                                <option value="20">20</option>
-                                                <option value="21">21</option>
-                                                <option value="22">22</option>
-                                                <option value="23">23</option>
-                                                <option value="24">24</option>
-                                                <option value="25">25</option>
-                                                <option value="26">26</option>
-                                                <option value="27">27</option>
-                                                <option value="28">28</option>
-                                                <option value="29">29</option>
-                                                <option value="30">30</option>
-                                                <option value="31">31</option>
-                                                <option value="32">32</option>
-                                                <option value="33">33</option>
-                                                <option value="34">34</option>
-                                                <option value="35">35</option>
-
-                                            </select>
-                                            &nbsp;時
-                                            <select name="ctl00$cphContentsArea$ddlPTimeWk7StrMi" tabindex="42" class="imeDisabled" id="ctl00_cphContentsArea_ddlPTimeWk7StrMi" style="width: 50px;">
-                                                <option selected="selected" value=""></option>
-                                                <option value="0">0</option>
-                                                <option value="5">5</option>
-                                                <option value="10">10</option>
-                                                <option value="15">15</option>
-                                                <option value="20">20</option>
-                                                <option value="25">25</option>
-                                                <option value="30">30</option>
-                                                <option value="35">35</option>
-                                                <option value="40">40</option>
-                                                <option value="45">45</option>
-                                                <option value="50">50</option>
-                                                <option value="55">55</option>
-
-                                            </select>
-                                            &nbsp;分
-                                        </td>
-                                        <td>
-                                            &nbsp;～
-                                        </td>
-                                        <td>
-                                            <select name="ctl00$cphContentsArea$ddlPTimeWk7EndHh" tabindex="43" class="imeDisabled" id="ctl00_cphContentsArea_ddlPTimeWk7EndHh" style="width: 50px;">
-                                                <option selected="selected" value=""></option>
-                                                <option value="0">0</option>
-                                                <option value="1">1</option>
-                                                <option value="2">2</option>
-                                                <option value="3">3</option>
-                                                <option value="4">4</option>
-                                                <option value="5">5</option>
-                                                <option value="6">6</option>
-                                                <option value="7">7</option>
-                                                <option value="8">8</option>
-                                                <option value="9">9</option>
-                                                <option value="10">10</option>
-                                                <option value="11">11</option>
-                                                <option value="12">12</option>
-                                                <option value="13">13</option>
-                                                <option value="14">14</option>
-                                                <option value="15">15</option>
-                                                <option value="16">16</option>
-                                                <option value="17">17</option>
-                                                <option value="18">18</option>
-                                                <option value="19">19</option>
-                                                <option value="20">20</option>
-                                                <option value="21">21</option>
-                                                <option value="22">22</option>
-                                                <option value="23">23</option>
-                                                <option value="24">24</option>
-                                                <option value="25">25</option>
-                                                <option value="26">26</option>
-                                                <option value="27">27</option>
-                                                <option value="28">28</option>
-                                                <option value="29">29</option>
-                                                <option value="30">30</option>
-                                                <option value="31">31</option>
-                                                <option value="32">32</option>
-                                                <option value="33">33</option>
-                                                <option value="34">34</option>
-                                                <option value="35">35</option>
-                                                <option value="36">36</option>
-
-                                            </select>
-                                            &nbsp;時
-                                            <select name="ctl00$cphContentsArea$ddlPTimeWk7EndMi" tabindex="44" class="imeDisabled" id="ctl00_cphContentsArea_ddlPTimeWk7EndMi" style="width: 50px;">
-                                                <option selected="selected" value=""></option>
-                                                <option value="0">0</option>
-                                                <option value="5">5</option>
-                                                <option value="10">10</option>
-                                                <option value="15">15</option>
-                                                <option value="20">20</option>
-                                                <option value="25">25</option>
-                                                <option value="30">30</option>
-                                                <option value="35">35</option>
-                                                <option value="40">40</option>
-                                                <option value="45">45</option>
-                                                <option value="50">50</option>
-                                                <option value="55">55</option>
-
-                                            </select>
-                                            &nbsp;分
-                                        </td>
-                                        <td>
-
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                            <div class="line">
-                            </div>
-                            <table class="GridViewStyle2 mg10">
-                                <tbody>
-                                    <tr>
-                                        <th>
-                                            割増対象
-                                        </th>
-                                        <th>
-                                            開始時間
-                                        </th>
-                                        <td>
-                                        </td>
-                                        <th>
-                                            終了時間
-                                        </th>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            <select name="ctl00$cphContentsArea$ddlPTimeExt1" tabindex="45" id="ctl00_cphContentsArea_ddlPTimeExt1" style="width: 150px;">
-                                                <option selected="selected" value=""></option>
-                                                <option value="200">深夜割増</option>
-
-                                            </select>
-                                        </td>
-                                        <td>
-                                            <select name="ctl00$cphContentsArea$ddlPTimeExt1StrHh" tabindex="46" class="imeDisabled" id="ctl00_cphContentsArea_ddlPTimeExt1StrHh" style="width: 50px;">
-                                                <option selected="selected" value=""></option>
-                                                <option value="0">0</option>
-                                                <option value="1">1</option>
-                                                <option value="2">2</option>
-                                                <option value="3">3</option>
-                                                <option value="4">4</option>
-                                                <option value="5">5</option>
-                                                <option value="6">6</option>
-                                                <option value="7">7</option>
-                                                <option value="8">8</option>
-                                                <option value="9">9</option>
-                                                <option value="10">10</option>
-                                                <option value="11">11</option>
-                                                <option value="12">12</option>
-                                                <option value="13">13</option>
-                                                <option value="14">14</option>
-                                                <option value="15">15</option>
-                                                <option value="16">16</option>
-                                                <option value="17">17</option>
-                                                <option value="18">18</option>
-                                                <option value="19">19</option>
-                                                <option value="20">20</option>
-                                                <option value="21">21</option>
-                                                <option value="22">22</option>
-                                                <option value="23">23</option>
-                                                <option value="24">24</option>
-                                                <option value="25">25</option>
-                                                <option value="26">26</option>
-                                                <option value="27">27</option>
-                                                <option value="28">28</option>
-                                                <option value="29">29</option>
-                                                <option value="30">30</option>
-                                                <option value="31">31</option>
-                                                <option value="32">32</option>
-                                                <option value="33">33</option>
-                                                <option value="34">34</option>
-                                                <option value="35">35</option>
-
-                                            </select>
-                                            &nbsp;時
-                                            <select name="ctl00$cphContentsArea$ddlPTimeExt1StrMi" tabindex="47" class="imeDisabled" id="ctl00_cphContentsArea_ddlPTimeExt1StrMi" style="width: 50px;">
-                                                <option selected="selected" value=""></option>
-                                                <option value="0">0</option>
-                                                <option value="5">5</option>
-                                                <option value="10">10</option>
-                                                <option value="15">15</option>
-                                                <option value="20">20</option>
-                                                <option value="25">25</option>
-                                                <option value="30">30</option>
-                                                <option value="35">35</option>
-                                                <option value="40">40</option>
-                                                <option value="45">45</option>
-                                                <option value="50">50</option>
-                                                <option value="55">55</option>
-
-                                            </select>
-                                            &nbsp;分
-                                        </td>
-                                        <td>
-                                            &nbsp;～
-                                        </td>
-                                        <td>
-                                            <select name="ctl00$cphContentsArea$ddlPTimeExt1EndHh" tabindex="48" class="imeDisabled" id="ctl00_cphContentsArea_ddlPTimeExt1EndHh" style="width: 50px;">
-                                                <option selected="selected" value=""></option>
-                                                <option value="0">0</option>
-                                                <option value="1">1</option>
-                                                <option value="2">2</option>
-                                                <option value="3">3</option>
-                                                <option value="4">4</option>
-                                                <option value="5">5</option>
-                                                <option value="6">6</option>
-                                                <option value="7">7</option>
-                                                <option value="8">8</option>
-                                                <option value="9">9</option>
-                                                <option value="10">10</option>
-                                                <option value="11">11</option>
-                                                <option value="12">12</option>
-                                                <option value="13">13</option>
-                                                <option value="14">14</option>
-                                                <option value="15">15</option>
-                                                <option value="16">16</option>
-                                                <option value="17">17</option>
-                                                <option value="18">18</option>
-                                                <option value="19">19</option>
-                                                <option value="20">20</option>
-                                                <option value="21">21</option>
-                                                <option value="22">22</option>
-                                                <option value="23">23</option>
-                                                <option value="24">24</option>
-                                                <option value="25">25</option>
-                                                <option value="26">26</option>
-                                                <option value="27">27</option>
-                                                <option value="28">28</option>
-                                                <option value="29">29</option>
-                                                <option value="30">30</option>
-                                                <option value="31">31</option>
-                                                <option value="32">32</option>
-                                                <option value="33">33</option>
-                                                <option value="34">34</option>
-                                                <option value="35">35</option>
-                                                <option value="36">36</option>
-
-                                            </select>
-                                            &nbsp;時
-                                            <select name="ctl00$cphContentsArea$ddlPTimeExt1EndMi" tabindex="49" class="imeDisabled" id="ctl00_cphContentsArea_ddlPTimeExt1EndMi" style="width: 50px;">
-                                                <option selected="selected" value=""></option>
-                                                <option value="0">0</option>
-                                                <option value="5">5</option>
-                                                <option value="10">10</option>
-                                                <option value="15">15</option>
-                                                <option value="20">20</option>
-                                                <option value="25">25</option>
-                                                <option value="30">30</option>
-                                                <option value="35">35</option>
-                                                <option value="40">40</option>
-                                                <option value="45">45</option>
-                                                <option value="50">50</option>
-                                                <option value="55">55</option>
-
-                                            </select>
-                                            &nbsp;分
-                                        </td>
-                                        <td>
-
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            <select name="ctl00$cphContentsArea$ddlPTimeExt2" tabindex="50" id="ctl00_cphContentsArea_ddlPTimeExt2" style="width: 150px;">
-                                                <option selected="selected" value=""></option>
-                                                <option value="200">深夜割増</option>
-
-                                            </select>
-                                        </td>
-                                        <td>
-                                            <select name="ctl00$cphContentsArea$ddlPTimeExt2StrHh" tabindex="51" class="imeDisabled" id="ctl00_cphContentsArea_ddlPTimeExt2StrHh" style="width: 50px;">
-                                                <option selected="selected" value=""></option>
-                                                <option value="0">0</option>
-                                                <option value="1">1</option>
-                                                <option value="2">2</option>
-                                                <option value="3">3</option>
-                                                <option value="4">4</option>
-                                                <option value="5">5</option>
-                                                <option value="6">6</option>
-                                                <option value="7">7</option>
-                                                <option value="8">8</option>
-                                                <option value="9">9</option>
-                                                <option value="10">10</option>
-                                                <option value="11">11</option>
-                                                <option value="12">12</option>
-                                                <option value="13">13</option>
-                                                <option value="14">14</option>
-                                                <option value="15">15</option>
-                                                <option value="16">16</option>
-                                                <option value="17">17</option>
-                                                <option value="18">18</option>
-                                                <option value="19">19</option>
-                                                <option value="20">20</option>
-                                                <option value="21">21</option>
-                                                <option value="22">22</option>
-                                                <option value="23">23</option>
-                                                <option value="24">24</option>
-                                                <option value="25">25</option>
-                                                <option value="26">26</option>
-                                                <option value="27">27</option>
-                                                <option value="28">28</option>
-                                                <option value="29">29</option>
-                                                <option value="30">30</option>
-                                                <option value="31">31</option>
-                                                <option value="32">32</option>
-                                                <option value="33">33</option>
-                                                <option value="34">34</option>
-                                                <option value="35">35</option>
-
-                                            </select>
-                                            &nbsp;時
-                                            <select name="ctl00$cphContentsArea$ddlPTimeExt2StrMi" tabindex="52" class="imeDisabled" id="ctl00_cphContentsArea_ddlPTimeExt2StrMi" style="width: 50px;">
-                                                <option selected="selected" value=""></option>
-                                                <option value="0">0</option>
-                                                <option value="5">5</option>
-                                                <option value="10">10</option>
-                                                <option value="15">15</option>
-                                                <option value="20">20</option>
-                                                <option value="25">25</option>
-                                                <option value="30">30</option>
-                                                <option value="35">35</option>
-                                                <option value="40">40</option>
-                                                <option value="45">45</option>
-                                                <option value="50">50</option>
-                                                <option value="55">55</option>
-
-                                            </select>
-                                            &nbsp;分
-                                        </td>
-                                        <td>
-                                            &nbsp;～
-                                        </td>
-                                        <td>
-                                            <select name="ctl00$cphContentsArea$ddlPTimeExt2EndHh" tabindex="53" class="imeDisabled" id="ctl00_cphContentsArea_ddlPTimeExt2EndHh" style="width: 50px;">
-                                                <option selected="selected" value=""></option>
-                                                <option value="0">0</option>
-                                                <option value="1">1</option>
-                                                <option value="2">2</option>
-                                                <option value="3">3</option>
-                                                <option value="4">4</option>
-                                                <option value="5">5</option>
-                                                <option value="6">6</option>
-                                                <option value="7">7</option>
-                                                <option value="8">8</option>
-                                                <option value="9">9</option>
-                                                <option value="10">10</option>
-                                                <option value="11">11</option>
-                                                <option value="12">12</option>
-                                                <option value="13">13</option>
-                                                <option value="14">14</option>
-                                                <option value="15">15</option>
-                                                <option value="16">16</option>
-                                                <option value="17">17</option>
-                                                <option value="18">18</option>
-                                                <option value="19">19</option>
-                                                <option value="20">20</option>
-                                                <option value="21">21</option>
-                                                <option value="22">22</option>
-                                                <option value="23">23</option>
-                                                <option value="24">24</option>
-                                                <option value="25">25</option>
-                                                <option value="26">26</option>
-                                                <option value="27">27</option>
-                                                <option value="28">28</option>
-                                                <option value="29">29</option>
-                                                <option value="30">30</option>
-                                                <option value="31">31</option>
-                                                <option value="32">32</option>
-                                                <option value="33">33</option>
-                                                <option value="34">34</option>
-                                                <option value="35">35</option>
-                                                <option value="36">36</option>
-
-                                            </select>
-                                            &nbsp;時
-                                            <select name="ctl00$cphContentsArea$ddlPTimeExt2EndMi" tabindex="54" class="imeDisabled" id="ctl00_cphContentsArea_ddlPTimeExt2EndMi" style="width: 50px;">
-                                                <option selected="selected" value=""></option>
-                                                <option value="0">0</option>
-                                                <option value="5">5</option>
-                                                <option value="10">10</option>
-                                                <option value="15">15</option>
-                                                <option value="20">20</option>
-                                                <option value="25">25</option>
-                                                <option value="30">30</option>
-                                                <option value="35">35</option>
-                                                <option value="40">40</option>
-                                                <option value="45">45</option>
-                                                <option value="50">50</option>
-                                                <option value="55">55</option>
-
-                                            </select>
-                                            &nbsp;分
-                                        </td>
-                                        <td>
-
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <td>
-                                            <select name="ctl00$cphContentsArea$ddlPTimeExt3" tabindex="55" id="ctl00_cphContentsArea_ddlPTimeExt3" style="width: 150px;">
-                                                <option selected="selected" value=""></option>
-                                                <option value="200">深夜割増</option>
-
-                                            </select>
-                                        </td>
-                                        <td>
-                                            <select name="ctl00$cphContentsArea$ddlPTimeExt3StrHh" tabindex="56" class="imeDisabled" id="ctl00_cphContentsArea_ddlPTimeExt3StrHh" style="width: 50px;">
-                                                <option selected="selected" value=""></option>
-                                                <option value="0">0</option>
-                                                <option value="1">1</option>
-                                                <option value="2">2</option>
-                                                <option value="3">3</option>
-                                                <option value="4">4</option>
-                                                <option value="5">5</option>
-                                                <option value="6">6</option>
-                                                <option value="7">7</option>
-                                                <option value="8">8</option>
-                                                <option value="9">9</option>
-                                                <option value="10">10</option>
-                                                <option value="11">11</option>
-                                                <option value="12">12</option>
-                                                <option value="13">13</option>
-                                                <option value="14">14</option>
-                                                <option value="15">15</option>
-                                                <option value="16">16</option>
-                                                <option value="17">17</option>
-                                                <option value="18">18</option>
-                                                <option value="19">19</option>
-                                                <option value="20">20</option>
-                                                <option value="21">21</option>
-                                                <option value="22">22</option>
-                                                <option value="23">23</option>
-                                                <option value="24">24</option>
-                                                <option value="25">25</option>
-                                                <option value="26">26</option>
-                                                <option value="27">27</option>
-                                                <option value="28">28</option>
-                                                <option value="29">29</option>
-                                                <option value="30">30</option>
-                                                <option value="31">31</option>
-                                                <option value="32">32</option>
-                                                <option value="33">33</option>
-                                                <option value="34">34</option>
-                                                <option value="35">35</option>
-
-                                            </select>
-                                            &nbsp;時
-                                            <select name="ctl00$cphContentsArea$ddlPTimeExt3StrMi" tabindex="57" class="imeDisabled" id="ctl00_cphContentsArea_ddlPTimeExt3StrMi" style="width: 50px;">
-                                                <option selected="selected" value=""></option>
-                                                <option value="0">0</option>
-                                                <option value="5">5</option>
-                                                <option value="10">10</option>
-                                                <option value="15">15</option>
-                                                <option value="20">20</option>
-                                                <option value="25">25</option>
-                                                <option value="30">30</option>
-                                                <option value="35">35</option>
-                                                <option value="40">40</option>
-                                                <option value="45">45</option>
-                                                <option value="50">50</option>
-                                                <option value="55">55</option>
-
-                                            </select>
-                                            &nbsp;分
-                                        </td>
-                                        <td>
-                                            &nbsp;～
-                                        </td>
-                                        <td>
-                                            <select name="ctl00$cphContentsArea$ddlPTimeExt3EndHh" tabindex="58" class="imeDisabled" id="ctl00_cphContentsArea_ddlPTimeExt3EndHh" style="width: 50px;">
-                                                <option selected="selected" value=""></option>
-                                                <option value="0">0</option>
-                                                <option value="1">1</option>
-                                                <option value="2">2</option>
-                                                <option value="3">3</option>
-                                                <option value="4">4</option>
-                                                <option value="5">5</option>
-                                                <option value="6">6</option>
-                                                <option value="7">7</option>
-                                                <option value="8">8</option>
-                                                <option value="9">9</option>
-                                                <option value="10">10</option>
-                                                <option value="11">11</option>
-                                                <option value="12">12</option>
-                                                <option value="13">13</option>
-                                                <option value="14">14</option>
-                                                <option value="15">15</option>
-                                                <option value="16">16</option>
-                                                <option value="17">17</option>
-                                                <option value="18">18</option>
-                                                <option value="19">19</option>
-                                                <option value="20">20</option>
-                                                <option value="21">21</option>
-                                                <option value="22">22</option>
-                                                <option value="23">23</option>
-                                                <option value="24">24</option>
-                                                <option value="25">25</option>
-                                                <option value="26">26</option>
-                                                <option value="27">27</option>
-                                                <option value="28">28</option>
-                                                <option value="29">29</option>
-                                                <option value="30">30</option>
-                                                <option value="31">31</option>
-                                                <option value="32">32</option>
-                                                <option value="33">33</option>
-                                                <option value="34">34</option>
-                                                <option value="35">35</option>
-                                                <option value="36">36</option>
-
-                                            </select>
-                                            &nbsp;時
-                                            <select name="ctl00$cphContentsArea$ddlPTimeExt3EndMi" tabindex="59" class="imeDisabled" id="ctl00_cphContentsArea_ddlPTimeExt3EndMi" style="width: 50px;">
-                                                <option selected="selected" value=""></option>
-                                                <option value="0">0</option>
-                                                <option value="5">5</option>
-                                                <option value="10">10</option>
-                                                <option value="15">15</option>
-                                                <option value="20">20</option>
-                                                <option value="25">25</option>
-                                                <option value="30">30</option>
-                                                <option value="35">35</option>
-                                                <option value="40">40</option>
-                                                <option value="45">45</option>
-                                                <option value="50">50</option>
-                                                <option value="55">55</option>
-
-                                            </select>
-                                            &nbsp;分
-                                        </td>
-                                        <td>
-
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                            <div class="line">
-                            </div>
-
-                            <table class="InputFieldStyle1">
-                                <tbody>
-                                    <tr>
-                                        <th>
-                                            遅刻算出
-                                        </th>
-                                        <td>
-                                            <div class="GroupBox1">
-                                                <input name="ctl00$cphContentsArea$Rsv3Cls" tabindex="60" id="ctl00_cphContentsArea_rbRsv3ClsYes" type="radio" checked="checked" value="rbRsv3ClsYes"><label for="ctl00_cphContentsArea_rbRsv3ClsYes">する</label>
-                                                <input name="ctl00$cphContentsArea$Rsv3Cls" tabindex="61" id="ctl00_cphContentsArea_rbRsv3ClsNo" type="radio" value="rbRsv3ClsNo"><label for="ctl00_cphContentsArea_rbRsv3ClsNo">しない</label>
-                                                <div class="clearBoth">
+    <div id="contents-stage">
+        <table class="BaseContainerStyle1">
+            <tbody>
+                <tr>
+                    <td>
+                        <div id="ctl00_cphContentsArea_UpdatePanel1">
+                            <form action="" method="post" id="form">
+                                @csrf
+
+                                <!-- header block -->
+                                <table class="InputFieldStyle1">
+                                    <tbody>
+                                        <tr>
+                                            <th>
+                                                勤務体系コード
+                                            </th>
+                                            <td>
+                                                <input type="text" name="WORKPTN_CD" tabindex="1" id="WORKPTN_CD"
+                                                    style="width: 50px;" oninput="value = onlyHalfWord(value)"
+                                                    onfocus="this.select();" maxlength="3" value="{{ old('WORKPTN_CD') ?? $dataWorkPtn->WORKPTN_CD }}"
+                                                    @if (isset($dataWorkPtn->WORKPTN_CD))
+                                                    disabled
+                                                    @else
+                                                    autofocus
+                                                    onFocus="this.select()"
+                                                    @endif>
+                                                @if(isset($dataWorkPtn->WORKPTN_CD))
+                                                <input type="hidden" name="WORKPTN_CD" value="{{ $dataWorkPtn->WORKPTN_CD }}">
+                                                @endif
+                                                @error('WORKPTN_CD')
+                                                <span class="text-danger">{{ getArrValue($error_messages, $message) }}</span>
+                                                @enderror
+                                                <span class="text-danger" id="workPtnCd"></span>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <th>
+                                                勤務体系名
+                                            <td>
+                                                <input type="search" name="WORKPTN_NAME" tabindex="2" id="WORKPTN_NAME" style="width: 300px;"
+                                                    onfocus="this.select();" maxlength="20" value="{{ old('WORKPTN_NAME') ?? $dataWorkPtn->WORKPTN_NAME }}"
+                                                    @if (isset($dataWorkPtn->WORKPTN_NAME))
+                                                    autofocus
+                                                    onFocus="this.select()"
+                                                    @endif>
+                                                <span class="text-danger" id="workPtnName"></span>
+                                                </td>
+                                        </tr>
+                                        <tr>
+                                            <th>
+                                                勤務体系略名
+                                            <td>
+                                                <input type="text" name="WORKPTN_ABR_NAME" tabindex="3" id="WORKPTN_ABR_NAME" style="width: 70px;"
+                                                    onfocus="this.select();" maxlength="5" value="{{ old('WORKPTN_ABR_NAME') ?? $dataWorkPtn->WORKPTN_ABR_NAME }}">
+                                                <span class="text-danger" id="workPtnAbrName"></span>
+                                                </td>
+                                        </tr>
+                                        <tr>
+                                            <th>
+                                                出勤区分
+                                            </th>
+                                            <td>
+                                                <div class="GroupBox1">
+                                                    <input name="WORK_CLS_CD" tabindex="4" class="workclass"
+                                                        id="rbRegularWork" type="radio"
+                                                        value="01"
+                                                        {{ old('WORK_CLS_CD',isset($dataWorkPtn->WORK_CLS_CD) ? $dataWorkPtn->WORK_CLS_CD : '') == '01' ? 'checked': '' }}
+                                                        @if (!isset($dataWorkPtn->WORK_CLS_CD))
+                                                        checked
+                                                        @endif
+                                                        >
+                                                    <label for="rbRegularWork">通常出勤</label>
+                                                    <input name="WORK_CLS_CD" tabindex="5" class="workclass"
+                                                        id="rbHolidayWork" type="radio"
+                                                        value="00"
+                                                        {{ old('WORK_CLS_CD',isset($dataWorkPtn->WORK_CLS_CD) ? $dataWorkPtn->WORK_CLS_CD : '') == '00' ? 'checked': '' }}
+                                                        >
+                                                    <label for="rbHolidayWork">休日出勤</label>
+                                                    <div class="clearBoth">
+                                                    </div>
                                                 </div>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <th>
-                                            早退算出
-                                        </th>
-                                        <td>
-                                            <div class="GroupBox1">
-                                                <input name="ctl00$cphContentsArea$Rsv4Cls" tabindex="62" id="ctl00_cphContentsArea_rbRsv4ClsYes" type="radio" checked="checked" value="rbRsv4ClsYes"><label for="ctl00_cphContentsArea_rbRsv4ClsYes">する</label>
-                                                <input name="ctl00$cphContentsArea$Rsv4Cls" tabindex="63" id="ctl00_cphContentsArea_rbRsv4ClsNo" type="radio" value="rbRsv4ClsNo"><label for="ctl00_cphContentsArea_rbRsv4ClsNo">しない</label>
-                                                <div class="clearBoth">
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <th>
+                                                休日区分
+                                            </th>
+                                            <td>
+                                                <div class="GroupBox1">
+                                                    <input name="RSV1_CLS_CD" tabindex="6" id="holidayClsLeg" type="radio" value="00" class="hldCls"
+                                                            {{ old('RSV1_CLS_CD',isset($dataWorkPtn->RSV1_CLS_CD) ? $dataWorkPtn->RSV1_CLS_CD : '') == '00' ? 'checked': '' }}
+                                                            @if (!isset($dataWorkPtn->RSV1_CLS_CD))
+                                                            checked
+                                                            @endif>
+                                                        <label for="holidayClsLeg">法定</label>
+                                                    <input name="RSV1_CLS_CD" tabindex="7" id="holidayClsOutLeg" type="radio" value="01" class="hldCls"
+                                                            {{ old('RSV1_CLS_CD',isset($dataWorkPtn->RSV1_CLS_CD) ? $dataWorkPtn->RSV1_CLS_CD : '') == '01' ? 'checked': '' }}
+                                                            >
+                                                        <label for="holidayClsOutLeg">法定外</label>
+                                                    <div class="clearBoth">
+                                                    </div>
                                                 </div>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <th>
-                                            勤務時間
-                                        </th>
-                                        <td>
-                                            <select name="ctl00$cphContentsArea$ddlPRsv1Hh" tabindex="64" class="imeDisabled" id="ctl00_cphContentsArea_ddlPRsv1Hh" style="width: 50px;">
-                                                <option selected="selected" value=""></option>
-                                                <option value="0">0</option>
-                                                <option value="1">1</option>
-                                                <option value="2">2</option>
-                                                <option value="3">3</option>
-                                                <option value="4">4</option>
-                                                <option value="5">5</option>
-                                                <option value="6">6</option>
-                                                <option value="7">7</option>
-                                                <option value="8">8</option>
-                                                <option value="9">9</option>
-                                                <option value="10">10</option>
-                                                <option value="11">11</option>
-                                                <option value="12">12</option>
-                                                <option value="13">13</option>
-                                                <option value="14">14</option>
-                                                <option value="15">15</option>
-                                                <option value="16">16</option>
-                                                <option value="17">17</option>
-                                                <option value="18">18</option>
-                                                <option value="19">19</option>
-                                                <option value="20">20</option>
-                                                <option value="21">21</option>
-                                                <option value="22">22</option>
-                                                <option value="23">23</option>
-                                                <option value="24">24</option>
-                                                <option value="25">25</option>
-                                                <option value="26">26</option>
-                                                <option value="27">27</option>
-                                                <option value="28">28</option>
-                                                <option value="29">29</option>
-                                                <option value="30">30</option>
-                                                <option value="31">31</option>
-                                                <option value="32">32</option>
-                                                <option value="33">33</option>
-                                                <option value="34">34</option>
-                                                <option value="35">35</option>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <th>
+                                                職務種別
+                                            </th>
+                                            <td>
+                                                <div class="GroupBox1">
+                                                    <input name="DUTY_CLS_CD" class="dutyCls" tabindex="8" id="dutyTime" type="radio" value="00"
+                                                        {{ old('DUTY_CLS_CD',isset($dataWorkPtn->DUTY_CLS_CD) ? $dataWorkPtn->DUTY_CLS_CD : '') == '00' ? 'checked': '' }}
+                                                        @if (!isset($dataWorkPtn->DUTY_CLS_CD))
+                                                        checked
+                                                        @endif>
+                                                    <label for="dutyTime">時間帯</label>
+                                                    <input name="DUTY_CLS_CD" class="dutyCls" tabindex="9" id="dutyHours" type="radio" value="01"
+                                                        {{ old('DUTY_CLS_CD',isset($dataWorkPtn->DUTY_CLS_CD) ? $dataWorkPtn->DUTY_CLS_CD : '') == '01' ? 'checked': '' }}
+                                                        >
+                                                        <label for="dutyHours">時間数</label>
+                                                    <div class="clearBoth">
+                                                    </div>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                                <!-- header block end -->
+                                <!-- detail block -->
+                                <!-- 時間帯設定 -->
+                                <div id="pnlTime">
+                                    <p class="CategoryTitle1">時間帯設定</p>
+                                    <table class="GridViewStyle2">
+                                        <tbody>
+                                            <tr>
+                                                <th>
+                                                    勤怠項目
+                                                </th>
+                                                <th>
+                                                    開始時間
+                                                </th>
+                                                <td>
+                                                </td>
+                                                <th>
+                                                    終了時間
+                                                </th>
+                                            </tr>
+                                            <tr>
 
+                                            <tr class="rowWorkType">
+                                                <td>
+                                                    <select name="PTIME_WK1_CD" tabindex="10" class="pTimeCd"
+                                                        id="PTIME_WK1_CD" style="width: 150px;">
+                                                        <option value=""></option>
+                                                        @foreach ($dataWorkDescExp02 as $workDescExp02 )
+                                                        <option value="{{ $workDescExp02->WORK_DESC_CD }}"
+                                                            {{ $dataWorkPtn->PTIME_WK1_CD == (old('PTIME_WK1_CD') ?? $workDescExp02->WORK_DESC_CD) ? 'selected' : '' }}>
+                                                            {{ $workDescExp02->WORK_DESC_NAME }}
+                                                        </option>
+                                                        @endforeach
+                                                    </select>
+                                                </td>
+                                                <td>
+                                                    <select name="PTIME_WK1_STR_HH" tabindex="10" class="pTimeStrHH"
+                                                        id="PTIME_WK1_STR_HH"
+                                                        style="width: 50px;">
+                                                        <option value=""></option>
+                                                        @for($i = 0; $i <= 35; $i++)
+                                                        <option value="{{ $i }}"
+                                                        @if ($i == old('PTIME_WK1_STR_HH', $dataWorkPtn->PTIME_WK1_STR_HH) && isset($dataWorkPtn->PTIME_WK1_STR_HH))
+                                                        selected
+                                                        @endif>
+                                                            {{ $i }}
+                                                        </option>
+                                                        @endfor
+                                                    </select>
+                                                    &nbsp;時
+                                                    <select name="PTIME_WK1_STR_MI" tabindex="10" class="pTimeStrMI"
+                                                        id="PTIME_WK1_STR_MI"
+                                                        style="width: 50px;">
+                                                        <option value=""></option>
+                                                        @for($i = 0; $i <= 55; $i += 5)
+                                                        <option value="{{ $i }}"
+                                                        @if ($i == old('PTIME_WK1_STR_MI', $dataWorkPtn->PTIME_WK1_STR_MI) && isset($dataWorkPtn->PTIME_WK1_STR_MI))
+                                                        selected
+                                                        @endif>
+                                                        {{ $i }}
+                                                        </option>
+                                                        @endfor
+                                                    </select>
+                                                    &nbsp;分
+                                                </td>
+                                                <td>
+                                                    &nbsp;～
+                                                </td>
+                                                <td>
+                                                    <select name="PTIME_WK1_END_HH" tabindex="10" class="pTimeEndHH"
+                                                        id="PTIME_WK1_END_HH"
+                                                        style="width: 50px;">
+                                                        <option value=""></option>
+                                                        @for($i = 0; $i <= 36; $i++)
+                                                        <option value="{{ $i }}"
+                                                            @if ($i == old('PTIME_WK1_END_HH', $dataWorkPtn->PTIME_WK1_END_HH) && isset($dataWorkPtn->PTIME_WK1_END_HH))
+                                                            selected
+                                                            @endif>
+                                                            {{ $i }}
+                                                        </option>
+                                                        @endfor
+                                                    </select>
+                                                    &nbsp;時
+                                                    <select name="PTIME_WK1_END_MI" tabindex="10" class="pTimeEndMI"
+                                                        id="PTIME_WK1_END_MI"
+                                                        style="width: 50px;">
+                                                        <option value=""></option>
+                                                        @for($i = 0; $i <= 55; $i+=5)
+                                                        <option value="{{ $i }}"
+                                                            @if ($i == old('PTIME_WK1_END_MI', $dataWorkPtn->PTIME_WK1_END_MI) && isset($dataWorkPtn->PTIME_WK1_END_MI))
+                                                            selected
+                                                            @endif>
+                                                            {{ $i }}
+                                                        </option>
+                                                        @endfor
+                                                    </select>
+                                                    &nbsp;分
+                                                </td>
+                                                <td>
+                                                <span class="text-danger" id="pTime0"></span>
+                                                </td>
+                                            </tr>
+                                            <tr class="rowWorkType">
+                                                <td>
+                                                    <select name="PTIME_WK2_CD" tabindex="11" class="pTimeCd"
+                                                        id="PTIME_WK2_CD" style="width: 150px;">
+                                                        <option value=""></option>
+                                                        @foreach ($dataWorkDescExp02 as $workDescExp02 )
+                                                        <option value="{{ $workDescExp02->WORK_DESC_CD }}"
+                                                            {{ $dataWorkPtn->PTIME_WK2_CD == (old('PTIME_WK2_CD') ?? $workDescExp02->WORK_DESC_CD) ? 'selected' : '' }}>
+                                                            {{ $workDescExp02->WORK_DESC_NAME }}
+                                                        </option>
+                                                        @endforeach
+                                                    </select>
+                                                </td>
+                                                <td>
+                                                    <select name="PTIME_WK2_STR_HH" tabindex="11" class="pTimeStrHH"
+                                                        id="PTIME_WK2_STR_HH"
+                                                        style="width: 50px;">
+                                                        <option value=""></option>
+                                                        @for($i = 0; $i <= 35; $i++)
+                                                        <option value="{{ $i }}"
+                                                            @if ($i == old('PTIME_WK2_STR_HH', $dataWorkPtn->PTIME_WK2_STR_HH) && isset($dataWorkPtn->PTIME_WK2_STR_HH))
+                                                            selected
+                                                            @endif>
+                                                            {{ $i }}
+                                                        </option>
+                                                        @endfor
+                                                    </select>
+                                                    &nbsp;時
+                                                    <select name="PTIME_WK2_STR_MI" tabindex="11" class="pTimeStrMI"
+                                                        id="PTIME_WK2_STR_MI"
+                                                        style="width: 50px;">
+                                                        <option value=""></option>
+                                                        @for($i = 0; $i <= 55; $i+=5)
+                                                        <option value="{{ $i }}"
+                                                            @if ($i == old('PTIME_WK2_STR_MI', $dataWorkPtn->PTIME_WK2_STR_MI) && isset($dataWorkPtn->PTIME_WK2_STR_MI))
+                                                            selected
+                                                            @endif>
+                                                            {{ $i }}
+                                                        </option>
+                                                        @endfor
+                                                    </select>
+                                                    &nbsp;分
+                                                </td>
+                                                <td>
+                                                    &nbsp;～
+                                                </td>
+                                                <td>
+                                                    <select name="PTIME_WK2_END_HH" tabindex="11" class="pTimeEndHH"
+                                                        id="PTIME_WK2_END_HH"
+                                                        style="width: 50px;">
+                                                        <option value=""></option>
+                                                        @for($i = 0; $i <= 36; $i++)
+                                                        <option value="{{ $i }}"
+                                                            @if ($i == old('PTIME_WK2_END_HH', $dataWorkPtn->PTIME_WK2_END_HH) && isset($dataWorkPtn->PTIME_WK2_END_HH))
+                                                            selected
+                                                            @endif>
+                                                            {{ $i }}
+                                                        </option>
+                                                        @endfor
+                                                    </select>
+                                                    &nbsp;時
+                                                    <select name="PTIME_WK2_END_MI" tabindex="11" class="pTimeEndMI"
+                                                        id="PTIME_WK2_END_MI"
+                                                        style="width: 50px;">
+                                                        <option value=""></option>
+                                                        @for($i = 0; $i <= 55; $i+=5)
+                                                        <option value="{{ $i }}"
+                                                            @if ($i == old('PTIME_WK2_END_MI', $dataWorkPtn->PTIME_WK2_END_MI) && isset($dataWorkPtn->PTIME_WK2_END_MI))
+                                                            selected
+                                                            @endif>
+                                                            {{ $i }}
+                                                        </option>
+                                                        @endfor
+                                                    </select>
+                                                    &nbsp;分
+                                                </td>
+                                                <td>
+                                                    <span class="text-danger" id="pTime1"></span>
+                                                </td>
+                                            </tr>
+                                            <tr class="rowWorkType">
+                                                <td>
+                                                    <select name="PTIME_WK3_CD" tabindex="12" class="pTimeCd"
+                                                        id="PTIME_WK3_CD" style="width: 150px;">
+                                                        <option value=""></option>
+                                                        @foreach ($dataWorkDescExp02 as $workDescExp02 )
+                                                        <option value="{{ $workDescExp02->WORK_DESC_CD }}"
+                                                            {{ $dataWorkPtn->PTIME_WK3_CD == (old('PTIME_WK3_CD') ?? $workDescExp02->WORK_DESC_CD) ? 'selected' : '' }}>
+                                                            {{ $workDescExp02->WORK_DESC_NAME }}
+                                                        </option>
+                                                        @endforeach
+                                                    </select>
+                                                </td>
+                                                <td>
+                                                    <select name="PTIME_WK3_STR_HH" tabindex="12" class="pTimeStrHH"
+                                                        id="PTIME_WK3_STR_HH"
+                                                        style="width: 50px;">
+                                                        <option value=""></option>
+                                                        @for($i = 0; $i <= 35; $i++)
+                                                        <option value="{{ $i }}"
+                                                            @if ($i == old('PTIME_WK3_STR_HH', $dataWorkPtn->PTIME_WK3_STR_HH) && isset($dataWorkPtn->PTIME_WK3_STR_HH))
+                                                            selected
+                                                            @endif>
+                                                            {{ $i }}
+                                                        </option>
+                                                        @endfor
+                                                    </select>
+                                                    &nbsp;時
+                                                    <select name="PTIME_WK3_STR_MI" tabindex="12" class="pTimeStrMI"
+                                                        id="PTIME_WK3_STR_MI"
+                                                        style="width: 50px;">
+                                                        <option value=""></option>
+                                                        @for($i = 0; $i <= 55; $i+=5)
+                                                        <option value="{{ $i }}"
+                                                            @if ($i == old('PTIME_WK3_STR_MI', $dataWorkPtn->PTIME_WK3_STR_MI) && isset($dataWorkPtn->PTIME_WK3_STR_MI))
+                                                            selected
+                                                            @endif>
+                                                            {{ $i }}
+                                                        </option>
+                                                        @endfor
+                                                    </select>
+                                                    &nbsp;分
+                                                </td>
+                                                <td>
+                                                    &nbsp;～
+                                                </td>
+                                                <td>
+                                                    <select name="PTIME_WK3_END_HH" tabindex="12" class="pTimeEndHH"
+                                                        id="PTIME_WK3_END_HH"
+                                                        style="width: 50px;">
+                                                        <option value=""></option>
+                                                        @for($i = 0; $i <= 36; $i++)
+                                                        <option value="{{ $i }}"
+                                                            @if ($i == old('PTIME_WK3_END_HH', $dataWorkPtn->PTIME_WK3_END_HH) && isset($dataWorkPtn->PTIME_WK3_END_HH))
+                                                            selected
+                                                            @endif>
+                                                            {{ $i }}
+                                                        </option>
+                                                        @endfor
+                                                    </select>
+                                                    &nbsp;時
+                                                    <select name="PTIME_WK3_END_MI" tabindex="12" class="pTimeEndMI"
+                                                        id="PTIME_WK3_END_MI"
+                                                        style="width: 50px;">
+                                                        <option value=""></option>
+                                                        @for($i = 0; $i <= 55; $i+=5)
+                                                        <option value="{{ $i }}"
+                                                            @if ($i == old('PTIME_WK3_END_MI', $dataWorkPtn->PTIME_WK3_END_MI) && isset($dataWorkPtn->PTIME_WK3_END_MI))
+                                                            selected
+                                                            @endif>
+                                                            {{ $i }}
+                                                        </option>
+                                                        @endfor
+                                                    </select>
+                                                    &nbsp;分
+                                                </td>
+                                                <td>
+                                                    <span class="text-danger" id="pTime2"></span>
+                                                </td>
+                                            </tr>
+                                            <tr class="rowWorkType">
+                                                <td>
+                                                    <select name="PTIME_WK4_CD" tabindex="13" class="pTimeCd"
+                                                        id="PTIME_WK4_CD" style="width: 150px;">
+                                                        <option value=""></option>
+                                                        @foreach ($dataWorkDescExp02 as $workDescExp02 )
+                                                        <option value="{{ $workDescExp02->WORK_DESC_CD }}"
+                                                            {{ $dataWorkPtn->PTIME_WK4_CD == (old('PTIME_WK4_CD') ?? $workDescExp02->WORK_DESC_CD) ? 'selected' : '' }}>
+                                                            {{ $workDescExp02->WORK_DESC_NAME }}
+                                                        </option>
+                                                        @endforeach
+                                                    </select>
+                                                </td>
+                                                <td>
+                                                    <select name="PTIME_WK4_STR_HH" tabindex="13" class="pTimeStrHH"
+                                                        id="PTIME_WK4_STR_HH"
+                                                        style="width: 50px;">
+                                                        <option value=""></option>
+                                                        @for($i = 0; $i <= 35; $i++)
+                                                        <option value="{{ $i }}"
+                                                            @if ($i == old('PTIME_WK4_STR_HH', $dataWorkPtn->PTIME_WK4_STR_HH) && isset($dataWorkPtn->PTIME_WK4_STR_HH))
+                                                            selected
+                                                            @endif>
+                                                            {{ $i }}
+                                                        </option>
+                                                        @endfor
+                                                    </select>
+                                                    &nbsp;時
+                                                    <select name="PTIME_WK4_STR_MI" tabindex="13" class="pTimeStrMI"
+                                                        id="PTIME_WK4_STR_MI"
+                                                        style="width: 50px;">
+                                                        <option value=""></option>
+                                                        @for($i = 0; $i <= 55; $i+=5)
+                                                        <option value="{{ $i }}"
+                                                            @if ($i == old('PTIME_WK4_STR_MI', $dataWorkPtn->PTIME_WK4_STR_MI) && isset($dataWorkPtn->PTIME_WK4_STR_MI))
+                                                            selected
+                                                            @endif>
+                                                            {{ $i }}
+                                                        </option>
+                                                        @endfor
+                                                    </select>
+                                                    &nbsp;分
+                                                </td>
+                                                <td>
+                                                    &nbsp;～
+                                                </td>
+                                                <td>
+                                                    <select name="PTIME_WK4_END_HH" tabindex="13" class="pTimeEndHH"
+                                                        id="PTIME_WK4_END_HH"
+                                                        style="width: 50px;">
+                                                        <option value="" ></option>
+                                                        @for($i = 0; $i <= 36; $i++)
+                                                        <option value="{{ $i }}"
+                                                            @if ($i == old('PTIME_WK4_END_HH', $dataWorkPtn->PTIME_WK4_END_HH) && isset($dataWorkPtn->PTIME_WK4_END_HH))
+                                                            selected
+                                                            @endif>
+                                                            {{ $i }}
+                                                        </option>
+                                                        @endfor
+                                                    </select>
+                                                    &nbsp;時
+                                                    <select name="PTIME_WK4_END_MI" tabindex="13" class="pTimeEndMI"
+                                                        id="PTIME_WK4_END_MI"
+                                                        style="width: 50px;">
+                                                        <option value=""></option>
+                                                        @for($i = 0; $i <= 55; $i+=5)
+                                                        <option value="{{ $i }}"
+                                                            @if ($i == old('PTIME_WK4_END_MI', $dataWorkPtn->PTIME_WK4_END_MI) && isset($dataWorkPtn->PTIME_WK4_END_MI))
+                                                            selected
+                                                            @endif>
+                                                            {{ $i }}
+                                                        </option>
+                                                        @endfor
+                                                    </select>
+                                                    &nbsp;分
+                                                </td>
+                                                <td>
+                                                    <span class="text-danger" id="pTime3"></span>
+                                                </td>
+                                            </tr>
+                                            <tr class="rowWorkType">
+                                                <td>
+                                                    <select name="PTIME_WK5_CD" tabindex="15" class="pTimeCd"
+                                                        id="PTIME_WK5_CD" style="width: 150px;">
+                                                        <option value=""></option>
+                                                        @foreach ($dataWorkDescExp02 as $workDescExp02 )
+                                                        <option value="{{ $workDescExp02->WORK_DESC_CD }}"
+                                                            {{ $dataWorkPtn->PTIME_WK5_CD == (old('PTIME_WK5_CD') ?? $workDescExp02->WORK_DESC_CD) ? 'selected' : '' }}>
+                                                            {{ $workDescExp02->WORK_DESC_NAME }}
+                                                        </option>
+                                                        @endforeach
+                                                    </select>
+                                                </td>
+                                                <td>
+                                                    <select name="PTIME_WK5_STR_HH" tabindex="15" class="pTimeStrHH"
+                                                        id="PTIME_WK5_STR_HH"
+                                                        style="width: 50px;">
+                                                        <option value=""></option>
+                                                        @for($i = 0; $i <= 35; $i++)
+                                                        <option value="{{ $i }}"
+                                                            @if ($i == old('PTIME_WK5_STR_HH', $dataWorkPtn->PTIME_WK5_STR_HH) && isset($dataWorkPtn->PTIME_WK5_STR_HH))
+                                                            selected
+                                                            @endif>
+                                                            {{ $i }}
+                                                        </option>
+                                                        @endfor
+                                                    </select>
+                                                    &nbsp;時
+                                                    <select name="PTIME_WK5_STR_MI" tabindex="15" class="pTimeStrMI"
+                                                        id="PTIME_WK5_STR_MI"
+                                                        style="width: 50px;">
+                                                        <option value=""></option>
+                                                        @for($i = 0; $i <= 55; $i+=5)
+                                                        <option value="{{ $i }}"
+                                                            @if ($i == old('PTIME_WK5_STR_MI', $dataWorkPtn->PTIME_WK5_STR_MI) && isset($dataWorkPtn->PTIME_WK5_STR_MI))
+                                                            selected
+                                                            @endif>
+                                                            {{ $i }}
+                                                        </option>
+                                                        @endfor
+                                                    </select>
+                                                    &nbsp;分
+                                                </td>
+                                                <td>
+                                                    &nbsp;～
+                                                </td>
+                                                <td>
+                                                    <select name="PTIME_WK5_END_HH" tabindex="15" class="pTimeEndHH"
+                                                        id="PTIME_WK5_END_HH"
+                                                        style="width: 50px;">
+                                                        <option value=""></option>
+                                                        @for($i = 0; $i <= 36; $i++)
+                                                        <option value="{{ $i }}"
+                                                            @if ($i == old('PTIME_WK5_END_HH', $dataWorkPtn->PTIME_WK5_END_HH) && isset($dataWorkPtn->PTIME_WK5_END_HH))
+                                                            selected
+                                                            @endif>
+                                                            {{ $i }}
+                                                        </option>
+                                                        @endfor
+                                                    </select>
+                                                    &nbsp;時
+                                                    <select name="PTIME_WK5_END_MI" tabindex="15" class="pTimeEndMI"
+                                                        id="PTIME_WK5_END_MI"
+                                                        style="width: 50px;">
+                                                        <option value=""></option>
+                                                        @for($i = 0; $i <= 55; $i+=5)
+                                                        <option value="{{ $i }}"
+                                                            @if ($i == old('PTIME_WK5_END_MI', $dataWorkPtn->PTIME_WK5_END_MI) && isset($dataWorkPtn->PTIME_WK5_END_MI))
+                                                            selected
+                                                            @endif>
+                                                            {{ $i }}
+                                                        </option>
+                                                        @endfor
+                                                    </select>
+                                                    &nbsp;分
+                                                </td>
+                                                <td>
+                                                    <span class="text-danger" id="pTime4"></span>
+                                                </td>
+                                            </tr>
+                                            <tr class="rowWorkType">
+                                                <td>
+                                                    <select name="PTIME_WK6_CD" tabindex="16" class="pTimeCd"
+                                                        id="PTIME_WK6_CD" style="width: 150px;">
+                                                        <option value=""></option>
+                                                        @foreach ($dataWorkDescExp02 as $workDescExp02 )
+                                                        <option value="{{ $workDescExp02->WORK_DESC_CD }}"
+                                                            {{ $dataWorkPtn->PTIME_WK6_CD == (old('PTIME_WK6_CD') ?? $workDescExp02->WORK_DESC_CD) ? 'selected' : '' }}>
+                                                            {{ $workDescExp02->WORK_DESC_NAME }}
+                                                        </option>
+                                                        @endforeach
+                                                    </select>
+                                                </td>
+                                                <td>
+                                                    <select name="PTIME_WK6_STR_HH" tabindex="16" class="pTimeStrHH"
+                                                        id="PTIME_WK6_STR_HH"
+                                                        style="width: 50px;">
+                                                        <option value=""></option>
+                                                        @for($i = 0; $i <= 35; $i++)
+                                                        <option value="{{ $i }}"
+                                                            @if ($i == old('PTIME_WK6_STR_HH', $dataWorkPtn->PTIME_WK6_STR_HH) && isset($dataWorkPtn->PTIME_WK6_STR_HH))
+                                                            selected
+                                                            @endif>
+                                                            {{ $i }}
+                                                        </option>
+                                                        @endfor
+                                                    </select>
+                                                    &nbsp;時
+                                                    <select name="PTIME_WK6_STR_MI" tabindex="16" class="pTimeStrMI"
+                                                        id="PTIME_WK6_STR_MI"
+                                                        style="width: 50px;">
+                                                        <option value=""></option>
+                                                        @for($i = 0; $i <= 55; $i+=5)
+                                                        <option value="{{ $i }}"
+                                                            @if ($i == old('PTIME_WK6_STR_MI', $dataWorkPtn->PTIME_WK6_STR_MI) && isset($dataWorkPtn->PTIME_WK6_STR_MI))
+                                                            selected
+                                                            @endif>
+                                                            {{ $i }}
+                                                        </option>
+                                                        @endfor
+                                                    </select>
+                                                    &nbsp;分
+                                                </td>
+                                                <td>
+                                                    &nbsp;～
+                                                </td>
+                                                <td>
+                                                    <select name="PTIME_WK6_END_HH" tabindex="16" class="pTimeEndHH"
+                                                        id="PTIME_WK6_END_HH"
+                                                        style="width: 50px;">
+                                                        <option value="" ></option>
+                                                        @for($i = 0; $i <= 36; $i++)
+                                                        <option value="{{ $i }}"
+                                                            @if ($i == old('PTIME_WK6_END_HH', $dataWorkPtn->PTIME_WK6_END_HH) && isset($dataWorkPtn->PTIME_WK6_END_HH))
+                                                            selected
+                                                            @endif>
+                                                            {{ $i }}
+                                                        </option>
+                                                        @endfor
+                                                    </select>
+                                                    &nbsp;時
+                                                    <select name="PTIME_WK6_END_MI" tabindex="16" class="pTimeEndMI"
+                                                        id="PTIME_WK6_END_MI"
+                                                        style="width: 50px;">
+                                                        <option value=""></option>
+                                                        @for($i = 0; $i <= 55; $i+=5)
+                                                        <option value="{{ $i }}"
+                                                            @if ($i == old('PTIME_WK6_END_MI', $dataWorkPtn->PTIME_WK6_END_MI) && isset($dataWorkPtn->PTIME_WK6_END_MI))
+                                                            selected
+                                                            @endif>
+                                                            {{ $i }}
+                                                        </option>
+                                                        @endfor
+                                                    </select>
+                                                    &nbsp;分
+                                                </td>
+                                                <td>
+                                                    <span class="text-danger" id="pTime5"></span>
+                                                </td>
+                                            </tr>
+                                            <tr class="rowWorkType">
+                                                <td>
+                                                    <select name="PTIME_WK7_CD" tabindex="17" class="pTimeCd"
+                                                        id="PTIME_WK7_CD" style="width: 150px;">
+                                                        <option value=""></option>
+                                                        @foreach ($dataWorkDescExp02 as $workDescExp02 )
+                                                        <option value="{{ $workDescExp02->WORK_DESC_CD }}"
+                                                            {{ $dataWorkPtn->PTIME_WK7_CD == (old('PTIME_WK7_CD') ?? $workDescExp02->WORK_DESC_CD) ? 'selected' : '' }}>
+                                                            {{ $workDescExp02->WORK_DESC_NAME }}
+                                                        </option>
+                                                        @endforeach
+                                                    </select>
+                                                </td>
+                                                <td>
+                                                    <select name="PTIME_WK7_STR_HH" tabindex="17" class="pTimeStrHH"
+                                                        id="PTIME_WK7_STR_HH"
+                                                        style="width: 50px;">
+                                                        <option value=""></option>
+                                                        @for($i = 0; $i <= 35; $i++)
+                                                        <option value="{{ $i }}"
+                                                            @if ($i == old('PTIME_WK7_STR_HH', $dataWorkPtn->PTIME_WK7_STR_HH) && isset($dataWorkPtn->PTIME_WK7_STR_HH))
+                                                            selected
+                                                            @endif>
+                                                            {{ $i }}
+                                                        </option>
+                                                        @endfor
+                                                    </select>
+                                                    &nbsp;時
+                                                    <select name="PTIME_WK7_STR_MI" tabindex="17" class="pTimeStrMI"
+                                                        id="PTIME_WK7_STR_MI"
+                                                        style="width: 50px;">
+                                                        <option value=""></option>
+                                                        @for($i = 0; $i <= 55; $i+=5)
+                                                        <option value="{{ $i }}"
+                                                            @if ($i == old('PTIME_WK7_STR_MI', $dataWorkPtn->PTIME_WK7_STR_MI) && isset($dataWorkPtn->PTIME_WK7_STR_MI))
+                                                            selected
+                                                            @endif>
+                                                            {{ $i }}
+                                                        </option>
+                                                        @endfor
+                                                    </select>
+                                                    &nbsp;分
+                                                </td>
+                                                <td>
+                                                    &nbsp;～
+                                                </td>
+                                                <td>
+                                                    <select name="PTIME_WK7_END_HH" tabindex="17" class="pTimeEndHH"
+                                                        id="PTIME_WK7_END_HH"
+                                                        style="width: 50px;">
+                                                        <option value="" ></option>
+                                                        @for($i = 0; $i <= 36; $i++)
+                                                        <option value="{{ $i }}"
+                                                            @if ($i == old('PTIME_WK7_END_HH', $dataWorkPtn->PTIME_WK7_END_HH) && isset($dataWorkPtn->PTIME_WK7_END_HH))
+                                                            selected
+                                                            @endif>
+                                                            {{ $i }}
+                                                        </option>
+                                                        @endfor
+                                                    </select>
+                                                    &nbsp;時
+                                                    <select name="PTIME_WK7_END_MI" tabindex="17" class="pTimeEndMI"
+                                                        id="PTIME_WK7_END_MI"
+                                                        style="width: 50px;">
+                                                        <option value=""></option>
+                                                        @for($i = 0; $i <= 55; $i+=5)
+                                                        <option value="{{ $i }}"
+                                                            @if ($i == old('PTIME_WK7_END_MI', $dataWorkPtn->PTIME_WK7_END_MI) && isset($dataWorkPtn->PTIME_WK7_END_MI))
+                                                            selected
+                                                            @endif>
+                                                            {{ $i }}
+                                                        </option>
+                                                        @endfor
+                                                    </select>
+                                                    &nbsp;分
+                                                </td>
+                                                <td>
+                                                    <span class="text-danger" id="pTime6"></span>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                    <div class="line">
+                                    </div>
+                                    <table class="GridViewStyle2 mg10">
+                                        <tbody>
+                                            <tr>
+                                                <th>割増対象</th>
+                                                <th>開始時間</th>
+                                                <td></td>
+                                                <th>終了時間</th>
+                                            </tr>
+                                            <tr class="rowExtTime">
+                                                <td>
+                                                    <select name="PTIME_EXT1_CD_TIME" tabindex="18" class="extCdTime"
+                                                        id="PTIME_EXT1_CD_TIME" style="width: 150px;">
+                                                        <option value=""></option>
+                                                        @foreach ($dataExtraPay as $extraPay )
+                                                        <option value="{{ $extraPay->WORK_DESC_CD }}"
+                                                            {{ $dataWorkPtn->PTIME_EXT1_CD == (old('PTIME_EXT1_CD_TIME') ?? $extraPay->WORK_DESC_CD) ? 'selected' : '' }}>
+                                                            {{ $extraPay->WORK_DESC_NAME }}
+                                                        </option>
+                                                        @endforeach
+                                                    </select>
+                                                </td>
+                                                <td>
+                                                    <select name="PTIME_EXT1_STR_HH_TIME" tabindex="18" class="extTimeStrHH"
+                                                        id="PTIME_EXT1_STR_HH_TIME"
+                                                        style="width: 50px;">
+                                                        <option value=""></option>
+                                                        @for($i = 0; $i <= 35; $i++)
+                                                        <option value="{{ $i }}"
+                                                            @if ($i == old('PTIME_EXT1_STR_HH_TIME', $dataWorkPtn->PTIME_EXT1_STR_HH) && isset($dataWorkPtn->PTIME_EXT1_STR_HH))
+                                                            selected
+                                                            @endif>
+                                                            {{ $i }}
+                                                        </option>
+                                                        @endfor
+                                                    </select>
+                                                    &nbsp;時
+                                                    <select name="PTIME_EXT1_STR_MI_TIME" tabindex="18" class="extTimeStrMI"
+                                                        id="PTIME_EXT1_STR_MI_TIME"
+                                                        style="width: 50px;">
+                                                        <option value=""></option>
+                                                        @for($i = 0; $i <= 55; $i+=5)
+                                                        <option value="{{ $i }}"
+                                                            @if ($i == old('PTIME_EXT1_STR_MI_TIME', $dataWorkPtn->PTIME_EXT1_STR_MI) && isset($dataWorkPtn->PTIME_EXT1_STR_MI))
+                                                            selected
+                                                            @endif>
+                                                            {{ $i }}
+                                                        </option>
+                                                        @endfor
+                                                    </select>
+                                                    &nbsp;分
+                                                </td>
+                                                <td>
+                                                    &nbsp;～
+                                                </td>
+                                                <td>
+                                                    <select name="PTIME_EXT1_END_HH_TIME" tabindex="18" class="extTimeEndHH"
+                                                        id="PTIME_EXT1_END_HH_TIME"
+                                                        style="width: 50px;">
+                                                        <option value="" ></option>
+                                                        @for($i = 0; $i <= 36; $i++)
+                                                        <option value="{{ $i }}"
+                                                            @if ($i == old('PTIME_EXT1_END_HH_TIME', $dataWorkPtn->PTIME_EXT1_END_HH) && isset($dataWorkPtn->PTIME_EXT1_END_HH))
+                                                            selected
+                                                            @endif>
+                                                            {{ $i }}
+                                                        </option>
+                                                        @endfor
+                                                    </select>
+                                                    &nbsp;時
+                                                    <select name="PTIME_EXT1_END_MI_TIME" tabindex="18" class="extTimeEndMI"
+                                                        id="PTIME_EXT1_END_MI_TIME"
+                                                        style="width: 50px;">
+                                                        <option value=""></option>
+                                                        @for($i = 0; $i <= 55; $i+=5)
+                                                        <option value="{{ $i }}"
+                                                            @if ($i == old('PTIME_EXT1_END_MI_TIME', $dataWorkPtn->PTIME_EXT1_END_MI) && isset($dataWorkPtn->PTIME_EXT1_END_MI))
+                                                            selected
+                                                            @endif>
+                                                            {{ $i }}
+                                                        </option>
+                                                        @endfor
+                                                    </select>
+                                                    &nbsp;分
+                                                </td>
+                                                <td>
+                                                    <span class="text-danger" id="extTime0"></span>
+                                                </td>
+                                            </tr>
+                                            <tr class="rowExtTime">
+                                                <td>
+                                                    <select name="PTIME_EXT2_CD_TIME" tabindex="19" class="extCdTime"
+                                                        id="PTIME_EXT2_CD_TIME" style="width: 150px;">
+                                                        <option value=""></option>
+                                                        @foreach ($dataExtraPay as $extraPay )
+                                                        <option value="{{ $extraPay->WORK_DESC_CD }}"
+                                                            {{ $dataWorkPtn->PTIME_EXT2_CD == (old('PTIME_EXT2_CD_TIME') ?? $extraPay->WORK_DESC_CD) ? 'selected' : '' }}>
+                                                            {{ $extraPay->WORK_DESC_NAME }}
+                                                        </option>
+                                                        @endforeach
+                                                    </select>
+                                                </td>
+                                                <td>
+                                                    <select name="PTIME_EXT2_STR_HH_TIME" tabindex="19" class="extTimeStrHH"
+                                                        id="PTIME_EXT2_STR_HH_TIME"
+                                                        style="width: 50px;">
+                                                        <option value=""></option>
+                                                        @for($i = 0; $i <= 35; $i++)
+                                                        <option value="{{ $i }}"
+                                                            @if ($i == old('PTIME_EXT2_STR_HH_TIME', $dataWorkPtn->PTIME_EXT2_STR_HH) && isset($dataWorkPtn->PTIME_EXT2_STR_HH))
+                                                            selected
+                                                            @endif>
+                                                            {{ $i }}
+                                                        </option>
+                                                        @endfor
+                                                    </select>
+                                                    &nbsp;時
+                                                    <select name="PTIME_EXT2_STR_MI_TIME" tabindex="19" class="extTimeStrMI"
+                                                        id="PTIME_EXT2_STR_MI_TIME"
+                                                        style="width: 50px;">
+                                                        <option value=""></option>
+                                                        @for($i = 0; $i <= 55; $i+=5)
+                                                        <option value="{{ $i }}"
+                                                            @if ($i == old('PTIME_EXT2_STR_MI_TIME', $dataWorkPtn->PTIME_EXT2_STR_MI) && isset($dataWorkPtn->PTIME_EXT2_STR_MI))
+                                                            selected
+                                                            @endif>
+                                                            {{ $i }}
+                                                        </option>
+                                                        @endfor
+                                                    </select>
+                                                    &nbsp;分
+                                                </td>
+                                                <td>
+                                                    &nbsp;～
+                                                </td>
+                                                <td>
+                                                    <select name="PTIME_EXT2_END_HH_TIME" tabindex="19" class="extTimeEndHH"
+                                                        id="PTIME_EXT2_END_HH_TIME"
+                                                        style="width: 50px;">
+                                                        <option value="" ></option>
+                                                        @for($i = 0; $i <= 36; $i++)
+                                                        <option value="{{ $i }}"
+                                                            @if ($i == old('PTIME_EXT2_END_HH_TIME', $dataWorkPtn->PTIME_EXT2_END_HH) && isset($dataWorkPtn->PTIME_EXT2_END_HH))
+                                                            selected
+                                                            @endif>
+                                                            {{ $i }}
+                                                        </option>
+                                                        @endfor
+                                                    </select>
+                                                    &nbsp;時
+                                                    <select name="PTIME_EXT2_END_MI_TIME" tabindex="19" class="extTimeEndMI"
+                                                        id="PTIME_EXT2_END_MI_TIME"
+                                                        style="width: 50px;">
+                                                        <option value=""></option>
+                                                        @for($i = 0; $i <= 55; $i+=5)
+                                                        <option value="{{ $i }}"
+                                                            @if ($i == old('PTIME_EXT2_END_MI_TIME', $dataWorkPtn->PTIME_EXT2_END_MI) && isset($dataWorkPtn->PTIME_EXT2_END_MI))
+                                                            selected
+                                                            @endif>
+                                                            {{ $i }}
+                                                        </option>
+                                                        @endfor
+                                                    </select>
+                                                    &nbsp;分
+                                                </td>
+                                                <td>
+                                                    <span class="text-danger" id="extTime1"></span>
+                                                </td>
+                                            </tr>
+                                            <tr class="rowExtTime">
+                                                <td>
+                                                    <select name="PTIME_EXT3_CD_TIME" tabindex="20" class="extCdTime"
+                                                        id="PTIME_EXT3_CD_TIME" style="width: 150px;">
+                                                        <option value=""></option>
+                                                        @foreach ($dataExtraPay as $extraPay )
+                                                        <option value="{{ $extraPay->WORK_DESC_CD }}"
+                                                            {{ $dataWorkPtn->PTIME_EXT3_CD == (old('PTIME_EXT3_CD_TIME') ?? $extraPay->WORK_DESC_CD) ? 'selected' : '' }}>
+                                                            {{ $extraPay->WORK_DESC_NAME }}
+                                                        </option>
+                                                        @endforeach
+                                                    </select>
+                                                </td>
+                                                <td>
+                                                    <select name="PTIME_EXT3_STR_HH_TIME" tabindex="20" class="extTimeStrHH"
+                                                        id="PTIME_EXT3_STR_HH_TIME"
+                                                        style="width: 50px;">
+                                                        <option value=""></option>
+                                                        @for($i = 0; $i <= 35; $i++)
+                                                        <option value="{{ $i }}"
+                                                            @if ($i == old('PTIME_EXT3_STR_HH_TIME', $dataWorkPtn->PTIME_EXT3_STR_HH) && isset($dataWorkPtn->PTIME_EXT3_STR_HH))
+                                                            selected
+                                                            @endif>
+                                                            {{ $i }}
+                                                        </option>
+                                                        @endfor
+                                                    </select>
+                                                    &nbsp;時
+                                                    <select name="PTIME_EXT3_STR_MI_TIME" tabindex="20" class="extTimeStrMI"
+                                                        id="PTIME_EXT3_STR_MI_TIME"
+                                                        style="width: 50px;">
+                                                        <option value=""></option>
+                                                        @for($i = 0; $i <= 55; $i+=5)
+                                                        <option value="{{ $i }}"
+                                                            @if ($i == old('PTIME_EXT3_STR_MI_TIME', $dataWorkPtn->PTIME_EXT3_STR_MI) && isset($dataWorkPtn->PTIME_EXT3_STR_MI))
+                                                            selected
+                                                            @endif>
+                                                            {{ $i }}
+                                                        </option>
+                                                        @endfor
+                                                    </select>
+                                                    &nbsp;分
+                                                </td>
+                                                <td>
+                                                    &nbsp;～
+                                                </td>
+                                                <td>
+                                                    <select name="PTIME_EXT3_END_HH_TIME" tabindex="20" class="extTimeEndHH"
+                                                        id="PTIME_EXT3_END_HH_TIME"
+                                                        style="width: 50px;">
+                                                        <option value="" ></option>
+                                                        @for($i = 0; $i <= 36; $i++)
+                                                        <option value="{{ $i }}"
+                                                            @if ($i == old('PTIME_EXT3_END_HH_TIME', $dataWorkPtn->PTIME_EXT3_END_HH) && isset($dataWorkPtn->PTIME_EXT3_END_HH))
+                                                            selected
+                                                            @endif>
+                                                            {{ $i }}
+                                                        </option>
+                                                        @endfor
+                                                    </select>
+                                                    &nbsp;時
+                                                    <select name="PTIME_EXT3_END_MI_TIME" tabindex="20" class="extTimeEndMI"
+                                                        id="PTIME_EXT3_END_MI_TIME"
+                                                        style="width: 50px;">
+                                                        <option value=""></option>
+                                                        @for($i = 0; $i <= 55; $i+=5)
+                                                        <option value="{{ $i }}"
+                                                            @if ($i == old('PTIME_EXT3_END_MI_TIME', $dataWorkPtn->PTIME_EXT3_END_MI) && isset($dataWorkPtn->PTIME_EXT3_END_MI))
+                                                            selected
+                                                            @endif>
+                                                            {{ $i }}
+                                                        </option>
+                                                        @endfor
+                                                    </select>
+                                                    &nbsp;分
+                                                </td>
+                                                <td>
+                                                    <span class="text-danger" id="extTime2"></span>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                    <div class="line">
+                                    </div>
+
+                                    <table class="InputFieldStyle1">
+                                        <tbody>
+                                            <tr>
+                                                <th>
+                                                    遅刻算出
+                                                </th>
+                                                <td>
+                                                    <div class="GroupBox1">
+                                                        <input name="lateCal" tabindex="21"
+                                                            id="lateCalYes" type="radio" value="01"
+                                                            {{ old('lateCal',isset($dataWorkPtn->RSV3_CLS_CD) ? $dataWorkPtn->RSV3_CLS_CD : '') == '01' ? 'checked': '' }}
+                                                            @if (empty($dataWorkPtn->RSV3_CLS_CD))
+                                                            checked
+                                                            @endif>
+                                                            <label for="lateCalYes">する</label>
+                                                        <input name="lateCal" tabindex="21"
+                                                            id="lateCalNo" type="radio" value="00"
+                                                            {{ old('lateCal',isset($dataWorkPtn->RSV3_CLS_CD) ? $dataWorkPtn->RSV3_CLS_CD : '') == '00' ? 'checked': '' }}
+                                                            >
+                                                            <label for="lateCalNo">しない</label>
+                                                        <div class="clearBoth">
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <th>早退算出</th>
+                                                <td>
+                                                    <div class="GroupBox1">
+                                                        <input name="earlyLeaveCal" tabindex="22"
+                                                            id="earlyLeaveCalYes" type="radio" value="01"
+                                                            {{ old('lateCal',isset($dataWorkPtn->RSV4_CLS_CD) ? $dataWorkPtn->RSV4_CLS_CD : '') == '01' ? 'checked': '' }}
+                                                            @if (empty($dataWorkPtn->RSV4_CLS_CD))
+                                                            checked
+                                                            @endif>
+                                                            <label for="earlyLeaveCalYes">する</label>
+                                                        <input name="earlyLeaveCal" tabindex="22"
+                                                            id="earlyLeaveCalNo" type="radio" value="00"
+                                                            {{ old('lateCal',isset($dataWorkPtn->RSV4_CLS_CD) ? $dataWorkPtn->RSV4_CLS_CD : '') == '00' ? 'checked': '' }}
+                                                            >
+                                                            <label for="earlyLeaveCalNo">しない</label>
+                                                        <div class="clearBoth">
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <th>
+                                                    勤務時間
+                                                </th>
+                                                <td>
+                                                    <select name="RSV1_HH_TIME" tabindex="23"
+                                                        id="RSV1_HH_TIME"
+                                                        style="width: 50px;">
+                                                        <option value=""></option>
+                                                        @for($i = 0; $i <= 35; $i++)
+                                                        <option value="{{ $i }}"
+                                                            @if ($i == old('RSV1_HH_TIME', $dataWorkPtn->RSV1_HH) && isset($dataWorkPtn->RSV1_HH))
+                                                            selected
+                                                            @endif>
+                                                            {{ $i }}
+                                                        </option>
+                                                        @endfor
+                                                    </select>
+                                                    &nbsp;時間
+                                                    <select name="RSV1_MI_TIME" tabindex="23"
+                                                        id="RSV1_MI_TIME"
+                                                        style="width: 50px;">
+                                                        <option value=""></option>
+                                                        @for($i = 0; $i <= 55; $i+=5)
+                                                        <option value="{{ $i }}"
+                                                            @if ($i == old('RSV1_MI_TIME', $dataWorkPtn->RSV1_MI) && isset($dataWorkPtn->RSV1_MI))
+                                                            selected
+                                                            @endif>
+                                                            {{ $i }}
+                                                        </option>
+                                                        @endfor
+                                                    </select>
+                                                    &nbsp;分
+                                                </td>
+                                                <td>
+                                                    <span class="text-danger" id="rsvTime"></span>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <th>
+                                                    前半終了時間
+                                                </th>
+                                                <td>
+                                                    <select name="PTIME_FSTPRD_END_HH" tabindex="24"
+                                                        id="PTIME_FSTPRD_END_HH"
+                                                        style="width: 50px;">
+                                                        <option value=""></option>
+                                                        @for($i = 0; $i <= 35; $i++)
+                                                        <option value="{{ $i }}"
+                                                            @if ($i == old('PTIME_FSTPRD_END_HH', $dataWorkPtn->PTIME_FSTPRD_END_HH) && isset($dataWorkPtn->PTIME_FSTPRD_END_HH))
+                                                            selected
+                                                            @endif>
+                                                            {{ $i }}
+                                                        </option>
+                                                        @endfor
+                                                    </select>
+                                                    &nbsp;時
+                                                    <select name="PTIME_FSTPRD_END_MI" tabindex="24"
+                                                        id="PTIME_FSTPRD_END_MI"
+                                                        style="width: 50px;">
+                                                        <option value=""></option>
+                                                        @for($i = 0; $i <= 55; $i+=5)
+                                                        <option value="{{ $i }}"
+                                                            @if ($i == old('PTIME_FSTPRD_END_MI', $dataWorkPtn->PTIME_FSTPRD_END_MI) && isset($dataWorkPtn->PTIME_FSTPRD_END_MI))
+                                                            selected
+                                                            @endif>
+                                                            {{ $i }}
+                                                        </option>
+                                                        @endfor
+                                                    </select>
+                                                    &nbsp;分
+                                                </td>
+                                                <td>
+                                                    <span class="text-danger" id="fstrdTime"></span>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <th>
+                                                    後半開始時間
+                                                </th>
+                                                <td>
+                                                    <select name="PTIME_SCDPRD_STR_HH" tabindex="25"
+                                                        id="PTIME_SCDPRD_STR_HH"
+                                                        style="width: 50px;">
+                                                        <option value=""></option>
+                                                        @for($i = 0; $i <= 35; $i++)
+                                                        <option value="{{ $i }}"
+                                                            @if ($i == old('PTIME_SCDPRD_STR_HH', $dataWorkPtn->PTIME_SCDPRD_STR_HH) && isset($dataWorkPtn->PTIME_SCDPRD_STR_HH))
+                                                            selected
+                                                            @endif>
+                                                            {{ $i }}
+                                                        </option>
+                                                        @endfor
+                                                    </select>
+                                                    &nbsp;時
+                                                    <select name="PTIME_SCDPRD_STR_MI" tabindex="25"
+                                                        id="PTIME_SCDPRD_STR_MI"
+                                                        style="width: 50px;">
+                                                        <option value=""></option>
+                                                        @for($i = 0; $i <= 55; $i+=5)
+                                                        <option value="{{ $i }}"
+                                                            @if ($i == old('PTIME_SCDPRD_STR_MI', $dataWorkPtn->PTIME_SCDPRD_STR_MI) && isset($dataWorkPtn->PTIME_SCDPRD_STR_MI))
+                                                            selected
+                                                            @endif>
+                                                            {{ $i }}
+                                                        </option>
+                                                        @endfor
+                                                    </select>
+                                                    &nbsp;分
+                                                </td>
+                                                <td>
+                                                    <span class="text-danger" id="scdprdTime"></span>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <th>
+                                                    日替時刻
+                                                </th>
+                                                <td>
+                                                    <select name="TIME_DAILY_HH_TIME" tabindex="26"
+                                                        id="TIME_DAILY_HH_TIME"
+                                                        style="width: 50px;">
+                                                        <option value=""></option>
+                                                        @for($i = 0; $i <= 23; $i++)
+                                                        <option value="{{ $i }}"
+                                                            @if ($i == old('TIME_DAILY_HH_TIME', $dataWorkPtn->TIME_DAILY_HH) && isset($dataWorkPtn->TIME_DAILY_HH))
+                                                            selected
+                                                            @endif>
+                                                            {{ $i }}
+                                                        </option>
+                                                        @endfor
+                                                    </select>
+                                                    &nbsp;時
+                                                    <select name="TIME_DAILY_MI_TIME" tabindex="26"
+                                                        id="TIME_DAILY_MI_TIME"
+                                                        style="width: 50px;">
+                                                        <option value=""></option>
+                                                        @for($i = 0; $i <= 55; $i+=5)
+                                                        <option value="{{ $i }}"
+                                                            @if ($i == old('TIME_DAILY_MI_TIME', $dataWorkPtn->TIME_DAILY_MI) && isset($dataWorkPtn->TIME_DAILY_MI))
+                                                            selected
+                                                            @endif>
+                                                            {{ $i }}
+                                                        </option>
+                                                        @endfor
+                                                    </select>
+                                                    &nbsp;分
+                                                </td>
+                                                <td>
+                                                    <span class="text-danger" id="tmDailyTime"></span>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <div id="pnlHours">
+                                    <!-- 時間数設定 -->
+                                    <p class="CategoryTitle1">時間数設定</p>
+                                    <table class="GridViewStyle2">
+                                        <tbody>
+                                            <tr>
+                                                <th>勤怠項目</th>
+                                                <th>開始時間</th>
+                                                <td></td>
+                                                <th>終了時間</th>
+                                            </tr>
+                                            <tr class="rowWorkTypeHour">
+                                                <td>
+                                                    <select name="NTIME_WK1_CD" tabindex="10" class="nTimeCd"
+                                                        id="NTIME_WK1_CD" style="width: 150px;">
+                                                        <option value=""></option>
+                                                        @foreach ($dataWorkDescExp02 as $workDescExp02 )
+                                                        <option value="{{ $workDescExp02->WORK_DESC_CD }}"
+                                                            {{ $dataWorkPtn->NTIME_WK1_CD == (old('NTIME_WK1_CD') ?? $workDescExp02->WORK_DESC_CD) ? 'selected' : '' }}>
+                                                            {{ $workDescExp02->WORK_DESC_NAME }}
+                                                        </option>
+                                                        @endforeach
+                                                    </select>
+                                                </td>
+                                                <td>
+                                                    <select name="NTIME_WK1_STR_HH" tabindex="10" class="nTimeStrHH"
+                                                        id="NTIME_WK1_STR_HH" style="width: 50px;">
+                                                        <option value=""></option>
+                                                        @for($i = 0; $i <= 23; $i++)
+                                                        <option value="{{ $i }}"
+                                                            @if ($i == old('NTIME_WK1_STR_HH', $dataWorkPtn->NTIME_WK1_STR_HH) && isset($dataWorkPtn->NTIME_WK1_STR_HH))
+                                                            selected
+                                                            @endif>
+                                                            {{ $i }}
+                                                        </option>
+                                                        @endfor
+                                                    </select>
+                                                    &nbsp;時間
+                                                    <select name="NTIME_WK1_STR_MI" tabindex="10" class="nTimeStrMI"
+                                                        id="NTIME_WK1_STR_MI" style="width: 50px;">
+                                                        <option value=""></option>
+                                                        @for($i = 0; $i <= 55; $i+=5)
+                                                        <option value="{{ $i }}"
+                                                            @if ($i == old('NTIME_WK1_STR_MI', $dataWorkPtn->NTIME_WK1_STR_MI) && isset($dataWorkPtn->NTIME_WK1_STR_MI))
+                                                            selected
+                                                            @endif>
+                                                            {{ $i }}
+                                                        </option>
+                                                        @endfor
+                                                    </select>
+                                                    &nbsp;分
+                                                </td>
+                                                <td>&nbsp;～</td>
+                                                <td>
+                                                    <select name="NTIME_WK1_END_HH" tabindex="10" class="nTimeEndHH"
+                                                        id="NTIME_WK1_END_HH" style="width: 50px;">
+                                                        <option value=""></option>
+                                                        @for($i = 0; $i <= 24; $i++)
+                                                        <option value="{{ $i }}"
+                                                            @if ($i == old('NTIME_WK1_END_HH', $dataWorkPtn->NTIME_WK1_END_HH) && isset($dataWorkPtn->NTIME_WK1_END_HH))
+                                                            selected
+                                                            @endif>
+                                                            {{ $i }}
+                                                        </option>
+                                                        @endfor
+                                                    </select>
+                                                    &nbsp;時間
+                                                    <select name="NTIME_WK1_END_MI" tabindex="10" class="nTimeEndMI"
+                                                        id="NTIME_WK1_END_MI" style="width: 50px;">
+                                                        <option value=""></option>
+                                                        @for($i = 0; $i <= 55; $i+=5)
+                                                        <option value="{{ $i }}"
+                                                            @if ($i == old('NTIME_WK1_END_MI', $dataWorkPtn->NTIME_WK1_END_MI) && isset($dataWorkPtn->NTIME_WK1_END_MI))
+                                                            selected
+                                                            @endif>
+                                                            {{ $i }}
+                                                        </option>
+                                                        @endfor
+                                                    </select>
+                                                    &nbsp;分
+                                                </td>
+                                                <td>
+                                                    <span class="text-danger" id="nTime0"></span>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                    <table class="GridViewStyle2">
+                                        <tbody>
+                                            <tr>
+                                                <th>職務種別</th>
+                                                <th>勤怠項目</th>
+                                                <th>開始時間</th>
+                                                <td></td>
+                                                <th>終了時間</th>
+                                            </tr>
+                                            <tr class="rowWorkTypeHour">
+                                                <td>
+                                                    <select name="NTIME_WK2_DCLS_CD" tabindex="11" class="nTimeDclsCd"
+                                                        onchange="SetTimeJobType('NTIME_WK2_DCLS_CD', 'NTIME_WK2_CD', 'NTIME_WK2_STR_HH',
+                                                        'NTIME_WK2_STR_MI', 'NTIME_WK2_END_HH', 'NTIME_WK2_END_MI',
+                                                        'NTIME_WK2_STR_HH_TXT' , 'NTIME_WK2_END_HH_TXT')"
+                                                        id="NTIME_WK2_DCLS_CD" style="width: 80px;">
+                                                        <option value=""></option>
+                                                        @foreach ($clsDetails as $clsDetail)
+                                                        <option value="{{ $clsDetail->CLS_DETAIL_CD }}"
+                                                            {{ $dataWorkPtn->NTIME_WK2_DCLS_CD == (old('NTIME_WK2_DCLS_CD') ?? $clsDetail->CLS_DETAIL_CD) ? 'selected' : '' }}>
+                                                            {{ $clsDetail->CLS_DETAIL_NAME}}
+                                                        </option>
+                                                        @endforeach
+                                                    </select>
+                                                </td>
+                                                <td>
+                                                    <select name="NTIME_WK2_CD" tabindex="11" class="nTimeCd"
+                                                        id="NTIME_WK2_CD" style="width: 150px;">
+                                                        <option value=""></option>
+                                                        @foreach ($dataWorkDescExp02 as $workDescExp02 )
+                                                        <option value="{{ $workDescExp02->WORK_DESC_CD }}"
+                                                            {{ $dataWorkPtn->NTIME_WK2_CD == (old('NTIME_WK2_CD') ?? $workDescExp02->WORK_DESC_CD) ? 'selected' : '' }}>
+                                                            {{ $workDescExp02->WORK_DESC_NAME }}
+                                                        </option>
+                                                        @endforeach
+                                                    </select>
+                                                </td>
+                                                <td>
+                                                    <select name="NTIME_WK2_STR_HH" tabindex="11" class="nTimeStrHH"
+                                                        id="NTIME_WK2_STR_HH" style="width: 50px;">
+                                                        <option value=""></option>
+                                                        @for($i = 0; $i <= 35; $i++)
+                                                        <option value="{{ $i }}"
+                                                            @if ($i == old('NTIME_WK2_STR_HH', $dataWorkPtn->NTIME_WK2_STR_HH) && isset($dataWorkPtn->NTIME_WK2_STR_HH))
+                                                            selected
+                                                            @endif>
+                                                            {{ $i }}
+                                                        </option>
+                                                        @endfor
+                                                    </select>
+                                                    <span id="NTIME_WK2_STR_HH_TXT"></span>
+                                                    <select name="NTIME_WK2_STR_MI" tabindex="11" class="nTimeStrMI"
+                                                        id="NTIME_WK2_STR_MI" style="width: 50px;">
+                                                        <option value=""></option>
+                                                        @for($i = 0; $i <= 55; $i+=5)
+                                                        <option value="{{ $i }}"
+                                                            @if ($i == old('NTIME_WK2_STR_MI', $dataWorkPtn->NTIME_WK2_STR_MI) && isset($dataWorkPtn->NTIME_WK2_STR_MI))
+                                                            selected
+                                                            @endif>
+                                                            {{ $i }}
+                                                        </option>
+                                                        @endfor
+                                                    </select>
+                                                    &nbsp;分
+                                                </td>
+                                                <td>
+                                                &nbsp;～
+                                                </td>
+                                                <td>
+                                                    <select name="NTIME_WK2_END_HH" tabindex="11" class="nTimeEndHH"
+                                                            id="NTIME_WK2_END_HH" style="width: 50px;">
+                                                        <option value=""></option>
+                                                        @for($i = 0; $i <= 36; $i++)
+                                                        <option value="{{ $i }}"
+                                                            @if ($i == old('NTIME_WK2_END_HH', $dataWorkPtn->NTIME_WK2_END_HH) && isset($dataWorkPtn->NTIME_WK2_END_HH))
+                                                            selected
+                                                            @endif>
+                                                            {{ $i }}
+                                                        </option>
+                                                        @endfor
+                                                    </select>
+                                                    <span id="NTIME_WK2_END_HH_TXT"></span>
+                                                    <select name="NTIME_WK2_END_MI" tabindex="11" class="nTimeEndMI"
+                                                            id="NTIME_WK2_END_MI" style="width: 50px;">
+                                                        <option value=""></option>
+                                                        @for($i = 0; $i <= 55; $i+=5)
+                                                        <option value="{{ $i }}"
+                                                            @if ($i == old('NTIME_WK2_END_MI', $dataWorkPtn->NTIME_WK2_END_MI) && isset($dataWorkPtn->NTIME_WK2_END_MI))
+                                                            selected
+                                                            @endif>
+                                                            {{ $i }}
+                                                        </option>
+                                                        @endfor
+                                                    </select>
+                                                    &nbsp;分
+                                                </td>
+                                                <td>
+                                                    <span class="text-danger" id="nTime1"></span>
+                                                </td>
+                                            </tr>
+                                            <tr class="rowWorkTypeHour">
+                                                <td>
+                                                    <select name="NTIME_WK3_DCLS_CD" tabindex="12" class="nTimeDclsCd"
+                                                        onchange="SetTimeJobType('NTIME_WK3_DCLS_CD', 'NTIME_WK3_CD', 'NTIME_WK3_STR_HH',
+                                                        'NTIME_WK3_STR_MI', 'NTIME_WK3_END_HH', 'NTIME_WK3_END_MI',
+                                                        'NTIME_WK3_STR_HH_TXT' , 'NTIME_WK3_END_HH_TXT')"
+                                                        id="NTIME_WK3_DCLS_CD" style="width: 80px;">
+                                                        <option value=""></option>
+                                                        @foreach ($clsDetails as $clsDetail)
+                                                        <option value="{{ $clsDetail->CLS_DETAIL_CD }}"
+                                                            {{ $dataWorkPtn->NTIME_WK3_DCLS_CD == (old('NTIME_WK3_DCLS_CD') ?? $clsDetail->CLS_DETAIL_CD) ? 'selected' : '' }}>
+                                                            {{ $clsDetail->CLS_DETAIL_NAME}}
+                                                        </option>
+                                                        @endforeach
+                                                    </select>
+                                                </td>
+                                                <td>
+                                                    <select name="NTIME_WK3_CD" tabindex="12" class="nTimeCd"
+                                                        id="NTIME_WK3_CD" style="width: 150px;">
+                                                        <option value=""></option>
+                                                        @foreach ($dataWorkDescExp02 as $workDescExp02 )
+                                                        <option value="{{ $workDescExp02->WORK_DESC_CD }}"
+                                                            {{ $dataWorkPtn->NTIME_WK3_CD == (old('NTIME_WK3_CD') ?? $workDescExp02->WORK_DESC_CD) ? 'selected' : '' }}>
+                                                            {{ $workDescExp02->WORK_DESC_NAME }}
+                                                        </option>
+                                                        @endforeach
+                                                    </select>
+                                                </td>
+                                                <td>
+                                                    <select name="NTIME_WK3_STR_HH" tabindex="12" class="nTimeStrHH"
+                                                        id="NTIME_WK3_STR_HH" style="width: 50px;">
+                                                        <option value=""></option>
+                                                        @for($i = 0; $i <= 35; $i++)
+                                                        <option value="{{ $i }}"
+                                                            @if ($i == old('NTIME_WK3_STR_HH', $dataWorkPtn->NTIME_WK3_STR_HH) && isset($dataWorkPtn->NTIME_WK3_STR_HH))
+                                                            selected
+                                                            @endif>
+                                                            {{ $i }}
+                                                        </option>
+                                                        @endfor
+                                                    </select>
+                                                    <span id="NTIME_WK3_STR_HH_TXT"></span>
+                                                    <select name="NTIME_WK3_STR_MI" tabindex="12" class="nTimeStrMI"
+                                                        id="NTIME_WK3_STR_MI" style="width: 50px;">
+                                                        <option value=""></option>
+                                                        @for($i = 0; $i <= 55; $i+=5)
+                                                        <option value="{{ $i }}"
+                                                            @if ($i == old('NTIME_WK3_STR_MI', $dataWorkPtn->NTIME_WK3_STR_MI) && isset($dataWorkPtn->NTIME_WK3_STR_MI))
+                                                            selected
+                                                            @endif>
+                                                            {{ $i }}
+                                                        </option>
+                                                        @endfor
+                                                    </select>
+                                                    &nbsp;分
+                                                </td>
+                                                <td>
+                                                &nbsp;～
+                                                </td>
+                                                <td>
+                                                    <select name="NTIME_WK3_END_HH" tabindex="12" class="nTimeEndHH"
+                                                        id="NTIME_WK3_END_HH" style="width: 50px;">
+                                                        <option value=""></option>
+                                                        @for($i = 0; $i <= 36; $i++)
+                                                        <option value="{{ $i }}"
+                                                            @if ($i == old('NTIME_WK3_END_HH', $dataWorkPtn->NTIME_WK3_END_HH) && isset($dataWorkPtn->NTIME_WK3_END_HH))
+                                                            selected
+                                                            @endif>
+                                                            {{ $i }}
+                                                        </option>
+                                                        @endfor
+                                                    </select>
+                                                    <span id="NTIME_WK3_END_HH_TXT"></span>
+                                                    <select name="NTIME_WK3_END_MI" tabindex="12" class="nTimeEndMI"
+                                                            id="NTIME_WK3_END_MI" style="width: 50px;">
+                                                        <option value=""></option>
+                                                        @for($i = 0; $i <= 55; $i+=5)
+                                                        <option value="{{ $i }}"
+                                                            @if ($i == old('NTIME_WK3_END_MI', $dataWorkPtn->NTIME_WK3_END_MI) && isset($dataWorkPtn->NTIME_WK3_END_MI))
+                                                            selected
+                                                            @endif>
+                                                            {{ $i }}
+                                                        </option>
+                                                        @endfor
+                                                    </select>
+                                                    &nbsp;分
+                                                </td>
+                                                <td>
+                                                    <span class="text-danger" id="nTime2"></span>
+                                                </td>
+                                            </tr>
+                                            <tr class="rowWorkTypeHour">
+                                                <td>
+                                                    <select name="NTIME_WK4_DCLS_CD" tabindex="13" class="nTimeDclsCd"
+                                                        onchange="SetTimeJobType('NTIME_WK4_DCLS_CD', 'NTIME_WK4_CD', 'NTIME_WK4_STR_HH',
+                                                        'NTIME_WK4_STR_MI', 'NTIME_WK4_END_HH', 'NTIME_WK4_END_MI',
+                                                        'NTIME_WK4_STR_HH_TXT' , 'NTIME_WK4_END_HH_TXT')"
+                                                        id="NTIME_WK4_DCLS_CD" style="width: 80px;">
+                                                        <option value=""></option>
+                                                        @foreach ($clsDetails as $clsDetail)
+                                                        <option value="{{ $clsDetail->CLS_DETAIL_CD }}"
+                                                            {{ $dataWorkPtn->NTIME_WK4_DCLS_CD == (old('NTIME_WK4_DCLS_CD') ?? $clsDetail->CLS_DETAIL_CD) ? 'selected' : '' }}>
+                                                            {{ $clsDetail->CLS_DETAIL_NAME}}
+                                                        </option>
+                                                        @endforeach
+                                                    </select>
+                                                </td>
+                                                <td>
+                                                    <select name="NTIME_WK4_CD" tabindex="13" class="nTimeCd"
+                                                        id="NTIME_WK4_CD" style="width: 150px;">
+                                                        <option value=""></option>
+                                                        @foreach ($dataWorkDescExp02 as $workDescExp02 )
+                                                        <option value="{{ $workDescExp02->WORK_DESC_CD }}"
+                                                            {{ $dataWorkPtn->NTIME_WK4_CD == (old('NTIME_WK4_CD') ?? $workDescExp02->WORK_DESC_CD) ? 'selected' : '' }}>
+                                                            {{ $workDescExp02->WORK_DESC_NAME }}
+                                                        </option>
+                                                        @endforeach
+                                                    </select>
+                                                </td>
+                                                <td>
+                                                    <select name="NTIME_WK4_STR_HH" tabindex="13" class="nTimeStrHH"
+                                                        id="NTIME_WK4_STR_HH" style="width: 50px;">
+                                                        <option value=""></option>
+                                                        @for($i = 0; $i <= 35; $i++)
+                                                        <option value="{{ $i }}"
+                                                            @if ($i == old('NTIME_WK4_STR_HH', $dataWorkPtn->NTIME_WK4_STR_HH) && isset($dataWorkPtn->NTIME_WK4_STR_HH))
+                                                            selected
+                                                            @endif>
+                                                            {{ $i }}
+                                                        </option>
+                                                        @endfor
+                                                    </select>
+                                                    <span id="NTIME_WK4_STR_HH_TXT"></span>
+                                                    <select name="NTIME_WK4_STR_MI" tabindex="13" class="nTimeStrMI"
+                                                        id="NTIME_WK4_STR_MI" style="width: 50px;">
+                                                        <option value=""></option>
+                                                        @for($i = 0; $i <= 55; $i+=5)
+                                                        <option value="{{ $i }}"
+                                                            @if ($i == old('NTIME_WK4_STR_MI', $dataWorkPtn->NTIME_WK4_STR_MI) && isset($dataWorkPtn->NTIME_WK4_STR_MI))
+                                                            selected
+                                                            @endif>
+                                                            {{ $i }}
+                                                        </option>
+                                                        @endfor
+                                                    </select>
+                                                    &nbsp;分
+                                                </td>
+                                                <td>
+                                                &nbsp;～
+                                                </td>
+                                                <td>
+                                                    <select name="NTIME_WK4_END_HH" tabindex="13" class="nTimeEndHH"
+                                                        id="NTIME_WK4_END_HH" style="width: 50px;">
+                                                        <option value=""></option>
+                                                        @for($i = 0; $i <= 36; $i++)
+                                                        <option value="{{ $i }}"
+                                                            @if ($i == old('NTIME_WK4_END_HH', $dataWorkPtn->NTIME_WK4_END_HH) && isset($dataWorkPtn->NTIME_WK4_END_HH))
+                                                            selected
+                                                            @endif>
+                                                            {{ $i }}
+                                                        </option>
+                                                        @endfor
+                                                    </select>
+                                                    <span id="NTIME_WK4_END_HH_TXT"></span>
+                                                    <select name="NTIME_WK4_END_MI" tabindex="13" class="nTimeEndMI"
+                                                        id="NTIME_WK4_END_MI" style="width: 50px;">
+                                                        <option value=""></option>
+                                                        @for($i = 0; $i <= 55; $i+=5)
+                                                        <option value="{{ $i }}"
+                                                            @if ($i == old('NTIME_WK4_END_MI', $dataWorkPtn->NTIME_WK4_END_MI) && isset($dataWorkPtn->NTIME_WK4_END_MI))
+                                                            selected
+                                                            @endif>
+                                                            {{ $i }}
+                                                        </option>
+                                                        @endfor
+                                                    </select>
+                                                    &nbsp;分
+                                                </td>
+                                                <td>
+                                                    <span class="text-danger" id="nTime3"></span>
+                                                </td>
+                                            </tr>
+                                            <tr class="rowWorkTypeHour">
+                                                <td>
+                                                    <select name="NTIME_WK5_DCLS_CD" tabindex="14" class="nTimeDclsCd"
+                                                        onchange="SetTimeJobType('NTIME_WK5_DCLS_CD', 'NTIME_WK5_CD', 'NTIME_WK5_STR_HH',
+                                                        'NTIME_WK5_STR_MI', 'NTIME_WK5_END_HH', 'NTIME_WK5_END_MI',
+                                                        'NTIME_WK5_STR_HH_TXT' , 'NTIME_WK5_END_HH_TXT')"
+                                                        id="NTIME_WK5_DCLS_CD" style="width: 80px;">
+                                                        <option value=""></option>
+                                                        @foreach ($clsDetails as $clsDetail)
+                                                        <option value="{{ $clsDetail->CLS_DETAIL_CD }}"
+                                                            {{ $dataWorkPtn->NTIME_WK5_DCLS_CD == (old('NTIME_WK5_DCLS_CD') ?? $clsDetail->CLS_DETAIL_CD) ? 'selected' : '' }}>
+                                                            {{ $clsDetail->CLS_DETAIL_NAME}}
+                                                        </option>
+                                                        @endforeach
+                                                    </select>
+                                                </td>
+                                                <td>
+                                                    <select name="NTIME_WK5_CD" tabindex="14" class="nTimeCd"
+                                                        id="NTIME_WK5_CD" style="width: 150px;">
+                                                        <option value=""></option>
+                                                        @foreach ($dataWorkDescExp02 as $workDescExp02 )
+                                                        <option value="{{ $workDescExp02->WORK_DESC_CD }}"
+                                                            {{ $dataWorkPtn->NTIME_WK5_CD == (old('NTIME_WK5_CD') ?? $workDescExp02->WORK_DESC_CD) ? 'selected' : '' }}>
+                                                            {{ $workDescExp02->WORK_DESC_NAME }}
+                                                        </option>
+                                                        @endforeach
+                                                    </select>
+                                                </td>
+                                                <td>
+                                                    <select name="NTIME_WK5_STR_HH" tabindex="14" class="nTimeStrHH"
+                                                        id="NTIME_WK5_STR_HH" style="width: 50px;">
+                                                        <option value=""></option>
+                                                        @for($i = 0; $i <= 35; $i++)
+                                                        <option value="{{ $i }}"
+                                                            @if ($i == old('NTIME_WK5_STR_HH', $dataWorkPtn->NTIME_WK5_STR_HH) && isset($dataWorkPtn->NTIME_WK5_STR_HH))
+                                                            selected
+                                                            @endif>
+                                                            {{ $i }}
+                                                        </option>
+                                                        @endfor
+                                                    </select>
+                                                    <span id="NTIME_WK5_STR_HH_TXT"></span>
+                                                    <select name="NTIME_WK5_STR_MI" tabindex="14" class="nTimeStrMI"
+                                                        id="NTIME_WK5_STR_MI" style="width: 50px;">
+                                                        <option value=""></option>
+                                                        @for($i = 0; $i <= 55; $i+=5)
+                                                        <option value="{{ $i }}"
+                                                            @if ($i == old('NTIME_WK5_STR_MI', $dataWorkPtn->NTIME_WK5_STR_MI) && isset($dataWorkPtn->NTIME_WK5_STR_MI))
+                                                            selected
+                                                            @endif>
+                                                            {{ $i }}
+                                                        </option>
+                                                        @endfor
+                                                    </select>
+                                                    &nbsp;分
+                                                </td>
+                                                <td>
+                                                &nbsp;～
+                                                </td>
+                                                <td>
+                                                    <select name="NTIME_WK5_END_HH" tabindex="14" class="nTimeEndHH"
+                                                        id="NTIME_WK5_END_HH" style="width: 50px;">
+                                                        <option value=""></option>
+                                                        @for($i = 0; $i <= 36; $i++)
+                                                        <option value="{{ $i }}"
+                                                            @if ($i == old('NTIME_WK5_END_HH', $dataWorkPtn->NTIME_WK5_END_HH) && isset($dataWorkPtn->NTIME_WK5_END_HH))
+                                                            selected
+                                                            @endif>
+                                                            {{ $i }}
+                                                        </option>
+                                                        @endfor
+                                                    </select>
+                                                    <span id="NTIME_WK5_END_HH_TXT"></span>
+                                                    <select name="NTIME_WK5_END_MI" tabindex="14" class="nTimeEndMI"
+                                                            id="NTIME_WK5_END_MI" style="width: 50px;">
+                                                        <option value=""></option>
+                                                        @for($i = 0; $i <= 55; $i+=5)
+                                                        <option value="{{ $i }}"
+                                                            @if ($i == old('NTIME_WK5_END_MI', $dataWorkPtn->NTIME_WK5_END_MI) && isset($dataWorkPtn->NTIME_WK5_END_MI))
+                                                            selected
+                                                            @endif>
+                                                            {{ $i }}
+                                                        </option>
+                                                        @endfor
+                                                    </select>
+                                                    &nbsp;分
+                                                </td>
+                                                <td>
+                                                    <span class="text-danger" id="nTime4"></span>
+                                                </td>
+                                            </tr>
+                                            <tr class="rowWorkTypeHour">
+                                                <td>
+                                                    <select name="NTIME_WK6_DCLS_CD" tabindex="15" class="nTimeDclsCd"
+                                                        onchange="SetTimeJobType('NTIME_WK6_DCLS_CD', 'NTIME_WK6_CD', 'NTIME_WK6_STR_HH',
+                                                        'NTIME_WK6_STR_MI', 'NTIME_WK6_END_HH', 'NTIME_WK6_END_MI',
+                                                        'NTIME_WK6_STR_HH_TXT' , 'NTIME_WK6_END_HH_TXT')"
+                                                        id="NTIME_WK6_DCLS_CD" style="width: 80px;">
+                                                        <option value=""></option>
+                                                        @foreach ($clsDetails as $clsDetail)
+                                                        <option value="{{ $clsDetail->CLS_DETAIL_CD }}"
+                                                            {{ $dataWorkPtn->NTIME_WK6_DCLS_CD == (old('NTIME_WK6_DCLS_CD') ?? $clsDetail->CLS_DETAIL_CD) ? 'selected' : '' }}>
+                                                            {{ $clsDetail->CLS_DETAIL_NAME}}
+                                                        </option>
+                                                        @endforeach
+                                                    </select>
+                                                </td>
+                                                <td>
+                                                    <select name="NTIME_WK6_CD" tabindex="15" class="nTimeCd"
+                                                        id="NTIME_WK6_CD" style="width: 150px;">
+                                                        <option value=""></option>
+                                                        @foreach ($dataWorkDescExp02 as $workDescExp02 )
+                                                        <option value="{{ $workDescExp02->WORK_DESC_CD }}"
+                                                            {{ $dataWorkPtn->NTIME_WK6_CD == (old('NTIME_WK6_CD') ?? $workDescExp02->WORK_DESC_CD) ? 'selected' : '' }}>
+                                                            {{ $workDescExp02->WORK_DESC_NAME }}
+                                                        </option>
+                                                        @endforeach
+                                                    </select>
+                                                </td>
+                                                <td>
+                                                    <select name="NTIME_WK6_STR_HH" tabindex="15" class="nTimeStrHH"
+                                                        id="NTIME_WK6_STR_HH" style="width: 50px;">
+                                                        <option value=""></option>
+                                                        @for($i = 0; $i <= 35; $i++)
+                                                        <option value="{{ $i }}"
+                                                            @if ($i == old('NTIME_WK6_STR_HH', $dataWorkPtn->NTIME_WK6_STR_HH) && isset($dataWorkPtn->NTIME_WK6_STR_HH))
+                                                            selected
+                                                            @endif>
+                                                            {{ $i }}
+                                                        </option>
+                                                        @endfor
+                                                    </select>
+                                                    <span id="NTIME_WK6_STR_HH_TXT"></span>
+                                                    <select name="NTIME_WK6_STR_MI" tabindex="15" class="nTimeStrMI"
+                                                        id="NTIME_WK6_STR_MI" style="width: 50px;">
+                                                        <option value=""></option>
+                                                        @for($i = 0; $i <= 55; $i+=5)
+                                                        <option value="{{ $i }}"
+                                                            @if ($i == old('NTIME_WK6_STR_MI', $dataWorkPtn->NTIME_WK6_STR_MI) && isset($dataWorkPtn->NTIME_WK6_STR_MI))
+                                                            selected
+                                                            @endif>
+                                                            {{ $i }}
+                                                        </option>
+                                                        @endfor
+                                                    </select>
+                                                    &nbsp;分
+                                                </td>
+                                                <td>
+                                                &nbsp;～
+                                                </td>
+                                                <td>
+                                                    <select name="NTIME_WK6_END_HH" tabindex="15" class="nTimeEndHH"
+                                                        id="NTIME_WK6_END_HH" style="width: 50px;">
+                                                        <option value=""></option>
+                                                        @for($i = 0; $i <= 36; $i++)
+                                                        <option value="{{ $i }}"
+                                                            @if ($i == old('NTIME_WK6_END_HH', $dataWorkPtn->NTIME_WK6_END_HH) && isset($dataWorkPtn->NTIME_WK6_END_HH))
+                                                            selected
+                                                            @endif>
+                                                            {{ $i }}
+                                                        </option>
+                                                        @endfor
+                                                    </select>
+                                                    <span id="NTIME_WK6_END_HH_TXT"></span>
+                                                    <select name="NTIME_WK6_END_MI" tabindex="15" class="nTimeEndMI"
+                                                            id="NTIME_WK6_END_MI" style="width: 50px;">
+                                                        <option value=""></option>
+                                                        @for($i = 0; $i <= 55; $i+=5)
+                                                        <option value="{{ $i }}"
+                                                            @if ($i == old('NTIME_WK6_END_MI', $dataWorkPtn->NTIME_WK6_END_MI) && isset($dataWorkPtn->NTIME_WK6_END_MI))
+                                                            selected
+                                                            @endif>
+                                                            {{ $i }}
+                                                        </option>
+                                                        @endfor
+                                                    </select>
+                                                    &nbsp;分
+                                                </td>
+                                                <td>
+                                                    <span class="text-danger" id="nTime5"></span>
+                                                </td>
+                                            </tr>
+                                            <tr class="rowWorkTypeHour">
+                                                <td>
+                                                    <select name="NTIME_WK7_DCLS_CD" tabindex="16" class="nTimeDclsCd"
+                                                        onchange="SetTimeJobType('NTIME_WK7_DCLS_CD', 'NTIME_WK7_CD', 'NTIME_WK7_STR_HH',
+                                                        'NTIME_WK7_STR_MI', 'NTIME_WK7_END_HH', 'NTIME_WK7_END_MI',
+                                                        'NTIME_WK7_STR_HH_TXT' , 'NTIME_WK7_END_HH_TXT')"
+                                                        id="NTIME_WK7_DCLS_CD" style="width: 80px;">
+                                                        <option value=""></option>
+                                                        @foreach ($clsDetails as $clsDetail)
+                                                        <option value="{{ $clsDetail->CLS_DETAIL_CD }}"
+                                                            {{ $dataWorkPtn->NTIME_WK7_DCLS_CD == (old('NTIME_WK7_DCLS_CD') ?? $clsDetail->CLS_DETAIL_CD) ? 'selected' : '' }}>
+                                                            {{ $clsDetail->CLS_DETAIL_NAME}}
+                                                        </option>
+                                                        @endforeach
+                                                    </select>
+                                                </td>
+                                                <td>
+                                                    <select name="NTIME_WK7_CD" tabindex="16" class="nTimeCd"
+                                                        id="NTIME_WK7_CD" style="width: 150px;">
+                                                        <option value=""></option>
+                                                        @foreach ($dataWorkDescExp02 as $workDescExp02 )
+                                                        <option value="{{ $workDescExp02->WORK_DESC_CD }}"
+                                                            {{ $dataWorkPtn->NTIME_WK7_CD == (old('NTIME_WK7_CD') ?? $workDescExp02->WORK_DESC_CD) ? 'selected' : '' }}>
+                                                            {{ $workDescExp02->WORK_DESC_NAME }}
+                                                        </option>
+                                                        @endforeach
+                                                    </select>
+                                                </td>
+                                                <td>
+                                                    <select name="NTIME_WK7_STR_HH" tabindex="16" class="nTimeStrHH"
+                                                        id="NTIME_WK7_STR_HH" style="width: 50px;">
+                                                        <option value=""></option>
+                                                        @for($i = 0; $i <= 35; $i++)
+                                                        <option value="{{ $i }}"
+                                                            @if ($i == old('NTIME_WK7_STR_HH', $dataWorkPtn->NTIME_WK7_STR_HH) && isset($dataWorkPtn->NTIME_WK7_STR_HH))
+                                                            selected
+                                                            @endif>
+                                                            {{ $i }}
+                                                        </option>
+                                                        @endfor
+                                                    </select>
+                                                    <span id="NTIME_WK7_STR_HH_TXT"></span>
+                                                    <select name="NTIME_WK7_STR_MI" tabindex="16" class="nTimeStrMI"
+                                                        id="NTIME_WK7_STR_MI" style="width: 50px;">
+                                                        <option value=""></option>
+                                                        @for($i = 0; $i <= 55; $i+=5)
+                                                        <option value="{{ $i }}"
+                                                            @if ($i == old('NTIME_WK7_STR_MI', $dataWorkPtn->NTIME_WK7_STR_MI) && isset($dataWorkPtn->NTIME_WK7_STR_MI))
+                                                            selected
+                                                            @endif>
+                                                            {{ $i }}
+                                                        </option>
+                                                        @endfor
+                                                    </select>
+                                                    &nbsp;分
+                                                </td>
+                                                <td>
+                                                &nbsp;～
+                                                </td>
+                                                <td>
+                                                    <select name="NTIME_WK7_END_HH" tabindex="16" class="nTimeEndHH"
+                                                        id="NTIME_WK7_END_HH" style="width: 50px;">
+                                                        <option value=""></option>
+                                                        @for($i = 0; $i <= 36; $i++)
+                                                        <option value="{{ $i }}"
+                                                            @if ($i == old('NTIME_WK7_END_HH', $dataWorkPtn->NTIME_WK7_END_HH) && isset($dataWorkPtn->NTIME_WK7_END_HH))
+                                                            selected
+                                                            @endif>
+                                                            {{ $i }}
+                                                        </option>
+                                                        @endfor
+                                                    </select>
+                                                    <span id="NTIME_WK7_END_HH_TXT"></span>
+                                                    <select name="NTIME_WK7_END_MI" tabindex="16" class="nTimeEndMI"
+                                                            id="NTIME_WK7_END_MI" style="width: 50px;">
+                                                        <option value=""></option>
+                                                        @for($i = 0; $i <= 55; $i+=5)
+                                                        <option value="{{ $i }}"
+                                                            @if ($i == old('NTIME_WK7_END_MI', $dataWorkPtn->NTIME_WK7_END_MI) && isset($dataWorkPtn->NTIME_WK7_END_MI))
+                                                            selected
+                                                            @endif>
+                                                            {{ $i }}
+                                                        </option>
+                                                        @endfor
+                                                    </select>
+                                                    &nbsp;分
+                                                </td>
+                                                <td>
+                                                    <span class="text-danger" id="nTime6"></span>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                    <div class="line">
+                                    </div>
+                                    <table class="GridViewStyle2 mg10">
+                                        <tbody>
+                                            <tr>
+                                                <th>割増対象</th>
+                                                <th>開始時間</th>
+                                                <td></td>
+                                                <th>終了時間</th>
+                                            </tr>
+                                            <tr class="rowExtHour">
+                                                <td>
+                                                    <select name="PTIME_EXT1_CD_HOUR" tabindex="17" class="extCdHour"
+                                                        id="PTIME_EXT1_CD_HOUR" style="width: 150px;">
+                                                        <option value=""></option>
+                                                        @foreach ($dataExtraPay as $extraPay )
+                                                        <option value="{{ $extraPay->WORK_DESC_CD }}"
+                                                            {{ $dataWorkPtn->PTIME_EXT1_CD == (old('PTIME_EXT1_CD_HOUR') ?? $extraPay->WORK_DESC_CD) ? 'selected' : '' }}>
+                                                            {{ $extraPay->WORK_DESC_NAME }}
+                                                        </option>
+                                                        @endforeach
+                                                    </select>
+                                                </td>
+                                                <td>
+                                                    <select name="PTIME_EXT1_STR_HH_HOUR" tabindex="17" class="extHourStrHH"
+                                                        id="PTIME_EXT1_STR_HH_HOUR"
+                                                        style="width: 50px;">
+                                                        <option value=""></option>
+                                                        @for($i = 0; $i <= 35; $i++)
+                                                        <option value="{{ $i }}"
+                                                            @if ($i == old('PTIME_EXT1_STR_HH_HOUR', $dataWorkPtn->PTIME_EXT1_STR_HH) && isset($dataWorkPtn->PTIME_EXT1_STR_HH))
+                                                            selected
+                                                            @endif>
+                                                            {{ $i }}
+                                                        </option>
+                                                        @endfor
+                                                    </select>
+                                                    &nbsp;時
+                                                    <select name="PTIME_EXT1_STR_MI_HOUR" tabindex="17" class="extHourStrMI"
+                                                        id="PTIME_EXT1_STR_MI_HOUR"
+                                                        style="width: 50px;">
+                                                        <option value=""></option>
+                                                        @for($i = 0; $i <= 55; $i+=5)
+                                                        <option value="{{ $i }}"
+                                                            @if ($i == old('PTIME_EXT1_STR_MI_HOUR', $dataWorkPtn->PTIME_EXT1_STR_MI) && isset($dataWorkPtn->PTIME_EXT1_STR_MI))
+                                                            selected
+                                                            @endif>
+                                                            {{ $i }}
+                                                        </option>
+                                                        @endfor
+                                                    </select>
+                                                    &nbsp;分
+                                                </td>
+                                                <td>
+                                                    &nbsp;～
+                                                </td>
+                                                <td>
+                                                    <select name="PTIME_EXT1_END_HH_HOUR" tabindex="17" class="extHourEndHH"
+                                                        id="PTIME_EXT1_END_HH_HOUR"
+                                                        style="width: 50px;">
+                                                        <option value="" ></option>
+                                                        @for($i = 0; $i <= 36; $i++)
+                                                        <option value="{{ $i }}"
+                                                            @if ($i == old('PTIME_EXT1_END_HH_HOUR', $dataWorkPtn->PTIME_EXT1_END_HH) && isset($dataWorkPtn->PTIME_EXT1_END_HH))
+                                                            selected
+                                                            @endif>
+                                                            {{ $i }}
+                                                        </option>
+                                                        @endfor
+                                                    </select>
+                                                    &nbsp;時
+                                                    <select name="PTIME_EXT1_END_MI_HOUR" tabindex="17" class="extHourEndMI"
+                                                        id="PTIME_EXT1_END_MI_HOUR"
+                                                        style="width: 50px;">
+                                                        <option value=""></option>
+                                                        @for($i = 0; $i <= 55; $i+=5)
+                                                        <option value="{{ $i }}"
+                                                            @if ($i == old('PTIME_EXT1_END_MI_HOUR', $dataWorkPtn->PTIME_EXT1_END_MI) && isset($dataWorkPtn->PTIME_EXT1_END_MI))
+                                                            selected
+                                                            @endif>
+                                                            {{ $i }}
+                                                        </option>
+                                                        @endfor
+                                                    </select>
+                                                    &nbsp;分
+                                                </td>
+                                                <td>
+                                                    <span class="text-danger" id="extHour0"></span>
+                                                </td>
+                                            </tr>
+                                            <tr class="rowExtHour">
+                                                <td>
+                                                    <select name="PTIME_EXT2_CD_HOUR" tabindex="18" class="extCdHour"
+                                                        id="PTIME_EXT2_CD_HOUR" style="width: 150px;">
+                                                        <option value=""></option>
+                                                        @foreach ($dataExtraPay as $extraPay )
+                                                        <option value="{{ $extraPay->WORK_DESC_CD }}"
+                                                            {{ $dataWorkPtn->PTIME_EXT2_CD == (old('PTIME_EXT2_CD_HOUR') ?? $extraPay->WORK_DESC_CD) ? 'selected' : '' }}>
+                                                            {{ $extraPay->WORK_DESC_NAME }}
+                                                        </option>
+                                                        @endforeach
+                                                    </select>
+                                                </td>
+                                                <td>
+                                                    <select name="PTIME_EXT2_STR_HH_HOUR" tabindex="18" class="extHourStrHH"
+                                                        id="PTIME_EXT2_STR_HH_HOUR"
+                                                        style="width: 50px;">
+                                                        <option value=""></option>
+                                                        @for($i = 0; $i <= 35; $i++)
+                                                        <option value="{{ $i }}"
+                                                            @if ($i == old('PTIME_EXT2_STR_HH_HOUR', $dataWorkPtn->PTIME_EXT2_STR_HH) && isset($dataWorkPtn->PTIME_EXT2_STR_HH))
+                                                            selected
+                                                            @endif>
+                                                            {{ $i }}
+                                                        </option>
+                                                        @endfor
+                                                    </select>
+                                                    &nbsp;時
+                                                    <select name="PTIME_EXT2_STR_MI_HOUR" tabindex="18" class="extHourStrMI"
+                                                        id="PTIME_EXT2_STR_MI_HOUR"
+                                                        style="width: 50px;">
+                                                        <option value=""></option>
+                                                        @for($i = 0; $i <= 55; $i+=5)
+                                                        <option value="{{ $i }}"
+                                                            @if ($i == old('PTIME_EXT2_STR_MI_HOUR', $dataWorkPtn->PTIME_EXT2_STR_MI) && isset($dataWorkPtn->PTIME_EXT2_STR_MI))
+                                                            selected
+                                                            @endif>
+                                                            {{ $i }}
+                                                        </option>
+                                                        @endfor
+                                                    </select>
+                                                    &nbsp;分
+                                                </td>
+                                                <td>
+                                                    &nbsp;～
+                                                </td>
+                                                <td>
+                                                    <select name="PTIME_EXT2_END_HH_HOUR" tabindex="18" class="extHourEndHH"
+                                                        id="PTIME_EXT2_END_HH_HOUR"
+                                                        style="width: 50px;">
+                                                        <option value="" ></option>
+                                                        @for($i = 0; $i <= 36; $i++)
+                                                        <option value="{{ $i }}"
+                                                            @if ($i == old('PTIME_EXT2_END_HH_HOUR', $dataWorkPtn->PTIME_EXT2_END_HH) && isset($dataWorkPtn->PTIME_EXT2_END_HH))
+                                                            selected
+                                                            @endif>
+                                                            {{ $i }}
+                                                        </option>
+                                                        @endfor
+                                                    </select>
+                                                    &nbsp;時
+                                                    <select name="PTIME_EXT2_END_MI_HOUR" tabindex="18" class="extHourEndMI"
+                                                        id="PTIME_EXT2_END_MI_HOUR"
+                                                        style="width: 50px;">
+                                                        <option value=""></option>
+                                                        @for($i = 0; $i <= 55; $i+=5)
+                                                        <option value="{{ $i }}"
+                                                            @if ($i == old('PTIME_EXT2_END_MI_HOUR', $dataWorkPtn->PTIME_EXT2_END_MI) && isset($dataWorkPtn->PTIME_EXT2_END_MI))
+                                                            selected
+                                                            @endif>
+                                                            {{ $i }}
+                                                        </option>
+                                                        @endfor
+                                                    </select>
+                                                    &nbsp;分
+                                                </td>
+                                                <td>
+                                                    <span class="text-danger" id="extHour1"></span>
+                                                </td>
+                                            </tr>
+                                            <tr class="rowExtHour">
+                                                <td>
+                                                    <select name="PTIME_EXT3_CD_HOUR" tabindex="19" class="extCdHour"
+                                                        id="PTIME_EXT3_CD_HOUR" style="width: 150px;">
+                                                        <option value=""></option>
+                                                        @foreach ($dataExtraPay as $extraPay )
+                                                        <option value="{{ $extraPay->WORK_DESC_CD }}"
+                                                            {{ $dataWorkPtn->PTIME_EXT3_CD == (old('PTIME_EXT3_CD_HOUR') ?? $extraPay->WORK_DESC_CD) ? 'selected' : '' }}>
+                                                            {{ $extraPay->WORK_DESC_NAME }}
+                                                        </option>
+                                                        @endforeach
+                                                    </select>
+                                                </td>
+                                                <td>
+                                                    <select name="PTIME_EXT3_STR_HH_HOUR" tabindex="19" class="extHourStrHH"
+                                                        id="PTIME_EXT3_STR_HH_HOUR"
+                                                        style="width: 50px;">
+                                                        <option value=""></option>
+                                                        @for($i = 0; $i <= 35; $i++)
+                                                        <option value="{{ $i }}"
+                                                            @if ($i == old('PTIME_EXT3_STR_HH_HOUR', $dataWorkPtn->PTIME_EXT3_STR_HH) && isset($dataWorkPtn->PTIME_EXT3_STR_HH))
+                                                            selected
+                                                            @endif>
+                                                            {{ $i }}
+                                                        </option>
+                                                        @endfor
+                                                    </select>
+                                                    &nbsp;時
+                                                    <select name="PTIME_EXT3_STR_MI_HOUR" tabindex="19" class="extHourStrMI"
+                                                        id="PTIME_EXT3_STR_MI_HOUR"
+                                                        style="width: 50px;">
+                                                        <option value=""></option>
+                                                        @for($i = 0; $i <= 55; $i+=5)
+                                                        <option value="{{ $i }}"
+                                                            @if ($i == old('PTIME_EXT3_STR_MI_HOUR', $dataWorkPtn->PTIME_EXT3_STR_MI) && isset($dataWorkPtn->PTIME_EXT3_STR_MI))
+                                                            selected
+                                                            @endif>
+                                                            {{ $i }}
+                                                        </option>
+                                                        @endfor
+                                                    </select>
+                                                    &nbsp;分
+                                                </td>
+                                                <td>
+                                                    &nbsp;～
+                                                </td>
+                                                <td>
+                                                    <select name="PTIME_EXT3_END_HH_HOUR" tabindex="19" class="extHourEndHH"
+                                                        id="PTIME_EXT3_END_HH_HOUR"
+                                                        style="width: 50px;">
+                                                        <option value="" ></option>
+                                                        @for($i = 0; $i <= 36; $i++)
+                                                        <option value="{{ $i }}"
+                                                            @if ($i == old('PTIME_EXT3_END_HH_HOUR', $dataWorkPtn->PTIME_EXT3_END_HH) && isset($dataWorkPtn->PTIME_EXT3_END_HH))
+                                                            selected
+                                                            @endif>
+                                                            {{ $i }}
+                                                        </option>
+                                                        @endfor
+                                                    </select>
+                                                    &nbsp;時
+                                                    <select name="PTIME_EXT3_END_MI_HOUR" tabindex="19" class="extHourEndMI"
+                                                        id="PTIME_EXT3_END_MI_HOUR"
+                                                        style="width: 50px;">
+                                                        <option value=""></option>
+                                                        @for($i = 0; $i <= 55; $i+=5)
+                                                        <option value="{{ $i }}"
+                                                            @if ($i == old('PTIME_EXT3_END_MI_HOUR', $dataWorkPtn->PTIME_EXT3_END_MI) && isset($dataWorkPtn->PTIME_EXT3_END_MI))
+                                                            selected
+                                                            @endif>
+                                                            {{ $i }}
+                                                        </option>
+                                                        @endfor
+                                                    </select>
+                                                    &nbsp;分
+                                                </td>
+                                                <td>
+                                                    <span class="text-danger" id="extHour2"></span>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                    <div class="line"></div>
+                                    <table class="InputFieldStyle1">
+                                        <tbody>
+                                            <tr>
+                                                <th>早退算出</th>
+                                                <td>
+                                                    <div class="GroupBox1">
+                                                        <input name="NTIME_LEAVE_CLS_CD" tabindex="20"
+                                                            id="timeEarlyLeaveCalYes" type="radio" value="01"
+                                                            {{ old('NTIME_LEAVE_CLS_CD',isset($dataWorkPtn->NTIME_LEAVE_CLS_CD) ? $dataWorkPtn->NTIME_LEAVE_CLS_CD : '') == '01' ? 'checked': '' }}
+                                                            @if (empty($dataWorkPtn->NTIME_LEAVE_CLS_CD))
+                                                            checked
+                                                            @endif>
+                                                            <label for="timeEarlyLeaveCalYes">する</label>
+                                                        <input name="NTIME_LEAVE_CLS_CD" tabindex="21"
+                                                            id="timeEarlyLeaveCalNo" type="radio" value="00"
+                                                            {{ old('NTIME_LEAVE_CLS_CD',isset($dataWorkPtn->NTIME_LEAVE_CLS_CD) ? $dataWorkPtn->NTIME_LEAVE_CLS_CD : '') == '00' ? 'checked': '' }}
+                                                            >
+                                                            <label for="timeEarlyLeaveCalNo">しない</label>
+                                                        <div class="clearBoth">
+                                                        </div>
+                                                    </div>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <th>勤務時間</th>
+                                                <td>
+                                                    <select name="RSV1_HH_HOUR" tabindex="22"
+                                                        id="RSV1_HH_HOUR" style="width: 50px;">
+                                                        <option value="" ></option>
+                                                        @for($i = 0; $i <= 35; $i++)
+                                                        <option value="{{ $i }}"
+                                                            @if ($i == old('RSV1_HH_HOUR', $dataWorkPtn->RSV1_HH) && isset($dataWorkPtn->RSV1_HH))
+                                                            selected
+                                                            @endif>
+                                                            {{ $i }}
+                                                        </option>
+                                                        @endfor
+                                                    </select>
+                                                    &nbsp;時間
+                                                    <select name="RSV1_MI_HOUR" tabindex="22"
+                                                        id="RSV1_MI_HOUR" style="width: 50px;">
+                                                        <option value=""></option>
+                                                        @for($i = 0; $i <= 55; $i+=5)
+                                                        <option value="{{ $i }}"
+                                                            @if ($i == old('RSV1_MI_HOUR', $dataWorkPtn->RSV1_MI) && isset($dataWorkPtn->RSV1_MI))
+                                                            selected
+                                                            @endif>
+                                                            {{ $i }}
+                                                        </option>
+                                                        @endfor
+                                                    </select>
+                                                    &nbsp;分
+                                                </td>
+                                                <td>
+                                                    <span class="text-danger" id="rsvHour"></span>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <th>始業開始時刻</th>
+                                                <td>
+                                                    <select name="NTIME_START_HH" tabindex="23"
+                                                        id="NTIME_START_HH" style="width: 50px;">
+                                                        <option value=""></option>
+                                                        @for($i = 0; $i <= 23; $i++)
+                                                        <option value="{{ $i }}"
+                                                            @if ($i == old('NTIME_START_HH', $dataWorkPtn->NTIME_START_HH) && isset($dataWorkPtn->NTIME_START_HH))
+                                                            selected
+                                                            @endif>
+                                                            {{ $i }}
+                                                        </option>
+                                                        @endfor
+                                                    </select>
+                                                    &nbsp;時
+                                                    <select name="NTIME_START_MI" tabindex="23"
+                                                        id="NTIME_START_MI" style="width: 50px;">
+                                                        <option value=""></option>
+                                                        @for($i = 0; $i <= 55; $i+=5)
+                                                        <option value="{{ $i }}"
+                                                            @if ($i == old('NTIME_START_MI', $dataWorkPtn->NTIME_START_MI) && isset($dataWorkPtn->NTIME_START_MI))
+                                                            selected
+                                                            @endif>
+                                                            {{ $i }}
+                                                        </option>
+                                                        @endfor
+                                                    </select>
+                                                    &nbsp;分 &nbsp;&nbsp;より開始
+                                                </td>
+                                                <td>
+                                                    <span class="text-danger" id="nTimeStr"></span>
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <th>始業刻み時間</th>
+                                                <td>
+                                                    <select name="NTIME_START_TK_TIME" tabindex="24"
+                                                        id="NTIME_START_TK_TIME" style="width: 50px;">
+                                                        <option value=""></option>
+                                                        <option value="5" @if ('5' == old('NTIME_START_TK_TIME', $dataWorkPtn->NTIME_START_TK_TIME)) selected @endif>5</option>
+                                                        <option value="10" @if ('10' == old('NTIME_START_TK_TIME', $dataWorkPtn->NTIME_START_TK_TIME)) selected @endif>10</option>
+                                                        <option value="15" @if ('15' == old('NTIME_START_TK_TIME', $dataWorkPtn->NTIME_START_TK_TIME)) selected @endif>15</option>
+                                                        <option value="20" @if ('20' == old('NTIME_START_TK_TIME', $dataWorkPtn->NTIME_START_TK_TIME)) selected @endif>20</option>
+                                                        <option value="30" @if ('30' == old('NTIME_START_TK_TIME', $dataWorkPtn->NTIME_START_TK_TIME)) selected @endif>30</option>
+                                                        <option value="60" @if ('60' == old('NTIME_START_TK_TIME', $dataWorkPtn->NTIME_START_TK_TIME)) selected @endif>60</option>
+                                                    </select>
+                                                    &nbsp;分間隔
+                                                </td>
+                                            </tr>
+                                            <tr>
+                                                <th>日替時刻</th>
+                                                <td>
+                                                    <select name="TIME_DAILY_HH_HOUR" tabindex="25"
+                                                        id="TIME_DAILY_HH_HOUR" style="width: 50px;">
+                                                        <option value=""></option>
+                                                        @for($i = 0; $i <= 23; $i++)
+                                                        <option value="{{ $i }}"
+                                                            @if ($i == old('TIME_DAILY_HH_HOUR', $dataWorkPtn->TIME_DAILY_HH) && isset($dataWorkPtn->TIME_DAILY_HH))
+                                                            selected
+                                                            @endif>
+                                                            {{ $i }}
+                                                        </option>
+                                                        @endfor
+                                                    </select>
+                                                    &nbsp;時
+                                                    <select name="TIME_DAILY_MI_HOUR" tabindex="26"
+                                                        id="TIME_DAILY_MI_HOUR" style="width: 50px;">
+                                                        <option value=""></option>
+                                                        @for($i = 0; $i <= 55; $i+=5)
+                                                        <option value="{{ $i }}"
+                                                            @if ($i == old('TIME_DAILY_MI_HOUR', $dataWorkPtn->TIME_DAILY_MI) && isset($dataWorkPtn->TIME_DAILY_MI))
+                                                            selected
+                                                            @endif>
+                                                            {{ $i }}
+                                                        </option>
+                                                        @endfor
+                                                    </select>
+                                                    &nbsp;分
+                                                </td>
+                                                <td>
+                                                    <span class="text-danger" id="tmDailyHour"></span>
+                                                </td>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                <!-- 休憩時間設定 -->
+                                <p class="CategoryTitle1">休憩時間設定</p>
+                                <table class="InputFieldStyle1">
+                                    <tbody>
+                                        <tr>
+                                            <th>休憩時間</th>
+                                            <td>
+                                                <div class="GroupBox1">
+                                                    <input name="BREAK_CLS_CD" tabindex="27"
+                                                        id="rbBreakTime" type="radio" value="00"
+                                                        {{ old('BREAK_CLS_CD',isset($dataWorkPtn->BREAK_CLS_CD) ? $dataWorkPtn->BREAK_CLS_CD : '') == '00' ? 'checked': '' }}
+                                                        @if (!isset($dataWorkPtn->BREAK_CLS_CD))
+                                                        checked
+                                                        @endif>
+                                                        <label for="rbBreakTime">時間帯</label>
+                                                    <input name="BREAK_CLS_CD" tabindex="28"
+                                                        id="rbBreakHours" type="radio" value="01"
+                                                        {{ old('BREAK_CLS_CD',isset($dataWorkPtn->BREAK_CLS_CD) ? $dataWorkPtn->BREAK_CLS_CD : '') == '01' ? 'checked': '' }}
+                                                        >
+                                                        <label for="rbBreakHours">時間数</label>
+                                                    <input name="BREAK_CLS_CD" tabindex="29"
+                                                        id="rbBreakHourly" type="radio" value="02"
+                                                        {{ old('BREAK_CLS_CD',isset($dataWorkPtn->BREAK_CLS_CD) ? $dataWorkPtn->BREAK_CLS_CD : '') == '02' ? 'checked': '' }}
+                                                        >
+                                                        <label for="rbBreakHourly">時間毎</label>
+                                                    <div class="clearBoth">
+                                                    </div>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                                <p class="CategoryTitle1">時間帯</p>
+                                <table class="GridViewStyle2" id="breakTimeZone">
+                                    <tbody>
+                                        <tr>
+                                            <td></td>
+                                            <th>開始時間</th>
+                                            <td></td>
+                                            <th>終了時間</th>
+                                            <td></td>
+                                        </tr>
+                                        <tr class="rowbreakTime">
+                                            <th class="RowTitle">
+                                                休憩時間１
+                                            </th>
+                                            <td>
+                                                <select name="PBRK1_STR_HH" tabindex="30" class="breakTime strHH"
+                                                    onchange="SetBreakTime('PBRK1_STR_HH', 'PBRK1_STR_MI', 'PBRK1_END_HH', 'PBRK1_END_MI', 'PBRK1_TIME', 'PBRK1_TIME_HIDE')"
+                                                    id="PBRK1_STR_HH" style="width: 50px;">
+                                                    <option value="" ></option>
+                                                    @for($i = 0; $i <= 35; $i++)
+                                                    <option value="{{ $i }}"
+                                                        @if ($i == old('PBRK1_STR_HH', $dataWorkPtn->PBRK1_STR_HH) && isset($dataWorkPtn->PBRK1_STR_HH))
+                                                        selected
+                                                        @endif>
+                                                        {{ $i }}
+                                                    </option>
+                                                    @endfor
+                                                </select>
+                                                &nbsp;時
+                                                <select name="PBRK1_STR_MI" tabindex="30" class="breakTime strMI"
+                                                    onchange="SetBreakTime('PBRK1_STR_HH', 'PBRK1_STR_MI', 'PBRK1_END_HH', 'PBRK1_END_MI', 'PBRK1_TIME', 'PBRK1_TIME_HIDE')"
+                                                    id="PBRK1_STR_MI" style="width: 50px;">
+                                                    <option value=""></option>
+                                                    @for($i = 0; $i <= 55; $i+=5)
+                                                    <option value="{{ $i }}"
+                                                        @if ($i == old('PBRK1_STR_MI', $dataWorkPtn->PBRK1_STR_MI) && isset($dataWorkPtn->PBRK1_STR_MI))
+                                                        selected
+                                                        @endif>
+                                                        {{ $i }}
+                                                    </option>
+                                                    @endfor
                                             </select>
-                                            &nbsp;時間
-                                            <select name="ctl00$cphContentsArea$ddlPRsv1Mi" tabindex="65" class="imeDisabled" id="ctl00_cphContentsArea_ddlPRsv1Mi" style="width: 50px;">
-                                                <option selected="selected" value=""></option>
-                                                <option value="0">0</option>
-                                                <option value="5">5</option>
-                                                <option value="10">10</option>
-                                                <option value="15">15</option>
-                                                <option value="20">20</option>
-                                                <option value="25">25</option>
-                                                <option value="30">30</option>
-                                                <option value="35">35</option>
-                                                <option value="40">40</option>
-                                                <option value="45">45</option>
-                                                <option value="50">50</option>
-                                                <option value="55">55</option>
-
+                                                &nbsp;分
+                                            </td>
+                                            <td>
+                                                &nbsp;～
+                                            </td>
+                                            <td>
+                                                <select name="PBRK1_END_HH" tabindex="30" class="breakTime endHH"
+                                                    onchange="SetBreakTime('PBRK1_STR_HH', 'PBRK1_STR_MI', 'PBRK1_END_HH', 'PBRK1_END_MI', 'PBRK1_TIME', 'PBRK1_TIME_HIDE')"
+                                                    id="PBRK1_END_HH"
+                                                    style="width: 50px;">
+                                                    <option value="" ></option>
+                                                    @for($i = 0; $i <= 36; $i++)
+                                                    <option value="{{ $i }}"
+                                                        @if ($i == old('PBRK1_END_HH', $dataWorkPtn->PBRK1_END_HH) && isset($dataWorkPtn->PBRK1_END_HH))
+                                                        selected
+                                                        @endif>
+                                                        {{ $i }}
+                                                    </option>
+                                                    @endfor
+                                                </select>
+                                                &nbsp;時
+                                                <select name="PBRK1_END_MI" tabindex="30" class="breakTime endMI"
+                                                    onchange="SetBreakTime('PBRK1_STR_HH', 'PBRK1_STR_MI', 'PBRK1_END_HH', 'PBRK1_END_MI', 'PBRK1_TIME', 'PBRK1_TIME_HIDE')"
+                                                    id="PBRK1_END_MI" style="width: 50px;">
+                                                    <option value=""></option>
+                                                    @for($i = 0; $i <= 55; $i+=5)
+                                                    <option value="{{ $i }}"
+                                                        @if ($i == old('PBRK1_END_MI', $dataWorkPtn->PBRK1_END_MI) && isset($dataWorkPtn->PBRK1_END_MI))
+                                                        selected
+                                                        @endif>
+                                                        {{ $i }}
+                                                    </option>
+                                                    @endfor
+                                                </select>
+                                                &nbsp;分
+                                            </td>
+                                            <td text-align="right">
+                                                &nbsp;&nbsp;&nbsp;
+                                                <span id="PBRK1_TIME"></span>
+                                                <input type="hidden" name="PBRK1_TIME_HIDE" id="PBRK1_TIME_HIDE" value="" class="breakTime brTime">
+                                            </td>
+                                            <td>
+                                                <span class="text-danger" id="breakTime0"></span>
+                                            </td>
+                                        </tr>
+                                        <tr class="rowbreakTime">
+                                            <th class="RowTitle">休憩時間２</th>
+                                            <td>
+                                                <select name="PBRK2_STR_HH" tabindex="31" class="breakTime strHH"
+                                                    onchange="SetBreakTime('PBRK2_STR_HH', 'PBRK2_STR_MI', 'PBRK2_END_HH', 'PBRK2_END_MI', 'PBRK2_TIME', 'PBRK2_TIME_HIDE')"
+                                                    id="PBRK2_STR_HH" style="width: 50px;">
+                                                    <option value="" ></option>
+                                                    @for($i = 0; $i <= 35; $i++)
+                                                    <option value="{{ $i }}"
+                                                        @if ($i == old('PBRK2_STR_HH', $dataWorkPtn->PBRK2_STR_HH) && isset($dataWorkPtn->PBRK2_STR_HH))
+                                                        selected
+                                                        @endif>
+                                                        {{ $i }}
+                                                    </option>
+                                                    @endfor
+                                                </select>
+                                                &nbsp;時
+                                                <select name="PBRK2_STR_MI" tabindex="31" class="breakTime strMI"
+                                                    onchange="SetBreakTime('PBRK2_STR_HH', 'PBRK2_STR_MI', 'PBRK2_END_HH', 'PBRK2_END_MI', 'PBRK2_TIME', 'PBRK2_TIME_HIDE')"
+                                                    id="PBRK2_STR_MI" style="width: 50px;">
+                                                    <option value=""></option>
+                                                    @for($i = 0; $i <= 55; $i+=5)
+                                                    <option value="{{ $i }}"
+                                                        @if ($i == old('PBRK2_STR_MI', $dataWorkPtn->PBRK2_STR_MI) && isset($dataWorkPtn->PBRK2_STR_MI))
+                                                        selected
+                                                        @endif>
+                                                        {{ $i }}
+                                                    </option>
+                                                    @endfor
                                             </select>
-                                            &nbsp;分
-                                        </td>
-                                        <td>
-
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <th>
-                                            前半終了時間
-                                        </th>
-                                        <td>
-                                            <select name="ctl00$cphContentsArea$ddlPTimeFstPrdEndHh" tabindex="66" class="imeDisabled" id="ctl00_cphContentsArea_ddlPTimeFstPrdEndHh" style="width: 50px;">
-                                                <option selected="selected" value=""></option>
-                                                <option value="0">0</option>
-                                                <option value="1">1</option>
-                                                <option value="2">2</option>
-                                                <option value="3">3</option>
-                                                <option value="4">4</option>
-                                                <option value="5">5</option>
-                                                <option value="6">6</option>
-                                                <option value="7">7</option>
-                                                <option value="8">8</option>
-                                                <option value="9">9</option>
-                                                <option value="10">10</option>
-                                                <option value="11">11</option>
-                                                <option value="12">12</option>
-                                                <option value="13">13</option>
-                                                <option value="14">14</option>
-                                                <option value="15">15</option>
-                                                <option value="16">16</option>
-                                                <option value="17">17</option>
-                                                <option value="18">18</option>
-                                                <option value="19">19</option>
-                                                <option value="20">20</option>
-                                                <option value="21">21</option>
-                                                <option value="22">22</option>
-                                                <option value="23">23</option>
-                                                <option value="24">24</option>
-                                                <option value="25">25</option>
-                                                <option value="26">26</option>
-                                                <option value="27">27</option>
-                                                <option value="28">28</option>
-                                                <option value="29">29</option>
-                                                <option value="30">30</option>
-                                                <option value="31">31</option>
-                                                <option value="32">32</option>
-                                                <option value="33">33</option>
-                                                <option value="34">34</option>
-                                                <option value="35">35</option>
-
+                                                &nbsp;分
+                                            </td>
+                                            <td>
+                                                &nbsp;～
+                                            </td>
+                                            <td>
+                                                <select name="PBRK2_END_HH" tabindex="31" class="breakTime endHH"
+                                                    onchange="SetBreakTime('PBRK2_STR_HH', 'PBRK2_STR_MI', 'PBRK2_END_HH', 'PBRK2_END_MI', 'PBRK2_TIME', 'PBRK2_TIME_HIDE')"
+                                                    id="PBRK2_END_HH"
+                                                    style="width: 50px;">
+                                                    <option value="" ></option>
+                                                    @for($i = 0; $i <= 36; $i++)
+                                                    <option value="{{ $i }}"
+                                                        @if ($i == old('PBRK2_END_HH', $dataWorkPtn->PBRK2_END_HH) && isset($dataWorkPtn->PBRK2_END_HH))
+                                                        selected
+                                                        @endif>
+                                                        {{ $i }}
+                                                    </option>
+                                                    @endfor
+                                                </select>
+                                                &nbsp;時
+                                                <select name="PBRK2_END_MI" tabindex="31" class="breakTime endMI"
+                                                    onchange="SetBreakTime('PBRK2_STR_HH', 'PBRK2_STR_MI', 'PBRK2_END_HH', 'PBRK2_END_MI', 'PBRK2_TIME', 'PBRK2_TIME_HIDE')"
+                                                    id="PBRK2_END_MI" style="width: 50px;">
+                                                    <option value=""></option>
+                                                    @for($i = 0; $i <= 55; $i+=5)
+                                                    <option value="{{ $i }}"
+                                                        @if ($i == old('PBRK2_END_MI', $dataWorkPtn->PBRK2_END_MI) && isset($dataWorkPtn->PBRK2_END_MI))
+                                                        selected
+                                                        @endif>
+                                                        {{ $i }}
+                                                    </option>
+                                                    @endfor
+                                                </select>
+                                                &nbsp;分
+                                            </td>
+                                            <td text-align="right">
+                                                &nbsp;&nbsp;&nbsp;
+                                                <span id="PBRK2_TIME"></span>
+                                                <input type="hidden" name="PBRK2_TIME_HIDE" id="PBRK2_TIME_HIDE" value="" class="breakTime brTime">
+                                            </td>
+                                            <td>
+                                                <span class="text-danger" id="breakTime1"></span>
+                                            </td>
+                                        </tr>
+                                        <tr class="rowbreakTime">
+                                            <th class="RowTitle">休憩時間３</th>
+                                            <td>
+                                                <select name="PBRK3_STR_HH" tabindex="32" class="breakTime strHH"
+                                                    onchange="SetBreakTime('PBRK3_STR_HH', 'PBRK3_STR_MI', 'PBRK3_END_HH', 'PBRK3_END_MI', 'PBRK3_TIME', 'PBRK3_TIME_HIDE')"
+                                                    id="PBRK3_STR_HH" style="width: 50px;">
+                                                    <option value="" ></option>
+                                                    @for($i = 0; $i <= 35; $i++)
+                                                    <option value="{{ $i }}"
+                                                        @if ($i == old('PBRK3_STR_HH', $dataWorkPtn->PBRK3_STR_HH) && isset($dataWorkPtn->PBRK3_STR_HH))
+                                                        selected
+                                                        @endif>
+                                                        {{ $i }}
+                                                    </option>
+                                                    @endfor
                                             </select>
-                                            &nbsp;時
-                                            <select name="ctl00$cphContentsArea$ddlPTimeFstPrdEndMi" tabindex="67" class="imeDisabled" id="ctl00_cphContentsArea_ddlPTimeFstPrdEndMi" style="width: 50px;">
-                                                <option selected="selected" value=""></option>
-                                                <option value="0">0</option>
-                                                <option value="5">5</option>
-                                                <option value="10">10</option>
-                                                <option value="15">15</option>
-                                                <option value="20">20</option>
-                                                <option value="25">25</option>
-                                                <option value="30">30</option>
-                                                <option value="35">35</option>
-                                                <option value="40">40</option>
-                                                <option value="45">45</option>
-                                                <option value="50">50</option>
-                                                <option value="55">55</option>
-
+                                                &nbsp;時
+                                                <select name="PBRK3_STR_MI" tabindex="32" class="breakTime strMI"
+                                                    onchange="SetBreakTime('PBRK3_STR_HH', 'PBRK3_STR_MI', 'PBRK3_END_HH', 'PBRK3_END_MI', 'PBRK3_TIME', 'PBRK3_TIME_HIDE')"
+                                                    id="PBRK3_STR_MI" style="width: 50px;">
+                                                    <option value=""></option>
+                                                    @for($i = 0; $i <= 55; $i+=5)
+                                                    <option value="{{ $i }}"
+                                                        @if ($i == old('PBRK3_STR_MI', $dataWorkPtn->PBRK3_STR_MI) && isset($dataWorkPtn->PBRK3_STR_MI))
+                                                        selected
+                                                        @endif>
+                                                        {{ $i }}
+                                                    </option>
+                                                    @endfor
                                             </select>
-                                            &nbsp;分
-                                        </td>
-                                        <td>
-
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <th>
-                                            後半開始時間
-                                        </th>
-                                        <td>
-                                            <select name="ctl00$cphContentsArea$ddlPTimeScdPrdStrHh" tabindex="68" class="imeDisabled" id="ctl00_cphContentsArea_ddlPTimeScdPrdStrHh" style="width: 50px;">
-                                                <option selected="selected" value=""></option>
-                                                <option value="0">0</option>
-                                                <option value="1">1</option>
-                                                <option value="2">2</option>
-                                                <option value="3">3</option>
-                                                <option value="4">4</option>
-                                                <option value="5">5</option>
-                                                <option value="6">6</option>
-                                                <option value="7">7</option>
-                                                <option value="8">8</option>
-                                                <option value="9">9</option>
-                                                <option value="10">10</option>
-                                                <option value="11">11</option>
-                                                <option value="12">12</option>
-                                                <option value="13">13</option>
-                                                <option value="14">14</option>
-                                                <option value="15">15</option>
-                                                <option value="16">16</option>
-                                                <option value="17">17</option>
-                                                <option value="18">18</option>
-                                                <option value="19">19</option>
-                                                <option value="20">20</option>
-                                                <option value="21">21</option>
-                                                <option value="22">22</option>
-                                                <option value="23">23</option>
-                                                <option value="24">24</option>
-                                                <option value="25">25</option>
-                                                <option value="26">26</option>
-                                                <option value="27">27</option>
-                                                <option value="28">28</option>
-                                                <option value="29">29</option>
-                                                <option value="30">30</option>
-                                                <option value="31">31</option>
-                                                <option value="32">32</option>
-                                                <option value="33">33</option>
-                                                <option value="34">34</option>
-                                                <option value="35">35</option>
-
+                                                &nbsp;分
+                                            </td>
+                                            <td>
+                                                &nbsp;～
+                                            </td>
+                                            <td>
+                                                <select name="PBRK3_END_HH" tabindex="32" class="breakTime endHH"
+                                                    onchange="SetBreakTime('PBRK3_STR_HH', 'PBRK3_STR_MI', 'PBRK3_END_HH', 'PBRK3_END_MI', 'PBRK3_TIME', 'PBRK3_TIME_HIDE')"
+                                                    id="PBRK3_END_HH"
+                                                    style="width: 50px;">
+                                                    <option value="" ></option>
+                                                    @for($i = 0; $i <= 36; $i++)
+                                                    <option value="{{ $i }}"
+                                                        @if ($i == old('PBRK3_END_HH', $dataWorkPtn->PBRK3_END_HH) && isset($dataWorkPtn->PBRK3_END_HH))
+                                                        selected
+                                                        @endif>
+                                                        {{ $i }}
+                                                    </option>
+                                                    @endfor
+                                                </select>
+                                                &nbsp;時
+                                                <select name="PBRK3_END_MI" tabindex="32" class="breakTime endMI"
+                                                    onchange="SetBreakTime('PBRK3_STR_HH', 'PBRK3_STR_MI', 'PBRK3_END_HH', 'PBRK3_END_MI', 'PBRK3_TIME', 'PBRK3_TIME_HIDE')"
+                                                    id="PBRK3_END_MI" style="width: 50px;">
+                                                    <option value=""></option>
+                                                    @for($i = 0; $i <= 55; $i+=5)
+                                                    <option value="{{ $i }}"
+                                                        @if ($i == old('PBRK3_END_MI', $dataWorkPtn->PBRK3_END_MI) && isset($dataWorkPtn->PBRK3_END_MI))
+                                                        selected
+                                                        @endif>
+                                                        {{ $i }}
+                                                    </option>
+                                                    @endfor
+                                                </select>
+                                                &nbsp;分
+                                            </td>
+                                            <td text-align="right">
+                                                &nbsp;&nbsp;&nbsp;
+                                                <span id="PBRK3_TIME"></span>
+                                                <input type="hidden" name="PBRK3_TIME_HIDE" id="PBRK3_TIME_HIDE" value="" class="breakTime brTime">
+                                            </td>
+                                            <td>
+                                                <span class="text-danger" id="breakTime2"></span>
+                                            </td>
+                                        </tr>
+                                        <tr class="rowbreakTime">
+                                            <th class="RowTitle">休憩時間４</th>
+                                            <td>
+                                                <select name="PBRK4_STR_HH" tabindex="33" class="breakTime strHH"
+                                                    onchange="SetBreakTime('PBRK4_STR_HH', 'PBRK4_STR_MI', 'PBRK4_END_HH', 'PBRK4_END_MI', 'PBRK4_TIME', 'PBRK4_TIME_HIDE')"
+                                                    id="PBRK4_STR_HH" style="width: 50px;">
+                                                    <option value="" ></option>
+                                                    @for($i = 0; $i <= 35; $i++)
+                                                    <option value="{{ $i }}"
+                                                        @if ($i == old('PBRK4_STR_HH', $dataWorkPtn->PBRK4_STR_HH) && isset($dataWorkPtn->PBRK4_STR_HH))
+                                                        selected
+                                                        @endif>
+                                                        {{ $i }}
+                                                    </option>
+                                                    @endfor
                                             </select>
-                                            &nbsp;時
-                                            <select name="ctl00$cphContentsArea$ddlPTimeScdPrdStrMi" tabindex="69" class="imeDisabled" id="ctl00_cphContentsArea_ddlPTimeScdPrdStrMi" style="width: 50px;">
-                                                <option selected="selected" value=""></option>
-                                                <option value="0">0</option>
-                                                <option value="5">5</option>
-                                                <option value="10">10</option>
-                                                <option value="15">15</option>
-                                                <option value="20">20</option>
-                                                <option value="25">25</option>
-                                                <option value="30">30</option>
-                                                <option value="35">35</option>
-                                                <option value="40">40</option>
-                                                <option value="45">45</option>
-                                                <option value="50">50</option>
-                                                <option value="55">55</option>
-
+                                                &nbsp;時
+                                                <select name="PBRK4_STR_MI" tabindex="33" class="breakTime strMI"
+                                                    onchange="SetBreakTime('PBRK4_STR_HH', 'PBRK4_STR_MI', 'PBRK4_END_HH', 'PBRK4_END_MI', 'PBRK4_TIME', 'PBRK4_TIME_HIDE')"
+                                                    id="PBRK4_STR_MI" style="width: 50px;">
+                                                    <option value=""></option>
+                                                    @for($i = 0; $i <= 55; $i+=5)
+                                                    <option value="{{ $i }}"
+                                                        @if ($i == old('PBRK4_STR_MI', $dataWorkPtn->PBRK4_STR_MI) && isset($dataWorkPtn->PBRK4_STR_MI))
+                                                        selected
+                                                        @endif>
+                                                        {{ $i }}
+                                                    </option>
+                                                    @endfor
                                             </select>
-                                            &nbsp;分
-                                        </td>
-                                        <td>
-
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <th>
-                                            日替時刻
-                                        </th>
-                                        <td>
-                                            <select name="ctl00$cphContentsArea$ddlPTimeDailyHh" tabindex="70" class="imeDisabled" id="ctl00_cphContentsArea_ddlPTimeDailyHh" style="width: 50px;">
-                                                <option selected="selected" value=""></option>
-                                                <option value="0">0</option>
-                                                <option value="1">1</option>
-                                                <option value="2">2</option>
-                                                <option value="3">3</option>
-                                                <option value="4">4</option>
-                                                <option value="5">5</option>
-                                                <option value="6">6</option>
-                                                <option value="7">7</option>
-                                                <option value="8">8</option>
-                                                <option value="9">9</option>
-                                                <option value="10">10</option>
-                                                <option value="11">11</option>
-                                                <option value="12">12</option>
-                                                <option value="13">13</option>
-                                                <option value="14">14</option>
-                                                <option value="15">15</option>
-                                                <option value="16">16</option>
-                                                <option value="17">17</option>
-                                                <option value="18">18</option>
-                                                <option value="19">19</option>
-                                                <option value="20">20</option>
-                                                <option value="21">21</option>
-                                                <option value="22">22</option>
-                                                <option value="23">23</option>
-
+                                                &nbsp;分
+                                            </td>
+                                            <td>
+                                                &nbsp;～
+                                            </td>
+                                            <td>
+                                                <select name="PBRK4_END_HH" tabindex="33" class="breakTime endHH"
+                                                    onchange="SetBreakTime('PBRK4_STR_HH', 'PBRK4_STR_MI', 'PBRK4_END_HH', 'PBRK4_END_MI', 'PBRK4_TIME', 'PBRK4_TIME_HIDE')"
+                                                    id="PBRK4_END_HH"
+                                                    style="width: 50px;">
+                                                    <option value="" ></option>
+                                                    @for($i = 0; $i <= 36; $i++)
+                                                    <option value="{{ $i }}"
+                                                        @if ($i == old('PBRK4_END_HH', $dataWorkPtn->PBRK4_END_HH) && isset($dataWorkPtn->PBRK4_END_HH))
+                                                        selected
+                                                        @endif>
+                                                        {{ $i }}
+                                                    </option>
+                                                    @endfor
+                                                </select>
+                                                &nbsp;時
+                                                <select name="PBRK4_END_MI" tabindex="33" class="breakTime endMI"
+                                                    onchange="SetBreakTime('PBRK4_STR_HH', 'PBRK4_STR_MI', 'PBRK4_END_HH', 'PBRK4_END_MI', 'PBRK4_TIME', 'PBRK4_TIME_HIDE')"
+                                                    id="PBRK4_END_MI" style="width: 50px;">
+                                                    <option value=""></option>
+                                                    @for($i = 0; $i <= 55; $i+=5)
+                                                    <option value="{{ $i }}"
+                                                        @if ($i == old('PBRK4_END_MI', $dataWorkPtn->PBRK4_END_MI) && isset($dataWorkPtn->PBRK4_END_MI))
+                                                        selected
+                                                        @endif>
+                                                        {{ $i }}
+                                                    </option>
+                                                    @endfor
+                                                </select>
+                                                &nbsp;分
+                                            </td>
+                                            <td text-align="right">
+                                                &nbsp;&nbsp;&nbsp;
+                                                <span id="PBRK4_TIME"></span>
+                                                <input type="hidden" name="PBRK4_TIME_HIDE" id="PBRK4_TIME_HIDE" value="" class="breakTime brTime">
+                                            </td>
+                                            <td>
+                                                <span class="text-danger" id="breakTime3"></span>
+                                            </td>
+                                        </tr>
+                                        <tr class="rowbreakTime">
+                                            <th class="RowTitle">休憩時間５</th>
+                                            <td>
+                                                <select name="PBRK5_STR_HH" tabindex="34" class="breakTime strHH"
+                                                    onchange="SetBreakTime('PBRK5_STR_HH', 'PBRK5_STR_MI', 'PBRK5_END_HH', 'PBRK5_END_MI', 'PBRK5_TIME', 'PBRK5_TIME_HIDE')"
+                                                    id="PBRK5_STR_HH" style="width: 50px;">
+                                                    <option value="" ></option>
+                                                    @for($i = 0; $i <= 35; $i++)
+                                                    <option value="{{ $i }}"
+                                                        @if ($i == old('PBRK5_STR_HH', $dataWorkPtn->PBRK5_STR_HH) && isset($dataWorkPtn->PBRK5_STR_HH))
+                                                        selected
+                                                        @endif>
+                                                        {{ $i }}
+                                                    </option>
+                                                    @endfor
                                             </select>
-                                            &nbsp;時
-                                            <select name="ctl00$cphContentsArea$ddlPTimeDailyMi" tabindex="71" class="imeDisabled" id="ctl00_cphContentsArea_ddlPTimeDailyMi" style="width: 50px;">
-                                                <option selected="selected" value=""></option>
-                                                <option value="0">0</option>
-                                                <option value="5">5</option>
-                                                <option value="10">10</option>
-                                                <option value="15">15</option>
-                                                <option value="20">20</option>
-                                                <option value="25">25</option>
-                                                <option value="30">30</option>
-                                                <option value="35">35</option>
-                                                <option value="40">40</option>
-                                                <option value="45">45</option>
-                                                <option value="50">50</option>
-                                                <option value="55">55</option>
-
+                                                &nbsp;時
+                                                <select name="PBRK5_STR_MI" tabindex="34" class="breakTime strMI"
+                                                    onchange="SetBreakTime('PBRK5_STR_HH', 'PBRK5_STR_MI', 'PBRK5_END_HH', 'PBRK5_END_MI', 'PBRK5_TIME', 'PBRK5_TIME_HIDE')"
+                                                    id="PBRK5_STR_MI" style="width: 50px;">
+                                                    <option value=""></option>
+                                                    @for($i = 0; $i <= 55; $i+=5)
+                                                    <option value="{{ $i }}"
+                                                        @if ($i == old('PBRK5_STR_MI', $dataWorkPtn->PBRK5_STR_MI) && isset($dataWorkPtn->PBRK5_STR_MI))
+                                                        selected
+                                                        @endif>
+                                                        {{ $i }}
+                                                    </option>
+                                                    @endfor
                                             </select>
-                                            &nbsp;分
-                                        </td>
-                                        <td>
-
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
-
+                                                &nbsp;分
+                                            </td>
+                                            <td>
+                                                &nbsp;～
+                                            </td>
+                                            <td>
+                                                <select name="PBRK5_END_HH" tabindex="34" class="breakTime endHH"
+                                                    onchange="SetBreakTime('PBRK5_STR_HH', 'PBRK5_STR_MI', 'PBRK5_END_HH', 'PBRK5_END_MI', 'PBRK5_TIME', 'PBRK5_TIME_HIDE')"
+                                                    id="PBRK5_END_HH"
+                                                    style="width: 50px;">
+                                                    <option value="" ></option>
+                                                    @for($i = 0; $i <= 36; $i++)
+                                                    <option value="{{ $i }}"
+                                                        @if ($i == old('PBRK5_END_HH', $dataWorkPtn->PBRK5_END_HH) && isset($dataWorkPtn->PBRK5_END_HH))
+                                                        selected
+                                                        @endif>
+                                                        {{ $i }}
+                                                    </option>
+                                                    @endfor
+                                                </select>
+                                                &nbsp;時
+                                                <select name="PBRK5_END_MI" tabindex="34" class="breakTime endMI"
+                                                    onchange="SetBreakTime('PBRK5_STR_HH', 'PBRK5_STR_MI', 'PBRK5_END_HH', 'PBRK5_END_MI', 'PBRK5_TIME', 'PBRK5_TIME_HIDE')"
+                                                    id="PBRK5_END_MI" style="width: 50px;">
+                                                    <option value=""></option>
+                                                    @for($i = 0; $i <= 55; $i+=5)
+                                                    <option value="{{ $i }}"
+                                                        @if ($i == old('PBRK5_END_MI', $dataWorkPtn->PBRK5_END_MI) && isset($dataWorkPtn->PBRK5_END_MI))
+                                                        selected
+                                                        @endif>
+                                                        {{ $i }}
+                                                    </option>
+                                                    @endfor
+                                                </select>
+                                                &nbsp;分
+                                            </td>
+                                            <td text-align="right">
+                                                &nbsp;&nbsp;&nbsp;
+                                                <span id="PBRK5_TIME"></span>
+                                                <input type="hidden" name="PBRK5_TIME_HIDE" id="PBRK5_TIME_HIDE" value="" class="breakTime brTime">
+                                            </td>
+                                            <td>
+                                                <span class="text-danger" id="breakTime4"></span>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                                <p class="CategoryTitle1">時間数</p>
+                                <table class="InputFieldStyle1" id="breakHours">
+                                    <tbody>
+                                        <tr>
+                                            <th>
+                                                休憩時間
+                                            </th>
+                                            <td>
+                                                <select name="NBRK_TIME" tabindex="35" class="breakHours"
+                                                    id="NBRK_TIME" style="width: 50px;">
+                                                    <option value=""></option>
+                                                    @for($i = 0; $i <= 8; $i++)
+                                                    <option value="{{ $i }}"
+                                                        @if ($i == old('NBRK_TIME', $dataWorkPtn->NBRK_TIME) && isset($dataWorkPtn->NBRK_TIME))
+                                                        selected
+                                                        @endif>
+                                                        {{ $i }}
+                                                    </option>
+                                                    @endfor
+                                                </select>
+                                                &nbsp;時間&nbsp;
+                                                <select name="NBRK_MINUTE" tabindex="35" class="breakHours"
+                                                    id="NBRK_MINUTE" style="width: 50px;">
+                                                    <option value=""></option>
+                                                    @for($i = 0; $i <= 55; $i+=5)
+                                                    <option value="{{ $i }}"
+                                                        @if ($i == old('NBRK_MINUTE', $dataWorkPtn->NBRK_MINUTE) && isset($dataWorkPtn->NBRK_MINUTE))
+                                                        selected
+                                                        @endif>
+                                                        {{ $i }}
+                                                    </option>
+                                                    @endfor
+                                                </select>
+                                                &nbsp;分
+                                            </td>
+                                            <td>
+                                                <span class="text-danger" id="breakHour"></span>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                                <p class="CategoryTitle1">時間毎</p>
+                                <table class="InputFieldStyle1" id="breakHourly">
+                                    <tbody>
+                                        <tr>
+                                            <th>
+                                                休憩時間
+                                            </th>
+                                            <td>
+                                                <select name="EBRK_PTIME" tabindex="36" class="breakHourly"
+                                                    id="EBRK_PTIME" style="width: 50px;">
+                                                    <option value=""></option>
+                                                    @for($i = 0; $i <= 8; $i++)
+                                                    <option value="{{ $i }}"
+                                                        @if ($i == old('EBRK_PTIME', $dataWorkPtn->EBRK_PTIME) && isset($dataWorkPtn->EBRK_PTIME))
+                                                        selected
+                                                        @endif>
+                                                        {{ $i }}
+                                                    </option>
+                                                    @endfor
+                                                </select>
+                                                &nbsp;時間働く毎に &nbsp;
+                                                <select name="EBRK_MINUTE" tabindex="36" class="breakHourly"
+                                                    id="EBRK_MINUTE" style="width: 50px;">
+                                                    <option value=""></option>
+                                                    @for($i = 0; $i <= 60; $i+=5)
+                                                    <option value="{{ $i }}"
+                                                        @if ($i == old('EBRK_MINUTE', $dataWorkPtn->EBRK_MINUTE) && isset($dataWorkPtn->EBRK_MINUTE))
+                                                        selected
+                                                        @endif>
+                                                        {{ $i }}
+                                                    </option>
+                                                    @endfor
+                                                </select>
+                                                &nbsp;分
+                                            </td>
+                                            <td>
+                                                <span class="text-danger" id="brHourly"></span>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                                <input type="hidden" name="hideCdAddNew" id="hideCdAddNew" value="{{ $dataWorkPtn->WORKPTN_CD }}">
+                                <!-- detail block end -->
+                                <!-- footer block -->
+                                <div class="line">
+                                </div>
+                                <p class="ButtonField1">
+                                    <input type="button" value="更新" name="btnUpdate" tabindex="37" id="btnUpdate"
+                                            class="ButtonStyle1 update"
+                                            data-url="{{ url('master/MT05WorkPtnUpdate') }}">
+                                    <input type="button" name="btnCancel" tabindex="38" id="btnCancel"
+                                            class="ButtonStyle1" value="キャンセル"
+                                            onclick="location.reload();">
+                                    <input type="button" value="削除" name="btnDelete" tabindex="39" id="btnDelete"
+                                            class="ButtonStyle1 delete"
+                                            @if(!isset($dataWorkPtn->WORKPTN_CD))
+                                            disabled
+                                            @else
+                                            data-url="{{ url('master/MT05WorkPtnDelete') }}"
+                                            @endif
+                                            >
+                                </p>
+                            <!-- footer block end -->
+                            </form>
                         </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+@endsection
+@section('script')
+<script>
+$(function() {
+    // ENTER時に送信されないようにする
+    $('input').not('[type="button"]').keypress(function(e) {
+        if (e.which == 13) {
+            return false;
+        }
+    });
 
-                        <!-- 休憩時間設定 -->
-                        <p class="CategoryTitle1">
-                            休憩時間設定</p>
-                        <table class="InputFieldStyle1">
-                            <tbody>
-                                <tr>
-                                    <th>
-                                        休憩時間
-                                    </th>
-                                    <td>
-                                        <div class="GroupBox1">
-                                            <input name="ctl00$cphContentsArea$BreakCls" tabindex="116" id="ctl00_cphContentsArea_rbBreakTime" type="radio" checked="checked" value="rbBreakTime"><label for="ctl00_cphContentsArea_rbBreakTime">時間帯</label>
-                                            <input name="ctl00$cphContentsArea$BreakCls" tabindex="117" id="ctl00_cphContentsArea_rbBreakHours" onclick="javascript:setTimeout('__doPostBack(\'ctl00$cphContentsArea$rbBreakHours\',\'\')', 0)" type="radio" value="rbBreakHours"><label for="ctl00_cphContentsArea_rbBreakHours">時間数</label>
-                                            <input name="ctl00$cphContentsArea$BreakCls" tabindex="118" id="ctl00_cphContentsArea_rbBreakHourly" onclick="javascript:setTimeout('__doPostBack(\'ctl00$cphContentsArea$rbBreakHourly\',\'\')', 0)" type="radio" value="rbBreakHourly"><label for="ctl00_cphContentsArea_rbBreakHourly">時間毎</label>
-                                            <div class="clearBoth">
-                                            </div>
-                                        </div>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                        <p class="CategoryTitle1">
-                            時間帯</p>
-                        <table class="GridViewStyle2">
-                            <tbody>
-                                <tr>
-                                    <td>
-                                    </td>
-                                    <th>
-                                        開始時間
-                                    </th>
-                                    <td>
-                                    </td>
-                                    <th>
-                                        終了時間
-                                    </th>
-                                    <td>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <th class="RowTitle">
-                                        休憩時間１
-                                    </th>
-                                    <td>
-                                        <select name="ctl00$cphContentsArea$ddlPBrk1StrHh" tabindex="119" class="imeDisabled" id="ctl00_cphContentsArea_ddlPBrk1StrHh" style="width: 50px;" onchange="SetPBrkTime('ctl00_cphContentsArea_ddlPBrk1StrHh','ctl00_cphContentsArea_ddlPBrk1StrMi','ctl00_cphContentsArea_ddlPBrk1EndHh','ctl00_cphContentsArea_ddlPBrk1EndMi','ctl00_cphContentsArea_lblPBrk1Time')">
-                                            <option selected="selected" value=""></option>
-                                            <option value="0">0</option>
-                                            <option value="1">1</option>
-                                            <option value="2">2</option>
-                                            <option value="3">3</option>
-                                            <option value="4">4</option>
-                                            <option value="5">5</option>
-                                            <option value="6">6</option>
-                                            <option value="7">7</option>
-                                            <option value="8">8</option>
-                                            <option value="9">9</option>
-                                            <option value="10">10</option>
-                                            <option value="11">11</option>
-                                            <option value="12">12</option>
-                                            <option value="13">13</option>
-                                            <option value="14">14</option>
-                                            <option value="15">15</option>
-                                            <option value="16">16</option>
-                                            <option value="17">17</option>
-                                            <option value="18">18</option>
-                                            <option value="19">19</option>
-                                            <option value="20">20</option>
-                                            <option value="21">21</option>
-                                            <option value="22">22</option>
-                                            <option value="23">23</option>
-                                            <option value="24">24</option>
-                                            <option value="25">25</option>
-                                            <option value="26">26</option>
-                                            <option value="27">27</option>
-                                            <option value="28">28</option>
-                                            <option value="29">29</option>
-                                            <option value="30">30</option>
-                                            <option value="31">31</option>
-                                            <option value="32">32</option>
-                                            <option value="33">33</option>
-                                            <option value="34">34</option>
-                                            <option value="35">35</option>
+    var disableFlg = false;
+    // 更新
+    $(document).on('click', '.update', function() {
+        if (disableFlg || !window.confirm("{{ getArrValue($error_messages, 1005) }}")) {
+            return false;
+        }
+        disableFlg = true;
+        var errors = $("#form").find('span.text-danger');
+        if (errors.length) {
+            errors.text("");
+        }
 
-                                        </select>
-                                        &nbsp;時
-                                        <select name="ctl00$cphContentsArea$ddlPBrk1StrMi" tabindex="120" class="imeDisabled" id="ctl00_cphContentsArea_ddlPBrk1StrMi" style="width: 50px;" onchange="SetPBrkTime('ctl00_cphContentsArea_ddlPBrk1StrHh','ctl00_cphContentsArea_ddlPBrk1StrMi','ctl00_cphContentsArea_ddlPBrk1EndHh','ctl00_cphContentsArea_ddlPBrk1EndMi','ctl00_cphContentsArea_lblPBrk1Time')">
-                                            <option selected="selected" value=""></option>
-                                            <option value="0">0</option>
-                                            <option value="5">5</option>
-                                            <option value="10">10</option>
-                                            <option value="15">15</option>
-                                            <option value="20">20</option>
-                                            <option value="25">25</option>
-                                            <option value="30">30</option>
-                                            <option value="35">35</option>
-                                            <option value="40">40</option>
-                                            <option value="45">45</option>
-                                            <option value="50">50</option>
-                                            <option value="55">55</option>
+        // 時間帯設定
+        var pTime = [];
+        $('.rowWorkType').each(function(i,element) {
+            pTime[i] = {
+                'pTimeCds': $(element).find('.pTimeCd').val(),
+                'StrHH': $(element).find('.pTimeStrHH').val(),
+                'StrMI': $(element).find('.pTimeStrMI').val(),
+                'EndHH': $(element).find('.pTimeEndHH').val(),
+                'EndMI': $(element).find('.pTimeEndMI').val(),
+            };
+        })
 
-                                        </select>
-                                        &nbsp;分
-                                    </td>
-                                    <td>
-                                        &nbsp;～
-                                    </td>
-                                    <td>
-                                        <select name="ctl00$cphContentsArea$ddlPBrk1EndHh" tabindex="121" class="imeDisabled" id="ctl00_cphContentsArea_ddlPBrk1EndHh" style="width: 50px;" onchange="SetPBrkTime('ctl00_cphContentsArea_ddlPBrk1StrHh','ctl00_cphContentsArea_ddlPBrk1StrMi','ctl00_cphContentsArea_ddlPBrk1EndHh','ctl00_cphContentsArea_ddlPBrk1EndMi','ctl00_cphContentsArea_lblPBrk1Time')">
-                                            <option selected="selected" value=""></option>
-                                            <option value="0">0</option>
-                                            <option value="1">1</option>
-                                            <option value="2">2</option>
-                                            <option value="3">3</option>
-                                            <option value="4">4</option>
-                                            <option value="5">5</option>
-                                            <option value="6">6</option>
-                                            <option value="7">7</option>
-                                            <option value="8">8</option>
-                                            <option value="9">9</option>
-                                            <option value="10">10</option>
-                                            <option value="11">11</option>
-                                            <option value="12">12</option>
-                                            <option value="13">13</option>
-                                            <option value="14">14</option>
-                                            <option value="15">15</option>
-                                            <option value="16">16</option>
-                                            <option value="17">17</option>
-                                            <option value="18">18</option>
-                                            <option value="19">19</option>
-                                            <option value="20">20</option>
-                                            <option value="21">21</option>
-                                            <option value="22">22</option>
-                                            <option value="23">23</option>
-                                            <option value="24">24</option>
-                                            <option value="25">25</option>
-                                            <option value="26">26</option>
-                                            <option value="27">27</option>
-                                            <option value="28">28</option>
-                                            <option value="29">29</option>
-                                            <option value="30">30</option>
-                                            <option value="31">31</option>
-                                            <option value="32">32</option>
-                                            <option value="33">33</option>
-                                            <option value="34">34</option>
-                                            <option value="35">35</option>
-                                            <option value="36">36</option>
+        var extTime = [];
+        $('.rowExtTime').each(function(i,element) {
+            extTime[i] = {
+                'excCd': $(element).find('.extCdTime').val(),
+                'extStrHH': $(element).find('.extTimeStrHH').val(),
+                'extStrMI': $(element).find('.extTimeStrMI').val(),
+                'extEndHH': $(element).find('.extTimeEndHH').val(),
+                'extEndMI': $(element).find('.extTimeEndMI').val(),
+            };
+        })
 
-                                        </select>
-                                        &nbsp;時
-                                        <select name="ctl00$cphContentsArea$ddlPBrk1EndMi" tabindex="122" class="imeDisabled" id="ctl00_cphContentsArea_ddlPBrk1EndMi" style="width: 50px;" onchange="SetPBrkTime('ctl00_cphContentsArea_ddlPBrk1StrHh','ctl00_cphContentsArea_ddlPBrk1StrMi','ctl00_cphContentsArea_ddlPBrk1EndHh','ctl00_cphContentsArea_ddlPBrk1EndMi','ctl00_cphContentsArea_lblPBrk1Time')">
-                                            <option selected="selected" value=""></option>
-                                            <option value="0">0</option>
-                                            <option value="5">5</option>
-                                            <option value="10">10</option>
-                                            <option value="15">15</option>
-                                            <option value="20">20</option>
-                                            <option value="25">25</option>
-                                            <option value="30">30</option>
-                                            <option value="35">35</option>
-                                            <option value="40">40</option>
-                                            <option value="45">45</option>
-                                            <option value="50">50</option>
-                                            <option value="55">55</option>
+        // 時間数設定
+        var nTime = [];
+        $('.rowWorkTypeHour').each(function(i,element) {
+            nTime[i] = {
+                'nTimeDclsCd': $(element).find('.nTimeDclsCd').val(),
+                'nTimeCd': $(element).find('.nTimeCd').val(),
+                'nTimeStrHH': $(element).find('.nTimeStrHH').val(),
+                'nTimeStrMI': $(element).find('.nTimeStrMI').val(),
+                'nTimeEndHH': $(element).find('.nTimeEndHH').val(),
+                'nTimeEndMI': $(element).find('.nTimeEndMI').val(),
+            };
+        })
 
-                                        </select>
-                                        &nbsp;分
-                                    </td>
-                                    <td align="right">
-                                        &nbsp;&nbsp;&nbsp;
-                                        <span id="ctl00_cphContentsArea_lblPBrk1Time"></span>
-                                    </td>
-                                    <td>
+        var extHour = [];
+        $('.rowExtHour').each(function(i,element) {
+            extHour[i] = {
+                'excCdH': $(element).find('.extCdHour').val(),
+                'extHourStrHH': $(element).find('.extHourStrHH').val(),
+                'extHourStrMI': $(element).find('.extHourStrMI').val(),
+                'extHourEndHH': $(element).find('.extHourEndHH').val(),
+                'extHourEndMI': $(element).find('.extHourEndMI').val(),
+            };
+        })
 
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <th class="RowTitle">
-                                        休憩時間２
-                                    </th>
-                                    <td>
-                                        <select name="ctl00$cphContentsArea$ddlPBrk2StrHh" tabindex="123" class="imeDisabled" id="ctl00_cphContentsArea_ddlPBrk2StrHh" style="width: 50px;" onchange="SetPBrkTime('ctl00_cphContentsArea_ddlPBrk2StrHh','ctl00_cphContentsArea_ddlPBrk2StrMi','ctl00_cphContentsArea_ddlPBrk2EndHh','ctl00_cphContentsArea_ddlPBrk2EndMi','ctl00_cphContentsArea_lblPBrk2Time')">
-                                            <option selected="selected" value=""></option>
-                                            <option value="0">0</option>
-                                            <option value="1">1</option>
-                                            <option value="2">2</option>
-                                            <option value="3">3</option>
-                                            <option value="4">4</option>
-                                            <option value="5">5</option>
-                                            <option value="6">6</option>
-                                            <option value="7">7</option>
-                                            <option value="8">8</option>
-                                            <option value="9">9</option>
-                                            <option value="10">10</option>
-                                            <option value="11">11</option>
-                                            <option value="12">12</option>
-                                            <option value="13">13</option>
-                                            <option value="14">14</option>
-                                            <option value="15">15</option>
-                                            <option value="16">16</option>
-                                            <option value="17">17</option>
-                                            <option value="18">18</option>
-                                            <option value="19">19</option>
-                                            <option value="20">20</option>
-                                            <option value="21">21</option>
-                                            <option value="22">22</option>
-                                            <option value="23">23</option>
-                                            <option value="24">24</option>
-                                            <option value="25">25</option>
-                                            <option value="26">26</option>
-                                            <option value="27">27</option>
-                                            <option value="28">28</option>
-                                            <option value="29">29</option>
-                                            <option value="30">30</option>
-                                            <option value="31">31</option>
-                                            <option value="32">32</option>
-                                            <option value="33">33</option>
-                                            <option value="34">34</option>
-                                            <option value="35">35</option>
+        // 休憩時間設定
+        // エラーメッセージ表示用
+        var breakTime = [];
+        $('.rowbreakTime').each(function(i,element) {
+            breakTime[i] = {
+                'brstrHH': $(element).find('.breakTime.strHH').val(),
+                'brstrMI': $(element).find('.breakTime.strMI').val(),
+                'brendHH': $(element).find('.breakTime.endHH').val(),
+                'brendMI': $(element).find('.breakTime.endMI').val(),
+            };
+        })
+        // データ登録用
+        var breakTimeData = [];
+        $('.rowbreakTime').each(function(i,element) {
+            breakTimeData[i] = {
+                'brstrHH': $(element).find('.breakTime.strHH').val(),
+                'brstrMI': $(element).find('.breakTime.strMI').val(),
+                'brendHH': $(element).find('.breakTime.endHH').val(),
+                'brendMI': $(element).find('.breakTime.endMI').val(),
+                'brTime': $(element).find('.breakTime.brTime').val(),
+            };
+        })
+        var workClsCd = document.querySelector('input[name="WORK_CLS_CD"]:checked').value;
+        var dutyCls = document.querySelector('input[name="DUTY_CLS_CD"]:checked').value;
+        var nTimeLeaveClsCd = document.querySelector('input[name="NTIME_LEAVE_CLS_CD"]:checked').value;
+        var BreakClsCd = document.querySelector('input[name="BREAK_CLS_CD"]:checked').value;
+        var rsv1ClsCd = document.querySelector('input[name="RSV1_CLS_CD"]:checked').value;
+        var rsv3ClsCd = document.querySelector('input[name="lateCal"]:checked').value;
+        var rsv4ClsCd = document.querySelector('input[name="earlyLeaveCal"]:checked').value;
 
-                                        </select>
-                                        &nbsp;時
-                                        <select name="ctl00$cphContentsArea$ddlPBrk2StrMi" tabindex="124" class="imeDisabled" id="ctl00_cphContentsArea_ddlPBrk2StrMi" style="width: 50px;" onchange="SetPBrkTime('ctl00_cphContentsArea_ddlPBrk2StrHh','ctl00_cphContentsArea_ddlPBrk2StrMi','ctl00_cphContentsArea_ddlPBrk2EndHh','ctl00_cphContentsArea_ddlPBrk2EndMi','ctl00_cphContentsArea_lblPBrk2Time')">
-                                            <option selected="selected" value=""></option>
-                                            <option value="0">0</option>
-                                            <option value="5">5</option>
-                                            <option value="10">10</option>
-                                            <option value="15">15</option>
-                                            <option value="20">20</option>
-                                            <option value="25">25</option>
-                                            <option value="30">30</option>
-                                            <option value="35">35</option>
-                                            <option value="40">40</option>
-                                            <option value="45">45</option>
-                                            <option value="50">50</option>
-                                            <option value="55">55</option>
+        $.ajaxSetup({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            }
+        });
 
-                                        </select>
-                                        &nbsp;分
-                                    </td>
-                                    <td>
-                                        &nbsp;～
-                                    </td>
-                                    <td>
-                                        <select name="ctl00$cphContentsArea$ddlPBrk2EndHh" tabindex="125" class="imeDisabled" id="ctl00_cphContentsArea_ddlPBrk2EndHh" style="width: 50px;" onchange="SetPBrkTime('ctl00_cphContentsArea_ddlPBrk2StrHh','ctl00_cphContentsArea_ddlPBrk2StrMi','ctl00_cphContentsArea_ddlPBrk2EndHh','ctl00_cphContentsArea_ddlPBrk2EndMi','ctl00_cphContentsArea_lblPBrk2Time')">
-                                            <option selected="selected" value=""></option>
-                                            <option value="0">0</option>
-                                            <option value="1">1</option>
-                                            <option value="2">2</option>
-                                            <option value="3">3</option>
-                                            <option value="4">4</option>
-                                            <option value="5">5</option>
-                                            <option value="6">6</option>
-                                            <option value="7">7</option>
-                                            <option value="8">8</option>
-                                            <option value="9">9</option>
-                                            <option value="10">10</option>
-                                            <option value="11">11</option>
-                                            <option value="12">12</option>
-                                            <option value="13">13</option>
-                                            <option value="14">14</option>
-                                            <option value="15">15</option>
-                                            <option value="16">16</option>
-                                            <option value="17">17</option>
-                                            <option value="18">18</option>
-                                            <option value="19">19</option>
-                                            <option value="20">20</option>
-                                            <option value="21">21</option>
-                                            <option value="22">22</option>
-                                            <option value="23">23</option>
-                                            <option value="24">24</option>
-                                            <option value="25">25</option>
-                                            <option value="26">26</option>
-                                            <option value="27">27</option>
-                                            <option value="28">28</option>
-                                            <option value="29">29</option>
-                                            <option value="30">30</option>
-                                            <option value="31">31</option>
-                                            <option value="32">32</option>
-                                            <option value="33">33</option>
-                                            <option value="34">34</option>
-                                            <option value="35">35</option>
-                                            <option value="36">36</option>
+        // 送信データー
+        var dataObj;
 
-                                        </select>
-                                        &nbsp;時
-                                        <select name="ctl00$cphContentsArea$ddlPBrk2EndMi" tabindex="126" class="imeDisabled" id="ctl00_cphContentsArea_ddlPBrk2EndMi" style="width: 50px;" onchange="SetPBrkTime('ctl00_cphContentsArea_ddlPBrk2StrHh','ctl00_cphContentsArea_ddlPBrk2StrMi','ctl00_cphContentsArea_ddlPBrk2EndHh','ctl00_cphContentsArea_ddlPBrk2EndMi','ctl00_cphContentsArea_lblPBrk2Time')">
-                                            <option selected="selected" value=""></option>
-                                            <option value="0">0</option>
-                                            <option value="5">5</option>
-                                            <option value="10">10</option>
-                                            <option value="15">15</option>
-                                            <option value="20">20</option>
-                                            <option value="25">25</option>
-                                            <option value="30">30</option>
-                                            <option value="35">35</option>
-                                            <option value="40">40</option>
-                                            <option value="45">45</option>
-                                            <option value="50">50</option>
-                                            <option value="55">55</option>
+        // 時間数・休憩時間「時間帯」
+        if ($('#dutyHours').prop('checked') && $('#rbBreakTime').prop('checked')) {
+            dataObj = {
+                'workPtnCd':$('#WORKPTN_CD').val(),
+                'workPtnName':$('#WORKPTN_NAME').val(),
+                'workPtnAbrName':$('#WORKPTN_ABR_NAME').val(),
+                'workClass':workClsCd,
+                'dutyClass':dutyCls,
+                'nTimeLeaveClsCd':nTimeLeaveClsCd,
+                'nTimeStartTkTime':$('#NTIME_START_TK_TIME').val(),
+                'BreakClsCd':BreakClsCd,
+                'rsv1ClsCd':rsv1ClsCd,
+                'hideCdAddNew':$('#hideCdAddNew').val(),
+                'nTime':nTime,
+                'extHour':extHour,
+                'rsvHour':[$("#RSV1_HH_HOUR").val(),$("#RSV1_MI_HOUR").val()],
+                'nTimeStr':{nTimeStrHH: $('#NTIME_START_HH').val(),nTimeStrMI: $('#NTIME_START_MI').val(),},
+                'tmDailyHour':[$("#TIME_DAILY_HH_HOUR").val(),$("#TIME_DAILY_MI_HOUR").val()],
+                'breakTime':breakTime,
+                'breakTimeData':breakTimeData,
+            };
+        }
 
-                                        </select>
-                                        &nbsp;分
-                                    </td>
-                                    <td align="right">
-                                        &nbsp;&nbsp;&nbsp;
-                                        <span id="ctl00_cphContentsArea_lblPBrk2Time"></span>
-                                    </td>
-                                    <td>
+        // 時間帯・休憩時間「時間帯」
+        if ($('#dutyTime').prop('checked') && $('#rbBreakTime').prop('checked')) {
+            dataObj = {
+                'workPtnCd':$('#WORKPTN_CD').val(),
+                'workPtnName':$('#WORKPTN_NAME').val(),
+                'workPtnAbrName':$('#WORKPTN_ABR_NAME').val(),
+                'workClass':workClsCd,
+                'dutyClass':dutyCls,
+                'BreakClsCd':BreakClsCd,
+                'rsv1ClsCd':rsv1ClsCd,
+                'rsv3ClsCd':rsv3ClsCd,
+                'rsv4ClsCd':rsv4ClsCd,
+                'hideCdAddNew':$('#hideCdAddNew').val(),
+                'pTime':pTime,
+                'extTime':extTime,
+                'rsvTime':[$("#RSV1_HH_TIME").val(),$("#RSV1_MI_TIME").val()],
+                'fstrdTime':[$("#PTIME_FSTPRD_END_HH").val(),$("#PTIME_FSTPRD_END_MI").val()],
+                'scdprdTime':[$("#PTIME_SCDPRD_STR_HH").val(),$("#PTIME_SCDPRD_STR_MI").val()],
+                'tmDailyTime':[$("#TIME_DAILY_HH_TIME").val(),$("#TIME_DAILY_MI_TIME").val()],
+                'breakTime':breakTime,
+                'breakTimeData':breakTimeData,
+            };
+        }
 
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <th class="RowTitle">
-                                        休憩時間３
-                                    </th>
-                                    <td>
-                                        <select name="ctl00$cphContentsArea$ddlPBrk3StrHh" tabindex="127" class="imeDisabled" id="ctl00_cphContentsArea_ddlPBrk3StrHh" style="width: 50px;" onchange="SetPBrkTime('ctl00_cphContentsArea_ddlPBrk3StrHh','ctl00_cphContentsArea_ddlPBrk3StrMi','ctl00_cphContentsArea_ddlPBrk3EndHh','ctl00_cphContentsArea_ddlPBrk3EndMi','ctl00_cphContentsArea_lblPBrk3Time')">
-                                            <option selected="selected" value=""></option>
-                                            <option value="0">0</option>
-                                            <option value="1">1</option>
-                                            <option value="2">2</option>
-                                            <option value="3">3</option>
-                                            <option value="4">4</option>
-                                            <option value="5">5</option>
-                                            <option value="6">6</option>
-                                            <option value="7">7</option>
-                                            <option value="8">8</option>
-                                            <option value="9">9</option>
-                                            <option value="10">10</option>
-                                            <option value="11">11</option>
-                                            <option value="12">12</option>
-                                            <option value="13">13</option>
-                                            <option value="14">14</option>
-                                            <option value="15">15</option>
-                                            <option value="16">16</option>
-                                            <option value="17">17</option>
-                                            <option value="18">18</option>
-                                            <option value="19">19</option>
-                                            <option value="20">20</option>
-                                            <option value="21">21</option>
-                                            <option value="22">22</option>
-                                            <option value="23">23</option>
-                                            <option value="24">24</option>
-                                            <option value="25">25</option>
-                                            <option value="26">26</option>
-                                            <option value="27">27</option>
-                                            <option value="28">28</option>
-                                            <option value="29">29</option>
-                                            <option value="30">30</option>
-                                            <option value="31">31</option>
-                                            <option value="32">32</option>
-                                            <option value="33">33</option>
-                                            <option value="34">34</option>
-                                            <option value="35">35</option>
+        // 時間帯・休憩時間「時間数」
+        if ($('#dutyTime').prop('checked') && $('#rbBreakHours').prop('checked')) {
+            dataObj = {
+                'workPtnCd':$('#WORKPTN_CD').val(),
+                'workPtnName':$('#WORKPTN_NAME').val(),
+                'workPtnAbrName':$('#WORKPTN_ABR_NAME').val(),
+                'workClass':workClsCd,
+                'dutyClass':dutyCls,
+                'BreakClsCd':BreakClsCd,
+                'rsv1ClsCd':rsv1ClsCd,
+                'rsv3ClsCd':rsv3ClsCd,
+                'rsv4ClsCd':rsv4ClsCd,
+                'hideCdAddNew':$('#hideCdAddNew').val(),
+                'pTime':pTime,
+                'extTime':extTime,
+                'rsvTime':[$("#RSV1_HH_TIME").val(), $("#RSV1_MI_TIME").val()],
+                'fstrdTime':[$("#PTIME_FSTPRD_END_HH").val(), $("#PTIME_FSTPRD_END_MI").val()],
+                'scdprdTime':[$("#PTIME_SCDPRD_STR_HH").val(), $("#PTIME_SCDPRD_STR_MI").val()],
+                'tmDailyTime':[$("#TIME_DAILY_HH_TIME").val(), $("#TIME_DAILY_MI_TIME").val()],
+                'breakHour':[$('#NBRK_TIME').val(), $('#NBRK_MINUTE').val(),]
+            };
+        }
 
-                                        </select>
-                                        &nbsp;時
-                                        <select name="ctl00$cphContentsArea$ddlPBrk3StrMi" tabindex="128" class="imeDisabled" id="ctl00_cphContentsArea_ddlPBrk3StrMi" style="width: 50px;" onchange="SetPBrkTime('ctl00_cphContentsArea_ddlPBrk3StrHh','ctl00_cphContentsArea_ddlPBrk3StrMi','ctl00_cphContentsArea_ddlPBrk3EndHh','ctl00_cphContentsArea_ddlPBrk3EndMi','ctl00_cphContentsArea_lblPBrk3Time')">
-                                            <option selected="selected" value=""></option>
-                                            <option value="0">0</option>
-                                            <option value="5">5</option>
-                                            <option value="10">10</option>
-                                            <option value="15">15</option>
-                                            <option value="20">20</option>
-                                            <option value="25">25</option>
-                                            <option value="30">30</option>
-                                            <option value="35">35</option>
-                                            <option value="40">40</option>
-                                            <option value="45">45</option>
-                                            <option value="50">50</option>
-                                            <option value="55">55</option>
+        // 時間数・休憩時間「時間数」
+        if ($('#dutyHours').prop('checked') && $('#rbBreakHours').prop('checked')) {
+            dataObj = {
+                'workPtnCd':$('#WORKPTN_CD').val(),
+                'workPtnName':$('#WORKPTN_NAME').val(),
+                'workPtnAbrName':$('#WORKPTN_ABR_NAME').val(),
+                'workClass':workClsCd,
+                'dutyClass':dutyCls,
+                'nTimeLeaveClsCd':nTimeLeaveClsCd,
+                'nTimeStartTkTime':$('#NTIME_START_TK_TIME').val(),
+                'BreakClsCd':BreakClsCd,
+                'rsv1ClsCd':rsv1ClsCd,
+                'hideCdAddNew':$('#hideCdAddNew').val(),
+                'nTime':nTime,
+                'extHour':extHour,
+                'rsvHour':[$("#RSV1_HH_HOUR").val(),$("#RSV1_MI_HOUR").val()],
+                'nTimeStr':{nTimeStrHH: $('#NTIME_START_HH').val(),nTimeStrMI: $('#NTIME_START_MI').val(),},
+                'tmDailyHour':[$("#TIME_DAILY_HH_HOUR").val(),$("#TIME_DAILY_MI_HOUR").val()],
+                'breakHour':[$('#NBRK_TIME').val(), $('#NBRK_MINUTE').val()],
+            };
+        }
 
-                                        </select>
-                                        &nbsp;分
-                                    </td>
-                                    <td>
-                                        &nbsp;～
-                                    </td>
-                                    <td>
-                                        <select name="ctl00$cphContentsArea$ddlPBrk3EndHh" tabindex="129" class="imeDisabled" id="ctl00_cphContentsArea_ddlPBrk3EndHh" style="width: 50px;" onchange="SetPBrkTime('ctl00_cphContentsArea_ddlPBrk3StrHh','ctl00_cphContentsArea_ddlPBrk3StrMi','ctl00_cphContentsArea_ddlPBrk3EndHh','ctl00_cphContentsArea_ddlPBrk3EndMi','ctl00_cphContentsArea_lblPBrk3Time')">
-                                            <option selected="selected" value=""></option>
-                                            <option value="0">0</option>
-                                            <option value="1">1</option>
-                                            <option value="2">2</option>
-                                            <option value="3">3</option>
-                                            <option value="4">4</option>
-                                            <option value="5">5</option>
-                                            <option value="6">6</option>
-                                            <option value="7">7</option>
-                                            <option value="8">8</option>
-                                            <option value="9">9</option>
-                                            <option value="10">10</option>
-                                            <option value="11">11</option>
-                                            <option value="12">12</option>
-                                            <option value="13">13</option>
-                                            <option value="14">14</option>
-                                            <option value="15">15</option>
-                                            <option value="16">16</option>
-                                            <option value="17">17</option>
-                                            <option value="18">18</option>
-                                            <option value="19">19</option>
-                                            <option value="20">20</option>
-                                            <option value="21">21</option>
-                                            <option value="22">22</option>
-                                            <option value="23">23</option>
-                                            <option value="24">24</option>
-                                            <option value="25">25</option>
-                                            <option value="26">26</option>
-                                            <option value="27">27</option>
-                                            <option value="28">28</option>
-                                            <option value="29">29</option>
-                                            <option value="30">30</option>
-                                            <option value="31">31</option>
-                                            <option value="32">32</option>
-                                            <option value="33">33</option>
-                                            <option value="34">34</option>
-                                            <option value="35">35</option>
-                                            <option value="36">36</option>
+        // 時間帯・休憩時間「時間毎」
+        if ($('#dutyTime').prop('checked') && $('#rbBreakHourly').prop('checked')) {
+            dataObj = {
+                'workPtnCd':$('#WORKPTN_CD').val(),
+                'workPtnName':$('#WORKPTN_NAME').val(),
+                'workPtnAbrName':$('#WORKPTN_ABR_NAME').val(),
+                'workClass':workClsCd,
+                'dutyClass':dutyCls,
+                'BreakClsCd':BreakClsCd,
+                'rsv1ClsCd':rsv1ClsCd,
+                'rsv3ClsCd':rsv3ClsCd,
+                'rsv4ClsCd':rsv4ClsCd,
+                'hideCdAddNew':$('#hideCdAddNew').val(),
+                'pTime':pTime,
+                'extTime':extTime,
+                'rsvTime':[$("#RSV1_HH_TIME").val(),$("#RSV1_MI_TIME").val()],
+                'fstrdTime':[$("#PTIME_FSTPRD_END_HH").val(),$("#PTIME_FSTPRD_END_MI").val()],
+                'scdprdTime':[$("#PTIME_SCDPRD_STR_HH").val(),$("#PTIME_SCDPRD_STR_MI").val()],
+                'tmDailyTime':[$("#TIME_DAILY_HH_TIME").val(),$("#TIME_DAILY_MI_TIME").val()],
+                'brHourly': [$('#EBRK_PTIME').val(), $('#EBRK_MINUTE').val()],
+            };
+        }
+        // 時間数・休憩時間「時間毎」
+        if ($('#dutyHours').prop('checked') && $('#rbBreakHourly').prop('checked')) {
+            dataObj = {
+                'workPtnCd':$('#WORKPTN_CD').val(),
+                'workPtnName':$('#WORKPTN_NAME').val(),
+                'workPtnAbrName':$('#WORKPTN_ABR_NAME').val(),
+                'workClass':workClsCd,
+                'dutyClass':dutyCls,
+                'nTimeLeaveClsCd':nTimeLeaveClsCd,
+                'nTimeStartTkTime':$('#NTIME_START_TK_TIME').val(),
+                'BreakClsCd':BreakClsCd,
+                'rsv1ClsCd':rsv1ClsCd,
+                'hideCdAddNew':$('#hideCdAddNew').val(),
+                'nTime':nTime,
+                'extHour':extHour,
+                'rsvHour':[$("#RSV1_HH_HOUR").val(),$("#RSV1_MI_HOUR").val()],
+                'nTimeStr':{nTimeStrHH: $('#NTIME_START_HH').val(),nTimeStrMI: $('#NTIME_START_MI').val(),},
+                'tmDailyHour':[$("#TIME_DAILY_HH_HOUR").val(),$("#TIME_DAILY_MI_HOUR").val()],
+                'brHourly': [$('#EBRK_PTIME').val(), $('#EBRK_MINUTE').val()],
+            };
+        }
 
-                                        </select>
-                                        &nbsp;時
-                                        <select name="ctl00$cphContentsArea$ddlPBrk3EndMi" tabindex="130" class="imeDisabled" id="ctl00_cphContentsArea_ddlPBrk3EndMi" style="width: 50px;" onchange="SetPBrkTime('ctl00_cphContentsArea_ddlPBrk3StrHh','ctl00_cphContentsArea_ddlPBrk3StrMi','ctl00_cphContentsArea_ddlPBrk3EndHh','ctl00_cphContentsArea_ddlPBrk3EndMi','ctl00_cphContentsArea_lblPBrk3Time')">
-                                            <option selected="selected" value=""></option>
-                                            <option value="0">0</option>
-                                            <option value="5">5</option>
-                                            <option value="10">10</option>
-                                            <option value="15">15</option>
-                                            <option value="20">20</option>
-                                            <option value="25">25</option>
-                                            <option value="30">30</option>
-                                            <option value="35">35</option>
-                                            <option value="40">40</option>
-                                            <option value="45">45</option>
-                                            <option value="50">50</option>
-                                            <option value="55">55</option>
+        $.ajax({
+            url:$(this).data('url'),
+            type:'POST',
+            data:dataObj
+        })
 
-                                        </select>
-                                        &nbsp;分
-                                    </td>
-                                    <td align="right">
-                                        &nbsp;&nbsp;&nbsp;
-                                        <span id="ctl00_cphContentsArea_lblPBrk3Time"></span>
-                                    </td>
-                                    <td>
+        .done((data, textStatus, jqXHR) => {
+            if ($('#hideCdAddNew').val() == '') {
+                location.reload();
+            } else {
+            location.href='{{ url('master/MT05WorkPtnReference') }}';
+            }
+        })
+        .fail ((jqXHR, textStatus, errorThrown) => {
+            $.each(jqXHR.responseJSON.errors, function(i, value) {
+                $('#' + i.replaceAll('.', '')).text(value[0]);
+            });
+            disableFlg = false;
+            $('#btnUpdate').focus();
+        });
+        return false;
+    });
 
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <th class="RowTitle">
-                                        休憩時間４
-                                    </th>
-                                    <td>
-                                        <select name="ctl00$cphContentsArea$ddlPBrk4StrHh" tabindex="131" class="imeDisabled" id="ctl00_cphContentsArea_ddlPBrk4StrHh" style="width: 50px;" onchange="SetPBrkTime('ctl00_cphContentsArea_ddlPBrk4StrHh','ctl00_cphContentsArea_ddlPBrk4StrMi','ctl00_cphContentsArea_ddlPBrk4EndHh','ctl00_cphContentsArea_ddlPBrk4EndMi','ctl00_cphContentsArea_lblPBrk4Time')">
-                                            <option selected="selected" value=""></option>
-                                            <option value="0">0</option>
-                                            <option value="1">1</option>
-                                            <option value="2">2</option>
-                                            <option value="3">3</option>
-                                            <option value="4">4</option>
-                                            <option value="5">5</option>
-                                            <option value="6">6</option>
-                                            <option value="7">7</option>
-                                            <option value="8">8</option>
-                                            <option value="9">9</option>
-                                            <option value="10">10</option>
-                                            <option value="11">11</option>
-                                            <option value="12">12</option>
-                                            <option value="13">13</option>
-                                            <option value="14">14</option>
-                                            <option value="15">15</option>
-                                            <option value="16">16</option>
-                                            <option value="17">17</option>
-                                            <option value="18">18</option>
-                                            <option value="19">19</option>
-                                            <option value="20">20</option>
-                                            <option value="21">21</option>
-                                            <option value="22">22</option>
-                                            <option value="23">23</option>
-                                            <option value="24">24</option>
-                                            <option value="25">25</option>
-                                            <option value="26">26</option>
-                                            <option value="27">27</option>
-                                            <option value="28">28</option>
-                                            <option value="29">29</option>
-                                            <option value="30">30</option>
-                                            <option value="31">31</option>
-                                            <option value="32">32</option>
-                                            <option value="33">33</option>
-                                            <option value="34">34</option>
-                                            <option value="35">35</option>
+    // 削除処理
+    $(document).on('click', '.delete', function() {
+        if (disableFlg || !window.confirm("{{ getArrValue($error_messages, '1004') }}")) {
+            return false;
+        }
 
-                                        </select>
-                                        &nbsp;時
-                                        <select name="ctl00$cphContentsArea$ddlPBrk4StrMi" tabindex="132" class="imeDisabled" id="ctl00_cphContentsArea_ddlPBrk4StrMi" style="width: 50px;" onchange="SetPBrkTime('ctl00_cphContentsArea_ddlPBrk4StrHh','ctl00_cphContentsArea_ddlPBrk4StrMi','ctl00_cphContentsArea_ddlPBrk4EndHh','ctl00_cphContentsArea_ddlPBrk4EndMi','ctl00_cphContentsArea_lblPBrk4Time')">
-                                            <option selected="selected" value=""></option>
-                                            <option value="0">0</option>
-                                            <option value="5">5</option>
-                                            <option value="10">10</option>
-                                            <option value="15">15</option>
-                                            <option value="20">20</option>
-                                            <option value="25">25</option>
-                                            <option value="30">30</option>
-                                            <option value="35">35</option>
-                                            <option value="40">40</option>
-                                            <option value="45">45</option>
-                                            <option value="50">50</option>
-                                            <option value="55">55</option>
+        var errors = $("#form").find('span.text-danger');
+        if (errors.length) {
+            errors.text("");
+        }
 
-                                        </select>
-                                        &nbsp;分
-                                    </td>
-                                    <td>
-                                        &nbsp;～
-                                    </td>
-                                    <td>
-                                        <select name="ctl00$cphContentsArea$ddlPBrk4EndHh" tabindex="133" class="imeDisabled" id="ctl00_cphContentsArea_ddlPBrk4EndHh" style="width: 50px;" onchange="SetPBrkTime('ctl00_cphContentsArea_ddlPBrk4StrHh','ctl00_cphContentsArea_ddlPBrk4StrMi','ctl00_cphContentsArea_ddlPBrk4EndHh','ctl00_cphContentsArea_ddlPBrk4EndMi','ctl00_cphContentsArea_lblPBrk4Time')">
-                                            <option selected="selected" value=""></option>
-                                            <option value="0">0</option>
-                                            <option value="1">1</option>
-                                            <option value="2">2</option>
-                                            <option value="3">3</option>
-                                            <option value="4">4</option>
-                                            <option value="5">5</option>
-                                            <option value="6">6</option>
-                                            <option value="7">7</option>
-                                            <option value="8">8</option>
-                                            <option value="9">9</option>
-                                            <option value="10">10</option>
-                                            <option value="11">11</option>
-                                            <option value="12">12</option>
-                                            <option value="13">13</option>
-                                            <option value="14">14</option>
-                                            <option value="15">15</option>
-                                            <option value="16">16</option>
-                                            <option value="17">17</option>
-                                            <option value="18">18</option>
-                                            <option value="19">19</option>
-                                            <option value="20">20</option>
-                                            <option value="21">21</option>
-                                            <option value="22">22</option>
-                                            <option value="23">23</option>
-                                            <option value="24">24</option>
-                                            <option value="25">25</option>
-                                            <option value="26">26</option>
-                                            <option value="27">27</option>
-                                            <option value="28">28</option>
-                                            <option value="29">29</option>
-                                            <option value="30">30</option>
-                                            <option value="31">31</option>
-                                            <option value="32">32</option>
-                                            <option value="33">33</option>
-                                            <option value="34">34</option>
-                                            <option value="35">35</option>
-                                            <option value="36">36</option>
+        var url = $(this).data('url');
+        $('#form').attr('action', url);
+        $('#form').submit();
 
-                                        </select>
-                                        &nbsp;時
-                                        <select name="ctl00$cphContentsArea$ddlPBrk4EndMi" tabindex="134" class="imeDisabled" id="ctl00_cphContentsArea_ddlPBrk4EndMi" style="width: 50px;" onchange="SetPBrkTime('ctl00_cphContentsArea_ddlPBrk4StrHh','ctl00_cphContentsArea_ddlPBrk4StrMi','ctl00_cphContentsArea_ddlPBrk4EndHh','ctl00_cphContentsArea_ddlPBrk4EndMi','ctl00_cphContentsArea_lblPBrk4Time')">
-                                            <option selected="selected" value=""></option>
-                                            <option value="0">0</option>
-                                            <option value="5">5</option>
-                                            <option value="10">10</option>
-                                            <option value="15">15</option>
-                                            <option value="20">20</option>
-                                            <option value="25">25</option>
-                                            <option value="30">30</option>
-                                            <option value="35">35</option>
-                                            <option value="40">40</option>
-                                            <option value="45">45</option>
-                                            <option value="50">50</option>
-                                            <option value="55">55</option>
+    });
 
-                                        </select>
-                                        &nbsp;分
-                                    </td>
-                                    <td align="right">
-                                        &nbsp;&nbsp;&nbsp;
-                                        <span id="ctl00_cphContentsArea_lblPBrk4Time"></span>
-                                    </td>
-                                    <td>
+    // 初期表示のタイミングで時間帯設定・時間数設定切り替え
+    var dutyTime = $('#dutyTime').prop('checked');
+    var dutyHours = $('#dutyHours').prop('checked');
+    if (dutyHours) {
+        document.getElementById('pnlHours').style.display = "";
+        document.getElementById('pnlTime').style.display = "none";
+    }
+    if (dutyTime) {
+        document.getElementById('pnlHours').style.display = "none";
+        document.getElementById('pnlTime').style.display = "";
+    }
+    // ボタンを押下時、時間帯設定・時間数設定切り替え
+    $(document).on('click', '.dutyCls', function() {
+        var dutyTime = $('#dutyTime').prop('checked');
+        var dutyHours = $('#dutyHours').prop('checked');
+        if (dutyHours) {
+            document.getElementById('pnlHours').style.display = "";
+            document.getElementById('pnlTime').style.display = "none";
+        }
+        if (dutyTime) {
+            document.getElementById('pnlHours').style.display = "none";
+            document.getElementById('pnlTime').style.display = "";
+        }
+        // データベースに登録している職務種別が01であれば「時間帯設定」の割増対象、勤務時間、日替時刻を空欄を選択する
+        var dutyClsCd = '{{$dataWorkPtn->DUTY_CLS_CD}}';
+        if (dutyClsCd == 01) {
+            $("#RSV1_HH_TIME, #RSV1_MI_TIME, #TIME_DAILY_HH_TIME, #TIME_DAILY_MI_TIME").val('');
+            $("#PTIME_EXT1_CD_TIME, #PTIME_EXT1_STR_HH_TIME, #PTIME_EXT1_STR_MI_TIME, #PTIME_EXT1_END_HH_TIME, #PTIME_EXT1_END_MI_TIME").val('');
+            $("#PTIME_EXT2_CD_TIME, #PTIME_EXT2_STR_HH_TIME, #PTIME_EXT2_STR_MI_TIME, #PTIME_EXT2_END_HH_TIME, #PTIME_EXT2_END_MI_TIME").val('');
+            $("#PTIME_EXT3_CD_TIME, #PTIME_EXT3_STR_HH_TIME, #PTIME_EXT3_STR_MI_TIME, #PTIME_EXT3_END_HH_TIME, #PTIME_EXT3_END_MI_TIME").val('');
+        }
+        if (dutyClsCd == 00) {
+            $("#RSV1_HH_HOUR, #RSV1_MI_HOUR, #TIME_DAILY_HH_HOUR, #TIME_DAILY_MI_HOUR").val('');
+            $("#PTIME_EXT1_CD_HOUR, #PTIME_EXT1_STR_HH_HOUR, #PTIME_EXT1_STR_MI_HOUR, #PTIME_EXT1_END_HH_HOUR, #PTIME_EXT1_END_MI_HOUR").val('');
+            $("#PTIME_EXT2_CD_HOUR, #PTIME_EXT2_STR_HH_HOUR, #PTIME_EXT2_STR_MI_HOUR, #PTIME_EXT2_END_HH_HOUR, #PTIME_EXT2_END_MI_HOUR").val('');
+            $("#PTIME_EXT3_CD_HOUR, #PTIME_EXT3_STR_HH_HOUR, #PTIME_EXT3_STR_MI_HOUR, #PTIME_EXT3_END_HH_HOUR, #PTIME_EXT3_END_MI_HOUR").val('');
+        }
+    })
 
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <th class="RowTitle">
-                                        休憩時間５
-                                    </th>
-                                    <td>
-                                        <select name="ctl00$cphContentsArea$ddlPBrk5StrHh" tabindex="135" class="imeDisabled" id="ctl00_cphContentsArea_ddlPBrk5StrHh" style="width: 50px;" onchange="SetPBrkTime('ctl00_cphContentsArea_ddlPBrk5StrHh','ctl00_cphContentsArea_ddlPBrk5StrMi','ctl00_cphContentsArea_ddlPBrk5EndHh','ctl00_cphContentsArea_ddlPBrk5EndMi','ctl00_cphContentsArea_lblPBrk5Time')">
-                                            <option selected="selected" value=""></option>
-                                            <option value="0">0</option>
-                                            <option value="1">1</option>
-                                            <option value="2">2</option>
-                                            <option value="3">3</option>
-                                            <option value="4">4</option>
-                                            <option value="5">5</option>
-                                            <option value="6">6</option>
-                                            <option value="7">7</option>
-                                            <option value="8">8</option>
-                                            <option value="9">9</option>
-                                            <option value="10">10</option>
-                                            <option value="11">11</option>
-                                            <option value="12">12</option>
-                                            <option value="13">13</option>
-                                            <option value="14">14</option>
-                                            <option value="15">15</option>
-                                            <option value="16">16</option>
-                                            <option value="17">17</option>
-                                            <option value="18">18</option>
-                                            <option value="19">19</option>
-                                            <option value="20">20</option>
-                                            <option value="21">21</option>
-                                            <option value="22">22</option>
-                                            <option value="23">23</option>
-                                            <option value="24">24</option>
-                                            <option value="25">25</option>
-                                            <option value="26">26</option>
-                                            <option value="27">27</option>
-                                            <option value="28">28</option>
-                                            <option value="29">29</option>
-                                            <option value="30">30</option>
-                                            <option value="31">31</option>
-                                            <option value="32">32</option>
-                                            <option value="33">33</option>
-                                            <option value="34">34</option>
-                                            <option value="35">35</option>
+    // 初期表示のタイミングで出勤区分「通常出勤」が選択されましたら休日区分をdisabledにする
+    var rbRegularWork = $('#rbRegularWork').prop('checked');
+    if (rbRegularWork) {
+    var holidayClsLeg = document.getElementById( "holidayClsLeg" );
+    holidayClsLeg.checked = true;
+    $('.hldCls').prop('disabled', true);
+    }
+    // 出勤区分「通常出勤」が選択されましたら休日区分をdisabledにする
+    $('#rbRegularWork').on('click', function() {
+        var holidayClsLeg = document.getElementById( "holidayClsLeg" );
+        holidayClsLeg.checked = true;
+        $('.hldCls').prop('disabled', true);
+    });
+    $('#rbHolidayWork').on('click', function() {
+        $('.hldCls').prop('disabled', false);
+    });
 
-                                        </select>
-                                        &nbsp;時
-                                        <select name="ctl00$cphContentsArea$ddlPBrk5StrMi" tabindex="136" class="imeDisabled" id="ctl00_cphContentsArea_ddlPBrk5StrMi" style="width: 50px;" onchange="SetPBrkTime('ctl00_cphContentsArea_ddlPBrk5StrHh','ctl00_cphContentsArea_ddlPBrk5StrMi','ctl00_cphContentsArea_ddlPBrk5EndHh','ctl00_cphContentsArea_ddlPBrk5EndMi','ctl00_cphContentsArea_lblPBrk5Time')">
-                                            <option selected="selected" value=""></option>
-                                            <option value="0">0</option>
-                                            <option value="5">5</option>
-                                            <option value="10">10</option>
-                                            <option value="15">15</option>
-                                            <option value="20">20</option>
-                                            <option value="25">25</option>
-                                            <option value="30">30</option>
-                                            <option value="35">35</option>
-                                            <option value="40">40</option>
-                                            <option value="45">45</option>
-                                            <option value="50">50</option>
-                                            <option value="55">55</option>
+    // 初期表示のタイミングで休憩時間disabled設定
+    var rbBreakTime = $('#rbBreakTime').prop('checked');
+    var rbBreakHours = $('#rbBreakHours').prop('checked');
+    var rbBreakHourly = $('#rbBreakHourly').prop('checked');
+    if (rbBreakTime) {
+        $('.breakHours, .breakHourly').prop('disabled', true);
+    }
+    if (rbBreakHours) {
+        $('.breakTime, .breakHourly').prop('disabled', true);
+    }
+    if (rbBreakHourly) {
+        $('.breakHours, .breakTime').prop('disabled', true);
+    }
 
-                                        </select>
-                                        &nbsp;分
-                                    </td>
-                                    <td>
-                                        &nbsp;～
-                                    </td>
-                                    <td>
-                                        <select name="ctl00$cphContentsArea$ddlPBrk5EndHh" tabindex="137" class="imeDisabled" id="ctl00_cphContentsArea_ddlPBrk5EndHh" style="width: 50px;" onchange="SetPBrkTime('ctl00_cphContentsArea_ddlPBrk5StrHh','ctl00_cphContentsArea_ddlPBrk5StrMi','ctl00_cphContentsArea_ddlPBrk5EndHh','ctl00_cphContentsArea_ddlPBrk5EndMi','ctl00_cphContentsArea_lblPBrk5Time')">
-                                            <option selected="selected" value=""></option>
-                                            <option value="0">0</option>
-                                            <option value="1">1</option>
-                                            <option value="2">2</option>
-                                            <option value="3">3</option>
-                                            <option value="4">4</option>
-                                            <option value="5">5</option>
-                                            <option value="6">6</option>
-                                            <option value="7">7</option>
-                                            <option value="8">8</option>
-                                            <option value="9">9</option>
-                                            <option value="10">10</option>
-                                            <option value="11">11</option>
-                                            <option value="12">12</option>
-                                            <option value="13">13</option>
-                                            <option value="14">14</option>
-                                            <option value="15">15</option>
-                                            <option value="16">16</option>
-                                            <option value="17">17</option>
-                                            <option value="18">18</option>
-                                            <option value="19">19</option>
-                                            <option value="20">20</option>
-                                            <option value="21">21</option>
-                                            <option value="22">22</option>
-                                            <option value="23">23</option>
-                                            <option value="24">24</option>
-                                            <option value="25">25</option>
-                                            <option value="26">26</option>
-                                            <option value="27">27</option>
-                                            <option value="28">28</option>
-                                            <option value="29">29</option>
-                                            <option value="30">30</option>
-                                            <option value="31">31</option>
-                                            <option value="32">32</option>
-                                            <option value="33">33</option>
-                                            <option value="34">34</option>
-                                            <option value="35">35</option>
-                                            <option value="36">36</option>
+    // 各休憩項目選択した場合のdisabled設定
+    $('#rbBreakTime').on('click', function() {
+        $('.breakHours, .breakHourly').prop('disabled', true);
+        $('.breakTime').prop('disabled', false);
+    });
+    $('#rbBreakHours').on('click', function() {
+        $('.breakTime, .breakHourly').prop('disabled', true);
+        $('.breakHours').prop('disabled', false);
+    });
+    $('#rbBreakHourly').on('click', function() {
+        $('.breakHours, .breakTime').prop('disabled', true);
+        $('.breakHourly').prop('disabled', false);
+    });
 
-                                        </select>
-                                        &nbsp;時
-                                        <select name="ctl00$cphContentsArea$ddlPBrk5EndMi" tabindex="138" class="imeDisabled" id="ctl00_cphContentsArea_ddlPBrk5EndMi" style="width: 50px;" onchange="SetPBrkTime('ctl00_cphContentsArea_ddlPBrk5StrHh','ctl00_cphContentsArea_ddlPBrk5StrMi','ctl00_cphContentsArea_ddlPBrk5EndHh','ctl00_cphContentsArea_ddlPBrk5EndMi','ctl00_cphContentsArea_lblPBrk5Time')">
-                                            <option selected="selected" value=""></option>
-                                            <option value="0">0</option>
-                                            <option value="5">5</option>
-                                            <option value="10">10</option>
-                                            <option value="15">15</option>
-                                            <option value="20">20</option>
-                                            <option value="25">25</option>
-                                            <option value="30">30</option>
-                                            <option value="35">35</option>
-                                            <option value="40">40</option>
-                                            <option value="45">45</option>
-                                            <option value="50">50</option>
-                                            <option value="55">55</option>
+     // 休憩時間計算
+    SetBreakTime('PBRK1_STR_HH', 'PBRK1_STR_MI', 'PBRK1_END_HH', 'PBRK1_END_MI', 'PBRK1_TIME', 'PBRK1_TIME_HIDE');
+    SetBreakTime('PBRK2_STR_HH', 'PBRK2_STR_MI', 'PBRK2_END_HH', 'PBRK2_END_MI', 'PBRK2_TIME', 'PBRK2_TIME_HIDE');
+    SetBreakTime('PBRK3_STR_HH', 'PBRK3_STR_MI', 'PBRK3_END_HH', 'PBRK3_END_MI', 'PBRK3_TIME', 'PBRK3_TIME_HIDE');
+    SetBreakTime('PBRK4_STR_HH', 'PBRK4_STR_MI', 'PBRK4_END_HH', 'PBRK4_END_MI', 'PBRK4_TIME', 'PBRK4_TIME_HIDE');
+    SetBreakTime('PBRK5_STR_HH', 'PBRK5_STR_MI', 'PBRK5_END_HH', 'PBRK5_END_MI', 'PBRK5_TIME', 'PBRK5_TIME_HIDE');
 
-                                        </select>
-                                        &nbsp;分
-                                    </td>
-                                    <td align="right">
-                                        &nbsp;&nbsp;&nbsp;
-                                        <span id="ctl00_cphContentsArea_lblPBrk5Time"></span>
-                                    </td>
-                                    <td>
+    // 時間数設定「定職務種別」「勤怠項目」「開始時間	」「終了時間」
+    SetTimeJobType('NTIME_WK2_DCLS_CD', 'NTIME_WK2_CD', 'NTIME_WK2_STR_HH',
+                            'NTIME_WK2_STR_MI', 'NTIME_WK2_END_HH', 'NTIME_WK2_END_MI',
+                            'NTIME_WK2_STR_HH_TXT' , 'NTIME_WK2_END_HH_TXT');
+    SetTimeJobType('NTIME_WK3_DCLS_CD', 'NTIME_WK3_CD', 'NTIME_WK3_STR_HH',
+                            'NTIME_WK3_STR_MI', 'NTIME_WK3_END_HH', 'NTIME_WK3_END_MI',
+                            'NTIME_WK3_STR_HH_TXT' , 'NTIME_WK3_END_HH_TXT');
+    SetTimeJobType('NTIME_WK4_DCLS_CD', 'NTIME_WK4_CD', 'NTIME_WK4_STR_HH',
+                            'NTIME_WK4_STR_MI', 'NTIME_WK4_END_HH', 'NTIME_WK4_END_MI',
+                            'NTIME_WK4_STR_HH_TXT' , 'NTIME_WK4_END_HH_TXT');
+    SetTimeJobType('NTIME_WK5_DCLS_CD', 'NTIME_WK5_CD', 'NTIME_WK5_STR_HH',
+                            'NTIME_WK5_STR_MI', 'NTIME_WK5_END_HH', 'NTIME_WK5_END_MI',
+                            'NTIME_WK5_STR_HH_TXT' , 'NTIME_WK5_END_HH_TXT');
+    SetTimeJobType('NTIME_WK6_DCLS_CD', 'NTIME_WK6_CD', 'NTIME_WK6_STR_HH',
+                            'NTIME_WK6_STR_MI', 'NTIME_WK6_END_HH', 'NTIME_WK6_END_MI',
+                            'NTIME_WK6_STR_HH_TXT' , 'NTIME_WK6_END_HH_TXT');
+    SetTimeJobType('NTIME_WK7_DCLS_CD', 'NTIME_WK7_CD', 'NTIME_WK7_STR_HH',
+                            'NTIME_WK7_STR_MI', 'NTIME_WK7_END_HH', 'NTIME_WK7_END_MI',
+                            'NTIME_WK7_STR_HH_TXT' , 'NTIME_WK7_END_HH_TXT');
 
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                        <p class="CategoryTitle1">
-                            時間数</p>
-                        <table class="InputFieldStyle1">
-                            <tbody>
-                                <tr>
-                                    <th>
-                                        休憩時間
-                                    </th>
-                                    <td>
-                                        <select name="ctl00$cphContentsArea$ddlNBrkTime" tabindex="139" disabled="disabled" class="imeDisabled" id="ctl00_cphContentsArea_ddlNBrkTime" style="width: 50px;">
-                                            <option selected="selected" value=""></option>
-                                            <option value="0">0</option>
-                                            <option value="1">1</option>
-                                            <option value="2">2</option>
-                                            <option value="3">3</option>
-                                            <option value="4">4</option>
-                                            <option value="5">5</option>
-                                            <option value="6">6</option>
-                                            <option value="7">7</option>
-                                            <option value="8">8</option>
+    // 勤務体系コード英数半角のみ入力可
+    onlyHalfWord = n => n.replace(/[０-９Ａ-Ｚａ-ｚ]/g, s => String.fromCharCode(s.charCodeAt(0) - 65248))
+            .replace(/[^0-9a-zA-Z]/g, '');
+});
 
-                                        </select>
-                                        &nbsp;時間&nbsp;
-                                        <select name="ctl00$cphContentsArea$ddlNBrkMinute" tabindex="140" disabled="disabled" class="imeDisabled" id="ctl00_cphContentsArea_ddlNBrkMinute" style="width: 50px;">
-                                            <option selected="selected" value=""></option>
-                                            <option value="0">0</option>
-                                            <option value="5">5</option>
-                                            <option value="10">10</option>
-                                            <option value="15">15</option>
-                                            <option value="20">20</option>
-                                            <option value="25">25</option>
-                                            <option value="30">30</option>
-                                            <option value="35">35</option>
-                                            <option value="40">40</option>
-                                            <option value="45">45</option>
-                                            <option value="50">50</option>
-                                            <option value="55">55</option>
-
-                                        </select>
-                                        &nbsp;分
-
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                        <p class="CategoryTitle1">
-                            時間毎</p>
-                        <table class="InputFieldStyle1">
-                            <tbody>
-                                <tr>
-                                    <th>
-                                        休憩時間
-                                    </th>
-                                    <td>
-                                        <select name="ctl00$cphContentsArea$ddlEBrkPTime" tabindex="141" disabled="disabled" class="imeDisabled" id="ctl00_cphContentsArea_ddlEBrkPTime" style="width: 50px;">
-                                            <option selected="selected" value=""></option>
-                                            <option value="1">1</option>
-                                            <option value="2">2</option>
-                                            <option value="3">3</option>
-                                            <option value="4">4</option>
-                                            <option value="5">5</option>
-                                            <option value="6">6</option>
-                                            <option value="7">7</option>
-                                            <option value="8">8</option>
-
-                                        </select>
-                                        &nbsp;時間働く毎に &nbsp;
-                                        <select name="ctl00$cphContentsArea$ddlEBrkMinute" tabindex="142" disabled="disabled" class="imeDisabled" id="ctl00_cphContentsArea_ddlEBrkMinute" style="width: 50px;">
-                                            <option selected="selected" value=""></option>
-                                            <option value="0">0</option>
-                                            <option value="5">5</option>
-                                            <option value="10">10</option>
-                                            <option value="15">15</option>
-                                            <option value="20">20</option>
-                                            <option value="25">25</option>
-                                            <option value="30">30</option>
-                                            <option value="35">35</option>
-                                            <option value="40">40</option>
-                                            <option value="45">45</option>
-                                            <option value="50">50</option>
-                                            <option value="55">55</option>
-                                            <option value="60">60</option>
-
-                                        </select>
-                                        &nbsp;分
-
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-                        <!-- detail block end -->
-                        <!-- footer block -->
-                        <div class="line">
-                        </div>
-                        <p class="ButtonField1">
-                            <input name="ctl00$cphContentsArea$btnUpdate" tabindex="143" id="ctl00_cphContentsArea_btnUpdate" onclick="if(confirm('更新します。よろしいですか?') ==  false){ return false;};WebForm_DoPostBackWithOptions(new WebForm_PostBackOptions(&quot;ctl00$cphContentsArea$btnUpdate&quot;, &quot;&quot;, true, &quot;Update&quot;, &quot;&quot;, false, true))" type="button" value="更新">
-                            <input name="ctl00$cphContentsArea$btnCancel" tabindex="144" id="ctl00_cphContentsArea_btnCancel" onclick="javascript:__doPostBack('ctl00$cphContentsArea$btnCancel','')" type="button" value="キャンセル">
-                            <input name="ctl00$cphContentsArea$btnDelete" tabindex="145" disabled="disabled" id="ctl00_cphContentsArea_btnDelete" type="button" value="削除">
-                        </p>
-                        <!-- footer block end -->
-
-                    </div>
-                </td>
-            </tr>
-        </tbody>
-    </table>
-</div>
+</script>
 @endsection

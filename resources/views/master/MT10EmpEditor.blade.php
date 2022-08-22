@@ -1,440 +1,478 @@
-<!-- 社員情報入力  -->
+<!-- 社員情報入力 -->
 @extends('menu.main')
 
-@section('title','社員情報入力')
+@section('title', '社員情報入力')
 
 @section('content')
-<div id="contents-stage">
-    <table class="BaseContainerStyle1">
-        <tbody>
-            <tr>
-                <td>
-                    <div id="UpdatePanel1">
+    <div id="contents-stage">
+        <table class="BaseContainerStyle1">
+            <form action="" method="post" id="form">
+                @csrf
+                <div id="ctl00_cphContentsArea_UpdatePanel1">
+                    <table class="InputFieldStyle1">
+                        <tbody>
+                            <tr>
+                                <th class="required">社員番号</th>
+                                <td>
+                                    <input type="text" name="EMP_CD" id="EMP_CD"
+                                        value="{{ old('EMP_CD') ?? $emp_data->EMP_CD }}"
+                                        style="width: 80px;" maxlength="10" tabindex="1"
+                                        oninput="value = onlyHalfWord(value)" onfocus="this.select();"
+                                        @if(!is_nullorwhitespace($emp_data->EMP_CD))
+                                        disabled
+                                        @else
+                                        autofocus
+                                        @endif
+                                    >
+                                    @if(!is_nullorwhitespace($emp_data->EMP_CD))
+                                    <input type="hidden" name="EMP_CD" value={{ $emp_data->EMP_CD }}>
+                                    @endif
+                                    @error('EMP_CD')
+                                    <span class="text-danger">{{ getArrValue($error_messages, $message) }}</span>
+                                    @enderror
+                                </td>
+                            </tr>
+                            <tr>
+                                <th class="required">社員名</th>
+                                <td>
+                                    <input type="text" name="EMP_NAME" id="EMP_NAME"
+                                        value="{{ old('EMP_NAME') ?? $emp_data->EMP_NAME }}"
+                                        style="width: 300px;" maxlength="20" tabindex="2"
+                                        oninput="value = ngVerticalBar(value)" onfocus="this.select();"
+                                        @if(!is_nullorwhitespace($emp_data->EMP_CD))
+                                        autofocus
+                                        @endif
+                                        >
+                                    @error('EMP_NAME')
+                                    <span class="text-danger">{{ getArrValue($error_messages, $message) }}</span>
+                                    @enderror
+                                </td>
+                            </tr>
+                            <tr>
+                                <th class="required">社員カナ名</th>
+                                <td>
+                                    <input name="EMP_KANA" id="EMP_KANA" tabindex="3"
+                                        value="{{ old('EMP_KANA') ?? $emp_data->EMP_KANA }}"
+                                        style="width: 160px;" onfocus="this.select();" type="text" maxlength="20">
+                                    @error('EMP_KANA')
+                                    <span class="text-danger">{{ getArrValue($error_messages, $message) }}</span>
+                                    @enderror
+                                </td>
+                            </tr>
+                            <tr>
+                                <th class="required">部門</th>
+                                <td>
+                                    <input name="DEPT_CD" id="txtDeptCd" style="width: 50px;" class="searchDeptCd txtDeptCd"
+                                        type="text" tabindex="4" maxlength="6" oninput="value = onlyHalf(value)" onfocus="this.select();"
+                                        value="{{ old('DEPT_CD', !empty($search_data['DEPT_CD']) ? $search_data['DEPT_CD'] : $emp_data->DEPT_CD) }}">
+                                    <input name="btnSearchDeptCd" class="SearchButton" id="btnSearchDeptCd"
+                                        tabindex="5" type="button" value="?" onclick="SearchDept(this);return false">
+                                    <input name="deptName" type="text" class="txtDeptName" style="width: 200px; height: 23px; display: inline-block;"
+                                        id="deptName" value="{{ old('deptName', !empty($request_data['deptName']) ? $request_data['deptName']:'') }}"
+                                        disabled data-dispclscd=01>
+                                    @error('DEPT_CD')
+                                    <span class="text-danger" id="DeptCdValidError">{{ getArrValue($error_messages, $message) }}</span>
+                                    @enderror
+                                    <span class="text-danger" id="deptNameError"></span>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>入社年月日</th>
+                                <td>
+                                    <input type="text"
+                                        name="ENT_DATE"
+                                        class="yearMonthDay"
+                                        autocomplete="off"
+                                        onfocus="this.select();"
+                                        tabindex="6"
+                                        value="{{ old('ENT_DATE', (!empty($emp_data->ENT_YEAR) ? $emp_data->ENT_YEAR.'年'.sprintf('%02d', $emp_data->ENT_MONTH).'月'.sprintf('%02d', $emp_data->ENT_DAY).'日' : '')) }}"
+                                    >
+                                    @error('ENT_DATE')
+                                    <span class="text-danger">{{ getArrValue($error_messages, $message) }}</span>
+                                    @enderror
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>退職年月日</th>
+                                <td>
+                                    <input type="text"
+                                        name="RET_DATE"
+                                        class="yearMonthDay"
+                                        autocomplete="off"
+                                        onfocus="this.select();"
+                                        tabindex="7"
+                                        value="{{ old('RET_DATE', (!empty($emp_data->RET_YEAR) ? $emp_data->RET_YEAR.'年'.sprintf('%02d', $emp_data->RET_MONTH).'月'.sprintf('%02d', $emp_data->RET_DAY).'日' : '')) }}"
+                                    >
+                                    @error('RET_DATE')
+                                    <span class="text-danger">{{ getArrValue($error_messages, $message) }}</span>
+                                    @enderror
+                                </td>
+                            </tr>
+                            <tr>
+                                <th class="required">在籍区分</th>
+                                <td>
+                                    <select name="REG_CLS_CD" tabindex="8"
+                                        id="REG_CLS_CD" style="width: 80px;">
+                                        <option value=""></option>
+                                    @foreach ($reg_cls_cd as $regClsCd)
+                                        <option value="{{ $regClsCd->CLS_DETAIL_CD }}"
+                                            {{ $regClsCd->CLS_DETAIL_CD == (old('REG_CLS_CD') ?? $emp_data->REG_CLS_CD) ? 'selected' : '' }}>
+                                            {{ $regClsCd->CLS_DETAIL_NAME }}
+                                        </option>
+                                    @endforeach
+                                    </select>
+                                    @error('REG_CLS_CD')
+                                    <span class="text-danger">{{ getArrValue($error_messages, $message) }}</span>
+                                    @enderror
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>生年月日</th>
+                                <td>
+                                    <input type="text"
+                                        name="BIRTH_DATE"
+                                        class="yearMonthDay"
+                                        autocomplete="off"
+                                        onfocus="this.select();"
+                                        tabindex="9"
+                                        value="{{ old('BIRTH_DATE', (!empty($emp_data->BIRTH_YEAR) ? $emp_data->BIRTH_YEAR.'年'.sprintf('%02d', $emp_data->BIRTH_MONTH).'月'.sprintf('%02d', $emp_data->BIRTH_DAY).'日' : '')) }}"
+                                    >
+                                    @error('BIRTH_DATE')
+                                    <span class="text-danger">{{ getArrValue($error_messages, $message) }}</span>
+                                    @enderror
+                                </td>
+                            </tr>
+                            <tr>
+                                <th class="required">性別</th>
+                                <td>
+                                    <select name="SEX_CLS_CD" tabindex="10" id="SEX_CLS_CD" style="width:50px;">
+                                        <option value=""></option>
+                                    @foreach ($sex_cls_cd as $sexClsCd)
+                                        <option value="{{ $sexClsCd->CLS_DETAIL_CD }}"
+                                            {{ $sexClsCd->CLS_DETAIL_CD == (old('SEX_CLS_CD') ?? $emp_data->SEX_CLS_CD) ? 'selected' : '' }}>
+                                            {{ $sexClsCd->CLS_DETAIL_NAME }}
+                                        </option>
+                                    @endforeach
+                                    </select>
+                                    @error('SEX_CLS_CD')
+                                    <span class="text-danger">{{ getArrValue($error_messages, $message) }}</span>
+                                    @enderror
+                                </td>
+                            </tr>
+                            <tr>
+                                <th class="required">社員区分</th>
+                                <td>
+                                    <select name="EMP_CLS1_CD" tabindex="11" id="EMP_CLS1_CD" style="width: 300px;">
+                                        <option value=""></option>
+                                    @foreach ($emp_csl1_cd as $empCls1Cd))
+                                        <option value="{{ $empCls1Cd->DESC_DETAIL_CD }}"
+                                            {{ $empCls1Cd->DESC_DETAIL_CD == (old('EMP_CLS1_CD') ?? $emp_data->EMP_CLS1_CD) ? 'selected' : '' }}>
+                                            {{ $empCls1Cd->DESC_DETAIL_NAME }}
+                                        </option>
+                                    @endforeach
+                                    </select>
+                                    @error('EMP_CLS1_CD')
+                                    <span class="text-danger">{{ getArrValue($error_messages, $message) }}</span>
+                                    @enderror
+                                </td>
+                            </tr>
+                            <tr>
+                                <th class="required">使用カレンダー</th>
+                                <td>
+                                    <select name="CALENDAR_CD" tabindex="12" id="CALENDAR_CD" style="width: 300px;">
+                                        <option value=""></option>
+                                    @foreach ($calendar_cd as $calendarCd))
+                                        <option value="{{ $calendarCd->CALENDAR_CD }}"
+                                            {{ $calendarCd->CALENDAR_CD == (old('CALENDAR_CD') ?? $emp_data->CALENDAR_CD) ? 'selected' : '' }}>
+                                            {{ $calendarCd->CALENDAR_NAME }}
+                                        </option>
+                                    @endforeach
+                                    </select>
+                                    @error('CALENDAR_CD')
+                                    <span class="text-danger">{{ getArrValue($error_messages, $message) }}</span>
+                                    @enderror
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>部門権限</th>
+                                <td>
+                                    <select name="DEPT_AUTH_CD" tabindex="13" id="DEPT_AUTH_CD" style="width: 300px;"
+                                    @if(!$can_change_dept)
+                                    disabled
+                                    @endif
+                                    >
+                                        <option value=""></option>
+                                    @foreach ($dept_auth_cd as $deptAuthCd)
+                                        <option value="{{ $deptAuthCd->DEPT_AUTH_CD }}"
+                                            {{ $deptAuthCd->DEPT_AUTH_CD == (old('DEPT_AUTH_CD') ?? $emp_data->DEPT_AUTH_CD) ? 'selected' : '' }}>
+                                            {{ $deptAuthCd->DEPT_AUTH_NAME }}
+                                        </option>
+                                    @endforeach
+                                    </select>
+                                    @if(!$can_change_dept)
+                                    <input type=hidden name='DEPT_AUTH_CD' value={{ $emp_data->DEPT_AUTH_CD }}>
+                                    @endif
+                                    @error('DEPT_AUTH_CD')
+                                    <span class="text-danger">{{ getArrValue($error_messages, $message) }}</span>
+                                    @enderror
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>郵便番号</th>
+                                <td>
+                                    <input name="POST_CD" tabindex="14" id="POST_CD"
+                                        oninput="value = onlyNubersBar(value)" onfocus="this.select();"
+                                        value="{{ old('POST_CD') ?? $emp_data->POST_CD }}"
+                                        style="width:70px;" type="text" maxlength="8">
+                                    @error('POST_CD')
+                                    <span class="text-danger">{{ getArrValue($error_messages, $message) }}</span>
+                                    @enderror
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>住所１</th>
+                                <td>
+                                    <input name="ADDRESS1" tabindex="15" id="ADDRESS1" onfocus="this.select();"
+                                        value="{{ old('ADDRESS1') ?? $emp_data->ADDRESS1 }}"
+                                        style="width: 430px;" type="text" maxlength="30">
+                                    @error('ADDRESS1')
+                                    <span class="text-danger">{{ getArrValue($error_messages, $message) }}</span>
+                                    @enderror
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>住所２</th>
+                                <td>
+                                    <input name="ADDRESS2" tabindex="16" id="ADDRESS2" onfocus="this.select();"
+                                        value="{{ old('ADDRESS2') ?? $emp_data->ADDRESS2 }}"
+                                        style="width: 430px;" type="text" maxlength="30">
+                                    @error('ADDRESS2')
+                                    <span class="text-danger">{{ getArrValue($error_messages, $message) }}</span>
+                                    @enderror
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>電話番号</th>
+                                <td>
+                                    <input type="text" name="TEL" id="TEL" tabindex="17"
+                                        oninput="value = onlyNubersBar(value)" onfocus="this.select();"
+                                        value="{{ old('TEL') ?? $emp_data->TEL }}"
+                                        style="width: 120px;" maxlength="15">
+                                    @error('TEL')
+                                    <span class="text-danger">{{ getArrValue($error_messages, $message) }}</span>
+                                    @enderror
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>携帯番号</th>
+                                <td>
+                                    <input type="text" name="CELLULAR" id="CELLULAR" tabindex="18"
+                                        oninput="value = onlyNubersBar(value)" onfocus="this.select();"
+                                        value="{{ old('CELLULAR') ?? $emp_data->CELLULAR }}"
+                                        style="width: 120px;" maxlength="15">
+                                    @error('CELLULAR')
+                                    <span class="text-danger">{{ getArrValue($error_messages, $message) }}</span>
+                                    @enderror
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>Ｅメール</th>
+                                <td>
+                                    <input type="text" name="MAIL" id="MAIL" tabindex="19"
+                                        oninput="value = onlyHalf(value)" onfocus="this.select();"
+                                        value="{{ old('MAIL') ?? $emp_data->MAIL }}"
+                                        style="width: 360px;" maxlength="50">
+                                    @error('MAIL')
+                                    <span class="text-danger">{{ getArrValue($error_messages, $message) }}</span>
+                                    @enderror
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>有休付与算出基準年月</th>
+                                <td>
+                                    <input
+                                        type="text"
+                                        class="yearMonth"
+                                        name="PH_GRANT_YM"
+                                        autocomplete="off"
+                                        onfocus="this.select();"
+                                        style="width: 100px;"
+                                        tabindex="20"
+                                        id="PH_GRANT_YM"
+                                        value="{{ old('PH_GRANT_YM', (!empty($emp_data->PH_GRANT_YEAR) ? $emp_data->PH_GRANT_YEAR.'年'.sprintf('%02d', $emp_data->PH_GRANT_MONTH).'月' : '')) }}"
+                                    >
+                                    @error('PH_GRANT_YM')
+                                    <span class="text-danger">{{ getArrValue($error_messages, $message) }}</span>
+                                    @enderror
+                                </td>
+                            </tr>
+                            <tr>
+                                <th class="required">職種区分</th>
+                                <td>
+                                    <select name="EMP_CLS2_CD" id="EMP_CLS2_CD" tabindex="21" style="width: 300px;">
+                                        <option value=""></option>
+                                    @foreach ($emp_csl2_cd as $empCls2Cd))
+                                        <option value="{{ $empCls2Cd->DESC_DETAIL_CD }}"
+                                            {{ $empCls2Cd->DESC_DETAIL_CD == (old('EMP_CLS2_CD') ?? $emp_data->EMP_CLS2_CD) ? 'selected' : '' }}>
+                                            {{ $empCls2Cd->DESC_DETAIL_NAME }}
+                                        </option>
+                                    @endforeach
+                                    </select>
+                                    @error('EMP_CLS2_CD')
+                                    <span class="text-danger">{{ getArrValue($error_messages, $message) }}</span>
+                                    @enderror
+                                </td>
+                            </tr>
+                            <tr>
+                                <th class="required">締日</th>
+                                <td>
+                                    <select name="CLOSING_DATE_CD" id="CLOSING_DATE_CD" tabindex="22" style="width: 150px;"
+                                    @if($closing_date_disable)
+                                    disabled
+                                    @endif
+                                    >
+                                        <option value=""></option>
+                                    @foreach ($closing_date_cd_list as $closing_date_cd))
+                                        <option value="{{ $closing_date_cd->CLOSING_DATE_CD }}"
+                                            {{ $closing_date_cd->CLOSING_DATE_CD == (old('CLOSING_DATE_CD', isset($emp_data) ? $emp_data['CLOSING_DATE_CD'] : null ) ?? $def_closing_date_cd) ? 'selected' : '' }}>
+                                            {{ $closing_date_cd->CLOSING_DATE_NAME }}
+                                        </option>
+                                    @endforeach
+                                    </select>
+                                    @error('CLOSING_DATE_CD')
+                                    <span class="text-danger">{{ getArrValue($error_messages, $message) }}</span>
+                                    @enderror
+                                </td>
+                                @if($closing_date_disable)
+                                <input type=hidden name='CLOSING_DATE_CD' value={{ $emp_data->CLOSING_DATE_CD }}>
+                                @endif
+                            </tr>
+                            <tr>
+                                <th>所属</th>
+                                <td>
+                                    <select name="COMPANY_CD" id="COMPANY_CD" tabindex="23" style="width: 150px;">
+                                        <option value=""></option>
+                                    @foreach ($company_cd as $companyCd))
+                                        <option value="{{ $companyCd->COMPANY_CD }}"
+                                            {{ $companyCd->COMPANY_CD == (old('COMPANY_CD') ?? $emp_data->COMPANY_CD) ? 'selected' : '' }}>
+                                            {{ $companyCd->COMPANY_ABR }}
+                                        </option>
+                                    @endforeach
+                                    </select>
+                                    @error('COMPANY_CD')
+                                    <span class="text-danger">{{ getArrValue($error_messages, $message) }}</span>
+                                    @enderror
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>社員番号２</th>
+                                <td>
+                                    <input type="text" name="EMP2_CD" id="EMP2_CD" tabindex="24"
+                                        oninput="value = onlyHalfWord(value)" onfocus="this.select();"
+                                        value="{{ old('EMP2_CD') ?? $emp_data->EMP2_CD }}"
+                                        style="width: 80px;" maxlength="10"
+                                    >
+                                    @error('EMP2_CD')
+                                    <span class="text-danger">{{ getArrValue($error_messages, $message) }}</span>
+                                    @enderror
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
 
+                    <input type="hidden" name="change" value="{{ $emp_data->EMP_CD }}">
+                    <div class="line"></div>
 
-                        <table class="InputFieldStyle1">
-                            <tbody>
-                                <tr>
-                                    <th class="required">社員番号</th>
-                                    <td>
-                                        <input name="ctl00$cphContentsArea$txtEmpCd" tabindex="1" class="imeDisabled" id="txtEmpCd" style="width: 80px;" onkeypress="if (WebForm_TextBoxKeyHandler(event) == false) return false;" onfocus="this.select();" onchange="javascript:setTimeout('__doPostBack(\'ctl00$cphContentsArea$txtEmpCd\',\'\')', 0)" type="text" maxlength="10">
+                    <p class="ButtonField1">
+                        <input type="button" value="更新" name="btnUpdate" tabindex="25" id="btnUpdate"
+                            class="ButtonStyle1 update"
+                            data-url="{{ url('master/MT10EmpUpdate') }}">
 
-                                        <span id="cvEmpCd" style="color: red; display: none;">ErrorMessage</span>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <th class="required">社員名</th>
-                                    <td>
-                                        <input name="ctl00$cphContentsArea$txtEmpName" tabindex="2" class="imeOn" id="txtEmpName" style="width: 300px;" onfocus="this.select();" type="text" maxlength="20">
+                        <input type="button" name="btnCancel" tabindex="26" id="btnCancel"
+                            class="ButtonStyle1" value="キャンセル"
+                            onclick="location.reload();"
+                        >
+                        <input type="button" name="btnDelete" tabindex="27" id="btnDelete"
+                            class="ButtonStyle1 delete" value="削除"
+                            @if(is_nullorwhitespace($emp_data->EMP_CD))
+                            disabled="disabled"
+                            @else
+                            data-url="{{ url('master/MT10EmpDelete') }}"
+                            @endif
+                        >
+                    </p>
+                </div>
+            </form>
+        </table>
+    </div>
 
-                                        <span id="cvEmpName" style="color: red; display: none;">ErrorMessage</span>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <th class="required">社員カナ名</th>
-                                    <td>
-                                        <input name="ctl00$cphContentsArea$txtEmpKana" tabindex="3" class="imeOn" id="txtEmpKana" style="width: 160px;" onfocus="this.select();" type="text" maxlength="20">
-                                        <span id="cvEmpKana" style="color: red; display: none;">ErrorMessage</span>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <th class="required">部門</th>
-                                    <td>
-                                        <input name="ctl00$cphContentsArea$txtDeptCd" tabindex="4" class="imeDisabled" id="txtDeptCd" style="width: 50px;" onkeypress="if (WebForm_TextBoxKeyHandler(event) == false) return false;" onfocus="this.select();" onchange="javascript:setTimeout('__doPostBack(\'ctl00$cphContentsArea$txtDeptCd\',\'\')', 0)" type="text" maxlength="6">
-                                        <input name="ctl00$cphContentsArea$btnSearchDeptCd" tabindex="5" class="SearchButton" id="btnSearchDeptCd" onclick="SetDeptItem();__doPostBack('ctl00$cphContentsArea$btnSearchDeptCd','')" type="button" value="?">
-                                        <span class="OutlineLabel" id="lblDeptName" style="width: 280px; display: inline-block;"></span>
-                                        <span id="cvDeptCd" style="color: red; display: none;">ErrorMessage</span>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <th>入社年月日</th>
-                                    <td>
-                                        <input name="ctl00$cphContentsArea$txtEntYear" tabindex="6" class="imeDisabled" id="txtEntYear" FilterType="Numbers" style="width: 40px;" onfocus="this.select();" onchange="AddDropDownList('txtEntYear', 'ddlEntMonth', 'ddlEntDay')" type="text" maxlength="4">
+@endsection
 
-                                        &nbsp;年&nbsp;
-                                        <select name="ctl00$cphContentsArea$ddlEntMonth" tabindex="7" class="imeDisabled" id="ddlEntMonth" style="width: 50px;" onchange="AddDropDownList('txtEntYear', 'ddlEntMonth', 'ddlEntDay')">
-                                            <option selected="selected" value=""></option>
-                                            <option value="1">1</option>
-                                            <option value="2">2</option>
-                                            <option value="3">3</option>
-                                            <option value="4">4</option>
-                                            <option value="5">5</option>
-                                            <option value="6">6</option>
-                                            <option value="7">7</option>
-                                            <option value="8">8</option>
-                                            <option value="9">9</option>
-                                            <option value="10">10</option>
-                                            <option value="11">11</option>
-                                            <option value="12">12</option>
+@section('script')
+<script>
+    $(function() {
+        // ENTER時に送信されないようにする
+        $('input').not('[type="button"]').keypress(function(e) {
+            if (e.which == 13) {
+                return false;
+            }
+        });
 
-                                        </select>
-                                        &nbsp;月&nbsp;
-                                        <select name="ctl00$cphContentsArea$ddlEntDay" tabindex="8" class="imeDisabled" id="ddlEntDay" style="width: 50px;">
-                                            <option selected="selected" value=""></option>
-                                            <option value="1">1</option>
-                                            <option value="2">2</option>
-                                            <option value="3">3</option>
-                                            <option value="4">4</option>
-                                            <option value="5">5</option>
-                                            <option value="6">6</option>
-                                            <option value="7">7</option>
-                                            <option value="8">8</option>
-                                            <option value="9">9</option>
-                                            <option value="10">10</option>
-                                            <option value="11">11</option>
-                                            <option value="12">12</option>
-                                            <option value="13">13</option>
-                                            <option value="14">14</option>
-                                            <option value="15">15</option>
-                                            <option value="16">16</option>
-                                            <option value="17">17</option>
-                                            <option value="18">18</option>
-                                            <option value="19">19</option>
-                                            <option value="20">20</option>
-                                            <option value="21">21</option>
-                                            <option value="22">22</option>
-                                            <option value="23">23</option>
-                                            <option value="24">24</option>
-                                            <option value="25">25</option>
-                                            <option value="26">26</option>
-                                            <option value="27">27</option>
-                                            <option value="28">28</option>
-                                            <option value="29">29</option>
-                                            <option value="30">30</option>
-                                            <option value="31">31</option>
+        // カレンダー機能の設定
+        $(function() {
+            $('.yearMonth').datepicker({
+                format: 'yyyy年mm月',
+                autoclose: true,
+                language: 'ja',
+                minViewMode: 1,
+                startDate: '1900年01月',
+                endDate: '2100年12月'
+            });
+        });
+        $('.yearMonthDay').datepicker({
+            format: 'yyyy年mm月dd日',
+            autoclose: true,
+            language: 'ja',
+            startDate: '1900年01月01日',
+            endDate: '2100年12月31日'
+        });
 
-                                        </select>
-                                        &nbsp;日&nbsp;
-                                        <span id="cvEntDate" style="color: red; display: none;">ErrorMessage</span>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <th>退職年月日</th>
-                                    <td>
-                                        <input name="ctl00$cphContentsArea$txtRetYear" tabindex="9" class="imeDisabled" id="txtRetYear" style="width: 40px;" onfocus="this.select();" onchange="AddDropDownList('txtRetYear', 'ddlRetMonth', 'ddlRetDay')" type="text" maxlength="4">
+        // 入力制御関連
+        // 入力可能文字：半角
+        onlyHalf = n => n.replace(/[０-９Ａ-Ｚａ-ｚ]/g, s => String.fromCharCode(s.charCodeAt(0) - 65248))
+            .replace(/[^-a-zA-Z0-9+=^$*.\[\]{}()?\"\'!@#%&\/\\\\,><:;_~|`+=]/g, '');
+        // 入力可能文字：半角英数
+        onlyHalfWord = n => n.replace(/[０-９Ａ-Ｚａ-ｚ]/g, s => String.fromCharCode(s.charCodeAt(0) - 65248))
+            .replace(/[^0-9a-zA-Z]/g, '');
+        // 所属番号英数半角のみ入力可
+        onlyHalfNumber = n => n.replace(/[０-９]/g, s => String.fromCharCode(s.charCodeAt(0) - 65248))
+            .replace(/\D/g, '');
+        // 入力可能文字：数値、ハイフン
+        onlyNubersBar = n => n.replace(/[０-９]/g, s => String.fromCharCode(s.charCodeAt(0) - 65248))
+            .replace(/[ー]/g, '-')
+            .replace(/[^-\d]/g, '');
+        // 入力不可能文字：|
+        ngVerticalBar = n => n.replace(/\|/g, '');
 
-                                        &nbsp;年&nbsp;
-                                        <select name="ctl00$cphContentsArea$ddlRetMonth" tabindex="10" class="imeDisabled" id="ddlRetMonth" style="width: 50px;" onchange="AddDropDownList('txtRetYear', 'ddlRetMonth', 'ddlRetDay')">
-                                            <option selected="selected" value=""></option>
-                                            <option value="1">1</option>
-                                            <option value="2">2</option>
-                                            <option value="3">3</option>
-                                            <option value="4">4</option>
-                                            <option value="5">5</option>
-                                            <option value="6">6</option>
-                                            <option value="7">7</option>
-                                            <option value="8">8</option>
-                                            <option value="9">9</option>
-                                            <option value="10">10</option>
-                                            <option value="11">11</option>
-                                            <option value="12">12</option>
+        // 更新submit-form
+        $(document).on('click', '.update', function() {
+            if (window.confirm("{{ getArrValue($error_messages, 1005) }}")) {
+                var url = $(this).data('url');
+                $('#form').attr('action', url);
+                $('#form').submit();
+            }
+            return false;
+        });
 
-                                        </select>
-                                        &nbsp;月&nbsp;
-                                        <select name="ctl00$cphContentsArea$ddlRetDay" tabindex="11" class="imeDisabled" id="ddlRetDay" style="width: 50px;">
-                                            <option selected="selected" value=""></option>
-                                            <option value="1">1</option>
-                                            <option value="2">2</option>
-                                            <option value="3">3</option>
-                                            <option value="4">4</option>
-                                            <option value="5">5</option>
-                                            <option value="6">6</option>
-                                            <option value="7">7</option>
-                                            <option value="8">8</option>
-                                            <option value="9">9</option>
-                                            <option value="10">10</option>
-                                            <option value="11">11</option>
-                                            <option value="12">12</option>
-                                            <option value="13">13</option>
-                                            <option value="14">14</option>
-                                            <option value="15">15</option>
-                                            <option value="16">16</option>
-                                            <option value="17">17</option>
-                                            <option value="18">18</option>
-                                            <option value="19">19</option>
-                                            <option value="20">20</option>
-                                            <option value="21">21</option>
-                                            <option value="22">22</option>
-                                            <option value="23">23</option>
-                                            <option value="24">24</option>
-                                            <option value="25">25</option>
-                                            <option value="26">26</option>
-                                            <option value="27">27</option>
-                                            <option value="28">28</option>
-                                            <option value="29">29</option>
-                                            <option value="30">30</option>
-                                            <option value="31">31</option>
-
-                                        </select>
-                                        &nbsp;日&nbsp;
-                                        <span id="cvRetDate" style="color: red; display: none;">ErrorMessage</span>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <th class="required">在籍区分</th>
-                                    <td>
-                                        <select name="ctl00$cphContentsArea$ddlRegCls" tabindex="12" id="ddlRegCls" style="width: 80px;">
-                                            <option selected="selected" value=""></option>
-                                            <option value="00">在籍</option>
-                                            <option value="01">休職</option>
-                                            <option value="02">退職</option>
-
-                                        </select>
-                                        <span id="cvRegCls" style="color: red; display: none;">ErrorMessage</span>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <th>生年月日</th>
-                                    <td>
-                                        <input name="ctl00$cphContentsArea$txtBirthYear" tabindex="13" class="imeDisabled" id="txtBirthYear" style="width: 40px;" onfocus="this.select();" onchange="AddDropDownList('txtBirthYear', 'ddlBirthMonth', 'ddlBirthDay')" type="text" maxlength="4">
-
-                                        &nbsp;年&nbsp;
-                                        <select name="ctl00$cphContentsArea$ddlBirthMonth" tabindex="14" class="imeDisabled" id="ddlBirthMonth" style="width: 50px;" onchange="AddDropDownList('txtBirthYear', 'ddlBirthMonth', 'ddlBirthDay')">
-                                            <option selected="selected" value=""></option>
-                                            <option value="1">1</option>
-                                            <option value="2">2</option>
-                                            <option value="3">3</option>
-                                            <option value="4">4</option>
-                                            <option value="5">5</option>
-                                            <option value="6">6</option>
-                                            <option value="7">7</option>
-                                            <option value="8">8</option>
-                                            <option value="9">9</option>
-                                            <option value="10">10</option>
-                                            <option value="11">11</option>
-                                            <option value="12">12</option>
-
-                                        </select>
-                                        &nbsp;月&nbsp;
-                                        <select name="ctl00$cphContentsArea$ddlBirthDay" tabindex="15" class="imeDisabled" id="ddlBirthDay" style="width: 50px;">
-                                            <option selected="selected" value=""></option>
-                                            <option value="1">1</option>
-                                            <option value="2">2</option>
-                                            <option value="3">3</option>
-                                            <option value="4">4</option>
-                                            <option value="5">5</option>
-                                            <option value="6">6</option>
-                                            <option value="7">7</option>
-                                            <option value="8">8</option>
-                                            <option value="9">9</option>
-                                            <option value="10">10</option>
-                                            <option value="11">11</option>
-                                            <option value="12">12</option>
-                                            <option value="13">13</option>
-                                            <option value="14">14</option>
-                                            <option value="15">15</option>
-                                            <option value="16">16</option>
-                                            <option value="17">17</option>
-                                            <option value="18">18</option>
-                                            <option value="19">19</option>
-                                            <option value="20">20</option>
-                                            <option value="21">21</option>
-                                            <option value="22">22</option>
-                                            <option value="23">23</option>
-                                            <option value="24">24</option>
-                                            <option value="25">25</option>
-                                            <option value="26">26</option>
-                                            <option value="27">27</option>
-                                            <option value="28">28</option>
-                                            <option value="29">29</option>
-                                            <option value="30">30</option>
-                                            <option value="31">31</option>
-
-                                        </select>
-                                        &nbsp;日&nbsp;
-                                        <span id="cvBirthDate" style="color: red; display: none;">ErrorMessage</span>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <th class="required">性別</th>
-                                    <td>
-                                        <select name="ctl00$cphContentsArea$ddlSexCls" tabindex="16" id="ddlSexCls" style="width: 50px;">
-                                            <option selected="selected" value=""></option>
-                                            <option value="00">男</option>
-                                            <option value="01">女</option>
-
-                                        </select>
-                                        <span id="cvSexCls" style="color: red; display: none;">ErrorMessage</span>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <th class="required">社員区分</th>
-                                    <td>
-                                        <select name="ctl00$cphContentsArea$ddlEmpCls" tabindex="17" id="ddlEmpCls" style="width: 300px;">
-                                            <option selected="selected" value=""></option>
-                                            <option value="00">役員</option>
-                                            <option value="01">正社員</option>
-                                            <option value="02">派遣社員</option>
-                                            <option value="03">パート</option>
-                                            <option value="04">アルバイト</option>
-
-                                        </select>
-                                        <span id="cvEmpCls" style="color: red; display: none;">ErrorMessage</span>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <th class="required">使用カレンダー</th>
-                                    <td>
-                                        <select name="ctl00$cphContentsArea$ddlCalendar" tabindex="18" id="ddlCalendar" style="width: 300px;">
-                                            <option selected="selected" value=""></option>
-                                            <option value="001">通常１(8:00～17:00)</option>
-                                            <option value="002">通常2(7:00～16:00)</option>
-                                            <option value="003">通常3(9:00～1800)</option>
-                                            <option value="010">夜勤Ⅰ(20:00～29:00)</option>
-                                            <option value="011">夜勤Ⅱ(16:00～25:00)</option>
-                                            <option value="100">シフト勤務用</option>
-
-                                        </select>
-                                        <span id="cvCalendar" style="color: red; display: none;">ErrorMessage</span>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <th>部門権限</th>
-                                    <td>
-                                        <select name="ctl00$cphContentsArea$ddlDeptAuth" tabindex="19" id="ddlDeptAuth" style="width: 300px;">
-                                            <option selected="selected" value=""></option>
-                                            <option value="000010">営業部管理者</option>
-                                            <option value="000020">製造部管理者</option>
-                                            <option value="000030">経理部管理者</option>
-                                            <option value="000040">総務部管理者</option>
-                                            <option value="000050">購買部管理者</option>
-                                            <option value="000060">資材部管理者</option>
-                                            <option value="000070">品質保証部管理者</option>
-                                            <option value="999999">管理者</option>
-
-                                        </select>
-                                        <span id="cvDeptAuth" style="color: red; display: none;">ErrorMessage</span>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <th>郵便番号</th>
-                                    <td>
-                                        <input name="ctl00$cphContentsArea$txtPostCd" tabindex="20" class="imeDisabled" id="txtPostCd" style="width: 70px;" onfocus="this.select();" type="text" maxlength="8">
-
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <th>住所１</th>
-                                    <td>
-                                        <input name="ctl00$cphContentsArea$txtAddress1" tabindex="21" class="imeOn" id="txtAddress1" style="width: 430px;" onfocus="this.select();" type="text" maxlength="30">
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <th>住所２</th>
-                                    <td>
-                                        <input name="ctl00$cphContentsArea$txtAddress2" tabindex="22" class="imeOn" id="txtAddress2" style="width: 430px;" onfocus="this.select();" type="text" maxlength="30">
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <th>電話番号</th>
-                                    <td>
-                                        <input name="ctl00$cphContentsArea$txtTel" tabindex="23" class="imeDisabled" id="txtTel" style="width: 120px;" onfocus="this.select();" type="text" maxlength="15">
-
-
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <th>携帯番号</th>
-                                    <td>
-                                        <input name="ctl00$cphContentsArea$txtCellular" tabindex="24" class="imeDisabled" id="txtCellular" style="width: 120px;" onfocus="this.select();" type="text" maxlength="15">
-
-
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <th>Ｅメール</th>
-                                    <td>
-                                        <input name="ctl00$cphContentsArea$txtMail" tabindex="25" class="imeOff" id="txtMail" style="width: 360px;" onfocus="this.select();" type="text" maxlength="50">
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <th>有休付与算出基準年月</th>
-                                    <td>
-                                        <input name="ctl00$cphContentsArea$txtPhGrantYear" tabindex="26" class="imeDisabled" id="txtPhGrantYear" style="width: 40px;" onfocus="this.select();" type="text" maxlength="4">
-
-                                        &nbsp;年度&nbsp;
-                                        <select name="ctl00$cphContentsArea$ddlPhGrantMonth" tabindex="27" class="imeDisabled" id="ddlPhGrantMonth" style="width: 50px;">
-                                            <option selected="selected" value=""></option>
-                                            <option value="1">1</option>
-                                            <option value="2">2</option>
-                                            <option value="3">3</option>
-                                            <option value="4">4</option>
-                                            <option value="5">5</option>
-                                            <option value="6">6</option>
-                                            <option value="7">7</option>
-                                            <option value="8">8</option>
-                                            <option value="9">9</option>
-                                            <option value="10">10</option>
-                                            <option value="11">11</option>
-                                            <option value="12">12</option>
-
-                                        </select>
-                                        &nbsp;月&nbsp;
-                                        <span id="cvPhGrantDate" style="color: red; display: none;">ErrorMessage</span>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <th class="required">職種区分</th>
-                                    <td>
-                                        <select name="ctl00$cphContentsArea$ddlEmpCls2" tabindex="28" id="ddlEmpCls2" style="width: 300px;">
-                                            <option selected="selected" value=""></option>
-                                            <option value="00">管理者</option>
-                                            <option value="01">部長</option>
-                                            <option value="02">課長</option>
-                                            <option value="05">一般</option>
-
-                                        </select>
-                                        <span id="cvEmpCls2" style="color: red; display: none;">ErrorMessage</span>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <th class="required">締日</th>
-                                    <td>
-                                        <select name="ctl00$cphContentsArea$ddlClosingDate" tabindex="29" id="ddlClosingDate" style="width: 150px;">
-                                            <option value=""></option>
-                                            <option value="15">１５日締</option>
-                                            <option value="25">２５日締</option>
-                                            <option selected="selected" value="31">末締</option>
-
-                                        </select>
-                                        <span id="cvClosingDate" style="color: red; display: none;">ErrorMessage</span>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <th>所属</th>
-                                    <td>
-                                        <select name="ctl00$cphContentsArea$ddlCompany" tabindex="30" id="ddlCompany" style="width: 300px;">
-                                            <option selected="selected" value=""></option>
-                                            <option value="001">A派遣</option>
-                                            <option value="002">B派遣</option>
-                                            <option value="003">C派遣</option>
-
-                                        </select>
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <th>社員番号２</th>
-                                    <td>
-                                        <input name="ctl00$cphContentsArea$txtEmp2Cd" tabindex="31" class="imeDisabled" id="txtEmp2Cd" style="width: 80px;" onkeypress="if (WebForm_TextBoxKeyHandler(event) == false) return false;" onfocus="this.select();" onchange="javascript:setTimeout('__doPostBack(\'ctl00$cphContentsArea$txtEmp2Cd\',\'\')', 0)" type="text" maxlength="10">
-
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-
-                        <div class="line"></div>
-
-                        <p class="ButtonField1">
-                            <input name="ctl00$cphContentsArea$btnUpdate" tabindex="29" id="btnUpdate" onclick="if(confirm('更新します。よろしいですか?') ==  false){ return false;};WebForm_DoPostBackWithOptions(new WebForm_PostBackOptions())" type="button" value="更新">
-                            <input name="ctl00$cphContentsArea$btnCancel" tabindex="30" id="btnCancel" onclick="CloseSubWindow();__doPostBack('ctl00$cphContentsArea$btnCancel','')" type="button" value="キャンセル">
-                            <input name="ctl00$cphContentsArea$btnDelete" tabindex="31" disabled="disabled" id="btnDelete" type="button" value="削除">
-                        </p>
-
-                    </div>
-                </td>
-            </tr>
-        </tbody>
-    </table>
-</div>
-
+        // 削除処理submit-form
+        $(document).on('click', '.delete', function() {
+            if (window.confirm("{{ getArrValue($error_messages, 1004) }}")) {
+                var url = $(this).data('url');
+                $('#form').attr('action', url);
+                $('#form').submit();
+            }
+            return false;
+        });
+    });
+</script>
 @endsection

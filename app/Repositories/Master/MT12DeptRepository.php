@@ -1,0 +1,73 @@
+<?php
+
+namespace App\Repositories\Master;
+
+use App\Models\MT12Dept;
+use Illuminate\Support\Facades\DB;
+
+class MT12DeptRepository extends MT12Dept
+{
+    public function getWithPrimary($id)
+    {
+        return DB::table('MT12_DEPT')
+                    ->where('DEPT_CD', $id)
+                    ->first();
+    }
+
+    public function deptList($id)
+    {
+        return DB::table('MT12_DEPT')
+                    ->select('MT12_DEPT.DEPT_CD', 'MT12_DEPT.DEPT_NAME')
+                    ->where('UP_DEPT_CD', '=', $id)
+                    ->get();
+    }
+
+    public function deleteDeptWithUp($up_dept_cd)
+    {
+        return DB::table('MT12_DEPT')
+                    ->where('UP_DEPT_CD', $up_dept_cd)
+                    ->delete();
+    }
+
+    public function deptUpDept($record)
+    {
+        return DB::table('MT12_DEPT')
+                    ->select('MT12_DEPT.UP_DEPT_CD')
+                    ->where('UP_DEPT_CD', '=', $record)
+                    ->exists();
+    }
+
+    public function updateDept($record)
+    {
+        return DB::table('MT12_DEPT')
+                    ->where('DEPT_CD', '=', $record['DEPT_CD'])
+                    ->update(['DEPT_NAME' => $record['DEPT_NAME'],
+                                    'UPD_DATE' => $record['UPD_DATE']
+                                   ]);
+    }
+
+    public function upsertDept($record)
+    {
+        return DB::table($this->table)
+                ->upsert($record, $this->primaryKey, $this->fillable);
+    }
+
+    public function updateDeptOrg($param)
+    {
+        return DB::table('MT12_DEPT')
+                    ->where('DEPT_CD', '=', $param['DEPT_CD'])
+                    ->update(['UP_DEPT_CD' => $param['UP_DEPT_CD'],
+                                    'LEVEL_NO' => $param['LEVEL_NO'],
+                                    'UPD_DATE' => $param['UPD_DATE']
+                                    ]);
+    }
+
+    public function updateLevelNo($param)
+    {
+        return DB::table('MT12_DEPT')
+                    ->where('DEPT_CD', '=', $param['DEPT_CD'])
+                    ->update(['LEVEL_NO' => $param['LEVEL_NO'],
+                                    'UPD_DATE' => $param['UPD_DATE']
+                                    ]);
+    }
+}

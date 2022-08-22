@@ -7,10 +7,10 @@
             <tbody>
                 <tr>
                     <td>
-                        <table class="style1">
+                        <table class="style1" style="width: 100%">
                             <tbody>
                                 <tr>
-                                    <td align="center">
+                                    <td style="text-align: center">
                                         <br>
                                         <br>
                                         <br>
@@ -18,23 +18,23 @@
                                         取得ボタンを押してください。<br>
                                         <br>
                                         <br>
-                                        <br>
                                     </td>
                                 </tr>
                                 <tr>
-                                    <td align="center">
-                                        <input name="ctl00$cphContentsArea$btnGetWorkTimeData"
-                                            id="ctl00_cphContentsArea_btnGetWorkTimeData"
-                                            style="width: 200px; height: 40px;" type="submit" value="取得">
+                                    <td style="text-align: center">
+                                        <input class="search" type="submit" style="width: 200px; height: 40px;" value="取得">
+                                        <form action="{{ url('mng_oprt/WorkTimeConvert') }}" method="post" id="form">
+                                            @csrf
+                                        </form>
                                     </td>
                                 </tr>
                                 <tr>
-                                    <td align="center">
+                                    <td style="text-align: center">
                                         <br>
                                         <br>
-                                        <br>
-                                        <span id="ctl00_cphContentsArea_lblMessage"></span>
-                                        <br>
+                                        @if(isset($success) && $success)
+                                        <span>{{ getArrValue($error_messages, '1007') }}</span>
+                                        @endif
                                         <br>
                                         <br>
                                     </td>
@@ -42,13 +42,13 @@
                             </tbody>
                         </table>
 
-                        <div id="ctl00_cphContentsArea_UpdatePanel1">
+                        <div>
 
                             <table>
                                 <tbody>
                                     <tr>
                                         <td>
-                                            <span id="ctl00_cphContentsArea_lblTitleWorkTimeConv">前回取得状況</span>
+                                            <span>前回取得状況</span>
                                         </td>
                                     </tr>
                                 </tbody>
@@ -56,220 +56,58 @@
                             <div class="line"></div>
 
                             <div class="GridViewStyle1" id="gridview-container">
-                                <div class="GridViewPanelStyle1" style="width: 1158px;">
-                                    <div id="ctl00_cphContentsArea_pnlWorkTimeConvert">
+                                <div class="GridViewPanelStyle1" style="width: 1200px;">
+                                    <div>
 
                                         <div>
                                             <table tabindex="2" class="GridViewBorder GridViewPadding GridViewRowCenter"
-                                                id="ctl00_cphContentsArea_gvWorkTimeConvert"
                                                 style="border-collapse: collapse;" border="1" rules="all" cellspacing="0">
                                                 <tbody>
                                                     <tr>
-                                                        <th scope="col">
-                                                            端末番号
-                                                        </th>
-                                                        <th scope="col">
-                                                            設置場所
-                                                        </th>
-                                                        <th scope="col">
-                                                            結果
-                                                        </th>
-                                                        <th scope="col">
-                                                            取得開始日
-                                                        </th>
-                                                        <th scope="col">
-                                                            取得開始時刻
-                                                        </th>
-                                                        <th scope="col">
-                                                            取得終了日
-                                                        </th>
-                                                        <th scope="col">
-                                                            取得終了時刻
-                                                        </th>
-                                                        <th scope="col">
-                                                            エラー内容
-                                                        </th>
+                                                        <th scope="col">端末番号</th>
+                                                        <th scope="col">設置場所</th>
+                                                        <th scope="col">結果</th>
+                                                        <th scope="col">取得開始日</th>
+                                                        <th scope="col">取得開始時刻</th>
+                                                        <th scope="col">取得終了日</th>
+                                                        <th scope="col">取得終了時刻</th>
+                                                        <th scope="col">エラー内容</th>
                                                     </tr>
+                                                    @isset($result)
+                                                    @if($result->isEmpty())
+                                                    <tr>
+                                                    </tr>
+                                                    @else
+                                                    @foreach($result as $record)
                                                     <tr>
                                                         <td class="GridViewRowLeft" style="width: 70px;">
-                                                            <span
-                                                                id="ctl00_cphContentsArea_gvWorkTimeConvert_ctl02_lblTermNo">1</span>
+                                                            <span id="termNo">{{ $record->TERM_NO }}</span>
                                                         </td>
                                                         <td class="GridViewRowLeft" style="width: 110px;">
-                                                            <span
-                                                                id="ctl00_cphContentsArea_gvWorkTimeConvert_ctl02_lblTermName">本社</span>
+                                                            <span id="termName">{{ $record->TERM_NAME }}</span>
                                                         </td>
-                                                        <td style="width: 50px; background-color: red;">
-                                                            <span
-                                                                id="ctl00_cphContentsArea_gvWorkTimeConvert_ctl02_lblGetFlg">×</span>
+                                                        <td style="width: 50px; @if($record->GET_FLG != '1')background-color: red;@endif">
+                                                            <span id="getFlg">{{ $record->GET_FLG === '1' ? '○' : '×' }}</span>
                                                         </td>
                                                         <td class="GridViewRowLeft" style="width: 85px;">
-                                                            <span
-                                                                id="ctl00_cphContentsArea_gvWorkTimeConvert_ctl02_lblStrDate">2021/04/28</span>
+                                                            <span id="strDate">{{ date('Y/m/d', strtotime($record->STR_DATE)) }}</span>
                                                         </td>
                                                         <td class="GridViewRowLeft" style="width: 90px;">
-                                                            <span
-                                                                id="ctl00_cphContentsArea_gvWorkTimeConvert_ctl02_lblStrTime">10:17:50</span>
+                                                            <span id="strTime">{{ date('h:m:s', strtotime($record->STR_DATE)) }}</span>
                                                         </td>
                                                         <td class="GridViewRowLeft" style="width: 85px;">
-                                                            <span
-                                                                id="ctl00_cphContentsArea_gvWorkTimeConvert_ctl02_lblEndDate">2021/04/28</span>
+                                                            <span id="endDate">{{ $record->END_DATE ? date('Y/m/d', strtotime($record->END_DATE)) : '' ; }}</span>
                                                         </td>
                                                         <td class="GridViewRowLeft" style="width: 90px;">
-                                                            <span
-                                                                id="ctl00_cphContentsArea_gvWorkTimeConvert_ctl02_lblEndTime">10:17:50</span>
+                                                            <span id="endTime">{{ $record->END_DATE ? date('h:m:s', strtotime($record->END_DATE)) : '' ; }}</span>
                                                         </td>
                                                         <td class="GridViewRowLeft" style="width: 355px;">
-                                                            <span
-                                                                id="ctl00_cphContentsArea_gvWorkTimeConvert_ctl02_lblErrCont">このログインで要求されたデータベース
-                                                                "its_worktmmng_v3" を開けません。ログインに失敗しました。
-                                                                ユーザー 'its_work_user' はログインできませんでした。</span>
+                                                            <span id="errCont">{{ $record->ERR_CONT }}</span>
                                                         </td>
                                                     </tr>
-                                                    <tr>
-                                                        <td class="GridViewRowLeft" style="width: 70px;">
-                                                            <span
-                                                                id="ctl00_cphContentsArea_gvWorkTimeConvert_ctl03_lblTermNo">2</span>
-                                                        </td>
-                                                        <td class="GridViewRowLeft" style="width: 110px;">
-                                                            <span
-                                                                id="ctl00_cphContentsArea_gvWorkTimeConvert_ctl03_lblTermName">第１工場事務所</span>
-                                                        </td>
-                                                        <td style="width: 50px; background-color: red;">
-                                                            <span
-                                                                id="ctl00_cphContentsArea_gvWorkTimeConvert_ctl03_lblGetFlg">×</span>
-                                                        </td>
-                                                        <td class="GridViewRowLeft" style="width: 85px;">
-                                                            <span
-                                                                id="ctl00_cphContentsArea_gvWorkTimeConvert_ctl03_lblStrDate">2021/04/28</span>
-                                                        </td>
-                                                        <td class="GridViewRowLeft" style="width: 90px;">
-                                                            <span
-                                                                id="ctl00_cphContentsArea_gvWorkTimeConvert_ctl03_lblStrTime">10:17:50</span>
-                                                        </td>
-                                                        <td class="GridViewRowLeft" style="width: 85px;">
-                                                            <span
-                                                                id="ctl00_cphContentsArea_gvWorkTimeConvert_ctl03_lblEndDate">2021/04/28</span>
-                                                        </td>
-                                                        <td class="GridViewRowLeft" style="width: 90px;">
-                                                            <span
-                                                                id="ctl00_cphContentsArea_gvWorkTimeConvert_ctl03_lblEndTime">10:17:50</span>
-                                                        </td>
-                                                        <td class="GridViewRowLeft" style="width: 355px;">
-                                                            <span
-                                                                id="ctl00_cphContentsArea_gvWorkTimeConvert_ctl03_lblErrCont">このログインで要求されたデータベース
-                                                                "its_worktmmng_v3" を開けません。ログインに失敗しました。
-                                                                ユーザー 'its_work_user' はログインできませんでした。</span>
-                                                        </td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td class="GridViewRowLeft" style="width: 70px;">
-                                                            <span
-                                                                id="ctl00_cphContentsArea_gvWorkTimeConvert_ctl04_lblTermNo">3</span>
-                                                        </td>
-                                                        <td class="GridViewRowLeft" style="width: 110px;">
-                                                            <span
-                                                                id="ctl00_cphContentsArea_gvWorkTimeConvert_ctl04_lblTermName">第１工場A棟</span>
-                                                        </td>
-                                                        <td style="width: 50px; background-color: red;">
-                                                            <span
-                                                                id="ctl00_cphContentsArea_gvWorkTimeConvert_ctl04_lblGetFlg">×</span>
-                                                        </td>
-                                                        <td class="GridViewRowLeft" style="width: 85px;">
-                                                            <span
-                                                                id="ctl00_cphContentsArea_gvWorkTimeConvert_ctl04_lblStrDate">2021/04/28</span>
-                                                        </td>
-                                                        <td class="GridViewRowLeft" style="width: 90px;">
-                                                            <span
-                                                                id="ctl00_cphContentsArea_gvWorkTimeConvert_ctl04_lblStrTime">10:17:50</span>
-                                                        </td>
-                                                        <td class="GridViewRowLeft" style="width: 85px;">
-                                                            <span
-                                                                id="ctl00_cphContentsArea_gvWorkTimeConvert_ctl04_lblEndDate">2021/04/28</span>
-                                                        </td>
-                                                        <td class="GridViewRowLeft" style="width: 90px;">
-                                                            <span
-                                                                id="ctl00_cphContentsArea_gvWorkTimeConvert_ctl04_lblEndTime">10:17:50</span>
-                                                        </td>
-                                                        <td class="GridViewRowLeft" style="width: 355px;">
-                                                            <span
-                                                                id="ctl00_cphContentsArea_gvWorkTimeConvert_ctl04_lblErrCont">このログインで要求されたデータベース
-                                                                "its_worktmmng_v3" を開けません。ログインに失敗しました。
-                                                                ユーザー 'its_work_user' はログインできませんでした。</span>
-                                                        </td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td class="GridViewRowLeft" style="width: 70px;">
-                                                            <span
-                                                                id="ctl00_cphContentsArea_gvWorkTimeConvert_ctl05_lblTermNo">4</span>
-                                                        </td>
-                                                        <td class="GridViewRowLeft" style="width: 110px;">
-                                                            <span
-                                                                id="ctl00_cphContentsArea_gvWorkTimeConvert_ctl05_lblTermName">第２工場</span>
-                                                        </td>
-                                                        <td style="width: 50px; background-color: red;">
-                                                            <span
-                                                                id="ctl00_cphContentsArea_gvWorkTimeConvert_ctl05_lblGetFlg">×</span>
-                                                        </td>
-                                                        <td class="GridViewRowLeft" style="width: 85px;">
-                                                            <span
-                                                                id="ctl00_cphContentsArea_gvWorkTimeConvert_ctl05_lblStrDate">2021/04/28</span>
-                                                        </td>
-                                                        <td class="GridViewRowLeft" style="width: 90px;">
-                                                            <span
-                                                                id="ctl00_cphContentsArea_gvWorkTimeConvert_ctl05_lblStrTime">10:17:50</span>
-                                                        </td>
-                                                        <td class="GridViewRowLeft" style="width: 85px;">
-                                                            <span
-                                                                id="ctl00_cphContentsArea_gvWorkTimeConvert_ctl05_lblEndDate">2021/04/28</span>
-                                                        </td>
-                                                        <td class="GridViewRowLeft" style="width: 90px;">
-                                                            <span
-                                                                id="ctl00_cphContentsArea_gvWorkTimeConvert_ctl05_lblEndTime">10:17:50</span>
-                                                        </td>
-                                                        <td class="GridViewRowLeft" style="width: 355px;">
-                                                            <span
-                                                                id="ctl00_cphContentsArea_gvWorkTimeConvert_ctl05_lblErrCont">このログインで要求されたデータベース
-                                                                "its_worktmmng_v3" を開けません。ログインに失敗しました。
-                                                                ユーザー 'its_work_user' はログインできませんでした。</span>
-                                                        </td>
-                                                    </tr>
-                                                    <tr>
-                                                        <td class="GridViewRowLeft" style="width: 70px;">
-                                                            <span
-                                                                id="ctl00_cphContentsArea_gvWorkTimeConvert_ctl06_lblTermNo">5</span>
-                                                        </td>
-                                                        <td class="GridViewRowLeft" style="width: 110px;">
-                                                            <span
-                                                                id="ctl00_cphContentsArea_gvWorkTimeConvert_ctl06_lblTermName">北関東営業所</span>
-                                                        </td>
-                                                        <td style="width: 50px; background-color: red;">
-                                                            <span
-                                                                id="ctl00_cphContentsArea_gvWorkTimeConvert_ctl06_lblGetFlg">×</span>
-                                                        </td>
-                                                        <td class="GridViewRowLeft" style="width: 85px;">
-                                                            <span
-                                                                id="ctl00_cphContentsArea_gvWorkTimeConvert_ctl06_lblStrDate">2021/04/28</span>
-                                                        </td>
-                                                        <td class="GridViewRowLeft" style="width: 90px;">
-                                                            <span
-                                                                id="ctl00_cphContentsArea_gvWorkTimeConvert_ctl06_lblStrTime">10:17:50</span>
-                                                        </td>
-                                                        <td class="GridViewRowLeft" style="width: 85px;">
-                                                            <span
-                                                                id="ctl00_cphContentsArea_gvWorkTimeConvert_ctl06_lblEndDate">2021/04/28</span>
-                                                        </td>
-                                                        <td class="GridViewRowLeft" style="width: 90px;">
-                                                            <span
-                                                                id="ctl00_cphContentsArea_gvWorkTimeConvert_ctl06_lblEndTime">10:17:51</span>
-                                                        </td>
-                                                        <td class="GridViewRowLeft" style="width: 355px;">
-                                                            <span
-                                                                id="ctl00_cphContentsArea_gvWorkTimeConvert_ctl06_lblErrCont">このログインで要求されたデータベース
-                                                                "its_worktmmng_v3" を開けません。ログインに失敗しました。
-                                                                ユーザー 'its_work_user' はログインできませんでした。</span>
-                                                        </td>
-                                                    </tr>
+                                                    @endforeach
+                                                    @endif
+                                                    @endisset
                                                 </tbody>
                                             </table>
                                         </div>
@@ -283,4 +121,14 @@
             </tbody>
         </table>
     </div>
+@endsection
+@section('script')
+<script>
+$(function() {
+    // 更新submit-form
+    $(document).on('click', '.search', function() {
+        $('#form').submit();
+    });
+});
+</script>
 @endsection

@@ -1,634 +1,1004 @@
 <!-- 端数処理情報入力 -->
 @extends('menu.main')
 
-@section('title','端数処理情報入力')
+@section('title', '端数処理情報入力')
 
 @section('content')
-<div id="contents-stage">
-    <table style="width: 850px;">
-        <tbody>
-            <tr>
-                <td>
-                    <div id="ctl00_cphContentsArea_UpdatePanel1">
-                        <table class="InputFieldStyle1">
-                            <tbody>
-                                <tr>
-                                    <th>勤務体系</th>
-                                    <td>
-                                        <select name="ctl00$cphContentsArea$ddlWorkptnCd" tabindex="1" id="ctl00_cphContentsArea_ddlWorkptnCd" style="width: 250px;" onchange="javascript:setTimeout('WebForm_DoPostBackWithOptions(new WebForm_PostBackOptions(&quot;ctl00$cphContentsArea$ddlWorkptnCd&quot;, &quot;&quot;, true, &quot;&quot;, &quot;&quot;, false, true))', 0)">
-                                            <option selected="selected" value=""></option>
-                                            <option value="001">通常１(8-17)</option>
-                                            <option style="color: red;" value="002">休日勤務</option>
-                                            <option value="003">通常２(5-14)</option>
-                                            <option value="004">通常３(6-15)</option>
-                                            <option value="005">通常４(7-16)</option>
-                                            <option value="006">通常５(9-18)</option>
-                                            <option value="007">通常６(10-19)</option>
-                                            <option value="008">通常７(11-20)</option>
-                                            <option value="009">通常８(13-22)</option>
-                                            <option value="011">通常１０(15-24)</option>
-                                            <option value="012">通常１１(5:30-14:30)</option>
-                                            <option value="013">通常１２(6:30-15:30)</option>
-                                            <option value="101">夜間Ⅰ(20-29)</option>
-                                            <option style="color: red;" value="102">休日夜間勤務</option>
-                                            <option value="103">夜間Ⅱ(16-25)</option>
-                                            <option value="104">夜間Ⅲ(17-26)</option>
-                                            <option value="105">夜間Ⅳ(18-27)</option>
-                                            <option value="106">夜間Ⅴ(19-28)</option>
-                                            <option value="107">夜間Ⅵ(21-30)</option>
-                                            <option value="108">夜間Ⅶ(22-31)</option>
-                                            <option value="109">夜間Ⅷ(23-32)</option>
-                                            <option value="200">パート０１</option>
-                                            <option value="999">共通</option>
-
-                                        </select>
-                                        <span id="ctl00_cphContentsArea_cvWorkptnCd" style="color: red; display: none;">ErrorMessage</span>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-
-                        <p class="CategoryTitle1">出退勤端数処理</p>
-                        <table class="GroupBox1">
-                            <tbody>
-                                <tr>
-                                    <td>
-                                        <span disabled="disabled"><input name="ctl00$cphContentsArea$FractionCls" tabindex="2" disabled="disabled" id="ctl00_cphContentsArea_rbFractionClsHr" type="radio" checked="checked" value="rbFractionClsHr"><label for="ctl00_cphContentsArea_rbFractionClsHr">時間</label></span>
-                                        <span disabled="disabled"><input name="ctl00$cphContentsArea$FractionCls" tabindex="3" disabled="disabled" id="ctl00_cphContentsArea_rbFractionClsTm" onclick="javascript:setTimeout('__doPostBack(\'ctl00$cphContentsArea$rbFractionClsTm\',\'\')', 0)" type="radio" value="rbFractionClsTm"><label for="ctl00_cphContentsArea_rbFractionClsTm">時刻</label></span>
-                                        <div class="clearBoth"></div>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-
-                        <table class="InputFieldStyle1 mg10">
-                            <tbody>
-                                <tr>
-                                    <th>出勤時間</th>
-                                    <td>
-                                        <select name="ctl00$cphContentsArea$ddlWthrUnderMi" tabindex="4" disabled="disabled" class="imeDisabled" id="ctl00_cphContentsArea_ddlWthrUnderMi" style="width: 50px;">
-                                            <option selected="selected" value=""></option>
-                                            <option value="00">0</option>
-                                            <option value="05">5</option>
-                                            <option value="10">10</option>
-                                            <option value="15">15</option>
-                                            <option value="20">20</option>
-                                            <option value="30">30</option>
-                                            <option value="60">60</option>
-
-                                        </select>
-                                        <span id="ctl00_cphContentsArea_lblTitleWthrUnderMiUnit">分未満</span>
-                                    </td>
-                                    <td>
-                                        <select name="ctl00$cphContentsArea$ddlWthrFrcClsCd" tabindex="5" disabled="disabled" id="ctl00_cphContentsArea_ddlWthrFrcClsCd" style="width: 110px;">
-                                            <option selected="selected" value=""></option>
-                                            <option value="00">切上げ</option>
-                                            <option value="01">切捨て</option>
-                                            <option value="02">四捨五入</option>
-
-                                        </select>
-
-                                    </td>
-                                    <th>出勤時刻</th>
-                                    <td>
-                                        <select name="ctl00$cphContentsArea$ddlWttmUnderMi" tabindex="12" disabled="disabled" class="imeDisabled" id="ctl00_cphContentsArea_ddlWttmUnderMi" style="width: 50px;">
-                                            <option selected="selected" value=""></option>
-                                            <option value="00">0</option>
-                                            <option value="05">5</option>
-                                            <option value="10">10</option>
-                                            <option value="15">15</option>
-                                            <option value="20">20</option>
-                                            <option value="30">30</option>
-                                            <option value="60">60</option>
-
-                                        </select>
-                                        <span id="ctl00_cphContentsArea_lblTitleWttmUnderMiUnit">分未満</span>
-                                    </td>
-                                    <td>
-                                        <select name="ctl00$cphContentsArea$ddlWttmFrcClsCd" tabindex="13" disabled="disabled" id="ctl00_cphContentsArea_ddlWttmFrcClsCd" style="width: 110px;">
-                                            <option selected="selected" value=""></option>
-                                            <option value="00">切上げ</option>
-                                            <option value="01">切捨て</option>
-                                            <option value="02">四捨五入</option>
-
-                                        </select>
-
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <th>遅刻時間</th>
-                                    <td>
-                                        <select name="ctl00$cphContentsArea$ddlLthrUnderMi" tabindex="6" disabled="disabled" class="imeDisabled" id="ctl00_cphContentsArea_ddlLthrUnderMi" style="width: 50px;">
-                                            <option selected="selected" value=""></option>
-                                            <option value="00">0</option>
-                                            <option value="05">5</option>
-                                            <option value="10">10</option>
-                                            <option value="15">15</option>
-                                            <option value="20">20</option>
-                                            <option value="30">30</option>
-                                            <option value="60">60</option>
-
-                                        </select>
-                                        <span id="ctl00_cphContentsArea_lblTitleLthrUnderMiUnit">分未満</span>
-                                    </td>
-                                    <td>
-                                        <select name="ctl00$cphContentsArea$ddlLthrFrcClsCd" tabindex="7" disabled="disabled" id="ctl00_cphContentsArea_ddlLthrFrcClsCd" style="width: 110px;">
-                                            <option selected="selected" value=""></option>
-                                            <option value="00">切上げ</option>
-                                            <option value="01">切捨て</option>
-                                            <option value="02">四捨五入</option>
-
-                                        </select>
-
-                                    </td>
-                                    <th>退出時刻</th>
-                                    <td>
-                                        <select name="ctl00$cphContentsArea$ddlLvtmUnderMi" tabindex="14" disabled="disabled" class="imeDisabled" id="ctl00_cphContentsArea_ddlLvtmUnderMi" style="width: 50px;">
-                                            <option selected="selected" value=""></option>
-                                            <option value="00">0</option>
-                                            <option value="05">5</option>
-                                            <option value="10">10</option>
-                                            <option value="15">15</option>
-                                            <option value="20">20</option>
-                                            <option value="30">30</option>
-                                            <option value="60">60</option>
-
-                                        </select>
-                                        <span id="ctl00_cphContentsArea_lblTitleLvtmUnderMiUnit">分未満</span>
-                                    </td>
-                                    <td>
-                                        <select name="ctl00$cphContentsArea$ddlLvtmFrcClsCd" tabindex="15" disabled="disabled" id="ctl00_cphContentsArea_ddlLvtmFrcClsCd" style="width: 110px;">
-                                            <option selected="selected" value=""></option>
-                                            <option value="00">切上げ</option>
-                                            <option value="01">切捨て</option>
-                                            <option value="02">四捨五入</option>
-
-                                        </select>
-
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <th>早退時間</th>
-                                    <td>
-                                        <select name="ctl00$cphContentsArea$ddlErhrUnderMi" tabindex="8" disabled="disabled" class="imeDisabled" id="ctl00_cphContentsArea_ddlErhrUnderMi" style="width: 50px;">
-                                            <option selected="selected" value=""></option>
-                                            <option value="00">0</option>
-                                            <option value="05">5</option>
-                                            <option value="10">10</option>
-                                            <option value="15">15</option>
-                                            <option value="20">20</option>
-                                            <option value="30">30</option>
-                                            <option value="60">60</option>
-
-                                        </select>
-                                        <span id="ctl00_cphContentsArea_lblTitleErhrUnderMiUnit">分未満</span>
-                                    </td>
-                                    <td>
-                                        <select name="ctl00$cphContentsArea$ddlErhrFrcClsCd" tabindex="9" disabled="disabled" id="ctl00_cphContentsArea_ddlErhrFrcClsCd" style="width: 110px;">
-                                            <option selected="selected" value=""></option>
-                                            <option value="00">切上げ</option>
-                                            <option value="01">切捨て</option>
-                                            <option value="02">四捨五入</option>
-
-                                        </select>
-
-                                    </td>
-                                    <th>外出時刻</th>
-                                    <td>
-                                        <select name="ctl00$cphContentsArea$ddlOttmUnderMi" tabindex="16" disabled="disabled" class="imeDisabled" id="ctl00_cphContentsArea_ddlOttmUnderMi" style="width: 50px;">
-                                            <option selected="selected" value=""></option>
-                                            <option value="00">0</option>
-                                            <option value="05">5</option>
-                                            <option value="10">10</option>
-                                            <option value="15">15</option>
-                                            <option value="20">20</option>
-                                            <option value="30">30</option>
-                                            <option value="60">60</option>
-
-                                        </select>
-                                        <span id="ctl00_cphContentsArea_lblTitleOttmUnderMiUnit">分未満</span>
-                                    </td>
-                                    <td>
-                                        <select name="ctl00$cphContentsArea$ddlOttmFrcClsCd" tabindex="17" disabled="disabled" id="ctl00_cphContentsArea_ddlOttmFrcClsCd" style="width: 110px;">
-                                            <option selected="selected" value=""></option>
-                                            <option value="00">切上げ</option>
-                                            <option value="01">切捨て</option>
-                                            <option value="02">四捨五入</option>
-
-                                        </select>
-
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <th>外出時間</th>
-                                    <td>
-                                        <select name="ctl00$cphContentsArea$ddlOthrUnderMi" tabindex="10" disabled="disabled" class="imeDisabled" id="ctl00_cphContentsArea_ddlOthrUnderMi" style="width: 50px;">
-                                            <option selected="selected" value=""></option>
-                                            <option value="00">0</option>
-                                            <option value="05">5</option>
-                                            <option value="10">10</option>
-                                            <option value="15">15</option>
-                                            <option value="20">20</option>
-                                            <option value="30">30</option>
-                                            <option value="60">60</option>
-
-                                        </select>
-                                        <span id="ctl00_cphContentsArea_lblTitleOthrUnderMiUnit">分未満</span>
-                                    </td>
-                                    <td>
-                                        <select name="ctl00$cphContentsArea$ddlOthrFrcClsCd" tabindex="11" disabled="disabled" id="ctl00_cphContentsArea_ddlOthrFrcClsCd" style="width: 110px;">
-                                            <option selected="selected" value=""></option>
-                                            <option value="00">切上げ</option>
-                                            <option value="01">切捨て</option>
-                                            <option value="02">四捨五入</option>
-
-                                        </select>
-
-                                    </td>
-                                    <th>再入時刻</th>
-                                    <td>
-                                        <select name="ctl00$cphContentsArea$ddlRetmUnderMi" tabindex="18" disabled="disabled" class="imeDisabled" id="ctl00_cphContentsArea_ddlRetmUnderMi" style="width: 50px;">
-                                            <option selected="selected" value=""></option>
-                                            <option value="00">0</option>
-                                            <option value="05">5</option>
-                                            <option value="10">10</option>
-                                            <option value="15">15</option>
-                                            <option value="20">20</option>
-                                            <option value="30">30</option>
-                                            <option value="60">60</option>
-
-                                        </select>
-                                        <span id="ctl00_cphContentsArea_lblTitleRetmUnderMiUnit">分未満</span>
-                                    </td>
-                                    <td>
-                                        <select name="ctl00$cphContentsArea$ddlRetmFrcClsCd" tabindex="19" disabled="disabled" id="ctl00_cphContentsArea_ddlRetmFrcClsCd" style="width: 110px;">
-                                            <option selected="selected" value=""></option>
-                                            <option value="00">切上げ</option>
-                                            <option value="01">切捨て</option>
-                                            <option value="02">四捨五入</option>
-
-                                        </select>
-
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-
-                        <p class="CategoryTitle1">残業時間端数処理</p>
-                        <table class="InputFieldStyle1">
-                            <tbody>
-                                <tr>
-                                    <th>残業項目１</th>
-                                    <td>
-                                        <select name="ctl00$cphContentsArea$ddlOvtm1Cd" tabindex="20" disabled="disabled" id="ctl00_cphContentsArea_ddlOvtm1Cd" style="width: 180px;">
-                                            <option selected="selected" value=""></option>
-                                            <option value="100">早出時間</option>
-                                            <option value="101">普通残業時間</option>
-                                            <option value="102">深夜残業時間</option>
-                                            <option value="103">休日残業時間</option>
-                                            <option value="104">休日深夜残業時間</option>
-
-                                        </select>
-                                    </td>
-                                    <td>
-                                        <select name="ctl00$cphContentsArea$ddlOvtm1UnderMi" tabindex="21" disabled="disabled" class="imeDisabled" id="ctl00_cphContentsArea_ddlOvtm1UnderMi" style="width: 50px;">
-                                            <option selected="selected" value=""></option>
-                                            <option value="00">0</option>
-                                            <option value="05">5</option>
-                                            <option value="10">10</option>
-                                            <option value="15">15</option>
-                                            <option value="20">20</option>
-                                            <option value="30">30</option>
-                                            <option value="60">60</option>
-
-                                        </select>
-                                        <span id="ctl00_cphContentsArea_lblTitleOvtm1UnderMiUnit">分未満</span>
-                                    </td>
-                                    <td>
-                                        <select name="ctl00$cphContentsArea$ddlOvtm1FrcClsCd" tabindex="22" disabled="disabled" id="ctl00_cphContentsArea_ddlOvtm1FrcClsCd" style="width: 110px;">
-                                            <option selected="selected" value=""></option>
-                                            <option value="00">切上げ</option>
-                                            <option value="01">切捨て</option>
-                                            <option value="02">四捨五入</option>
-
-                                        </select>
-
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <th>残業項目２</th>
-                                    <td>
-                                        <select name="ctl00$cphContentsArea$ddlOvtm2Cd" tabindex="23" disabled="disabled" id="ctl00_cphContentsArea_ddlOvtm2Cd" style="width: 180px;">
-                                            <option selected="selected" value=""></option>
-                                            <option value="100">早出時間</option>
-                                            <option value="101">普通残業時間</option>
-                                            <option value="102">深夜残業時間</option>
-                                            <option value="103">休日残業時間</option>
-                                            <option value="104">休日深夜残業時間</option>
-
-                                        </select>
-                                    </td>
-                                    <td>
-                                        <select name="ctl00$cphContentsArea$ddlOvtm2UnderMi" tabindex="24" disabled="disabled" class="imeDisabled" id="ctl00_cphContentsArea_ddlOvtm2UnderMi" style="width: 50px;">
-                                            <option selected="selected" value=""></option>
-                                            <option value="00">0</option>
-                                            <option value="05">5</option>
-                                            <option value="10">10</option>
-                                            <option value="15">15</option>
-                                            <option value="20">20</option>
-                                            <option value="30">30</option>
-                                            <option value="60">60</option>
-
-                                        </select>
-                                        <span id="ctl00_cphContentsArea_lblTitleOvtm2UnderMiUnit">分未満</span>
-                                    </td>
-                                    <td>
-                                        <select name="ctl00$cphContentsArea$ddlOvtm2FrcClsCd" tabindex="25" disabled="disabled" id="ctl00_cphContentsArea_ddlOvtm2FrcClsCd" style="width: 110px;">
-                                            <option selected="selected" value=""></option>
-                                            <option value="00">切上げ</option>
-                                            <option value="01">切捨て</option>
-                                            <option value="02">四捨五入</option>
-
-                                        </select>
-
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <th>残業項目３</th>
-                                    <td>
-                                        <select name="ctl00$cphContentsArea$ddlOvtm3Cd" tabindex="26" disabled="disabled" id="ctl00_cphContentsArea_ddlOvtm3Cd" style="width: 180px;">
-                                            <option selected="selected" value=""></option>
-                                            <option value="100">早出時間</option>
-                                            <option value="101">普通残業時間</option>
-                                            <option value="102">深夜残業時間</option>
-                                            <option value="103">休日残業時間</option>
-                                            <option value="104">休日深夜残業時間</option>
-
-                                        </select>
-                                    </td>
-                                    <td>
-                                        <select name="ctl00$cphContentsArea$ddlOvtm3UnderMi" tabindex="27" disabled="disabled" class="imeDisabled" id="ctl00_cphContentsArea_ddlOvtm3UnderMi" style="width: 50px;">
-                                            <option selected="selected" value=""></option>
-                                            <option value="00">0</option>
-                                            <option value="05">5</option>
-                                            <option value="10">10</option>
-                                            <option value="15">15</option>
-                                            <option value="20">20</option>
-                                            <option value="30">30</option>
-                                            <option value="60">60</option>
-
-                                        </select>
-                                        <span id="ctl00_cphContentsArea_lblTitleOvtm3UnderMiUnit">分未満</span>
-                                    </td>
-                                    <td>
-                                        <select name="ctl00$cphContentsArea$ddlOvtm3FrcClsCd" tabindex="28" disabled="disabled" id="ctl00_cphContentsArea_ddlOvtm3FrcClsCd" style="width: 110px;">
-                                            <option selected="selected" value=""></option>
-                                            <option value="00">切上げ</option>
-                                            <option value="01">切捨て</option>
-                                            <option value="02">四捨五入</option>
-
-                                        </select>
-
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <th>残業項目４</th>
-                                    <td>
-                                        <select name="ctl00$cphContentsArea$ddlOvtm4Cd" tabindex="29" disabled="disabled" id="ctl00_cphContentsArea_ddlOvtm4Cd" style="width: 180px;">
-                                            <option selected="selected" value=""></option>
-                                            <option value="100">早出時間</option>
-                                            <option value="101">普通残業時間</option>
-                                            <option value="102">深夜残業時間</option>
-                                            <option value="103">休日残業時間</option>
-                                            <option value="104">休日深夜残業時間</option>
-
-                                        </select>
-                                    </td>
-                                    <td>
-                                        <select name="ctl00$cphContentsArea$ddlOvtm4UnderMi" tabindex="30" disabled="disabled" class="imeDisabled" id="ctl00_cphContentsArea_ddlOvtm4UnderMi" style="width: 50px;">
-                                            <option selected="selected" value=""></option>
-                                            <option value="00">0</option>
-                                            <option value="05">5</option>
-                                            <option value="10">10</option>
-                                            <option value="15">15</option>
-                                            <option value="20">20</option>
-                                            <option value="30">30</option>
-                                            <option value="60">60</option>
-
-                                        </select>
-                                        <span id="ctl00_cphContentsArea_lblTitleOvtm4UnderMiUnit">分未満</span>
-                                    </td>
-                                    <td>
-                                        <select name="ctl00$cphContentsArea$ddlOvtm4FrcClsCd" tabindex="31" disabled="disabled" id="ctl00_cphContentsArea_ddlOvtm4FrcClsCd" style="width: 110px;">
-                                            <option selected="selected" value=""></option>
-                                            <option value="00">切上げ</option>
-                                            <option value="01">切捨て</option>
-                                            <option value="02">四捨五入</option>
-
-                                        </select>
-
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <th>残業項目５</th>
-                                    <td>
-                                        <select name="ctl00$cphContentsArea$ddlOvtm5Cd" tabindex="32" disabled="disabled" id="ctl00_cphContentsArea_ddlOvtm5Cd" style="width: 180px;">
-                                            <option selected="selected" value=""></option>
-                                            <option value="100">早出時間</option>
-                                            <option value="101">普通残業時間</option>
-                                            <option value="102">深夜残業時間</option>
-                                            <option value="103">休日残業時間</option>
-                                            <option value="104">休日深夜残業時間</option>
-
-                                        </select>
-                                    </td>
-                                    <td>
-                                        <select name="ctl00$cphContentsArea$ddlOvtm5UnderMi" tabindex="33" disabled="disabled" class="imeDisabled" id="ctl00_cphContentsArea_ddlOvtm5UnderMi" style="width: 50px;">
-                                            <option selected="selected" value=""></option>
-                                            <option value="00">0</option>
-                                            <option value="05">5</option>
-                                            <option value="10">10</option>
-                                            <option value="15">15</option>
-                                            <option value="20">20</option>
-                                            <option value="30">30</option>
-                                            <option value="60">60</option>
-
-                                        </select>
-                                        <span id="ctl00_cphContentsArea_lblTitleOvtm5UnderMiUnit">分未満</span>
-                                    </td>
-                                    <td>
-                                        <select name="ctl00$cphContentsArea$ddlOvtm5FrcClsCd" tabindex="34" disabled="disabled" id="ctl00_cphContentsArea_ddlOvtm5FrcClsCd" style="width: 110px;">
-                                            <option selected="selected" value=""></option>
-                                            <option value="00">切上げ</option>
-                                            <option value="01">切捨て</option>
-                                            <option value="02">四捨五入</option>
-
-                                        </select>
-
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <th>残業項目６</th>
-                                    <td>
-                                        <select name="ctl00$cphContentsArea$ddlOvtm6Cd" tabindex="35" disabled="disabled" id="ctl00_cphContentsArea_ddlOvtm6Cd" style="width: 180px;">
-                                            <option selected="selected" value=""></option>
-                                            <option value="100">早出時間</option>
-                                            <option value="101">普通残業時間</option>
-                                            <option value="102">深夜残業時間</option>
-                                            <option value="103">休日残業時間</option>
-                                            <option value="104">休日深夜残業時間</option>
-
-                                        </select>
-                                    </td>
-                                    <td>
-                                        <select name="ctl00$cphContentsArea$ddlOvtm6UnderMi" tabindex="36" disabled="disabled" class="imeDisabled" id="ctl00_cphContentsArea_ddlOvtm6UnderMi" style="width: 50px;">
-                                            <option selected="selected" value=""></option>
-                                            <option value="00">0</option>
-                                            <option value="05">5</option>
-                                            <option value="10">10</option>
-                                            <option value="15">15</option>
-                                            <option value="20">20</option>
-                                            <option value="30">30</option>
-                                            <option value="60">60</option>
-
-                                        </select>
-                                        <span id="ctl00_cphContentsArea_lblTitleOvtm6UnderMiUnit">分未満</span>
-                                    </td>
-                                    <td>
-                                        <select name="ctl00$cphContentsArea$ddlOvtm6FrcClsCd" tabindex="37" disabled="disabled" id="ctl00_cphContentsArea_ddlOvtm6FrcClsCd" style="width: 110px;">
-                                            <option selected="selected" value=""></option>
-                                            <option value="00">切上げ</option>
-                                            <option value="01">切捨て</option>
-                                            <option value="02">四捨五入</option>
-
-                                        </select>
-
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-
-                        <p class="CategoryTitle1">割増時間端数処理</p>
-                        <table class="InputFieldStyle1">
-                            <tbody>
-                                <tr>
-                                    <th>割増対象１</th>
-                                    <td>
-                                        <select name="ctl00$cphContentsArea$ddlExt1Cd" tabindex="38" disabled="disabled" id="ctl00_cphContentsArea_ddlExt1Cd" style="width: 180px;">
-                                            <option selected="selected" value=""></option>
-                                            <option value="200">深夜割増</option>
-
-                                        </select>
-                                    </td>
-                                    <td>
-                                        <select name="ctl00$cphContentsArea$ddlExt1UnderMi" tabindex="39" disabled="disabled" class="imeDisabled" id="ctl00_cphContentsArea_ddlExt1UnderMi" style="width: 50px;">
-                                            <option selected="selected" value=""></option>
-                                            <option value="00">0</option>
-                                            <option value="05">5</option>
-                                            <option value="10">10</option>
-                                            <option value="15">15</option>
-                                            <option value="20">20</option>
-                                            <option value="30">30</option>
-                                            <option value="60">60</option>
-
-                                        </select>
-                                        <span id="ctl00_cphContentsArea_Label1">分未満</span>
-                                    </td>
-                                    <td>
-                                        <select name="ctl00$cphContentsArea$ddlExt1FrcClsCd" tabindex="40" disabled="disabled" id="ctl00_cphContentsArea_ddlExt1FrcClsCd" style="width: 110px;">
-                                            <option selected="selected" value=""></option>
-                                            <option value="00">切上げ</option>
-                                            <option value="01">切捨て</option>
-                                            <option value="02">四捨五入</option>
-
-                                        </select>
-
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <th>割増対象２</th>
-                                    <td>
-                                        <select name="ctl00$cphContentsArea$ddlExt2Cd" tabindex="41" disabled="disabled" id="ctl00_cphContentsArea_ddlExt2Cd" style="width: 180px;">
-                                            <option selected="selected" value=""></option>
-                                            <option value="200">深夜割増</option>
-
-                                        </select>
-                                    </td>
-                                    <td>
-                                        <select name="ctl00$cphContentsArea$ddlExt2UnderMi" tabindex="42" disabled="disabled" class="imeDisabled" id="ctl00_cphContentsArea_ddlExt2UnderMi" style="width: 50px;">
-                                            <option selected="selected" value=""></option>
-                                            <option value="00">0</option>
-                                            <option value="05">5</option>
-                                            <option value="10">10</option>
-                                            <option value="15">15</option>
-                                            <option value="20">20</option>
-                                            <option value="30">30</option>
-                                            <option value="60">60</option>
-
-                                        </select>
-                                        <span id="ctl00_cphContentsArea_Label2">分未満</span>
-                                    </td>
-                                    <td>
-                                        <select name="ctl00$cphContentsArea$ddlExt2FrcClsCd" tabindex="43" disabled="disabled" id="ctl00_cphContentsArea_ddlExt2FrcClsCd" style="width: 110px;">
-                                            <option selected="selected" value=""></option>
-                                            <option value="00">切上げ</option>
-                                            <option value="01">切捨て</option>
-                                            <option value="02">四捨五入</option>
-
-                                        </select>
-
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <th>割増対象３</th>
-                                    <td>
-                                        <select name="ctl00$cphContentsArea$ddlExt3Cd" tabindex="44" disabled="disabled" id="ctl00_cphContentsArea_ddlExt3Cd" style="width: 180px;">
-                                            <option selected="selected" value=""></option>
-                                            <option value="200">深夜割増</option>
-
-                                        </select>
-                                    </td>
-                                    <td>
-                                        <select name="ctl00$cphContentsArea$ddlExt3UnderMi" tabindex="45" disabled="disabled" class="imeDisabled" id="ctl00_cphContentsArea_ddlExt3UnderMi" style="width: 50px;">
-                                            <option selected="selected" value=""></option>
-                                            <option value="00">0</option>
-                                            <option value="05">5</option>
-                                            <option value="10">10</option>
-                                            <option value="15">15</option>
-                                            <option value="20">20</option>
-                                            <option value="30">30</option>
-                                            <option value="60">60</option>
-
-                                        </select>
-                                        <span id="ctl00_cphContentsArea_Label3">分未満</span>
-                                    </td>
-                                    <td>
-                                        <select name="ctl00$cphContentsArea$ddlExt3FrcClsCd" tabindex="46" disabled="disabled" id="ctl00_cphContentsArea_ddlExt3FrcClsCd" style="width: 110px;">
-                                            <option selected="selected" value=""></option>
-                                            <option value="00">切上げ</option>
-                                            <option value="01">切捨て</option>
-                                            <option value="02">四捨五入</option>
-
-                                        </select>
-
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-
-                        <div class="line"></div>
-
-                        <p class="ButtonField1">
-                            <input name="ctl00$cphContentsArea$btnUpdate" tabindex="47" disabled="disabled" id="ctl00_cphContentsArea_btnUpdate" type="button" value="更新">
-                            <input name="ctl00$cphContentsArea$btnCancel" tabindex="48" id="ctl00_cphContentsArea_btnCancel" onclick="javascript:__doPostBack('ctl00$cphContentsArea$btnCancel','')" type="button" value="キャンセル">
-                            <input name="ctl00$cphContentsArea$btnDelete" tabindex="49" disabled="disabled" id="ctl00_cphContentsArea_btnDelete" type="button" value="削除">
-                        </p>
-
-
-                    </div>
-                </td>
-            </tr>
-        </tbody>
-    </table>
-</div>
+    <div id="contents-stage">
+        <table style="width: 850px;">
+            <tbody>
+                <tr>
+                    <td>
+                        <div id="ctl00_cphContentsArea_UpdatePanel1">
+                            <form action="" method="post" id="form">
+                                @csrf
+                                <table class="InputFieldStyle1">
+                                    <tbody>
+                                        <tr>
+                                            <th>勤務体系</th>
+                                            <td>
+                                                <select name="WORKPTN_CD" tabindex="1" autofocus
+                                                    id="WORKPTN_CD" style="width: 250px;" @isset($workptn_cd) disabled="disabled" @endisset
+                                                    onchange=" submit(this.form)">
+                                                    <option style=color:black; value="" ></option>
+                                                    @foreach ($workptn_names as $workptn_name )
+                                                    <option value="{{ $workptn_name->WORKPTN_CD }}" class ="view" data-url="{{ url('master/MT07FractionEditor') }}"
+                                                        {{ $workptn_name->WORK_CLS_CD == '00' ? 'style=color:red;' : 'style=color:black;'}}
+                                                        {{ $workptn_name->WORKPTN_CD == (old('WORKPTN_CD', isset($workptn_cd) ? $workptn_cd : '' )) ? 'selected' : '' }}>
+                                                        {{ $workptn_name->WORKPTN_NAME }}
+                                                    </option>
+                                                    @endforeach
+                                                </select>
+                                                @if (isset($workptn_cd))
+                                                <input type="hidden" name="WORKPTN_CD_HIDE" value="{{ $workptn_cd }}">
+                                                @endif
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                                <p class="CategoryTitle1">出退勤端数処理</p>
+                                <table class="GroupBox1">
+                                    <tbody>
+                                        <tr>
+                                            <td>
+                                                <input name="FRACTION_CLS_CD" tabindex="2"
+                                                    id="rbFractionClsHr" type="radio"
+                                                    value="00"
+                                                    {{ old('FRACTION_CLS_CD',isset($search_fraction_data) ? $search_fraction_data->FRACTION_CLS_CD : '') == '00' ? 'checked': '' }}
+                                                    @if (empty($search_fraction_data->FRACTION_CLS_CD))
+                                                    checked
+                                                    @endif
+                                                    @if(!isset($workptn_cd)) disabled="disabled" @endif>
+                                                    <label for="rbFractionClsHr">時間</label>
+                                                <input name="FRACTION_CLS_CD" tabindex="3"
+                                                    id="rbFractionClsTm"
+                                                    type="radio" value="01"
+                                                    {{ old('FRACTION_CLS_CD',isset($search_fraction_data) ? $search_fraction_data->FRACTION_CLS_CD : '') == '01' ? 'checked': '' }}
+                                                    @if(!isset($workptn_cd)) disabled="disabled" @endif>
+                                                    <label for="rbFractionClsTm">時刻</label>
+                                                <div class="clearBoth"></div>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+
+                                <table class="InputFieldStyle1 mg10">
+                                    <tbody>
+                                        <tr>
+                                            <th>出勤時間</th>
+                                            <td>
+                                                <select name="WTHR_UNDER_MI" tabindex="4" class="thr"
+                                                    id="WTHR_UNDER_MI" style="width: 50px;"
+                                                    @if(!isset($workptn_cd)) disabled="disabled" @endif>
+                                                    <option value=""></option>
+                                                    @foreach ($cls_detail_mins as $cls_detail_min)
+                                                    <option value="{{ $cls_detail_min->CLS_DETAIL_CD }}"
+                                                        @if(isset($search_fraction_data))
+                                                        {{ $search_fraction_data->WTHR_UNDER_MI == (old('WTHR_UNDER_MI',$cls_detail_min->CLS_DETAIL_CD)) ? 'selected' : '' }}
+                                                        @endif>
+                                                        {{ $cls_detail_min->CLS_DETAIL_NAME }}
+                                                    </option>
+                                                    @endforeach
+                                                </select>
+                                                <span id="titleWthrUnderMiUnit">分未満</span>
+                                            </td>
+                                            <td>
+                                                <select name="WTHR_FRC_CLS_CD" tabindex="5" class="thr"
+                                                    id="WTHR_FRC_CLS_CD" style="width: 110px;"
+                                                    @if(!isset($workptn_cd)) disabled="disabled" @endif>
+                                                    <option value=""></option>
+                                                    @foreach ($cls_detail_rfs as $cls_detail_rf)
+                                                    <option value="{{ $cls_detail_rf->CLS_DETAIL_CD }}"
+                                                        @if(isset($search_fraction_data))
+                                                        {{ $search_fraction_data->WTHR_FRC_CLS_CD == (old('WTHR_FRC_CLS_CD',$cls_detail_rf->CLS_DETAIL_CD)) ? 'selected' : '' }}
+                                                        @endif>
+                                                        {{ $cls_detail_rf->CLS_DETAIL_NAME }}
+                                                    </option>
+                                                    @endforeach
+                                                </select>
+                                            </td>
+                                            <td>
+                                                <span class="text-danger" id="wthrOverTime"></span>
+                                            </td>
+                                            <th>出勤時刻</th>
+                                            <td>
+                                                <select name="WTTM_UNDER_MI" tabindex="12" class="ttm"
+                                                     id="WTTM_UNDER_MI" style="width: 50px;"
+                                                    @if(!isset($workptn_cd)) disabled="disabled" @endif>
+                                                    <option value=""></option>
+                                                    @foreach ($cls_detail_mins as $cls_detail_min)
+                                                    <option value="{{ $cls_detail_min->CLS_DETAIL_CD }}"
+                                                        @if(isset($search_fraction_data))
+                                                        {{ $search_fraction_data->WTTM_UNDER_MI == (old('WTTM_UNDER_MI',$cls_detail_min->CLS_DETAIL_CD)) ? 'selected' : '' }}
+                                                        @endif>
+                                                        {{ $cls_detail_min->CLS_DETAIL_NAME }}
+                                                    </option>
+                                                    @endforeach
+                                                </select>
+                                                <span id="titleWttmUnderMiUnit">分未満</span>
+                                            </td>
+                                            <td>
+                                                <select name="WTTM_FRC_CLS_CD" tabindex="13" class="ttm"
+                                                    id="WTTM_FRC_CLS_CD" style="width: 110px;"
+                                                    @if(!isset($workptn_cd)) disabled="disabled" @endif>
+                                                    <option value=""></option>
+                                                    @foreach ($cls_detail_rfs as $cls_detail_rf)
+                                                    <option value="{{ $cls_detail_rf->CLS_DETAIL_CD }}"
+                                                        @if(isset($search_fraction_data))
+                                                        {{ $search_fraction_data->WTTM_FRC_CLS_CD == (old('WTTM_FRC_CLS_CD',$cls_detail_rf->CLS_DETAIL_CD)) ? 'selected' : '' }}
+                                                        @endif>
+                                                        {{ $cls_detail_rf->CLS_DETAIL_NAME }}
+                                                    </option>
+                                                    @endforeach
+                                                </select>
+                                                <td>
+                                                    <span class="text-danger" id="wttmExtraTime"></span>
+                                                </td>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <th>遅刻時間</th>
+                                            <td>
+                                                <select name="LTHR_UNDER_MI" tabindex="6" class="thr"
+                                                    id="LTHR_UNDER_MI" style="width: 50px;"
+                                                    @if(!isset($workptn_cd)) disabled="disabled" @endif>
+                                                    <option value=""></option>
+                                                    @foreach ($cls_detail_mins as $cls_detail_min)
+                                                    <option value="{{ $cls_detail_min->CLS_DETAIL_CD }}"
+                                                        @if(isset($search_fraction_data))
+                                                        {{ $search_fraction_data->LTHR_UNDER_MI == (old('LTHR_UNDER_MI',$cls_detail_min->CLS_DETAIL_CD)) ? 'selected' : '' }}
+                                                        @endif>
+                                                        {{ $cls_detail_min->CLS_DETAIL_NAME }}
+                                                    </option>
+                                                    @endforeach
+                                                </select>
+                                                <span id="titleLthrUnderMiUnit">分未満</span>
+                                            </td>
+                                            <td>
+                                                <select name="LTHR_FRC_CLS_CD" tabindex="7" class="thr"
+                                                    id="LTHR_FRC_CLS_CD" style="width: 110px;"
+                                                    @if(!isset($workptn_cd)) disabled="disabled" @endif>
+                                                    <option value=""></option>
+                                                    @foreach ($cls_detail_rfs as $cls_detail_rf)
+                                                    <option value="{{ $cls_detail_rf->CLS_DETAIL_CD }}"
+                                                        @if(isset($search_fraction_data))
+                                                        {{ $search_fraction_data->LTHR_FRC_CLS_CD == (old('LTHR_FRC_CLS_CD',$cls_detail_rf->CLS_DETAIL_CD)) ? 'selected' : '' }}
+                                                        @endif>
+                                                        {{ $cls_detail_rf->CLS_DETAIL_NAME }}
+                                                    </option>
+                                                    @endforeach
+                                                </select>
+                                            </td>
+                                            <td>
+                                                <span class="text-danger" id="lthrOverTime"></span>
+                                            </td>
+                                            <th>退出時刻</th>
+                                            <td>
+                                                <select name="LVTM_UNDER_MI" tabindex="14" class="ttm"
+                                                    id="LVTM_UNDER_MI" style="width: 50px;"
+                                                    @if(!isset($workptn_cd)) disabled="disabled" @endif>
+                                                    <option value=""></option>
+                                                    @foreach ($cls_detail_mins as $cls_detail_min)
+                                                    <option value="{{ $cls_detail_min->CLS_DETAIL_CD }}"
+                                                        @if(isset($search_fraction_data))
+                                                        {{ $search_fraction_data->LVTM_UNDER_MI == (old('LVTM_UNDER_MI',$cls_detail_min->CLS_DETAIL_CD)) ? 'selected' : '' }}
+                                                        @endif>
+                                                        {{ $cls_detail_min->CLS_DETAIL_NAME }}
+                                                    </option>
+                                                    @endforeach
+                                                </select>
+                                                <span id="titleLvtmUnderMiUnit">分未満</span>
+                                            </td>
+                                            <td>
+                                                <select name="LVTM_FRC_CLS_CD" tabindex="15" class="ttm"
+                                                    id="LVTM_FRC_CLS_CD" style="width: 110px;"
+                                                    @if(!isset($workptn_cd)) disabled="disabled" @endif>
+                                                    <option value=""></option>
+                                                    @foreach ($cls_detail_rfs as $cls_detail_rf)
+                                                    <option value="{{ $cls_detail_rf->CLS_DETAIL_CD }}"
+                                                        @if(isset($search_fraction_data))
+                                                        {{ $search_fraction_data->LVTM_FRC_CLS_CD == (old('LVTM_FRC_CLS_CD',$cls_detail_rf->CLS_DETAIL_CD)) ? 'selected' : '' }}
+                                                        @endif>
+                                                        {{ $cls_detail_rf->CLS_DETAIL_NAME }}
+                                                    </option>
+                                                    @endforeach
+                                                </select>
+                                            </td>
+                                            <td>
+                                                <span class="text-danger" id="lvtmExtraTime"></span>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <th>早退時間</th>
+                                            <td>
+                                                <select name="ERHR_UNDER_MI" tabindex="8" class="thr"
+                                                    id="ERHR_UNDER_MI" style="width: 50px;"
+                                                    @if(!isset($workptn_cd)) disabled="disabled" @endif>
+                                                    <option value=""></option>
+                                                    @foreach ($cls_detail_mins as $cls_detail_min)
+                                                    <option value="{{ $cls_detail_min->CLS_DETAIL_CD }}"
+                                                        @if(isset($search_fraction_data))
+                                                        {{ $search_fraction_data->ERHR_UNDER_MI == (old('ERHR_UNDER_MI',$cls_detail_min->CLS_DETAIL_CD)) ? 'selected' : '' }}
+                                                        @endif>
+                                                        {{ $cls_detail_min->CLS_DETAIL_NAME }}
+                                                    </option>
+                                                    @endforeach
+                                                </select>
+                                                <span id="titleErhrUnderMiUnit">分未満</span>
+                                            </td>
+                                            <td>
+                                                <select name="ERHR_FRC_CLS_CD" tabindex="9" class="thr"
+                                                    id="ERHR_FRC_CLS_CD" style="width: 110px;"
+                                                    @if(!isset($workptn_cd)) disabled="disabled" @endif>
+                                                    <option value=""></option>
+                                                    @foreach ($cls_detail_rfs as $cls_detail_rf)
+                                                    <option value="{{ $cls_detail_rf->CLS_DETAIL_CD }}"
+                                                        @if(isset($search_fraction_data))
+                                                        {{ $search_fraction_data->ERHR_FRC_CLS_CD == (old('ERHR_FRC_CLS_CD',$cls_detail_rf->CLS_DETAIL_CD)) ? 'selected' : '' }}
+                                                        @endif>
+                                                        {{ $cls_detail_rf->CLS_DETAIL_NAME }}
+                                                    </option>
+                                                    @endforeach
+                                                </select>
+                                            </td>
+                                            <td>
+                                                <span class="text-danger" id="erhrOverTime"></span>
+                                            </td>
+                                            <th>外出時刻</th>
+                                            <td>
+                                                <select name="OTTM_UNDER_MI" tabindex="16"class="ttm"
+                                                    id="OTTM_UNDER_MI" style="width: 50px;"
+                                                    @if(!isset($workptn_cd)) disabled="disabled" @endif>
+                                                    <option value=""></option>
+                                                    @foreach ($cls_detail_mins as $cls_detail_min)
+                                                    <option value="{{ $cls_detail_min->CLS_DETAIL_CD }}"
+                                                        @if(isset($search_fraction_data))
+                                                        {{ $search_fraction_data->OTTM_UNDER_MI == (old('OTTM_UNDER_MI',$cls_detail_min->CLS_DETAIL_CD)) ? 'selected' : '' }}
+                                                        @endif>
+                                                        {{ $cls_detail_min->CLS_DETAIL_NAME }}
+                                                    </option>
+                                                    @endforeach
+                                                </select>
+                                                <span id="titleOttmUnderMiUnit">分未満</span>
+                                            </td>
+                                            <td>
+                                                <select name="OTTM_FRC_CLS_CD" tabindex="17" class="ttm"
+                                                    id="OTTM_FRC_CLS_CD" style="width: 110px;"
+                                                    @if(!isset($workptn_cd)) disabled="disabled" @endif>
+                                                    <option value=""></option>
+                                                    @foreach ($cls_detail_rfs as $cls_detail_rf)
+                                                    <option value="{{ $cls_detail_rf->CLS_DETAIL_CD }}"
+                                                        @if(isset($search_fraction_data))
+                                                        {{ $search_fraction_data->OTTM_FRC_CLS_CD == (old('OTTM_FRC_CLS_CD',$cls_detail_rf->CLS_DETAIL_CD)) ? 'selected' : '' }}
+                                                        @endif>
+                                                        {{ $cls_detail_rf->CLS_DETAIL_NAME }}
+                                                    </option>
+                                                    @endforeach
+                                                </select>
+                                            </td>
+                                            <td>
+                                                <span class="text-danger" id="ottmExtraTime"></span>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <th>外出時間</th>
+                                            <td>
+                                                <select name="OTHR_UNDER_MI" tabindex="10" class="thr"
+                                                     id="OTHR_UNDER_MI" style="width: 50px;"
+                                                    @if(!isset($workptn_cd)) disabled="disabled" @endif>
+                                                    <option value=""></option>
+                                                    @foreach ($cls_detail_mins as $cls_detail_min)
+                                                    <option value="{{ $cls_detail_min->CLS_DETAIL_CD }}"
+                                                        @if(isset($search_fraction_data))
+                                                        {{ $search_fraction_data->OTHR_UNDER_MI == (old('OTHR_UNDER_MI',$cls_detail_min->CLS_DETAIL_CD)) ? 'selected' : '' }}
+                                                        @endif>
+                                                        {{ $cls_detail_min->CLS_DETAIL_NAME }}
+                                                    </option>
+                                                    @endforeach
+                                                </select>
+                                                <span id="titleOthrUnderMiUnit">分未満</span>
+                                            </td>
+                                            <td>
+                                                <select name="OTHR_FRC_CLS_CD" tabindex="11" class="thr"
+                                                    id="OTHR_FRC_CLS_CD" style="width: 110px;"
+                                                    @if(!isset($workptn_cd)) disabled="disabled" @endif>
+                                                    <option value=""></option>
+                                                    @foreach ($cls_detail_rfs as $cls_detail_rf)
+                                                    <option value="{{ $cls_detail_rf->CLS_DETAIL_CD }}"
+                                                        @if(isset($search_fraction_data))
+                                                        {{ $search_fraction_data->OTHR_FRC_CLS_CD == (old('OTHR_FRC_CLS_CD',$cls_detail_rf->CLS_DETAIL_CD)) ? 'selected' : '' }}
+                                                        @endif>
+                                                        {{ $cls_detail_rf->CLS_DETAIL_NAME }}
+                                                    </option>
+                                                    @endforeach
+                                                </select>
+                                            </td>
+                                            <td>
+                                                <span class="text-danger" id="othrOverTime"></span>
+                                            </td>
+                                            <th>再入時刻</th>
+                                            <td>
+                                                <select name="RETM_UNDER_MI" tabindex="18" class="ttm"
+                                                    id="RETM_UNDER_MI" style="width: 50px;"
+                                                    @if(!isset($workptn_cd)) disabled="disabled" @endif>
+                                                    <option value=""></option>
+                                                    @foreach ($cls_detail_mins as $cls_detail_min)
+                                                    <option value="{{ $cls_detail_min->CLS_DETAIL_CD }}"
+                                                        @if(isset($search_fraction_data))
+                                                        {{ $search_fraction_data->RETM_UNDER_MI == (old('RETM_UNDER_MI',$cls_detail_min->CLS_DETAIL_CD)) ? 'selected' : '' }}
+                                                        @endif>
+                                                        {{ $cls_detail_min->CLS_DETAIL_NAME }}
+                                                    </option>
+                                                    @endforeach
+                                                </select>
+                                                <span id="titleRetmUnderMiUnit">分未満</span>
+                                            </td>
+                                            <td>
+                                                <select name="RETM_FRC_CLS_CD" tabindex="19" class="ttm"
+                                                    id="RETM_FRC_CLS_CD" style="width: 110px;"
+                                                    @if(!isset($workptn_cd)) disabled="disabled" @endif>
+                                                    <option value=""></option>
+                                                    @foreach ($cls_detail_rfs as $cls_detail_rf)
+                                                    <option value="{{ $cls_detail_rf->CLS_DETAIL_CD }}"
+                                                        @if(isset($search_fraction_data))
+                                                        {{ $search_fraction_data->RETM_FRC_CLS_CD == (old('RETM_FRC_CLS_CD',$cls_detail_rf->CLS_DETAIL_CD)) ? 'selected' : '' }}
+                                                        @endif>
+                                                        {{ $cls_detail_rf->CLS_DETAIL_NAME }}
+                                                    </option>
+                                                    @endforeach
+                                                </select>
+                                            </td>
+                                            <td>
+                                                <span class="text-danger" id="retmExtraTime"></span>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+
+                                <p class="CategoryTitle1">残業時間端数処理</p>
+                                <table class="InputFieldStyle1">
+                                    <tbody>
+                                        <tr class="overTime">
+                                            <th>残業項目１</th>
+                                            <td>
+                                                <select name="OVTM1_CD" tabindex="20" class="ovtCD"
+                                                    id="OVTM1_CD" style="width: 180px;"
+                                                    @if(!isset($workptn_cd)) disabled="disabled" @endif>
+                                                    <option value=""></option>
+                                                    @foreach ($ovt_datas as $ovt_cd)
+                                                    <option value="{{ $ovt_cd->WORK_DESC_CD }}"
+                                                        @if(isset($search_fraction_data))
+                                                        {{ $search_fraction_data->OVTM1_CD == (old('OVTM1_CD',$ovt_cd->WORK_DESC_CD)) ? 'selected' : '' }}
+                                                        @endif>
+                                                        {{ $ovt_cd->WORK_DESC_NAME }}
+                                                    </option>
+                                                    @endforeach
+                                                </select>
+                                            </td>
+                                            <td>
+                                                <select name="OVTM1_UNDER_MI" tabindex="21" class="ovtUnderMi"
+                                                    class="OutlineLabel" id="OVTM1_UNDER_MI"
+                                                    style="width: 50px;"
+                                                    @if(!isset($workptn_cd)) disabled="disabled" @endif>
+                                                    <option value=""></option>
+                                                    @foreach ($cls_detail_mins as $cls_detail_min)
+                                                    <option value="{{ $cls_detail_min->CLS_DETAIL_CD }}"
+                                                        @if(isset($search_fraction_data))
+                                                        {{ $search_fraction_data->OVTM1_UNDER_MI == (old('OVTM1_UNDER_MI',$cls_detail_min->CLS_DETAIL_CD)) ? 'selected' : '' }}
+                                                        @endif>
+                                                        {{ $cls_detail_min->CLS_DETAIL_NAME }}
+                                                    </option>
+                                                    @endforeach
+                                                </select>
+                                                <span id="titleOvtm1UnderMiUnit">分未満</span>
+                                            </td>
+                                            <td>
+                                                <select name="OVTM1_FRC_CLS_CD" tabindex="22" class="ovtFrcClsCd"
+                                                    id="OVTM1_FRC_CLS_CD" style="width: 110px;"
+                                                    @if(!isset($workptn_cd)) disabled="disabled" @endif>
+                                                    <option value=""></option>
+                                                    @foreach ($cls_detail_rfs as $cls_detail_rf)
+                                                    <option value="{{ $cls_detail_rf->CLS_DETAIL_CD }}"
+                                                        @if(isset($search_fraction_data))
+                                                        {{ $search_fraction_data->OVTM1_FRC_CLS_CD == (old('OVTM1_FRC_CLS_CD',$cls_detail_rf->CLS_DETAIL_CD)) ? 'selected' : '' }}
+                                                        @endif>
+                                                        {{ $cls_detail_rf->CLS_DETAIL_NAME }}
+                                                    </option>
+                                                    @endforeach
+                                                </select>
+                                            </td>
+                                            <td>
+                                                <span class="text-danger" id="overTime0"></span>
+                                            </td>
+                                        </tr>
+                                        <tr class="overTime">
+                                            <th>残業項目２</th>
+                                            <td>
+                                                <select name="OVTM2_CD" tabindex="23" class="ovtCD"
+                                                    id="OVTM2_CD" style="width: 180px;"
+                                                    @if(!isset($workptn_cd)) disabled="disabled" @endif>
+                                                    <option value=""></option>
+                                                    @foreach ($ovt_datas as $ovt_cd)
+                                                    <option value="{{ $ovt_cd->WORK_DESC_CD }}"
+                                                        @if(isset($search_fraction_data))
+                                                        {{ $search_fraction_data->OVTM2_CD == (old('OVTM2_CD',$ovt_cd->WORK_DESC_CD)) ? 'selected' : '' }}
+                                                        @endif>
+                                                        {{ $ovt_cd->WORK_DESC_NAME }}
+                                                    </option>
+                                                    @endforeach
+                                                </select>
+                                            </td>
+                                            <td>
+                                                <select name="OVTM2_UNDER_MI" tabindex="24" class="ovtUnderMi"
+                                                    class="OutlineLabel" id="OVTM2_UNDER_MI"
+                                                    style="width: 50px;"
+                                                    @if(!isset($workptn_cd)) disabled="disabled" @endif>
+                                                    <option value=""></option>
+                                                    @foreach ($cls_detail_mins as $cls_detail_min)
+                                                    <option value="{{ $cls_detail_min->CLS_DETAIL_CD }}"
+                                                        @if(isset($search_fraction_data))
+                                                        {{ $search_fraction_data->OVTM2_UNDER_MI == (old('OVTM2_UNDER_MI',$cls_detail_min->CLS_DETAIL_CD)) ? 'selected' : '' }}
+                                                        @endif>
+                                                        {{ $cls_detail_min->CLS_DETAIL_NAME }}
+                                                    </option>
+                                                    @endforeach
+                                                </select>
+                                                <span id="titleOvtm2UnderMiUnit">分未満</span>
+                                            </td>
+                                            <td>
+                                                <select name="OVTM2_FRC_CLS_CD" tabindex="25" class="ovtFrcClsCd"
+                                                    id="OVTM2_FRC_CLS_CD" style="width: 110px;"
+                                                    @if(!isset($workptn_cd)) disabled="disabled" @endif>
+                                                    <option value=""></option>
+                                                    @foreach ($cls_detail_rfs as $cls_detail_rf)
+                                                    <option value="{{ $cls_detail_rf->CLS_DETAIL_CD }}"
+                                                        @if(isset($search_fraction_data))
+                                                        {{ $search_fraction_data->OVTM2_FRC_CLS_CD == (old('OVTM2_FRC_CLS_CD',$cls_detail_rf->CLS_DETAIL_CD)) ? 'selected' : '' }}
+                                                        @endif>
+                                                        {{ $cls_detail_rf->CLS_DETAIL_NAME }}
+                                                    </option>
+                                                    @endforeach
+                                                </select>
+                                            </td>
+                                            <td>
+                                                <span class="text-danger" id="overTime1"></span>
+                                            </td>
+                                        </tr>
+                                        <tr class="overTime">
+                                            <th>残業項目３</th>
+                                            <td>
+                                                <select name="OVTM3_CD" tabindex="26" class="ovtCD"
+                                                    id="OVTM3_CD" style="width: 180px;"
+                                                    @if(!isset($workptn_cd)) disabled="disabled" @endif>
+                                                    <option value=""></option>
+                                                    @foreach ($ovt_datas as $ovt_cd)
+                                                    <option value="{{ $ovt_cd->WORK_DESC_CD }}"
+                                                        @if(isset($search_fraction_data))
+                                                        {{ $search_fraction_data->OVTM3_CD == (old('OVTM3_CD',$ovt_cd->WORK_DESC_CD)) ? 'selected' : '' }}
+                                                        @endif>
+                                                        {{ $ovt_cd->WORK_DESC_NAME }}
+                                                    </option>
+                                                    @endforeach
+                                                </select>
+                                            </td>
+                                            <td>
+                                                <select name="OVTM3_UNDER_MI" tabindex="27" class="ovtUnderMi"
+                                                    class="OutlineLabel" id="OVTM3_UNDER_MI"
+                                                    style="width: 50px;"
+                                                    @if(!isset($workptn_cd)) disabled="disabled" @endif>
+                                                    <option value=""></option>
+                                                    @foreach ($cls_detail_mins as $cls_detail_min)
+                                                    <option value="{{ $cls_detail_min->CLS_DETAIL_CD }}"
+                                                        @if(isset($search_fraction_data))
+                                                        {{ $search_fraction_data->OVTM3_UNDER_MI == (old('OVTM3_UNDER_MI',$cls_detail_min->CLS_DETAIL_CD)) ? 'selected' : '' }}
+                                                        @endif>
+                                                        {{ $cls_detail_min->CLS_DETAIL_NAME }}
+                                                    </option>
+                                                    @endforeach
+                                                </select>
+                                                <span id="titleOvtm3UnderMiUnit">分未満</span>
+                                            </td>
+                                            <td>
+                                                <select name="OVTM3_FRC_CLS_CD" tabindex="28" class="ovtFrcClsCd"
+                                                    id="OVTM3_FRC_CLS_CD" style="width: 110px;"
+                                                    @if(!isset($workptn_cd)) disabled="disabled" @endif>
+                                                    <option value=""></option>
+                                                    @foreach ($cls_detail_rfs as $cls_detail_rf)
+                                                    <option value="{{ $cls_detail_rf->CLS_DETAIL_CD }}"
+                                                        @if(isset($search_fraction_data))
+                                                        {{ $search_fraction_data->OVTM3_FRC_CLS_CD == (old('OVTM3_FRC_CLS_CD',$cls_detail_rf->CLS_DETAIL_CD)) ? 'selected' : '' }}
+                                                        @endif>
+                                                        {{ $cls_detail_rf->CLS_DETAIL_NAME }}
+                                                    </option>
+                                                    @endforeach
+                                                </select>
+                                            </td>
+                                            <td>
+                                                <span class="text-danger" id="overTime2"></span>
+                                            </td>
+                                        </tr>
+                                        <tr class="overTime">
+                                            <th>残業項目４</th>
+                                            <td>
+                                                <select name="OVTM4_CD" tabindex="29" class="ovtCD"
+                                                    id="OVTM4_CD" style="width: 180px;"
+                                                    @if(!isset($workptn_cd)) disabled="disabled" @endif>
+                                                    <option value=""></option>
+                                                    @foreach ($ovt_datas as $ovt_cd)
+                                                    <option value="{{ $ovt_cd->WORK_DESC_CD }}"
+                                                        @if(isset($search_fraction_data))
+                                                        {{ $search_fraction_data->OVTM4_CD == (old('OVTM4_CD',$ovt_cd->WORK_DESC_CD)) ? 'selected' : '' }}
+                                                        @endif>
+                                                        {{ $ovt_cd->WORK_DESC_NAME }}
+                                                    </option>
+                                                    @endforeach
+                                                </select>
+                                            </td>
+                                            <td>
+                                                <select name="OVTM4_UNDER_MI" tabindex="30" class="ovtUnderMi"
+                                                    id="OVTM4_UNDER_MI" style="width: 50px;"
+                                                    @if(!isset($workptn_cd)) disabled="disabled" @endif>
+                                                    <option value=""></option>
+                                                    @foreach ($cls_detail_mins as $cls_detail_min)
+                                                    <option value="{{ $cls_detail_min->CLS_DETAIL_CD }}"
+                                                        @if(isset($search_fraction_data))
+                                                        {{ $search_fraction_data->OVTM4_UNDER_MI == (old('OVTM4_UNDER_MI',$cls_detail_min->CLS_DETAIL_CD)) ? 'selected' : '' }}
+                                                        @endif>
+                                                        {{ $cls_detail_min->CLS_DETAIL_NAME }}
+                                                    </option>
+                                                    @endforeach
+                                                </select>
+                                                <span id="titleOvtm4UnderMiUnit">分未満</span>
+                                            </td>
+                                            <td>
+                                                <select name="OVTM4_FRC_CLS_CD" tabindex="31" class="ovtFrcClsCd"
+                                                    id="OVTM4_FRC_CLS_CD" style="width: 110px;"
+                                                    @if(!isset($workptn_cd)) disabled="disabled" @endif>
+                                                    <option value=""></option>
+                                                    @foreach ($cls_detail_rfs as $cls_detail_rf)
+                                                    <option value="{{ $cls_detail_rf->CLS_DETAIL_CD }}"
+                                                        @if(isset($search_fraction_data))
+                                                        {{ $search_fraction_data->OVTM4_FRC_CLS_CD == (old('OVTM4_FRC_CLS_CD',$cls_detail_rf->CLS_DETAIL_CD)) ? 'selected' : '' }}
+                                                        @endif>
+                                                        {{ $cls_detail_rf->CLS_DETAIL_NAME }}
+                                                    </option>
+                                                    @endforeach
+                                                </select>
+                                            </td>
+                                            <td>
+                                                <span class="text-danger" id="overTime3"></span>
+                                            </td>
+                                        </tr>
+                                        <tr class="overTime">
+                                            <th>残業項目５</th>
+                                            <td>
+                                                <select name="OVTM5_CD" tabindex="32" class="ovtCD"
+                                                    id="OVTM5_CD" style="width: 180px;"
+                                                    @if(!isset($workptn_cd)) disabled="disabled" @endif>
+                                                    <option value=""></option>
+                                                    @foreach ($ovt_datas as $ovt_cd)
+                                                    <option value="{{ $ovt_cd->WORK_DESC_CD }}"
+                                                        @if(isset($search_fraction_data))
+                                                        {{ $search_fraction_data->OVTM5_CD == (old('OVTM5_CD',$ovt_cd->WORK_DESC_CD)) ? 'selected' : '' }}
+                                                        @endif>
+                                                        {{ $ovt_cd->WORK_DESC_NAME }}
+                                                    </option>
+                                                    @endforeach
+                                                </select>
+                                            </td>
+                                            <td>
+                                                <select name="OVTM5_UNDER_MI" tabindex="33" class="ovtUnderMi"
+                                                    id="OVTM5_UNDER_MI" style="width: 50px;"
+                                                    @if(!isset($workptn_cd)) disabled="disabled" @endif>
+                                                    <option value=""></option>
+                                                    @foreach ($cls_detail_mins as $cls_detail_min)
+                                                    <option value="{{ $cls_detail_min->CLS_DETAIL_CD }}"
+                                                        @if(isset($search_fraction_data))
+                                                        {{ $search_fraction_data->OVTM5_UNDER_MI == (old('OVTM5_UNDER_MI',$cls_detail_min->CLS_DETAIL_CD)) ? 'selected' : '' }}
+                                                        @endif>
+                                                        {{ $cls_detail_min->CLS_DETAIL_NAME }}
+                                                    </option>
+                                                    @endforeach
+                                                </select>
+                                                <span id="titleOvtm5UnderMiUnit">分未満</span>
+                                            </td>
+                                            <td>
+                                                <select name="OVTM5_FRC_CLS_CD" tabindex="34" class="ovtFrcClsCd"
+                                                    id="OVTM5_FRC_CLS_CD" style="width: 110px;"
+                                                    @if(!isset($workptn_cd)) disabled="disabled" @endif>
+                                                    <option value=""></option>
+                                                    @foreach ($cls_detail_rfs as $cls_detail_rf)
+                                                    <option value="{{ $cls_detail_rf->CLS_DETAIL_CD }}"
+                                                        @if(isset($search_fraction_data))
+                                                        {{ $search_fraction_data->OVTM5_FRC_CLS_CD == (old('OVTM5_FRC_CLS_CD',$cls_detail_rf->CLS_DETAIL_CD)) ? 'selected' : '' }}
+                                                        @endif>
+                                                        {{ $cls_detail_rf->CLS_DETAIL_NAME }}
+                                                    </option>
+                                                    @endforeach
+                                                </select>
+                                            </td>
+                                            <td>
+                                                <span class="text-danger" id="overTime4"></span>
+                                            </td>
+                                        </tr>
+                                        <tr class="overTime">
+                                            <th>残業項目６</th>
+                                            <td>
+                                                <select name="OVTM6_CD" tabindex="35" class="ovtCD"
+                                                    id="OVTM6_CD" style="width: 180px;"
+                                                    @if(!isset($workptn_cd)) disabled="disabled" @endif>
+                                                    <option value=""></option>
+                                                    @foreach ($ovt_datas as $ovt_cd)
+                                                    <option value="{{ $ovt_cd->WORK_DESC_CD }}"
+                                                        @if(isset($search_fraction_data))
+                                                        {{ $search_fraction_data->OVTM6_CD == (old('OVTM6_CD',$ovt_cd->WORK_DESC_CD)) ? 'selected' : '' }}
+                                                        @endif>
+                                                        {{ $ovt_cd->WORK_DESC_NAME }}
+                                                    </option>
+                                                    @endforeach
+                                                </select>
+                                            </td>
+                                            <td>
+                                                <select name="OVTM6_UNDER_MI" tabindex="36" class="ovtUnderMi"
+                                                    id="OVTM6_UNDER_MI" style="width: 50px;"
+                                                    @if(!isset($workptn_cd)) disabled="disabled" @endif>
+                                                    <option value=""></option>
+                                                    @foreach ($cls_detail_mins as $cls_detail_min)
+                                                    <option value="{{ $cls_detail_min->CLS_DETAIL_CD }}"
+                                                        @if(isset($search_fraction_data))
+                                                        {{ $search_fraction_data->OVTM6_UNDER_MI == (old('OVTM6_UNDER_MI',$cls_detail_min->CLS_DETAIL_CD)) ? 'selected' : '' }}
+                                                        @endif>
+                                                        {{ $cls_detail_min->CLS_DETAIL_NAME }}
+                                                    </option>
+                                                    @endforeach
+                                                </select>
+                                                <span id="titleOvtm6UnderMiUnit">分未満</span>
+                                            </td>
+                                            <td>
+                                                <select name="OVTM6_FRC_CLS_CD" tabindex="37" class="ovtFrcClsCd"
+                                                    id="OVTM6_FRC_CLS_CD" style="width: 110px;"
+                                                    @if(!isset($workptn_cd)) disabled="disabled" @endif>
+                                                    <option value=""></option>
+                                                    @foreach ($cls_detail_rfs as $cls_detail_rf)
+                                                    <option value="{{ $cls_detail_rf->CLS_DETAIL_CD }}"
+                                                        @if(isset($search_fraction_data))
+                                                        {{ $search_fraction_data->OVTM6_FRC_CLS_CD == (old('OVTM6_FRC_CLS_CD',$cls_detail_rf->CLS_DETAIL_CD)) ? 'selected' : '' }}
+                                                        @endif>
+                                                        {{ $cls_detail_rf->CLS_DETAIL_NAME }}
+                                                    </option>
+                                                    @endforeach
+                                                </select>
+                                            </td>
+                                            <td>
+                                                <span class="text-danger" id="overTime5"></span>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+
+                                <p class="CategoryTitle1">割増時間端数処理</p>
+                                <table class="InputFieldStyle1">
+                                    <tbody>
+                                        <tr class="extraTime">
+                                            <th>割増対象１</th>
+                                            <td>
+                                                <select name="EXT1_CD" tabindex="38" class="extCD"
+                                                    id="EXT1_CD" style="width: 180px;"
+                                                    @if(!isset($workptn_cd)) disabled="disabled" @endif>
+                                                    <option value=""></option>
+                                                    @foreach ($ext_datas as $ext_data)
+                                                    <option value="{{ $ext_data->WORK_DESC_CD }}"
+                                                        @if(isset($search_fraction_data))
+                                                        {{ $search_fraction_data->EXT1_CD == (old('EXT1_CD',$ext_data->WORK_DESC_CD)) ? 'selected' : '' }}
+                                                        @endif>
+                                                        {{ $ext_data->WORK_DESC_NAME }}
+                                                    </option>
+                                                    @endforeach
+                                                </select>
+                                            </td>
+                                            <td>
+                                                <select name="EXT1_UNDER_MI" tabindex="39" class="extUnderMi"
+                                                    id="EXT1_UNDER_MI" style="width: 50px;"
+                                                    @if(!isset($workptn_cd)) disabled="disabled" @endif>
+                                                    <option value=""></option>
+                                                    @foreach ($cls_detail_mins as $cls_detail_min)
+                                                    <option value="{{ $cls_detail_min->CLS_DETAIL_CD }}"
+                                                        @if(isset($search_fraction_data))
+                                                        {{ $search_fraction_data->EXT1_UNDER_MI == (old('EXT1_UNDER_MI',$cls_detail_min->CLS_DETAIL_CD)) ? 'selected' : '' }}
+                                                        @endif>
+                                                        {{ $cls_detail_min->CLS_DETAIL_NAME }}
+                                                    </option>
+                                                    @endforeach
+                                                </select>
+                                                <span id="titleExt1Mi">分未満</span>
+                                            </td>
+                                            <td>
+                                                <select name="EXT1_FRC_CLS_CD" tabindex="40" class="extFrcClsCd"
+                                                    id="EXT1_FRC_CLS_CD" style="width: 110px;"
+                                                    @if(!isset($workptn_cd)) disabled="disabled" @endif>
+                                                    <option value=""></option>
+                                                    @foreach ($cls_detail_rfs as $cls_detail_rf)
+                                                    <option value="{{ $cls_detail_rf->CLS_DETAIL_CD }}"
+                                                        @if(isset($search_fraction_data))
+                                                        {{ $search_fraction_data->EXT1_FRC_CLS_CD == (old('EXT1_FRC_CLS_CD',$cls_detail_rf->CLS_DETAIL_CD)) ? 'selected' : '' }}
+                                                        @endif>
+                                                        {{ $cls_detail_rf->CLS_DETAIL_NAME }}
+                                                    </option>
+                                                    @endforeach
+                                                </select>
+                                            </td>
+                                            <td>
+                                                <span class="text-danger" id="extraTime0"></span>
+                                            </td>
+                                        </tr>
+                                        <tr class="extraTime">
+                                            <th>割増対象２</th>
+                                            <td>
+                                                <select name="EXT2_CD" tabindex="41" class="extCD"
+                                                    id="EXT2_CD" style="width: 180px;"
+                                                    @if(!isset($workptn_cd)) disabled="disabled" @endif>
+                                                    <option value=""></option>
+                                                    @foreach ($ext_datas as $ext_data)
+                                                    <option value="{{ $ext_data->WORK_DESC_CD }}"
+                                                        @if(isset($search_fraction_data))
+                                                        {{ $search_fraction_data->EXT2_CD == (old('EXT2_CD',$ext_data->WORK_DESC_CD)) ? 'selected' : '' }}
+                                                        @endif>
+                                                        {{ $ext_data->WORK_DESC_NAME }}
+                                                    </option>
+                                                    @endforeach
+                                                </select>
+                                            </td>
+                                            <td>
+                                                <select name="EXT2_UNDER_MI" tabindex="42" class="extUnderMi"
+                                                    id="EXT2_UNDER_MI" style="width: 50px;"
+                                                    @if(!isset($workptn_cd)) disabled="disabled" @endif>
+                                                    <option value=""></option>
+                                                    @foreach ($cls_detail_mins as $cls_detail_min)
+                                                    <option value="{{ $cls_detail_min->CLS_DETAIL_CD }}"
+                                                        @if(isset($search_fraction_data))
+                                                        {{ $search_fraction_data->EXT2_UNDER_MI == (old('EXT2_UNDER_MI',$cls_detail_min->CLS_DETAIL_CD)) ? 'selected' : '' }}
+                                                        @endif>
+                                                        {{ $cls_detail_min->CLS_DETAIL_NAME }}
+                                                    </option>
+                                                    @endforeach
+                                                </select>
+                                                <span id="titleExt2Mi">分未満</span>
+                                            </td>
+                                            <td>
+                                                <select name="EXT2_FRC_CLS_CD" tabindex="43" class="extFrcClsCd"
+                                                    id="EXT2_FRC_CLS_CD" style="width: 110px;"
+                                                    @if(!isset($workptn_cd)) disabled="disabled" @endif>
+                                                    <option value=""></option>
+                                                    @foreach ($cls_detail_rfs as $cls_detail_rf)
+                                                    <option value="{{ $cls_detail_rf->CLS_DETAIL_CD }}"
+                                                        @if(isset($search_fraction_data))
+                                                        {{ $search_fraction_data->EXT2_FRC_CLS_CD == (old('EXT2_FRC_CLS_CD',$cls_detail_rf->CLS_DETAIL_CD)) ? 'selected' : '' }}
+                                                        @endif>
+                                                        {{ $cls_detail_rf->CLS_DETAIL_NAME }}
+                                                    </option>
+                                                    @endforeach
+                                                </select>
+                                            </td>
+                                            <td>
+                                                <span class="text-danger" id="extraTime1"></span>
+                                            </td>
+                                        </tr>
+                                        <tr class="extraTime">
+                                            <th>割増対象３</th>
+                                            <td>
+                                                <select name="EXT3_CD" tabindex="44" class="extCD"
+                                                    id="EXT3_CD" style="width: 180px;"
+                                                    @if(!isset($workptn_cd)) disabled="disabled" @endif>
+                                                    <option value=""></option>
+                                                    @foreach ($ext_datas as $ext_data)
+                                                    <option value="{{ $ext_data->WORK_DESC_CD }}"
+                                                        @if(isset($search_fraction_data))
+                                                        {{ $search_fraction_data->EXT3_CD == (old('EXT3_CD',$ext_data->WORK_DESC_CD)) ? 'selected' : '' }}
+                                                        @endif>
+                                                        {{ $ext_data->WORK_DESC_NAME }}
+                                                    </option>
+                                                    @endforeach
+                                                </select>
+                                            </td>
+                                            <td>
+                                                <select name="EXT3_UNDER_MI" tabindex="45" class="extUnderMi"
+                                                    id="EXT3_UNDER_MI" style="width: 50px;"
+                                                    @if(!isset($workptn_cd)) disabled="disabled" @endif>
+                                                    <option value=""></option>
+                                                    @foreach ($cls_detail_mins as $cls_detail_min)
+                                                    <option value="{{ $cls_detail_min->CLS_DETAIL_CD }}"
+                                                        @if(isset($search_fraction_data))
+                                                        {{ $search_fraction_data->EXT3_UNDER_MI == (old('EXT3_UNDER_MI',$cls_detail_min->CLS_DETAIL_CD)) ? 'selected' : '' }}
+                                                        @endif>
+                                                        {{ $cls_detail_min->CLS_DETAIL_NAME }}
+                                                    </option>
+                                                    @endforeach
+                                                </select>
+                                                <span id="titleExt3Mi">分未満</span>
+                                            </td>
+                                            <td>
+                                                <select name="EXT3_FRC_CLS_CD" tabindex="46" class="extFrcClsCd"
+                                                    id="EXT3_FRC_CLS_CD" style="width: 110px;"
+                                                    @if(!isset($workptn_cd)) disabled="disabled" @endif>
+                                                    <option value=""></option>
+                                                    @foreach ($cls_detail_rfs as $cls_detail_rf)
+                                                    <option value="{{ $cls_detail_rf->CLS_DETAIL_CD }}"
+                                                        @if(isset($search_fraction_data))
+                                                        {{ $search_fraction_data->EXT3_FRC_CLS_CD == (old('EXT3_FRC_CLS_CD',$cls_detail_rf->CLS_DETAIL_CD)) ? 'selected' : '' }}
+                                                        @endif>
+                                                        {{ $cls_detail_rf->CLS_DETAIL_NAME }}
+                                                    </option>
+                                                    @endforeach
+                                                </select>
+                                            </td>
+                                            <td>
+                                                <span class="text-danger" id="extraTime2"></span>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            <div class="line"></div>
+                            <p class="ButtonField1">
+                                <input type="button" value="更新" name="btnUpdate" tabindex="47" id="btnUpdate"
+                                    class="ButtonStyle1 update"
+                                    data-url="{{ url('master/MT07FractionUpdate') }}"
+                                    @if(!isset($workptn_cd)) disabled="disabled" @endif>
+                                <input type="button" name="btnCancel" tabindex="48" id="btnCancel"
+                                    class="ButtonStyle1" value="キャンセル"
+                                    onclick="location.href='{{ url('master/MT07FractionEditor') }}'">
+                                <input type="button" value="削除" name="btnDelete" tabindex="49" id="btnDelete"
+                                    class="ButtonStyle1 delete"
+                                    data-url="{{ url('master/MT07FractionDelete') }}"
+                                    @if(!isset($workptn_cd)) disabled="disabled" @endif>
+                            </p>
+                        </div>
+                    </form>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+@endsection
+@section('script')
+<script>
+    $(function() {
+        // ENTER時に送信されないようにする
+        $('input').not('[type="button"]').keypress(function(e) {
+            if (e.which == 13) {
+                return false;
+            }
+        });
+
+        // 明細表示
+        $(document).on('click', '.view', function() {
+            var url = $(this).data('url');
+            $('#form').attr('action', url);
+            $('#form').submit();
+        });
+
+        // 初期表示で「時間」が選択されたら、右側「出勤時刻、退出時刻、外出時刻、再入時刻」をdisabledにする
+        var rbFractionClsHr = $('#rbFractionClsHr').prop('checked');
+        if (rbFractionClsHr) {
+            $('#WTHR_UNDER_MI').focus();
+            $('.ttm').prop('disabled', true);
+        } else {
+            $('#WTTM_UNDER_MI').focus();
+            $('.thr').prop('disabled', true);
+        }
+
+        var errors = $("#form").find('span.text-danger');
+        $('#rbFractionClsHr').on('click', function() {
+            // エラー文言削除
+            if (errors.length) {
+                errors.text("");
+            }
+            // 右側「出勤時刻、退出時刻、外出時刻、再入時刻」をdisabledにする
+            $('.ttm').prop('disabled', true);
+            $('.thr').prop('disabled', false);
+            $('#WTHR_UNDER_MI').focus();
+        });
+        $('#rbFractionClsTm').on('click', function() {
+            // エラー文言削除
+            if (errors.length) {
+                errors.text("");
+            }
+            // 左側「出勤時刻、遅刻時間、早退時間、外出時間をdisabledにする
+            $('.ttm').prop('disabled', false);
+            $('.thr').prop('disabled', true);
+            $('#WTTM_UNDER_MI').focus();
+        });
+
+    // 更新
+    var disableFlg = false;
+    $(document).on('click', '.update', function() {
+        if (disableFlg || !window.confirm("{{ getArrValue($error_messages, 1005) }}")) {
+            return false;
+        }
+        disableFlg = true;
+        // エラー文言削除
+        var errors = $("#form").find('span.text-danger');
+        if (errors.length) {
+            errors.text("");
+        }
+        // 残業時間端数処理
+        var overTime = [];
+        $('.overTime').each(function(i,element) {
+            overTime[i] = {
+                'ovtCD': $(element).find('.ovtCD').val(),
+                'ovtUnderMi': $(element).find('.ovtUnderMi').val(),
+                'ovtFrcClsCd': $(element).find('.ovtFrcClsCd').val(),
+            };
+        })
+        // 割増時間端数処理
+        var extraTime = [];
+        $('.extraTime').each(function(i,element) {
+            extraTime[i] = {
+                'extCD': $(element).find('.extCD').val(),
+                'extUnderMi': $(element).find('.extUnderMi').val(),
+                'extFrcClsCd': $(element).find('.extFrcClsCd').val(),
+            };
+        })
+        // 出退勤端数処理 「時間」'00' / 「時刻」'01'
+        var fractionClsCd = document.querySelector('input[name="FRACTION_CLS_CD"]:checked').value;
+        $.ajaxSetup({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            }
+        });
+        var dataObj;
+        // 時間
+        if ($('#rbFractionClsHr').prop('checked')) {
+            dataObj = {
+                'workPtnCd':$('#WORKPTN_CD').val(),
+                'fractionClsCd':fractionClsCd,
+                'wthrOverTime':[$("#WTHR_UNDER_MI").val(),$("#WTHR_FRC_CLS_CD").val()],
+                'lthrOverTime':[$("#LTHR_UNDER_MI").val(),$("#LTHR_FRC_CLS_CD").val()],
+                'erhrOverTime':[$("#ERHR_UNDER_MI").val(),$("#ERHR_FRC_CLS_CD").val()],
+                'othrOverTime':[$("#OTHR_UNDER_MI").val(),$("#OTHR_FRC_CLS_CD").val()],
+                'overTime':overTime,
+                'extraTime':extraTime,
+            };
+        }
+        // 時刻
+        if ($('#rbFractionClsTm').prop('checked')) {
+            dataObj = {
+                'workPtnCd':$('#WORKPTN_CD').val(),
+                'fractionClsCd':fractionClsCd,
+                'wttmExtraTime':[$("#WTTM_UNDER_MI").val(),$("#WTTM_FRC_CLS_CD").val()],
+                'lvtmExtraTime':[$("#LVTM_UNDER_MI").val(),$("#LVTM_FRC_CLS_CD").val()],
+                'ottmExtraTime':[$("#OTTM_UNDER_MI").val(),$("#OTTM_FRC_CLS_CD").val()],
+                'retmExtraTime':[$("#RETM_UNDER_MI").val(),$("#RETM_FRC_CLS_CD").val()],
+                'overTime':overTime,
+                'extraTime':extraTime,
+            };
+        }
+        $.ajax({
+            url:$(this).data('url'),
+            type:'POST',
+            data:dataObj,
+        })
+        .done((data, textStatus, jqXHR) => {
+            location.href='{{ url('master/MT07FractionEditor') }}';
+        })
+        .fail ((jqXHR, textStatus, errorThrown) => {
+            $.each(jqXHR.responseJSON.errors, function(i, value) {
+                $('#' + i.replaceAll('.', '')).text(value[0]);
+            });
+            disableFlg = false;
+            $('#btnUpdate').focus();
+        });
+        return false;
+    });
+
+    // 削除処理
+    $(document).on('click', '.delete', function() {
+        if (disableFlg || !window.confirm("{{ getArrValue($error_messages, '1004') }}")) {
+            return false;
+        }
+        var url = $(this).data('url');
+        $('#form').attr('action', url);
+        $('#form').submit();
+    });
+});
+</script>
 @endsection

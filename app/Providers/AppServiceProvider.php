@@ -6,7 +6,10 @@ use Illuminate\Support\ServiceProvider;
 use App\Models\MT99Msg;
 use Illuminate\Support\Facades\View;
 use Illuminate\Support\Arr;
+use Illuminate\Support\Facades\Validator;
 use Illuminate\Pagination\Paginator;
+use Illuminate\Support\Facades\Schema;
+
 class AppServiceProvider extends ServiceProvider
 {
     /**
@@ -28,13 +31,12 @@ class AppServiceProvider extends ServiceProvider
     {
         Paginator::useBootstrap();
         View::share('error_messages', $this->getMessage());
+        Schema::defaultStringLength(191);
     }
 
     private function getMessage()
     {
-        $messages = MT99Msg::all()->toArray();
-        $messages = Arr::pluck($messages, 'MSG_CONT', 'MSG_NO');
+        $messages = MT99Msg::all()->pluck('MSG_CONT', 'MSG_NO');
         return $messages;
     }
-
 }

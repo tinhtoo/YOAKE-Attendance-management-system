@@ -96,22 +96,30 @@ use Illuminate\Database\Eloquent\Model;
  */
 class TR01Work extends Model
 {
+    use SerializeDate;
+
     /**
      * The table associated with the model.
-     * 
+     *
      * @var string
      */
     protected $table = 'TR01_WORK';
 
-    const UPDATED_AT = 'UPD_DATE';
     /**
      * @var array
      */
     protected $fillable = ['CALD_YEAR', 'CALD_MONTH', 'WORKPTN_CD', 'WORKPTN_STR_TIME', 'WORKPTN_END_TIME', 'REASON_CD', 'OFC_TIME_HH', 'OFC_TIME_MI', 'OFC_CNT', 'LEV_TIME_HH', 'LEV_TIME_MI', 'LEV_CNT', 'OUT1_TIME_HH', 'OUT1_TIME_MI', 'OUT1_CNT', 'IN1_TIME_HH', 'IN1_TIME_MI', 'IN1_CNT', 'OUT2_TIME_HH', 'OUT2_TIME_MI', 'OUT2_CNT', 'IN2_TIME_HH', 'IN2_TIME_MI', 'IN2_CNT', 'WORK_TIME_HH', 'WORK_TIME_MI', 'TARD_TIME_HH', 'TARD_TIME_MI', 'LEAVE_TIME_HH', 'LEAVE_TIME_MI', 'OUT_TIME_HH', 'OUT_TIME_MI', 'OVTM1_TIME_HH', 'OVTM1_TIME_MI', 'OVTM2_TIME_HH', 'OVTM2_TIME_MI', 'OVTM3_TIME_HH', 'OVTM3_TIME_MI', 'OVTM4_TIME_HH', 'OVTM4_TIME_MI', 'OVTM5_TIME_HH', 'OVTM5_TIME_MI', 'OVTM6_TIME_HH', 'OVTM6_TIME_MI', 'OVTM7_TIME_HH', 'OVTM7_TIME_MI', 'OVTM8_TIME_HH', 'OVTM8_TIME_MI', 'OVTM9_TIME_HH', 'OVTM9_TIME_MI', 'OVTM10_TIME_HH', 'OVTM10_TIME_MI', 'EXT1_TIME_HH', 'EXT1_TIME_MI', 'EXT2_TIME_HH', 'EXT2_TIME_MI', 'EXT3_TIME_HH', 'EXT3_TIME_MI', 'EXT4_TIME_HH', 'EXT4_TIME_MI', 'EXT5_TIME_HH', 'EXT5_TIME_MI', 'RSV1_TIME_HH', 'RSV1_TIME_MI', 'RSV2_TIME_HH', 'RSV2_TIME_MI', 'RSV3_TIME_HH', 'RSV3_TIME_MI', 'WORKDAY_CNT', 'HOLWORK_CNT', 'SPCHOL_CNT', 'PADHOL_CNT', 'ABCWORK_CNT', 'COMPDAY_CNT', 'RSV1_CNT', 'RSV2_CNT', 'RSV3_CNT', 'UPD_CLS_CD', 'FIX_CLS_CD', 'RSV1_CLS_CD', 'RSV2_CLS_CD', 'ADD_DATE', 'UPD_DATE', 'REMARK', 'SUBHOL_CNT', 'SUBWORK_CNT'];
 
     /**
+     * The primary key for the model.
+     *
+     * @var string
+     */
+    protected $primaryKey = ['EMP_CD', 'CALD_DATE'];
+
+    /**
      * The connection name for the model.
-     * 
+     *
      * @var string
      */
     protected $connection = 'sqlsrv';
@@ -124,4 +132,9 @@ class TR01Work extends Model
         $filter->apply($query);
     }
 
+    protected $casts = [
+        'CALD_DATE' => 'date',
+    ];
+    public $incrementing = false;
+    public $timestamps = false;
 }

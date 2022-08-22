@@ -26,10 +26,26 @@ class TR02EmpCalendar extends Model
     protected $fillable = ['LAST_PTN_CD', 'LAST_DAY_NO'];
 
     /**
+     * The primary key for the model.
+     *
+     * @var string
+     */
+    protected $primaryKey = ['CALD_YEAR','CALD_MONTH','EMP_CD'];
+
+    /**
      * The connection name for the model.
      *
      * @var string
      */
     protected $connection = 'sqlsrv';
 
+    /**
+     * The "type" of the auto-incrementing ID.
+     *
+     * @var string
+     */
+    protected $keyType = 'string';
+
+    public $incrementing = false;
+    public $timestamps = false;
 }

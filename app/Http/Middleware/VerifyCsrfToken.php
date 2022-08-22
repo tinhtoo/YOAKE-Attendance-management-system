@@ -26,11 +26,11 @@ class VerifyCsrfToken extends Middleware
     public function handle($request, Closure $next)
     {
         if(!session()->has('id') && $request->route()->named('logout.form')) {
-        
+
             $this->except[] = route('logout.form');
-            
+
         }
-        
+
         return parent::handle($request, $next);
     }
 }

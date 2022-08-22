@@ -9,138 +9,212 @@
             <tbody>
                 <tr>
                     <td>
-
-                        <div id="ctl00_cphContentsArea_UpdatePanel4">
-
-                            <div class="clearBoth"></div>
-
-                            <table class="InputFieldStyle1">
-                                <tbody>
-                                    <tr>
-                                        <th>対象年月</th>
-                                        <td>
-                                            <select name="ctl00$cphContentsArea$ddlTargetYear" tabindex="1"
-                                                class="imeDisabled" id="ctl00_cphContentsArea_ddlTargetYear"
-                                                style="width: 70px;">
-                                                <option value="2020">2020</option>
-                                                <option selected="selected" value="2021">2021</option>
-                                                <option value="2022">2022</option>
-
-                                            </select>
-                                            &nbsp;年&nbsp;
-                                            <select name="ctl00$cphContentsArea$ddlTargetMonth" tabindex="2"
-                                                class="imeDisabled" id="ctl00_cphContentsArea_ddlTargetMonth"
-                                                style="width: 50px;">
-                                                <option value="1">1</option>
-                                                <option value="2">2</option>
-                                                <option value="3">3</option>
-                                                <option value="4">4</option>
-                                                <option value="5">5</option>
-                                                <option selected="selected" value="6">6</option>
-                                                <option value="7">7</option>
-                                                <option value="8">8</option>
-                                                <option value="9">9</option>
-                                                <option value="10">10</option>
-                                                <option value="11">11</option>
-                                                <option value="12">12</option>
-
-                                            </select>
-                                            &nbsp;月度
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <th>開始部門コード</th>
-                                        <td>
-                                            <input name="ctl00$cphContentsArea$txtStartDeptCd" tabindex="3"
-                                                class="imeDisabled" id="ctl00_cphContentsArea_txtStartDeptCd"
-                                                style="width: 50px;"
-                                                onkeypress="if (WebForm_TextBoxKeyHandler(event) == false) return false;"
-                                                onfocus="this.select();"
-                                                onchange="javascript:setTimeout('__doPostBack(\'ctl00$cphContentsArea$txtStartDeptCd\',\'\')', 0)"
-                                                type="text" maxlength="6">
-                                            <input name="ctl00$cphContentsArea$btnSearchStartDeptCd" tabindex="4"
-                                                class="SearchButton" id="ctl00_cphContentsArea_btnSearchStartDeptCd"
-                                                onclick="SetDeptItem('ctl00_cphContentsArea_txtStartDeptCd', 'ctl00_cphContentsArea_lblStartDeptName');__doPostBack('ctl00$cphContentsArea$btnSearchStartDeptCd','')"
-                                                type="button" value="?">
-                                            <span class="OutlineLabel" id="ctl00_cphContentsArea_lblStartDeptName"
-                                                style="width: 200px; display: inline-block;"></span>
-
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <th>終了部門コード</th>
-                                        <td>
-                                            <input name="ctl00$cphContentsArea$txtEndDeptCd" tabindex="5"
-                                                class="imeDisabled" id="ctl00_cphContentsArea_txtEndDeptCd"
-                                                style="width: 50px;"
-                                                onkeypress="if (WebForm_TextBoxKeyHandler(event) == false) return false;"
-                                                onfocus="this.select();"
-                                                onchange="javascript:setTimeout('__doPostBack(\'ctl00$cphContentsArea$txtEndDeptCd\',\'\')', 0)"
-                                                type="text" maxlength="6">
-                                            <input name="ctl00$cphContentsArea$btnSearchEndDeptCd" tabindex="6"
-                                                class="SearchButton" id="ctl00_cphContentsArea_btnSearchEndDeptCd"
-                                                onclick="SetDeptItem('ctl00_cphContentsArea_txtEndDeptCd', 'ctl00_cphContentsArea_lblEndDeptName');__doPostBack('ctl00$cphContentsArea$btnSearchEndDeptCd','')"
-                                                type="button" value="?">
-                                            <span class="OutlineLabel" id="ctl00_cphContentsArea_lblEndDeptName"
-                                                style="width: 200px; display: inline-block;"></span>
-
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <th>開始社員番号 </th>
-                                        <td>
-                                            <input name="ctl00$cphContentsArea$txtStartEmpCd" tabindex="7"
-                                                class="imeDisabled" id="ctl00_cphContentsArea_txtStartEmpCd"
-                                                style="width: 80px;"
-                                                onkeypress="if (WebForm_TextBoxKeyHandler(event) == false) return false;"
-                                                onfocus="this.select();"
-                                                onchange="javascript:setTimeout('__doPostBack(\'ctl00$cphContentsArea$txtStartEmpCd\',\'\')', 0)"
-                                                type="text" maxlength="10">
-                                            <input name="ctl00$cphContentsArea$btnSearchStartEmpCd" tabindex="8"
-                                                class="SearchButton" id="ctl00_cphContentsArea_btnSearchStartEmpCd"
-                                                onclick="SetEmpItem('ctl00_cphContentsArea_txtStartEmpCd', 'ctl00_cphContentsArea_lblStartEmpName');__doPostBack('ctl00$cphContentsArea$btnSearchStartEmpCd','')"
-                                                type="button" value="?">
-                                            <span class="OutlineLabel" id="ctl00_cphContentsArea_lblStartEmpName"
-                                                style="width: 200px; height: 17px; display: inline-block;"></span>
-
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <th>終了社員番号</th>
-                                        <td>
-                                            <input name="ctl00$cphContentsArea$txtEndEmpCd" tabindex="9" class="imeDisabled"
-                                                id="ctl00_cphContentsArea_txtEndEmpCd" style="width: 80px;"
-                                                onkeypress="if (WebForm_TextBoxKeyHandler(event) == false) return false;"
-                                                onfocus="this.select();"
-                                                onchange="javascript:setTimeout('__doPostBack(\'ctl00$cphContentsArea$txtEndEmpCd\',\'\')', 0)"
-                                                type="text" maxlength="10">
-                                            <input name="ctl00$cphContentsArea$btnSearchEndEmpCd" tabindex="10"
-                                                class="SearchButton" id="ctl00_cphContentsArea_btnSearchEndEmpCd"
-                                                onclick="SetEmpItem('ctl00_cphContentsArea_txtEndEmpCd', 'ctl00_cphContentsArea_lblEndEmpName');__doPostBack('ctl00$cphContentsArea$btnSearchEndEmpCd','')"
-                                                type="button" value="?">
-                                            <span class="OutlineLabel" id="ctl00_cphContentsArea_lblEndEmpName"
-                                                style="width: 200px; height: 17px; display: inline-block;"></span>
-
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
-
-                            <div class="line"></div>
-                            <p class="ButtonField1">
-                                <input name="ctl00$cphContentsArea$btnPrint" tabindex="11"
-                                    id="ctl00_cphContentsArea_btnPrint"
-                                    onclick='if (confirm(GetQuesMessage()) == false) {return false;};WebForm_DoPostBackWithOptions(new WebForm_PostBackOptions("ctl00$cphContentsArea$btnPrint", "", true, "Print", "", false, true))'
-                                    type="button" value="印刷">
-                                <input name="ctl00$cphContentsArea$btnCancel" tabindex="12"
-                                    id="ctl00_cphContentsArea_btnCancel"
-                                    onclick="CloseSubWindow();__doPostBack('ctl00$cphContentsArea$btnCancel','')"
-                                    type="button" value="キャンセル">
-                            </p>
+                        <div id="UpdatePanel4">
+                            <form action="" method="post" id="form">
+                                {{ csrf_field() }}
+                                <table class="InputFieldStyle1">
+                                    <tbody>
+                                        <tr>
+                                            <th>対象年月</th>
+                                            <td>
+                                                <input name="ddlDate"
+                                                    type="text"
+                                                    tabindex="1"
+                                                    id="YearMonth"
+                                                    autocomplete="off"
+                                                    value="{{ old('ddlDate', !empty($input_datas['ddlDate']) ? $input_datas['ddlDate'] : $def_ddlDate ) }}"
+                                                />
+                                                @error('ddlDate')
+                                                    <span id="error-message" class="text-danger">{{ getArrValue($error_messages, $message) }}</span>
+                                                @enderror
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <th>開始部門コード</th>
+                                            <td>
+                                                <input name="filter[txtStartDeptCd]"
+                                                    type="text"
+                                                    tabindex="2"
+                                                    id="txtDeptCd"
+                                                    class="txtDeptCd searchDeptCd startDeptCd"
+                                                    style="width: 50px;"
+                                                    onfocus="this.select();"
+                                                    oninput="value=onlyHalfWord(value)"
+                                                    autocomplete="off"
+                                                    maxlength="6"
+                                                    value="{{ old('filter.txtStartDeptCd', !empty( $input_datas['filter']['txtStartDeptCd'])? $input_datas['filter']['txtStartDeptCd'] : '')}}"
+                                                >
+                                                <input name="btnSearchStartDeptCd"
+                                                    type="button"
+                                                    tabindex="3"
+                                                    id="btnSearchStartDeptCd"
+                                                    class="SearchButton"
+                                                    onclick="SearchDept(this);return false"
+                                                    value="?"
+                                                >
+                                                <input class="txtDeptName" id="deptName"
+                                                    data-dispclscd=01 data-isdeptauth=true
+                                                    style="width: 200px; display: inline-block;">
+                                                <span class="text-danger" id="deptNameError"></span>
+                                                @error('filter.txtStartDeptCd')
+                                                <span class="text-danger" id="DeptCdValidError">{{ getArrValue($error_messages, $errors->first('filter.txtStartDeptCd')) }}</span>
+                                                @enderror
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <th>終了部門コード</th>
+                                            <td>
+                                                <input name="filter[txtEndDeptCd]"
+                                                    type="text"
+                                                    tabindex="4"
+                                                    id="txtDeptCd"
+                                                    class="txtDeptCd searchDeptCd endDeptCd"
+                                                    style="width: 50px;"
+                                                    onfocus="this.select();"
+                                                    oninput="value=onlyHalfWord(value)"
+                                                    autocomplete="off"
+                                                    maxlength="6"
+                                                    value="{{ old('filter.txtEndDeptCd', !empty( $input_datas['filter']['txtEndDeptCd'])? $input_datas['filter']['txtEndDeptCd'] : '')}}"
+                                                >
+                                                <input name="btnSearchEndDeptCd"
+                                                    type="button"
+                                                    tabindex="5"
+                                                    id="btnSearchEndDeptCd"
+                                                    class="SearchButton"
+                                                    onclick="SearchDept(this);return false"
+                                                    value="?"
+                                                >
+                                                <input class="txtDeptName" id="deptName"
+                                                    data-dispclscd=01 data-isdeptauth=true
+                                                    style="width: 200px; display: inline-block;">
+                                                <span class="text-danger" id="deptNameError"></span>
+                                                @error('filter.txtEndDeptCd')
+                                                <span class="text-danger" id="DeptCdValidError">{{ getArrValue($error_messages, $errors->first('filter.txtEndDeptCd')) }}</span>
+                                                @enderror
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <th>開始社員番号 </th>
+                                            <td>
+                                                <input name="filter[txtStartEmpCd]"
+                                                    type="text"
+                                                    tabindex="6"
+                                                    id="txtEmpCd"
+                                                    class="txtEmpCd searchEmpCd"
+                                                    style="width: 80px;"
+                                                    onfocus="this.select();"
+                                                    oninput="value=onlyHalfWord(value)"
+                                                    autocomplete="off"
+                                                    maxlength="10"
+                                                    value="{{ old('filter.txtStartEmpCd', !empty( $input_datas['filter']['txtStartEmpCd'])? $input_datas['filter']['txtStartEmpCd'] : '')}}"
+                                                >
+                                                <input name="btnSearchStartEmpCd"
+                                                    type="button"
+                                                    tabindex="7"
+                                                    id="btnSearchStartEmpCd"
+                                                    class="SearchButton"
+                                                    onclick="SearchEmp(this);return false"
+                                                    value="?"
+                                                >
+                                                <input class="txtEmpName" id="empName"
+                                                    data-regclscd=00 data-isdeptauth=true
+                                                    style="width: 200px; display: inline-block;">
+                                                <span class="text-danger" id="EmpCdError"></span>
+                                                @error('filter.txtStartEmpCd')
+                                                <span class="text-danger" id="EmpCdValidError">{{ getArrValue($error_messages, $errors->first('filter.txtStartEmpCd')) }}</span>
+                                                @enderror
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <th>終了社員番号</th>
+                                            <td>
+                                                <input name="filter[txtEndEmpCd]"
+                                                    type="text"
+                                                    tabindex="8"
+                                                    id="txtEmpCd"
+                                                    class="txtEmpCd searchEmpCd"
+                                                    style="width: 80px;"
+                                                    onfocus="this.select();"
+                                                    oninput="value=onlyHalfWord(value)"
+                                                    autocomplete="off"
+                                                    maxlength="10"
+                                                    value="{{ old('filter.txtEndEmpCd', !empty( $input_datas['filter']['txtEndEmpCd'])? $input_datas['filter']['txtEndEmpCd'] : '')}}"
+                                                >
+                                                <input name="btnSearchEndEmpCd"
+                                                    type="button"
+                                                    tabindex="9"
+                                                    id="btnSearchEndEmpCd"
+                                                    class="SearchButton"
+                                                    onclick="SearchEmp(this);return false"
+                                                    value="?"
+                                                >
+                                                <input class="txtEmpName" id="empName"
+                                                    data-regclscd=00 data-isdeptauth=true
+                                                    style="width: 200px; display: inline-block;">
+                                                <span class="text-danger" id="EmpCdError"></span>
+                                                @error('filter.txtEndEmpCd')
+                                                <span class="text-danger" id="EmpCdValidError">{{ getArrValue($error_messages, $errors->first('filter.txtEndEmpCd')) }}</span>
+                                                @enderror
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                                <div class="line"></div>
+                                <p class="ButtonField1">
+                                    <input name="btnPrint"
+                                        type="button"
+                                        tabindex="10"
+                                        id="btnPrint"
+                                        class="ButtonStyle1 print"
+                                        value="印刷"
+                                        data-url="{{ route('OvertimeAplPdf.print')}}"
+                                    >
+                                    <input name="btnCancel"
+                                        type="button"
+                                        tabindex="11"
+                                        id="btnCancel"
+                                        class="ButtonStyle1"
+                                        value="キャンセル"
+                                        onclick=" location.href='{{ route('OvertimeAplPrint.index') }}' "
+                                    >
+                                </p>
+                            </form>
                         </div>
                     </td>
                 </tr>
             </tbody>
         </table>
     </div>
+@endsection
+@section('script')
+<script>
+$(function() {
+    // 印刷
+    $(document).on('click', '.print', function() {
+        var message = "{{ getArrValue($error_messages, 1011) }}";
+        if (window.confirm(message.replace('{0}','残業申請書'))) {
+            var url = $(this).data('url');
+            $('#form').attr('action', url);
+            $('#form').submit();
+        }
+        return false;
+    });
+
+    $(function() {
+        $('#YearMonth').datepicker({
+            format: 'yyyy年mm月',
+            autoclose: true,
+            language: 'ja',
+            minViewMode : 1
+        });
+    })
+
+    $(function() {
+    // 入力可能文字：半角英文字・数字のみ
+    onlyHalfWord = n => n.replace(/[０-９Ａ-Ｚａ-ｚ]/g, s => String.fromCharCode(s.charCodeAt(0) - 65248))
+                        .replace(/[^0-9a-zA-Z]/g, '');
+    })
+
+})
+</script>
 @endsection

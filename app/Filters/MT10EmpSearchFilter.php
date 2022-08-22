@@ -14,20 +14,18 @@ class MT10EmpSearchFilter extends Filter
         'filter' => [
             'txtEmpKana',
             'txtDeptCd',
-            'OutlineLabel',
         ]
     ];
 
-    //カナ検索
+    // カナ検索
     public function txtEmpKana($value)
     {
-        // dd($value);
         if(!empty($value)){
             $this->builder->where('MT10_EMP.EMP_KANA', 'like', "%$value%");
-        }        
+        }
     }
 
-    //部門
+    // 部門
     public function txtDeptCd($value)
     {
         if(!empty($value)){

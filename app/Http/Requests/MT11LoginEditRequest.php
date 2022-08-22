@@ -19,25 +19,24 @@ class MT11LoginEditRequest extends FormRequest
             'txtLoginId' =>[
                 'required',
                 'regex:/^[a-zA-Z0-9ａ-ｚA-Z\-+=^$*.\[\]{}()?\"!@#%&\/\\\\,><\':;_~`\-+=]+$/',
-                // 'regex:(?=.*[\-+=^$*.\[\]{}()?\"!@#%&\/\\\\,><\':;|_~`\-+=])',
-                function($attribute, $value, $fail){
-                    //現パスワード取得
+                function ($attribute, $value, $fail) {
+                    // 現パスワード取得
                     $empCd =  FormRequest::get('txtEmpCd');
                     // dd($empId);
                     $check = MT11Login::where('LOGIN_ID', $value)->where('EMP_CD', '<>', $empCd)->exists();
                     // dd($check);
-                    //2022メッセージ取得（既に使用されているログインIDです。)
+                    // 2022メッセージ取得（既に使用されているログインIDです。)
                     $msg_2022 = MT99Msg::where('MSG_NO', '2022')->pluck('MSG_CONT')->first();
-                    //2002メッセージ取得（必須入力項目です)
+                    // 2002メッセージ取得（必須入力項目です)
                     $msg_2002 = MT99Msg::where('MSG_NO', '2002')->pluck('MSG_CONT')->first();
 
-                    //[MT11_LOGIN.LOGIN_ID]と入力された変更時Passが同一時エラー
-                    if ($check) {                        
+                    // [MT11_LOGIN.LOGIN_ID]と入力された変更時Passが同一時エラー
+                    if ($check) {
                         $fail($msg_2022);
                     }
 
-                    //空白の場合2002メッセージエラー （必須入力項目です)*/
-                    if (empty($value)) {
+                    // 空白の場合2002メッセージエラー （必須入力項目です)*/
+                    if (!isset($value)) {
                         $fail($msg_2002);
                     }
                 }
@@ -45,55 +44,25 @@ class MT11LoginEditRequest extends FormRequest
             'txtNewPassword' => ['required'],
             'txtNewPassword2' => ['required', 'same:txtNewPassword'],
             'ddlPgAuth' => ['required'],
-
-            // 'txtLoginId' =>
-            //     ' regex:/^[a-zA-Z0-9]+$/'
-            
-            // 'txtNewPassword' =>[
-            //     'required'
-            // ],
-            // 'txtNewPassword1' =>[
-            //     'required',
-            //     function(){
-            //         $password_1 =  FormRequest::get('txtNewPassword');
-            //         dd($password_1);
-            //     }
-            // ],
-            
-
-            // 'filter.txtEmpKana' =>[ 
-            //     'nullable'
-            // ]    
         ];
         return $rules;
     }
-    
+
 
     public function messages()
     {
-        //2000メッセージ取得該当データが存在しません
-        $msg_2000 = MT99Msg::where('MSG_NO', '2000')->pluck('MSG_CONT')->first();
-        //2002メッセージ取得（必須入力項目です)
-        $msg_2002 = MT99Msg::where('MSG_NO', '2002')->pluck('MSG_CONT')->first(); 
-        //2022メッセージ取得（既に使用されているログインIDです。)
+        // 2002メッセージ取得（必須入力項目です)
+        $msg_2002 = MT99Msg::where('MSG_NO', '2002')->pluck('MSG_CONT')->first();
+        // 2022メッセージ取得（既に使用されているログインIDです。)
         $msg_2022 = MT99Msg::where('MSG_NO', '2022')->pluck('MSG_CONT')->first();
-
+        // 4001メッセージ取得(禁則文字([|])が含まれています。)
         $msg_4001 = MT99Msg::where('MSG_NO', '4001')->pluck('MSG_CONT')->first();
-
-        //4024メッセージ(同じPassを入力してください)              
+        // 4024メッセージ(同じPassを入力してください)
         $msg_4023 = MT99Msg::where('MSG_NO', '4023')->pluck('MSG_CONT')->first();
-        // dd($msg_all);
-        // return [
-        //     'txtPassword.required' => $msg_2002,           
-        //     'txtLoginId' => $msg_2022,
-        //     // 'txtRePassword.required' => $msg_2002 ,
-        //     // 'txtRePassword.same' => $msg_4023   
-        // ];
+
         return [
-            // 'txtPassword.required' => $msg_2002,
             'txtLoginId.required' => $msg_2022,
             'txtLoginId.required' => $msg_2002,
-            // 'txtNewPassword.required' => $msg_2002
             'txtLoginId.regex' => $msg_4001,
             'txtNewPassword.required' => $msg_2002,
             'txtNewPassword2.required' => $msg_2002,

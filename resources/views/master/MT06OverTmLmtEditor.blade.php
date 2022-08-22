@@ -1,247 +1,384 @@
-<!-- 残業上限情報入力  -->
+<!-- 残業上限情報入力 -->
 @extends('menu.main')
 
-@section('title','残業上限情報入力 ')
+@section('title', '残業上限情報入力 ')
 
 @section('content')
-<div id="contents-stage">
-    <table class="BaseContainerStyle1">
-        <tbody>
-            <tr>
-                <td>
-                    <div id="ctl00_cphContentsArea_UpdatePanel1">
+    <div id="contents-stage">
+        <table class="BaseContainerStyle1">
+            <tbody>
+                <form action="{{ route('MT06.index') }}" method="GET" name="MT06form">
+                @csrf
+                    <tr>
+                        <td>
+                            <div id="ctl00_cphContentsArea_UpdatePanel1">
 
-                        <table class="InputFieldStyle1">
-                            <tbody>
-                                <tr>
-                                    <th>カレンダー</th>
-                                    <td>
-                                        <select name="ctl00$cphContentsArea$ddlCalendarCd" tabindex="1" id="ctl00_cphContentsArea_ddlCalendarCd" style="width: 250px;" onchange="javascript:setTimeout('WebForm_DoPostBackWithOptions(new WebForm_PostBackOptions(&quot;ctl00$cphContentsArea$ddlCalendarCd&quot;, &quot;&quot;, true, &quot;&quot;, &quot;&quot;, false, true))', 0)">
-                                            <option selected="selected" value=""></option>
-                                            <option value="001">通常１(8:00～17:00)</option>
-                                            <option value="002">通常2(7:00～16:00)</option>
-                                            <option value="003">通常3(9:00～1800)</option>
-                                            <option value="010">夜勤Ⅰ(20:00～29:00)</option>
-                                            <option value="011">夜勤Ⅱ(16:00～25:00)</option>
-                                            <option value="100">シフト勤務用</option>
-                                            <option value="999">共通</option>
+                                <table class="InputFieldStyle1">
+                                    <tbody>
+                                        <tr>
+                                            <th>カレンダー</th>
+                                            <td>
+                                                <select name="CalendarCd" tabindex="1" id="CalendarCd" style="width: 250px;"
+                                                    @if (isset($CalendarCdKey)) disabled @endif
+                                                    onchange=" submit(this.form)">
+                                                    <option selected="selected"> </option>
+                                                    @foreach ($items as $item)
+                                                        <option value="{{ $item->CALENDAR_CD }}"
+                                                            @if ($item->CALENDAR_CD == (int) old('CalendarCd', $CalendarCdKey)) selected @endif>
+                                                            {{ $item->CALENDAR_NAME }}
+                                                        </option>
+                                                    @endforeach
+                                                </select>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </form>
 
-                                        </select>
-                                        <span id="ctl00_cphContentsArea_cvCalendarCd" style="color: red; display: none;">ErrorMessage</span>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
+                            <div class="line"></div>
 
-                        <div class="line"></div>
+                            <form action="{{ route('MT06.update') }}" method="POST" name="MT06updateform"
+                                id="MT06updateform">
+                                @csrf
+                                <table class="InputFieldStyle1">
+                                    <tbody>
+                                        {{-- 選択したカレンダーコード --}}
+                                        <input type="hidden" name="CalendarCdData" value="{{ $CalendarCdKey }}">
+                                        <tr>
+                                            <th>残業項目１</th>
+                                            <td>
+                                                <select name="Ovtm1Cd" tabindex="2" id="Ovtm1Cd" style="width: 180px;"
+                                                    onchange="" @if (!isset($CalendarCdKey)) disabled @endif>
+                                                    <option selected="selected"></option>
+                                                    @foreach ($works as $work)
+                                                        <option value="{{ $work->WORK_DESC_CD }} "
+                                                            @if ($work->WORK_DESC_CD == (int) old('Ovtm1Cd', $OVTM1key)) selected @endif>
+                                                            {{ $work->WORK_DESC_NAME }}
+                                                        </option>
+                                                    @endforeach
+                                                </select>
+                                                @if ($errors->has('Ovtm1Cd'))
+                                                    <span class="text-danger">{{ getArrValue($error_messages, $errors->first('Ovtm1Cd')) }} </span>
+                                                @endif
+                                            </td>
 
-                        <table class="InputFieldStyle1">
-                            <tbody>
-                                <tr>
-                                    <th>残業項目１</th>
-                                    <td>
-                                        <select name="ctl00$cphContentsArea$ddlOvtm1Cd" tabindex="2" disabled="disabled" id="ctl00_cphContentsArea_ddlOvtm1Cd" style="width: 180px;" onchange="ClearOvtmHr('ctl00_cphContentsArea_ddlOvtm1Cd', 'ctl00_cphContentsArea_txtOvtm1Hr');">
-                                            <option selected="selected" value=""></option>
-                                            <option value="100">早出時間</option>
-                                            <option value="101">普通残業時間</option>
-                                            <option value="102">深夜残業時間</option>
-                                            <option value="103">休日残業時間</option>
-                                            <option value="104">休日深夜残業時間</option>
+                                            <td>
+                                                <input name="Ovtm1Hr" tabindex="3" class="right" id="Ovtm1Hr"
+                                                    style="width: 35px;" onfocus="this.select();" type="text" maxlength="3"
+                                                    value="{{ old('Ovtm1Hr', $OVTM1HRkey) }}"
+                                                    @if (!isset($CalendarCdKey)) disabled @endif>
+                                                <span id="Ovtm1HrUnit">時間 / 月</span>
+                                            </td>
+                                        </tr>
 
-                                        </select>
+                                        <tr>
+                                            <th>残業項目２</th>
+                                            <td>
+                                                <select name="Ovtm2Cd" tabindex="4" id="Ovtm2Cd" style="width: 180px;"
+                                                    onchange="" @if (!isset($CalendarCdKey)) disabled @endif>
+                                                    <option selected="selected"></option>
+                                                    @foreach ($works as $work)
+                                                        <option value="{{ $work->WORK_DESC_CD }} "
+                                                            @if ($work->WORK_DESC_CD == (int) old('Ovtm2Cd', $OVTM2key)) selected @endif>
+                                                            {{ $work->WORK_DESC_NAME }}
+                                                        </option>
+                                                    @endforeach
 
-                                    </td>
-                                    <td>
-                                        <input name="ctl00$cphContentsArea$txtOvtm1Hr" tabindex="3" disabled="disabled" class="imeDisabled right" id="ctl00_cphContentsArea_txtOvtm1Hr" style="width: 35px;" onfocus="this.select();" type="text" maxlength="3">
+                                                </select>
 
-                                        <span id="ctl00_cphContentsArea_lblTitleOvtm1HrUnit">時間 / 月</span>
+                                                @if ($errors->has('Ovtm2Cd'))
+                                                    <span class="text-danger">{{ getArrValue($error_messages, $errors->first('Ovtm2Cd')) }} </span>
+                                                @endif
+                                            </td>
 
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <th>残業項目２</th>
-                                    <td>
-                                        <select name="ctl00$cphContentsArea$ddlOvtm2Cd" tabindex="4" disabled="disabled" id="ctl00_cphContentsArea_ddlOvtm2Cd" style="width: 180px;" onchange="ClearOvtmHr('ctl00_cphContentsArea_ddlOvtm2Cd', 'ctl00_cphContentsArea_txtOvtm2Hr');">
-                                            <option selected="selected" value=""></option>
-                                            <option value="100">早出時間</option>
-                                            <option value="101">普通残業時間</option>
-                                            <option value="102">深夜残業時間</option>
-                                            <option value="103">休日残業時間</option>
-                                            <option value="104">休日深夜残業時間</option>
+                                            <td>
+                                                <input name="Ovtm2Hr" tabindex="5" class="right" id="Ovtm2Hr"
+                                                    style="width: 35px;" onfocus="this.select();" type="text" maxlength="3"
+                                                    value="{{ old('Ovtm2Hr', $OVTM2HRkey) }}"
+                                                    @if (!isset($CalendarCdKey)) disabled @endif>
+                                                <span id="Ovtm2HrUnit">時間 / 月</span>
+                                            </td>
+                                        </tr>
 
-                                        </select>
+                                        <tr>
+                                            <th>残業項目３</th>
+                                            <td>
+                                                <select name="Ovtm3Cd" tabindex="6" id="Ovtm3Cd" style="width: 180px;"
+                                                    onchange="" @if (!isset($CalendarCdKey)) disabled @endif>
+                                                    <option selected="selected"></option>
+                                                    @foreach ($works as $work)
+                                                        <option value="{{ $work->WORK_DESC_CD }} "
+                                                            @if ($work->WORK_DESC_CD == (int) old('Ovtm3Cd', $OVTM3key)) selected @endif>
+                                                            {{ $work->WORK_DESC_NAME }}
+                                                        </option>
+                                                    @endforeach
+                                                </select>
+                                                @if ($errors->has('Ovtm3Cd'))
+                                                    <span class="text-danger">{{ getArrValue($error_messages, $errors->first('Ovtm3Cd')) }} </span>
+                                                @endif
+                                            </td>
 
-                                    </td>
-                                    <td>
-                                        <input name="ctl00$cphContentsArea$txtOvtm2Hr" tabindex="5" disabled="disabled" class="imeDisabled right" id="ctl00_cphContentsArea_txtOvtm2Hr" style="width: 35px;" onfocus="this.select();" type="text" maxlength="3">
+                                            <td>
+                                                <input name="Ovtm3Hr" tabindex="7" class="right" id="Ovtm3Hr"
+                                                    style="width: 35px;" onfocus="this.select();" type="text" maxlength="3"
+                                                    value="{{ old('Ovtm3Hr', $OVTM3HRkey) }}"
+                                                    @if (!isset($CalendarCdKey)) disabled @endif>
 
-                                        <span id="ctl00_cphContentsArea_lblTitleOvtm2HrUnit">時間 / 月</span>
+                                                <span id="Ovtm3HrUnit">時間 / 月</span>
 
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <th>残業項目３</th>
-                                    <td>
-                                        <select name="ctl00$cphContentsArea$ddlOvtm3Cd" tabindex="6" disabled="disabled" id="ctl00_cphContentsArea_ddlOvtm3Cd" style="width: 180px;" onchange="ClearOvtmHr('ctl00_cphContentsArea_ddlOvtm3Cd', 'ctl00_cphContentsArea_txtOvtm3Hr');">
-                                            <option selected="selected" value=""></option>
-                                            <option value="100">早出時間</option>
-                                            <option value="101">普通残業時間</option>
-                                            <option value="102">深夜残業時間</option>
-                                            <option value="103">休日残業時間</option>
-                                            <option value="104">休日深夜残業時間</option>
+                                            </td>
+                                        </tr>
 
-                                        </select>
+                                        <tr>
+                                            <th>残業項目４</th>
+                                            <td>
+                                                <select name="Ovtm4Cd" tabindex="8" id="Ovtm4Cd" style="width: 180px;"
+                                                    onchange="" @if (!isset($CalendarCdKey)) disabled @endif>
+                                                    <option selected="selected"></option>
+                                                    @foreach ($works as $work)
+                                                        <option value="{{ $work->WORK_DESC_CD }} "
+                                                            @if ($work->WORK_DESC_CD == (int) old('Ovtm4Cd', $OVTM4key)) selected @endif>
+                                                            {{ $work->WORK_DESC_NAME }}
+                                                        </option>
+                                                    @endforeach
+                                                </select>
+                                                @if ($errors->has('Ovtm4Cd'))
+                                                    <span class="text-danger">{{getArrValue($error_messages, $errors->first('Ovtm4Cd')) }}</span>
+                                                @endif
+                                            </td>
 
-                                    </td>
-                                    <td>
-                                        <input name="ctl00$cphContentsArea$txtOvtm3Hr" tabindex="7" disabled="disabled" class="imeDisabled right" id="ctl00_cphContentsArea_txtOvtm3Hr" style="width: 35px;" onfocus="this.select();" type="text" maxlength="3">
+                                            <td>
+                                                <input name="Ovtm4Hr" tabindex="9" class="right" id="Ovtm4Hr"
+                                                    style="width: 35px;" onfocus="this.select();" type="text" maxlength="3"
+                                                    value="{{ old('Ovtm4Hr', $OVTM4HRkey) }}"
+                                                    @if (!isset($CalendarCdKey)) disabled @endif>
+                                                <span id="Ovtm4HrUnit">時間 / 月</span>
+                                            </td>
+                                        </tr>
 
-                                        <span id="ctl00_cphContentsArea_lblTitleOvtm3HrUnit">時間 / 月</span>
+                                        <tr>
+                                            <th>残業項目５</th>
+                                            <td>
+                                                <select name="Ovtm5Cd" tabindex="10" id="Ovtm5Cd" style="width: 180px;"
+                                                    onchange="" @if (!isset($CalendarCdKey)) disabled @endif>
+                                                    <option selected="selected"></option>
+                                                    @foreach ($works as $work)
+                                                        <option value="{{ $work->WORK_DESC_CD }} "
+                                                            @if ($work->WORK_DESC_CD == (int) old('Ovtm5Cd', $OVTM5key)) selected @endif>
+                                                            {{ $work->WORK_DESC_NAME }}
+                                                        </option>
+                                                    @endforeach
+                                                </select>
+                                                @if ($errors->has('Ovtm5Cd'))
+                                                    <span class="text-danger">{{ getArrValue($error_messages, $errors->first('Ovtm5Cd')) }} </span>
+                                                @endif
+                                            </td>
 
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <th>残業項目４</th>
-                                    <td>
-                                        <select name="ctl00$cphContentsArea$ddlOvtm4Cd" tabindex="8" disabled="disabled" id="ctl00_cphContentsArea_ddlOvtm4Cd" style="width: 180px;" onchange="ClearOvtmHr('ctl00_cphContentsArea_ddlOvtm4Cd', 'ctl00_cphContentsArea_txtOvtm4Hr');">
-                                            <option selected="selected" value=""></option>
-                                            <option value="100">早出時間</option>
-                                            <option value="101">普通残業時間</option>
-                                            <option value="102">深夜残業時間</option>
-                                            <option value="103">休日残業時間</option>
-                                            <option value="104">休日深夜残業時間</option>
+                                            <td>
+                                                <input name="Ovtm5Hr" tabindex="11" class="right" id="Ovtm5Hr"
+                                                    style="width: 35px;" onfocus="this.select();" type="text" maxlength="3"
+                                                    value="{{ old('Ovtm5Hr', $OVTM5HRkey) }}"
+                                                    @if (!isset($CalendarCdKey)) disabled @endif>
+                                                <span id="Ovtm5HrUnit">時間 / 月</span>
+                                            </td>
+                                        </tr>
 
-                                        </select>
+                                        <tr>
+                                            <th>残業項目６</th>
+                                            <td>
+                                                <select name="Ovtm6Cd" tabindex="12" id="Ovtm6Cd" style="width: 180px;"
+                                                    onchange="" @if (!isset($CalendarCdKey)) disabled @endif>
+                                                    <option selected="selected"></option>
+                                                    @foreach ($works as $work)
+                                                        <option value="{{ $work->WORK_DESC_CD }} "
+                                                            @if ($work->WORK_DESC_CD == (int) old('Ovtm6Cd', $OVTM6key)) selected @endif>
+                                                            {{ $work->WORK_DESC_NAME }}
+                                                        </option>
+                                                    @endforeach
+                                                </select>
+                                                @if ($errors->has('Ovtm6Cd'))
+                                                    <span class="text-danger">{{ getArrValue($error_messages, $errors->first('Ovtm6Cd')) }} </span>
+                                                @endif
+                                            </td>
 
-                                    </td>
-                                    <td>
-                                        <input name="ctl00$cphContentsArea$txtOvtm4Hr" tabindex="9" disabled="disabled" class="imeDisabled right" id="ctl00_cphContentsArea_txtOvtm4Hr" style="width: 35px;" onfocus="this.select();" type="text" maxlength="3">
+                                            <td>
+                                                <input name="Ovtm6Hr" tabindex="13" class="right" id="Ovtm6Hr"
+                                                    style="width: 35px;" onfocus="this.select();" type="text" maxlength="3"
+                                                    value="{{ old('Ovtm6Hr', $OVTM6HRkey) }}"
+                                                    @if (!isset($CalendarCdKey)) disabled @endif>
+                                                <span id="Ovtm6HrUnit">時間 / 月</span>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
 
-                                        <span id="ctl00_cphContentsArea_lblTitleOvtm4HrUnit">時間 / 月</span>
+                                <div class="line"></div>
 
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <th>残業項目５</th>
-                                    <td>
-                                        <select name="ctl00$cphContentsArea$ddlOvtm5Cd" tabindex="10" disabled="disabled" id="ctl00_cphContentsArea_ddlOvtm5Cd" style="width: 180px;" onchange="ClearOvtmHr('ctl00_cphContentsArea_ddlOvtm5Cd', 'ctl00_cphContentsArea_txtOvtm5Hr');">
-                                            <option selected="selected" value=""></option>
-                                            <option value="100">早出時間</option>
-                                            <option value="101">普通残業時間</option>
-                                            <option value="102">深夜残業時間</option>
-                                            <option value="103">休日残業時間</option>
-                                            <option value="104">休日深夜残業時間</option>
+                                <table class="InputFieldStyle1">
+                                    <tbody>
+                                        <tr>
+                                            <th>残業未対応時間</th>
+                                            <td>
+                                                <span id="NoOvertmMiUnit1">１日の残業時間のうち</span>
+                                                <select name="NoOvertmMi" tabindex="14"
+                                                    id="NoOvertmMi" style="width: 50px;"
+                                                    @if (!isset($CalendarCdKey)) disabled @endif>
 
-                                        </select>
+                                                    @foreach ($NoOvertmMis as $NoOvertmMi)
+                                                        <option value=" {{ $NoOvertmMi->CLS_DETAIL_CD }}"
+                                                            @if ($NoOvertmMi->CLS_DETAIL_CD == (int) old('NoOvertmMiUnit1', $NoOvertmMisOld)) selected @endif>
+                                                            {{ $NoOvertmMi->CLS_DETAIL_NAME }}
+                                                        </option>
+                                                    @endforeach
+                                                </select>
+                                                <span id="NoOvertmMiUnit2">分未満は未対応</span>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
 
-                                    </td>
-                                    <td>
-                                        <input name="ctl00$cphContentsArea$txtOvtm5Hr" tabindex="11" disabled="disabled" class="imeDisabled right" id="ctl00_cphContentsArea_txtOvtm5Hr" style="width: 35px;" onfocus="this.select();" type="text" maxlength="3">
+                                <div class="line"></div>
 
-                                        <span id="ctl00_cphContentsArea_lblTitleOvtm5HrUnit">時間 / 月</span>
+                                <table class="InputFieldStyle1">
+                                    <tbody>
+                                        <tr>
+                                            <th>総残業時間上限１</th>
+                                            <td>
+                                                <input name="TtlOvtm1Hr" tabindex="15" class="right"
+                                                    id="TtlOvtm1Hr" style="width: 35px;" onfocus="this.select();"
+                                                    type="text" maxlength="3" value="{{ old('TtlOvtm1Hr', $TtlOvtm1Hr) }}"
+                                                    @if (!isset($CalendarCdKey)) disabled
+                                                    @elseif($enabled02 != '02')   disabled
+                                                    @endif
+                                                >
+                                                <span id="TtlOvtm1HrUnit">時間 / 月</span>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <th>総残業時間上限２</th>
+                                            <td>
+                                                <input name="TtlOvtm2Hr" tabindex="16" class="right"
+                                                    id="TtlOvtm2Hr" style="width: 35px;" onfocus="this.select();"
+                                                    type="text" maxlength="3" value="{{ old('TtlOvtm2Hr', $TtlOvtm2Hr) }}"
+                                                    @if (!isset($CalendarCdKey)) disabled
+                                                    @elseif($enabled02 != '02')  disabled
+                                                    @endif
+                                                >
+                                                <span id="TtlOvtm2HrUnit">時間 / 月</span>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <th>総残業時間上限３</th>
+                                            <td>
+                                                <input name="TtlOvtm3Hr" tabindex="17" class="right"
+                                                    id="TtlOvtm3Hr" style="width: 35px;" onfocus="this.select();"
+                                                    type="text" maxlength="3" value="{{ old('TtlOvtm3Hr', $TtlOvtm3Hr) }}"
+                                                    @if (!isset($CalendarCdKey)) disabled
+                                                    @elseif($enabled02 != '02')  disabled
+                                                    @endif
+                                                >
+                                                <span id="TtlOvtm3HrUnit">時間 / 月</span>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
 
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <th>残業項目６</th>
-                                    <td>
-                                        <select name="ctl00$cphContentsArea$ddlOvtm6Cd" tabindex="12" disabled="disabled" id="ctl00_cphContentsArea_ddlOvtm6Cd" style="width: 180px;" onchange="ClearOvtmHr('ctl00_cphContentsArea_ddlOvtm6Cd', 'ctl00_cphContentsArea_txtOvtm6Hr');">
-                                            <option selected="selected" value=""></option>
-                                            <option value="100">早出時間</option>
-                                            <option value="101">普通残業時間</option>
-                                            <option value="102">深夜残業時間</option>
-                                            <option value="103">休日残業時間</option>
-                                            <option value="104">休日深夜残業時間</option>
+                                <div class="line"></div>
 
-                                        </select>
-
-                                    </td>
-                                    <td>
-                                        <input name="ctl00$cphContentsArea$txtOvtm6Hr" tabindex="13" disabled="disabled" class="imeDisabled right" id="ctl00_cphContentsArea_txtOvtm6Hr" style="width: 35px;" onfocus="this.select();" type="text" maxlength="3">
-
-                                        <span id="ctl00_cphContentsArea_lblTitleOvtm6HrUnit">時間 / 月</span>
-
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-
-                        <div class="line"></div>
-
-                        <table class="InputFieldStyle1">
-                            <tbody>
-                                <tr>
-                                    <th>残業未対応時間</th>
-                                    <td>
-                                        <span id="ctl00_cphContentsArea_lblTitleNoOvertmMiUnit1">１日の残業時間のうち</span>
-                                        <select name="ctl00$cphContentsArea$ddlNoOvertmMi" tabindex="14" disabled="disabled" class="imeDisabled" id="ctl00_cphContentsArea_ddlNoOvertmMi" style="width: 50px;">
-                                            <option selected="selected" value="00">0</option>
-                                            <option value="05">5</option>
-                                            <option value="10">10</option>
-                                            <option value="15">15</option>
-                                            <option value="20">20</option>
-                                            <option value="25">25</option>
-                                            <option value="30">30</option>
-                                            <option value="35">35</option>
-                                            <option value="40">40</option>
-                                            <option value="45">45</option>
-                                            <option value="50">50</option>
-                                            <option value="55">55</option>
-                                            <option value="60">60</option>
-
-                                        </select>
-                                        <span id="ctl00_cphContentsArea_lblTitleNoOvertmMiUnit2">分未満は未対応</span>
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-
-                        <div class="line"></div>
-
-                        <table class="InputFieldStyle1">
-                            <tbody>
-                                <tr>
-                                    <th>総残業時間上限１</th>
-                                    <td>
-                                        <input name="ctl00$cphContentsArea$txtTtlOvtm1Hr" tabindex="15" disabled="disabled" class="imeDisabled right" id="ctl00_cphContentsArea_txtTtlOvtm1Hr" style="width: 35px;" onfocus="this.select();" type="text" maxlength="3">
-
-                                        <span id="ctl00_cphContentsArea_lblTitleTtlOvtm1HrUnit">時間 / 月</span>
-
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <th>総残業時間上限２</th>
-                                    <td>
-                                        <input name="ctl00$cphContentsArea$txtTtlOvtm2Hr" tabindex="16" disabled="disabled" class="imeDisabled right" id="ctl00_cphContentsArea_txtTtlOvtm2Hr" style="width: 35px;" onfocus="this.select();" type="text" maxlength="3">
-
-                                        <span id="ctl00_cphContentsArea_lblTitleTtlOvtm2HrUnit">時間 / 月</span>
-
-                                    </td>
-                                </tr>
-                                <tr>
-                                    <th>総残業時間上限３</th>
-                                    <td>
-                                        <input name="ctl00$cphContentsArea$txtTtlOvtm3Hr" tabindex="17" disabled="disabled" class="imeDisabled right" id="ctl00_cphContentsArea_txtTtlOvtm3Hr" style="width: 35px;" onfocus="this.select();" type="text" maxlength="3">
-
-                                        <span id="ctl00_cphContentsArea_lblTitleTtlOvtm3HrUnit">時間 / 月</span>
-
-                                    </td>
-                                </tr>
-                            </tbody>
-                        </table>
-
-                        <div class="line"></div>
-                        <p class="ButtonField1">
-                            <input name="ctl00$cphContentsArea$btnUpdate" tabindex="18" disabled="disabled" id="ctl00_cphContentsArea_btnUpdate" type="button" value="更新">
-                            <input name="ctl00$cphContentsArea$btnCancel" tabindex="19" id="ctl00_cphContentsArea_btnCancel" onclick="javascript:__doPostBack('ctl00$cphContentsArea$btnCancel','')" type="button" value="キャンセル">
-                            <input name="ctl00$cphContentsArea$btnDelete" tabindex="20" disabled="disabled" id="ctl00_cphContentsArea_btnDelete" type="button" value="削除">
-                        </p>
+                                <p class="ButtonField1">
+                                    <!-- 更新ボタン押下時 -->
+                                    <input type="submit" class="ButtonStyle1" id="btnUpdate" name="btnUpdate" tabindex="18"
+                                        value="更新" onclick="return checkSubmitUpdate(this)"
+                                        @if (!isset($CalendarCdKey)) disabled @endif>
 
 
-                    </div>
-                </td>
-            </tr>
-        </tbody>
-    </table>
-</div>
+                                    <!-- キャンセルボタン押下時 -->
+                                    <input name="btnCancel2" class="ButtonStyle2" id="btnCancel2" type="button" tabindex="19"
+                                        value="キャンセル" onclick="location.href='MT06OverTmLmtEditor'">
+
+                                    <!-- 削除ボタン押下時 -->
+                                    <input class="ButtonStyle2" id="btnDelete1" type="submit" name="btnDelete1"
+                                        tabindex="20" value="削除" onclick="return checkSubmitDelete(this)"
+                                        @if (!isset($CalendarCdKey)) disabled @endif>
+
+                                </p>
+
+                                <script>
+                                    // 更新ボタン・確認ダイアル
+                                    function checkSubmitUpdate() {
+
+                                        $checked = confirm("{{ getArrValue($error_messages, '1005') }}");
+                                        if ($checked == true) {
+                                            // 有効で送信
+                                            document.getElementById("CalendarCd").disabled = false;
+                                            document.getElementById('MT06updateform').submit();
+                                            return true;
+                                        } else {
+                                            return false;
+                                        }
+                                    }
+
+                                    // 削除ボタン・確認ダイアル
+                                    function checkSubmitDelete() {
+
+                                        $checkedDelete = confirm("{{ getArrValue($error_messages, '1005') }}");
+                                        if ($checkedDelete == true) {
+                                            // 有効で送信
+                                            document.getElementById("CalendarCd").disabled = false;
+                                            document.getElementById('MT06updateform').submit();
+                                            return true;
+                                        } else {
+                                            return false;
+                                        }
+                                    }
+
+                                    $(function() {
+                                        // ENTER時に送信されないようにする
+                                        $('input').not('[type="button"]').not('[type="submit"]').keypress(function(e) {
+                                            if (e.which == 13) {
+                                                return false;
+                                            }
+                                        });
+
+                                        // 数値のみ入力可能
+                                        var onlyNumber = function(e) {
+                                                var k = e.keyCode;
+                                                // 0～9:code48-57, テンキ―0～9:code96-105, backspace:code8, delete:code46, →:code39, ←:code37,Tab:code9,Enter:code13,insert:45 以外は入力キャンセル
+                                                if (!((k >= 48 && k <= 57) || (k >= 96 && k <= 105) || k == 8 || k == 46 || k == 39 || k ==
+                                                        37 || k == 9 || k == 13 || k == 45)) {
+                                                    return false;
+                                                }
+                                        };
+                                        $('#Ovtm1Hr').on('keydown', onlyNumber);
+                                        $('#Ovtm2Hr').on('keydown', onlyNumber);
+                                        $('#Ovtm3Hr').on('keydown', onlyNumber);
+                                        $('#Ovtm4Hr').on('keydown', onlyNumber);
+                                        $('#Ovtm5Hr').on('keydown', onlyNumber);
+                                        $('#Ovtm6Hr').on('keydown', onlyNumber);
+                                        $('#TtlOvtm1Hr').on('keydown', onlyNumber);
+                                        $('#TtlOvtm2Hr').on('keydown', onlyNumber);
+                                        $('#TtlOvtm3Hr').on('keydown', onlyNumber);
+                                    });
+
+                                    // ｛カレンダー｝フォーカス
+                                    document.MT06form.CalendarCd.focus();
+
+                                    // E-1
+                                    @if ($errors->has('Ovtm1Cd')
+                                        || $errors->has('Ovtm2Cd')
+                                        || $errors->has('Ovtm3Cd')
+                                        || $errors->has('Ovtm4Cd')
+                                        || $errors->has('Ovtm5Cd')
+                                        || $errors->has('Ovtm6Cd'))
+                                    document.MT06updateform.btnUpdate.focus();
+                                    @endif
+                                </script>
+                            </div>
+                        </td>
+                    </tr>
+                </form>
+            </tbody>
+        </table>
+
+    </div>
 @endsection

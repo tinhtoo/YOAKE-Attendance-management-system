@@ -1,7 +1,7 @@
-<!-- 勤怠予定表(週・月別)画面 -->
+<!-- 勤務実績表(日・週・月別)画面 -->
 @extends('menu.main')
 
-@section('title', '勤怠予定表(週・月別)')
+@section('title', '勤務実績表(日・週・月別)')
 
 @section('content')
     <div id="contents-stage">
@@ -9,198 +9,674 @@
             <tbody>
                 <tr>
                     <td>
+                        <form action="" method="post" id="form" >
+                            {{ csrf_field() }}
+                            <div id="UpdatePanel4">
+                                <table width="1000" class="InputFieldStyle1">
+                                    <tbody>
+                                        <tr>
+                                            <th>帳票区分</th>
+                                            <td>
+                                                <div class="GroupBox3">
+                                                    <input type="radio"
+                                                        name="ReportCategory"
+                                                        id="rbWorkTimeDaily"
+                                                        class="rbWorkTimeDaily"
+                                                        tabindex="1"
+                                                        value="rbWorkTimeDaily"
+                                                        {{ old('ReportCategory', !empty($input_datas['ReportCategory']) ? $input_datas['ReportCategory'] : '') == 'rbWorkTimeDaily'? 'checked': ''}}
+                                                        @if(empty( $input_datas['ReportCategory']))
+                                                        checked
+                                                        @endif
+                                                    >
+                                                    <label for="rbWorkTimeDaily">日報</label>
+                                                    <input type="radio"
+                                                        name="ReportCategory"
+                                                        id="rbWorkTimeEmpDailyPortrait"
+                                                        class="rbWorkTimeEmpDailyPortrait"
+                                                        tabindex="2"
+                                                        value="rbWorkTimeEmpDailyPortrait"
+                                                        {{ old('ReportCategory', !empty($input_datas['ReportCategory']) ? $input_datas['OutputCls'] : '') == 'rbWorkTimeEmpDailyPortrait'? 'checked': '' }}
+                                                    >
+                                                    <label for="rbWorkTimeEmpDailyPortrait">月報 A3縦 PTN1</label>
+                                                    <input type="radio"
+                                                        name="ReportCategory"
+                                                        id="rbWorkTimeEmpDailyPortrait2"
+                                                        class="rbWorkTimeEmpDailyPortrait2"
+                                                        tabindex="3"
+                                                        value="rbWorkTimeEmpDailyPortrait2"
+                                                        {{ old('ReportCategory', !empty($input_datas['ReportCategory']) ? $input_datas['OutputCls'] : '') == 'rbWorkTimeEmpDailyPortrait2'? 'checked': '' }}
+                                                    >
+                                                    <label for="rbWorkTimeEmpDailyPortrait2">月報 A3縦 PTN2</label>
+                                                    <input type="radio"
+                                                        name="ReportCategory"
+                                                        id="rbWorkTimeEmpDailyLandscape"
+                                                        class="rbWorkTimeEmpDailyLandscape"
+                                                        tabindex="4"
+                                                        value="rbWorkTimeEmpDailyLandscape"
+                                                        {{ old('ReportCategory', !empty($input_datas['ReportCategory']) ? $input_datas['OutputCls'] : '') == 'rbWorkTimeEmpDailyLandscape'? 'checked': '' }}
+                                                    >
+                                                    <label for="rbWorkTimeEmpDailyLandscape">月報 A3横</label>
+                                                    <input type="radio"
+                                                        name="ReportCategory"
+                                                        id="rbWorkTimeEmpDailyLandscape2"
+                                                        class="rbWorkTimeEmpDailyLandscape2"
+                                                        tabindex="5"
+                                                        value="rbWorkTimeEmpDailyLandscape2"
+                                                        {{ old('ReportCategory', !empty($input_datas['ReportCategory']) ? $input_datas['OutputCls'] : '') == 'rbWorkTimeEmpDailyLandscape2'? 'checked': '' }}
+                                                    >
+                                                    <label for="rbWorkTimeEmpDailyLandscape2">月報 A4横 PTN1</label>
+                                                    <input type="radio"
+                                                        name="ReportCategory"
+                                                        id="rbWorkTimeEmpDailyLandscape3"
+                                                        class="rbWorkTimeEmpDailyLandscape3"
+                                                        tabindex="6"
+                                                        value="rbWorkTimeEmpDailyLandscape3"
+                                                        {{ old('ReportCategory', !empty($input_datas['ReportCategory']) ? $input_datas['OutputCls'] : '') == 'rbWorkTimeEmpDailyLandscape3'? 'checked': '' }}
+                                                    >
+                                                    <label for="rbWorkTimeEmpDailyLandscape3">月報 A4横 PTN2</label>
+                                                    <input type="radio"
+                                                        name="ReportCategory"
+                                                        id="rbWorkTimeSum"
+                                                        class="rbWorkTimeSum"
+                                                        tabindex="7"
+                                                        value="rbWorkTimeSum"
+                                                        {{ old('ReportCategory', !empty($input_datas['ReportCategory']) ? $input_datas['OutputCls'] : '') == 'rbWorkTimeSum'? 'checked': '' }}
+                                                    >
+                                                    <label for="rbWorkTimeSum">集計表</label>
+                                                    <div class="clearBoth"></div>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
 
-                        <div id="ctl00_cphContentsArea_UpdatePanel4">
+                                <table class="InputFieldStyle1">
+                                    <tbody>
+                                        <tr>
+                                            <th>出力区分</th>
+                                            <td>
+                                                <div class="GroupBox1">
+                                                    <input type="radio"
+                                                        name="OutputCls"
+                                                        id="rbDateRange"
+                                                        class="rbDateRange"
+                                                        tabindex="8"
+                                                        value="rbDateRange"
+                                                        {{ old('OutputCls', !empty( $input_datas['OutputCls']) ? $input_datas['OutputCls'] : '') == 'rbDateRange'? 'checked': '' }}
+                                                        @if(empty($input_datas['OutputCls']))
+                                                        checked
+                                                        @endif
+                                                    >
+                                                    <label for="rbDateRange" style="padding: 1.5px 0 0 3px;">日付範囲</label>
+                                                    <input type="radio"
+                                                        name="OutputCls"
+                                                        id="rbMonthCls"
+                                                        class="rbMonthCls"
+                                                        tabindex="9"
+                                                        value="rbMonthCls"
+                                                        {{ old('OutputCls', !empty($input_datas['OutputCls']) ? $input_datas['OutputCls'] : '') == 'rbMonthCls'? 'checked': '' }}
+                                                    >
+                                                    <label for="rbMonthCls" style="padding: 1.5px 0 0 3px;">月度</label>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
 
-                            <table class="InputFieldStyle1">
-                                <tbody>
-                                    <tr>
-                                        <th>帳票区分</th>
-                                        <td>
-                                            <div class="GroupBox1">
-                                                <input name="ctl00$cphContentsArea$ReportCategory" tabindex="1"
-                                                    id="ctl00_cphContentsArea_rbWeek" type="radio" checked="checked"
-                                                    value="rbWeek"><label for="ctl00_cphContentsArea_rbWeek">週間</label>
-                                                <input name="ctl00$cphContentsArea$ReportCategory" tabindex="2"
-                                                    id="ctl00_cphContentsArea_rbMonth"
-                                                    onclick="javascript:setTimeout('__doPostBack(\'ctl00$cphContentsArea$rbMonth\',\'\')', 0)"
-                                                    type="radio" value="rbMonth"><label
-                                                    for="ctl00_cphContentsArea_rbMonth">月間</label>
-                                                <div class="clearBoth"></div>
-                                            </div>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
+                                <table class="InputFieldStyle1">
+                                    <tbody>
+                                        <tr>
+                                            <th>並順</th>
+                                            <td>
+                                                <div class="GroupBox1">
+                                                    <span>
+                                                        <input type="radio"
+                                                            name="Sort"
+                                                            id="rbSortDept"
+                                                            class="rbSortDept"
+                                                            tabindex="10"
+                                                            value="rbSortDept"
+                                                            {{ old('Sort', !empty($input_datas['Sort']) ? $input_datas['Sort'] : '') == 'rbSortDept'? 'checked': '' }}
+                                                            @if(empty($input_datas['Sort']))
+                                                            checked
+                                                            @endif
+                                                        >
+                                                        <label for="rbSortDept">部門</label>
+                                                    </span>
+                                                    <span>
+                                                        <input type="radio"
+                                                            name="Sort"
+                                                            id="rbSortSection"
+                                                            class="rbSortSection"
+                                                            tabindex="11"
+                                                            value="rbSortSection"
+                                                            {{ old('Sort', !empty($input_datas['Sort']) ? $input_datas['Sort'] : '') == 'rbSortSection'? 'checked': '' }}
+                                                        >
+                                                        <label for="rbSortSection">所属</label>
+                                                    </span>
+                                                    <div class="clearBoth"></div>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
 
-                            <div class="clearBoth"></div>
+                                <table class="InputFieldStyle1">
+                                    <tbody>
+                                        <tr>
+                                            <th>開始対象日</th>
+                                            <td>
+                                                <input type="text"
+                                                    name="filter[startDate]"
+                                                    id="YearMonth"
+                                                    class="date"
+                                                    autocomplete="off"
+                                                    onfocus="this.select();"
+                                                    tabindex="12"
+                                                    value="{{ old('filter.startDate', !empty(Session::get('ymd_date')) ? Session::get('ymd_date'): '' ) }}"
+                                                />
+                                                @error('filter.startDate')
+                                                <span class="text-danger date-Error">{{ getArrValue($error_messages, $message) }}</span>
+                                                @enderror
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <th>終了対象日</th>
+                                            <td>
+                                                <input type="text"
+                                                    name="filter[endDate]"
+                                                    id="YearMonth"
+                                                    class="date"
+                                                    autocomplete="off"
+                                                    onfocus="this.select();"
+                                                    tabindex="13"
+                                                    value="{{ old('filter.endDate', !empty(Session::get('ymd_date')) ? Session::get('ymd_date'): '' ) }}"
+                                                />
+                                                @error('filter.endDate')
+                                                <span class="text-danger date-Error">{{ getArrValue($error_messages, $message) }}</span>
+                                                @enderror
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <th>対象月度</th>
+                                            <td>
+                                                <input type="text"
+                                                    name="filter[yearMonthDate]"
+                                                    id="yearMonth"
+                                                    class="yearMonth"
+                                                    tabindex="14"
+                                                    autocomplete="off"
+                                                    value="{{ old('filter.yearMonthDate', !empty(Session::get('ym_date')) ? Session::get('ym_date'): '' ) }}"
+                                                />
+                                                @error('filter.yearMonthDate')
+                                                <span class="text-danger yearMonth-Error">{{ getArrValue($error_messages, $message) }}</span>
+                                                @enderror
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <th>締日</th>
+                                            <td>
+                                                <select name="filter[ddlClosingDate]" id="ddlClosingDate" class="ddlClosingDate" tabindex="15" style="width: 150px;">
+                                                    <option class="BlaClosingDate" value=""></option>
+                                                    @isset($closing_dates)
+                                                    @foreach ($closing_dates as $closing_date)
+                                                        <option value="{{ $closing_date->CLOSING_DATE_CD }}"
+                                                            {{ old('filter.ddlClosingDate', !empty($search_data['ddlClosingDate']) ? $search_data['ddlClosingDate'] : '') ==$closing_date->CLOSING_DATE_CD? 'selected': '' }}>
+                                                            {{ $closing_date->CLOSING_DATE_NAME }}
+                                                        </option>
+                                                    @endforeach
+                                                    @endisset
+                                                </select>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <th>開始部門コード</th>
+                                            <td>
+                                                <input type="text"
+                                                    name="filter[txtStartDeptCd]"
+                                                    id="txtDeptCd"
+                                                    class="txtDeptCd searchDeptCd startDeptCd"
+                                                    tabindex="16"
+                                                    style="width: 50px;"
+                                                    onfocus="this.select();"
+                                                    oninput="value=onlyHalfWord(value)"
+                                                    autocomplete="off"
+                                                    maxlength="6"
+                                                    value="{{ old('filter.txtStartDeptCd', !empty( $input_datas['filter']['txtStartDeptCd'])? $input_datas['filter']['txtStartDeptCd'] : '')}}"
+                                                >
+                                                <input type="button"
+                                                    name="btnSearchStartDeptCd"
+                                                    id="btnSearchStartDeptCd"
+                                                    class="SearchButton"
+                                                    tabindex="17"
+                                                    onclick="SearchDept(this);return false"
+                                                    value="?"
+                                                >
+                                                <input id="deptName"
+                                                    class="txtDeptName"
+                                                    data-dispclscd=01 data-isdeptauth=true
+                                                    style="width: 200px; display: inline-block;"
+                                                >
+                                                <span class="text-danger" id="deptNameError"></span>
+                                                @error('filter.txtStartDeptCd')
+                                                <span class="text-danger" id="DeptCdValidError">{{ getArrValue($error_messages, $errors->first('filter.txtStartDeptCd')) }}</span>
+                                                @enderror
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <th>終了部門コード</th>
+                                            <td>
+                                                <input type="text"
+                                                    name="filter[txtEndDeptCd]"
+                                                    id="txtDeptCd"
+                                                    class="txtDeptCd searchDeptCd endDeptCd"
+                                                    tabindex="18"
+                                                    style="width: 50px;"
+                                                    onfocus="this.select();"
+                                                    oninput="value=onlyHalfWord(value)"
+                                                    autocomplete="off"
+                                                    maxlength="6"
+                                                    value="{{ old('filter.txtEndDeptCd', !empty( $input_datas['filter']['txtEndDeptCd'])? $input_datas['filter']['txtEndDeptCd'] : '')}}"
+                                                >
+                                                <input type="button"
+                                                    name="btnSearchEndDeptCd"
+                                                    id="btnSearchEndDeptCd"
+                                                    class="SearchButton"
+                                                    tabindex="19"
+                                                    onclick="SearchDept(this);return false"
+                                                    value="?"
+                                                >
+                                                <input id="deptName" class="txtDeptName"
+                                                    data-dispclscd=01 data-isdeptauth=true
+                                                    style="width: 200px; display: inline-block;"
+                                                >
+                                                <span class="text-danger" id="deptNameError"></span>
+                                                @error('filter.txtEndDeptCd')
+                                                <span class="text-danger" id="DeptCdValidError">{{ getArrValue($error_messages, $errors->first('filter.txtEndDeptCd')) }}</span>
+                                                @enderror
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <th>開始所属</th>
+                                            <td>
+                                                <select name="filter[ddlStartCompany]" id="ddlStartCompany" class="ddlStartCompany" tabindex="20" style="width: 300px;">
+                                                    <option value=""></option>
+                                                    @isset($company_list)
+                                                    @foreach ($company_list as $company)
+                                                        <option value="{{ $company->COMPANY_CD }}"
+                                                            {{ old('filter.ddlStartCompany') === $company->COMPANY_CD ? 'selected' : ''}}>
+                                                            {{ $company->COMPANY_ABR }}
+                                                        </option>
+                                                    @endforeach             
+                                                    @endisset
+                                                </select>
+                                                @error('filter.ddlStartCompany')
+                                                <span class="text-danger startCompany-Error">{{ getArrValue($error_messages, $errors->first('filter.ddlStartCompany')) }}</span>
+                                                @enderror
+                                            </td>
+                                        </tr>
 
-                            <table class="InputFieldStyle1">
-                                <tbody>
-                                    <tr>
-                                        <th>開始対象日</th>
-                                        <td>
-                                            <input name="ctl00$cphContentsArea$txtStartTargetYear" tabindex="3"
-                                                class="imeDisabled" id="ctl00_cphContentsArea_txtStartTargetYear"
-                                                style="width: 40px;" onfocus="this.select();" onchange="AddDropDownList()"
-                                                type="text" maxlength="4">
+                                        <tr>
+                                            <th>終了所属</th>
+                                            <td>
+                                                <select name="filter[ddlEndCompany]" id="ddlEndCompany" class="ddlEndCompany" tabindex="21" style="width: 300px;">
+                                                    <option value=""></option>
+                                                    @isset($company_list)
+                                                    @foreach ($company_list as $company)
+                                                        <option value="{{ $company->COMPANY_CD }}"
+                                                            {{ old('filter.ddlEndCompany') === $company->COMPANY_CD ? 'selected' : ''}}>
+                                                            {{ $company->COMPANY_ABR }}
+                                                        </option>
+                                                    @endforeach
+                                                    @endisset
+                                                </select>
+                                                @error('filter.ddlEndCompany')
+                                                <span class="text-danger endCompany-Error">{{ getArrValue($error_messages, $errors->first('filter.ddlEndCompany')) }}</span>
+                                                @enderror
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <th>開始社員番号</th>
+                                            <td>
+                                                <input type="text"
+                                                    name="filter[txtStartEmpCd]"
+                                                    id="txtEmpCd"
+                                                    class="txtEmpCd searchEmpCd"
+                                                    tabindex="22"
+                                                    style="width: 80px;"
+                                                    onfocus="this.select();"
+                                                    oninput="value=onlyHalfWord(value)"
+                                                    autocomplete="off"
+                                                    maxlength="10"
+                                                    value="{{ old('filter.txtStartEmpCd', !empty( $input_datas['filter']['txtStartEmpCd'])? $input_datas['filter']['txtStartEmpCd'] : '')}}"
+                                                >
+                                                <input type="button"
+                                                    name="btnSearchStartEmpCd"
+                                                    id="btnSearchStartEmpCd"
+                                                    class="SearchButton"
+                                                    tabindex="23"
+                                                    onclick="SearchEmp(this);return false"
+                                                    value="?"
+                                                >
+                                                <input id="empName"
+                                                    class="txtEmpName"
+                                                    style="width: 200px; display: inline-block;"
+                                                    @if(old('filter.chkRegCls', empty($errors->all()))) data-regclscd=00 @endif
+                                                    data-isdeptauth=true
+                                                >    
+                                                <span id="EmpCdError" class="text-danger"></span>
+                                                @error('filter.txtStartEmpCd')
+                                                <span id="EmpCdValidError" class="text-danger">{{ getArrValue($error_messages, $errors->first('filter.txtStartEmpCd')) }}</span>
+                                                @enderror
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <th>終了社員番号</th>
+                                            <td>
+                                                <input type="text"
+                                                    name="filter[txtEndEmpCd]"
+                                                    id="txtEmpCd"
+                                                    class="txtEmpCd searchEmpCd"
+                                                    tabindex="24"
+                                                    style="width: 80px;"
+                                                    onfocus="this.select();"
+                                                    oninput="value=onlyHalfWord(value)"
+                                                    autocomplete="off"
+                                                    maxlength="10"
+                                                    value="{{ old('filter.txtEndEmpCd', !empty( $input_datas['filter']['txtEndEmpCd'])? $input_datas['filter']['txtEndEmpCd'] : '')}}"
+                                                >
+                                                <input type="button"
+                                                    name="btnSearchEndEmpCd"
+                                                    id="btnSearchEndEmpCd"
+                                                    class="SearchButton"
+                                                    tabindex="25"
+                                                    onclick="SearchEmp(this);return false"
+                                                    value="?"
+                                                >
+                                                <input id="empName"
+                                                    class="txtEmpName"
+                                                    style="width: 200px; display: inline-block;"
+                                                    @if(old('filter.chkRegCls', empty($errors->all()))) data-regclscd=00 @endif
+                                                    data-isdeptauth=true
+                                                >
+                                                <span id="EmpCdError" class="text-danger"></span>
+                                                @error('filter.txtEndEmpCd')
+                                                <span id="EmpCdValidError" class="text-danger">{{ getArrValue($error_messages, $errors->first('filter.txtEndEmpCd')) }}</span>
+                                                @enderror
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                                <table>
+                                    <tbody>
+                                        <tr>
+                                            <td>
+                                                <input type="checkbox"
+                                                    name="filter[chkRegCls]"
+                                                    id="chkRegCls"
+                                                    tabindex="26"
+                                                    @if(old('filter.chkRegCls', empty($errors->all()))) checked="checked" @endif
+                                                    style="vertical-align: middle;"
+                                                >
+                                                <label for="chkRegCls">在籍のみ表示</label>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
 
-                                            &nbsp;年&nbsp;
-                                            <select name="ctl00$cphContentsArea$ddlStartTargetMonth" tabindex="4"
-                                                class="imeDisabled" id="ctl00_cphContentsArea_ddlStartTargetMonth"
-                                                style="width: 50px;" onchange="AddDropDownList()">
-                                                <option selected="selected" value=""></option>
-                                                <option value="1">1</option>
-                                                <option value="2">2</option>
-                                                <option value="3">3</option>
-                                                <option value="4">4</option>
-                                                <option value="5">5</option>
-                                                <option value="6">6</option>
-                                                <option value="7">7</option>
-                                                <option value="8">8</option>
-                                                <option value="9">9</option>
-                                                <option value="10">10</option>
-                                                <option value="11">11</option>
-                                                <option value="12">12</option>
-
-                                            </select>
-                                            &nbsp;月&nbsp;
-                                            <select name="ctl00$cphContentsArea$ddlStartTargetDay" tabindex="5"
-                                                class="imeDisabled" id="ctl00_cphContentsArea_ddlStartTargetDay"
-                                                style="width: 50px;">
-                                                <option selected="selected" value=""></option>
-                                                <option value="1">1</option>
-                                                <option value="2">2</option>
-                                                <option value="3">3</option>
-                                                <option value="4">4</option>
-                                                <option value="5">5</option>
-                                                <option value="6">6</option>
-                                                <option value="7">7</option>
-                                                <option value="8">8</option>
-                                                <option value="9">9</option>
-                                                <option value="10">10</option>
-                                                <option value="11">11</option>
-                                                <option value="12">12</option>
-                                                <option value="13">13</option>
-                                                <option value="14">14</option>
-                                                <option value="15">15</option>
-                                                <option value="16">16</option>
-                                                <option value="17">17</option>
-                                                <option value="18">18</option>
-                                                <option value="19">19</option>
-                                                <option value="20">20</option>
-                                                <option value="21">21</option>
-                                                <option value="22">22</option>
-                                                <option value="23">23</option>
-                                                <option value="24">24</option>
-                                                <option value="25">25</option>
-                                                <option value="26">26</option>
-                                                <option value="27">27</option>
-                                                <option value="28">28</option>
-                                                <option value="29">29</option>
-                                                <option value="30">30</option>
-                                                <option value="31">31</option>
-
-                                            </select>
-                                            &nbsp;日&nbsp;
-                                            <span id="ctl00_cphContentsArea_lblDateRange">より7日後まで</span>
-
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <th>開始部門コード</th>
-                                        <td>
-                                            <input name="ctl00$cphContentsArea$txtStartDeptCd" tabindex="8"
-                                                class="imeDisabled" id="ctl00_cphContentsArea_txtStartDeptCd"
-                                                style="width: 50px;"
-                                                onkeypress="if (WebForm_TextBoxKeyHandler(event) == false) return false;"
-                                                onfocus="this.select();"
-                                                onchange="javascript:setTimeout('__doPostBack(\'ctl00$cphContentsArea$txtStartDeptCd\',\'\')', 0)"
-                                                type="text" maxlength="6">
-                                            <input name="ctl00$cphContentsArea$btnSearchStartDeptCd" tabindex="9"
-                                                class="SearchButton" id="ctl00_cphContentsArea_btnSearchStartDeptCd"
-                                                onclick="SetDeptItem('ctl00_cphContentsArea_txtStartDeptCd', 'ctl00_cphContentsArea_lblStartDeptName');__doPostBack('ctl00$cphContentsArea$btnSearchStartDeptCd','')"
-                                                type="button" value="?">
-                                            <span class="OutlineLabel" id="ctl00_cphContentsArea_lblStartDeptName"
-                                                style="width: 200px; display: inline-block;"></span>
-
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <th>終了部門コード</th>
-                                        <td>
-                                            <input name="ctl00$cphContentsArea$txtEndDeptCd" tabindex="10"
-                                                class="imeDisabled" id="ctl00_cphContentsArea_txtEndDeptCd"
-                                                style="width: 50px;"
-                                                onkeypress="if (WebForm_TextBoxKeyHandler(event) == false) return false;"
-                                                onfocus="this.select();"
-                                                onchange="javascript:setTimeout('__doPostBack(\'ctl00$cphContentsArea$txtEndDeptCd\',\'\')', 0)"
-                                                type="text" maxlength="6">
-                                            <input name="ctl00$cphContentsArea$btnSearchEndDeptCd" tabindex="11"
-                                                class="SearchButton" id="ctl00_cphContentsArea_btnSearchEndDeptCd"
-                                                onclick="SetDeptItem('ctl00_cphContentsArea_txtEndDeptCd', 'ctl00_cphContentsArea_lblEndDeptName');__doPostBack('ctl00$cphContentsArea$btnSearchEndDeptCd','')"
-                                                type="button" value="?">
-                                            <span class="OutlineLabel" id="ctl00_cphContentsArea_lblEndDeptName"
-                                                style="width: 200px; display: inline-block;"></span>
-
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <th>開始社員番号 </th>
-                                        <td>
-                                            <input name="ctl00$cphContentsArea$txtStartEmpCd" tabindex="12"
-                                                class="imeDisabled" id="ctl00_cphContentsArea_txtStartEmpCd"
-                                                style="width: 80px;"
-                                                onkeypress="if (WebForm_TextBoxKeyHandler(event) == false) return false;"
-                                                onfocus="this.select();"
-                                                onchange="javascript:setTimeout('__doPostBack(\'ctl00$cphContentsArea$txtStartEmpCd\',\'\')', 0)"
-                                                type="text" maxlength="10">
-                                            <input name="ctl00$cphContentsArea$btnSearchStartEmpCd" tabindex="13"
-                                                class="SearchButton" id="ctl00_cphContentsArea_btnSearchStartEmpCd"
-                                                onclick="SetEmpItem('ctl00_cphContentsArea_txtStartEmpCd', 'ctl00_cphContentsArea_lblStartEmpName');__doPostBack('ctl00$cphContentsArea$btnSearchStartEmpCd','')"
-                                                type="button" value="?">
-                                            <span class="OutlineLabel" id="ctl00_cphContentsArea_lblStartEmpName"
-                                                style="width: 200px; height: 17px; display: inline-block;"></span>
-
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <th>終了社員番号</th>
-                                        <td>
-                                            <input name="ctl00$cphContentsArea$txtEndEmpCd" tabindex="14"
-                                                class="imeDisabled" id="ctl00_cphContentsArea_txtEndEmpCd"
-                                                style="width: 80px;"
-                                                onkeypress="if (WebForm_TextBoxKeyHandler(event) == false) return false;"
-                                                onfocus="this.select();"
-                                                onchange="javascript:setTimeout('__doPostBack(\'ctl00$cphContentsArea$txtEndEmpCd\',\'\')', 0)"
-                                                type="text" maxlength="10">
-                                            <input name="ctl00$cphContentsArea$btnSearchEndEmpCd" tabindex="15"
-                                                class="SearchButton" id="ctl00_cphContentsArea_btnSearchEndEmpCd"
-                                                onclick="SetEmpItem('ctl00_cphContentsArea_txtEndEmpCd', 'ctl00_cphContentsArea_lblEndEmpName');__doPostBack('ctl00$cphContentsArea$btnSearchEndEmpCd','')"
-                                                type="button" value="?">
-                                            <span class="OutlineLabel" id="ctl00_cphContentsArea_lblEndEmpName"
-                                                style="width: 200px; height: 17px; display: inline-block;"></span>
-
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
-
-                            <div class="line"></div>
-                            <p class="ButtonField1">
-                                <input name="ctl00$cphContentsArea$btnPrint" tabindex="16"
-                                    id="ctl00_cphContentsArea_btnPrint"
-                                    onclick='if (confirm(GetQuesMessage()) == false) {return false;};WebForm_DoPostBackWithOptions(new WebForm_PostBackOptions("ctl00$cphContentsArea$btnPrint", "", true, "Print", "", false, true))'
-                                    type="button" value="印刷">
-                                <input name="ctl00$cphContentsArea$btnCancel" tabindex="17"
-                                    id="ctl00_cphContentsArea_btnCancel"
-                                    onclick="CloseSubWindow();__doPostBack('ctl00$cphContentsArea$btnCancel','')"
-                                    type="button" value="キャンセル">
-                            </p>
-                        </div>
+                                <div class="line"></div>
+                                <p class="ButtonField1">
+                                    <input type="button"
+                                        name="btnPrint"
+                                        id="btnPrint"
+                                        class="ButtonStyle1 print"
+                                        tabindex="27"
+                                        value="印刷"
+                                        data-url="{{ route('WorkTimePrint.Print')}}"
+                                    >
+                                    <input type="button"
+                                        name="btnCancel"
+                                        id="btnCancel"
+                                        class="ButtonStyle1"
+                                        tabindex="28"
+                                        onclick=" location.href='{{ route('WorkTimePrint.index') }}' "
+                                        value="キャンセル"
+                                    >
+                                </p>
+                            </div>
+                        
+                        </form>
                     </td>
                 </tr>
             </tbody>
         </table>
     </div>
+@endsection
+@section('script')
+<script>
+$(function() {
+    // 帳票区分
+    function reportCategoryRadio(ele) {
+
+        // 日報, 集計表
+        if (ele.hasClass('rbWorkTimeDaily') || ele.hasClass('rbWorkTimeSum')) {
+            $(".rbDateRange").prop("disabled", false);
+            $(".rbMonthCls").prop("disabled", true); 
+            $(".rbSortDept").prop("disabled", true); 
+            $(".rbSortSection").prop("disabled", true);
+            $(".date").prop("disabled", false);
+            $(".yearMonth").prop("disabled", true);
+            $(".ddlClosingDate").prop("disabled", true);
+            $(".ddlStartCompany").prop("disabled", true);
+            $(".ddlEndCompany").prop("disabled", true);
+
+            $(".rbMonthCls").prop("checked", false);
+            $(".rbDateRange").prop("checked", true);
+            $(".yearMonth").val('');
+            $(".ddlClosingDate").val('');
+            $(".ddlStartCompany").val('');
+            $(".ddlEndCompany").val('');
+            $(".yearMonth-Error").text('');
+            $(".startCompany-Error").text('');
+            $(".endCompany-Error").text('');
+            $(".BlaClosingDate").show();
+        }
+        
+        // 月報 A3縦 PTN1, 月報 A3縦 PTN2, 月報 A3縦 PTN2 
+        if (ele.hasClass('rbWorkTimeEmpDailyPortrait') || ele.hasClass('rbWorkTimeEmpDailyPortrait2') || ele.hasClass('rbWorkTimeEmpDailyLandscape2')) {
+            $(".rbDateRange").prop("disabled", true);
+            $(".rbMonthCls").prop("disabled", false);
+            $(".rbSortDept").prop("disabled", true);
+            $(".rbSortSection").prop("disabled", true);
+            $(".date").prop("disabled", true);
+            $(".yearMonth").prop("disabled", false);
+            $(".ddlClosingDate").prop("disabled", false);
+            $(".ddlStartCompany").prop("disabled", true);
+            $(".ddlEndCompany").prop("disabled", true);
+
+            $(".rbMonthCls").prop("checked", true);
+            $(".rbDateRange").prop("checked", false);
+            $(".date").val('');
+            $(".ddlStartCompany").val('');
+            $(".ddlEndCompany").val('');
+            $(".date-Error").text('');
+            $(".BlaClosingDate").show();
+        }
+
+        // 月報 A3横
+        if (ele.hasClass('rbWorkTimeEmpDailyLandscape')) {
+            $(".rbDateRange").prop("disabled", true);
+            $(".rbMonthCls").prop("disabled", false);
+            $(".rbSortDept").prop("disabled", true);
+            $(".rbSortSection").prop("disabled", true);
+            $(".date").prop("disabled", true);
+            $(".yearMonth").prop("disabled", false);
+            $(".ddlClosingDate").prop("disabled", false);
+            $(".ddlStartCompany").prop("disabled", true);
+            $(".ddlEndCompany").prop("disabled", true);
+
+            $(".rbMonthCls").prop("checked", true);
+            $(".rbDateRange").prop("checked", false);
+            $(".date").val('');
+            $(".ddlStartCompany").val('');
+            $(".ddlEndCompany").val('');
+            $(".BlaClosingDate").hide();
+            $(".ddlClosingDate").val(15);
+        }
+
+        // 月報 A4横 PTN2
+        if (ele.hasClass('rbWorkTimeEmpDailyLandscape3')) {
+            $(".rbDateRange").prop("disabled", false);
+            $(".rbMonthCls").prop("disabled", false); 
+            $(".rbSortDept").prop("disabled", false); 
+            $(".rbSortSection").prop("disabled", false);
+            $(".date").prop("disabled", false);
+            $(".yearMonth").prop("disabled", true);
+            $(".ddlClosingDate").prop("disabled", true);
+            $(".ddlStartCompany").prop("disabled", false);
+            $(".ddlEndCompany").prop("disabled", false);
+            $(".yearMonth").val('');
+            $(".ddlClosingDate").val('');
+            $(".BlaClosingDate").show();
+
+            function outputClsRadio(ele) {
+                if (ele.hasClass('rbMonthCls')) {
+                    $(".date").prop("disabled", true);
+                    $(".yearMonth").prop("disabled", false);
+                    $(".ddlClosingDate").prop("disabled", false);
+                    $(".date").val('');
+                } else {
+                    $(".date").prop("disabled", false);
+                    $(".yearMonth").prop("disabled", true);
+                    $(".ddlClosingDate").prop("disabled", true);
+                    $(".yearMonth").val('');
+                    $(".yearMonth-Error").text('');
+                }
+            }
+
+            // 出力区分
+            outputClsRadio($("input[type='radio']:checked"), true);
+            $("input[type='radio'][name='OutputCls']").on('click', function() {
+                outputClsRadio($(this));
+            })
+        }
+    }
+
+    // 帳票区分
+    reportCategoryRadio($("input[type='radio']:checked"), true);
+    $("input[type='radio'][name='ReportCategory']").on('click', function() {
+        reportCategoryRadio($(this));
+    })
+
+    // 印刷
+    $(document).on('click', '.print', function() {
+        var dailyWorkTime = $(".rbWorkTimeDaily").prop("checked"); // 日報
+        var MonthlyReportPortrait = $(".rbWorkTimeEmpDailyPortrait").prop("checked"); // 月報 A3縦 PTN1
+        var MonthlyReportPortrait2 = $(".rbWorkTimeEmpDailyPortrait2").prop("checked"); // 月報 A3縦 PTN2
+        var MonthlyReportLandscape = $(".rbWorkTimeEmpDailyLandscape").prop("checked"); // 月報 A3横
+        var MonthlyReportLandscape2 = $(".rbWorkTimeEmpDailyLandscape2").prop("checked"); // 月報 A4横 PTN1
+        var MonthlyReportLandscape3 = $(".rbWorkTimeEmpDailyLandscape3").prop("checked"); // 月報 A4横 PTN2
+        var workTimeSum = $(".rbWorkTimeSum").prop("checked"); // 集計表
+        var message = "{{ getArrValue($error_messages, 1011) }}"; // {0}を印刷しますか？
+
+        // 日報
+        if (dailyWorkTime) {
+            if (window.confirm(message.replace('{0}','勤務実績表(日報)'))) {
+                var url = $(this).data('url');
+                $('#form').attr('action', url);
+                $('#form').submit();
+            }
+            return false;
+        }
+
+        // 月報 A3縦 PTN1
+        if (MonthlyReportPortrait) {
+            if (window.confirm(message.replace('{0}','勤務実績表(社員別月報)A3縦 PTN1'))) {
+                var url = $(this).data('url');
+                $('#form').attr('action', url);
+                $('#form').submit();
+            }
+            return false;
+        }
+
+        // 月報 A3縦 PTN2
+        if (MonthlyReportPortrait2) {
+            if (window.confirm(message.replace('{0}','勤務実績表(社員別月報)A3縦 PTN2'))) {
+                var url = $(this).data('url');
+                $('#form').attr('action', url);
+                $('#form').submit();
+            }
+            return false;
+        }
+
+        // 月報 A3横
+        if (MonthlyReportLandscape) {
+            if (window.confirm(message.replace('{0}','勤務実績表(社員別月報)A3横'))) {
+                var url = $(this).data('url');
+                $('#form').attr('action', url);
+                $('#form').submit();
+            }
+            return false;
+        }
+
+        // 月報 A4横 PTN1
+        if (MonthlyReportLandscape2) {
+            if (window.confirm(message.replace('{0}','勤務実績表(社員別月報)A4横 PTN1'))) {
+                var url = $(this).data('url');
+                $('#form').attr('action', url);
+                $('#form').submit();
+            }
+            return false;
+        }
+
+        // 月報 A4横 PTN2
+        if (MonthlyReportLandscape3) {
+            if (window.confirm(message.replace('{0}','勤務実績表(社員別月報)A4横 PTN2'))) {
+                var url = $(this).data('url');
+                $('#form').attr('action', url);
+                $('#form').submit();
+            }
+            return false;
+        }
+
+        // 集計表
+        if (workTimeSum) {
+            if (window.confirm(message.replace('{0}','勤務実績集計表'))) {
+                var url = $(this).data('url');
+                $('#form').attr('action', url);
+                $('#form').submit();
+            }
+            return false;
+        }
+    });
+
+    // 年月日
+    $('.date').datepicker({
+        format: 'yyyy年mm月dd日',
+        autoclose: true,
+        language: 'ja', // カレンダー日本語化のため
+    });
+
+    // 年月
+    $('.yearMonth').datepicker({
+        format: 'yyyy年mm月',
+        autoclose: true,
+        language: 'ja', // カレンダー日本語化のため
+        minViewMode : 1
+    });
+
+    // 入力可能文字：半角英数
+    onlyHalfWord = n => n.replace(/[０-９Ａ-Ｚａ-ｚ]/g, s => String.fromCharCode(s.charCodeAt(0) - 65248))
+            .replace(/[^0-9a-zA-Z]/g, '');
+
+    $('#chkRegCls').change(ele => {
+        if (ele.target.checked) {
+            $(".txtEmpName").data('regclscd', '00');
+        } else {
+            $(".txtEmpName").data('regclscd', '')
+        }
+    })
+})
+</script>
 @endsection

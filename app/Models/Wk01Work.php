@@ -99,7 +99,7 @@ class Wk01Work extends Model
 {
     /**
      * The table associated with the model.
-     * 
+     *
      * @var string
      */
     protected $table = 'WK01_WORK';
@@ -115,4 +115,13 @@ class Wk01Work extends Model
      * @var string
      */
     protected $connection = 'sqlsrv';
+
+    /**
+     * Query scope.
+     */
+    public function scopeFilter($query, $filter)
+    {
+        $filter->apply($query);
+    }
+
 }

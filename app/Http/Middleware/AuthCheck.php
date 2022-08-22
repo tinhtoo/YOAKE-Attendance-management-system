@@ -17,7 +17,7 @@ class AuthCheck
     public function handle(Request $request, Closure $next)
     {
         if(!session()->has('id')){
-            return redirect('/')->with('fail', 'もう一度ログインしてください！');
+            return redirect('/');
         }
         return $next($request);
     }

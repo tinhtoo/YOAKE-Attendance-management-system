@@ -2,7 +2,7 @@
 
 namespace App\Exceptions;
 
-use Illuminate\Session\TokenMismatchException; //追加
+use Illuminate\Session\TokenMismatchException;
 use Illuminate\Foundation\Exceptions\Handler as ExceptionHandler;
 use Throwable;
 
@@ -49,7 +49,7 @@ class Handler extends ExceptionHandler
     {
 
         if ($exception instanceof TokenMismatchException) {
-            return redirect('/');//ログイン画面のURLお好みで
+            return redirect('/'); // ログイン画面URL
         }
 
         return parent::render($request, $exception);

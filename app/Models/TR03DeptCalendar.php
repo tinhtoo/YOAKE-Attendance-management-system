@@ -33,4 +33,13 @@ class TR03DeptCalendar extends Model
      */
     protected $connection = 'sqlsrv';
 
+    /**
+     * The primary key for the model.
+     *
+     * @var string
+     */
+    protected $primaryKey = ['CALD_YEAR','CALD_MONTH','CLOSING_DATE_CD','DEPT_CD'];
+
+    public $incrementing = false;
+    public $timestamps = false;
 }

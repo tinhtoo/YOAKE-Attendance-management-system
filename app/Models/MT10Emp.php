@@ -1,6 +1,6 @@
 <?php
 
-namespace app\Models;
+namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
@@ -51,40 +51,40 @@ class MT10Emp extends Model
 {
     /**
      * The table associated with the model.
-     * 
+     *
      * @var string
      */
     protected $table = 'MT10_EMP';
 
     /**
+     * @var array
+     */
+    protected $fillable = ['EMP_CD', 'EMP_NAME', 'EMP_KANA', 'EMP_ABR', 'DEPT_CD', 'ENT_DATE', 'ENT_YEAR', 'ENT_MONTH', 'ENT_DAY', 'RET_DATE', 'RET_YEAR', 'RET_MONTH', 'RET_DAY', 'REG_CLS_CD', 'BIRTH_DATE', 'BIRTH_YEAR', 'BIRTH_MONTH', 'BIRTH_DAY', 'SEX_CLS_CD', 'EMP_CLS1_CD', 'EMP_CLS2_CD', 'EMP_CLS3_CD', 'CALENDAR_CD', 'DEPT_AUTH_CD', 'PG_AUTH_CD', 'POST_CD', 'ADDRESS1', 'ADDRESS2', 'TEL', 'CELLULAR', 'MAIL', 'RSV1_CLS_CD', 'RSV2_CLS_CD', 'UPD_DATE', 'PH_GRANT', 'PH_GRANT_YEAR', 'PH_GRANT_MONTH', 'CLOSING_DATE_CD', 'COMPANY_CD', 'EMP2_CD', 'EMP3_CD'];
+
+    /**
      * The primary key for the model.
-     * 
+     *
      * @var string
      */
     protected $primaryKey = 'EMP_CD';
 
     /**
      * The "type" of the auto-incrementing ID.
-     * 
+     *
      * @var string
      */
     protected $keyType = 'string';
 
     /**
      * Indicates if the IDs are auto-incrementing.
-     * 
+     *
      * @var bool
      */
     public $incrementing = false;
 
     /**
-     * @var array
-     */
-    protected $fillable = ['EMP_NAME', 'EMP_KANA', 'EMP_ABR', 'DEPT_CD', 'ENT_DATE', 'ENT_YEAR', 'ENT_MONTH', 'ENT_DAY', 'RET_DATE', 'RET_YEAR', 'RET_MONTH', 'RET_DAY', 'REG_CLS_CD', 'BIRTH_DATE', 'BIRTH_YEAR', 'BIRTH_MONTH', 'BIRTH_DAY', 'SEX_CLS_CD', 'EMP_CLS1_CD', 'EMP_CLS2_CD', 'EMP_CLS3_CD', 'CALENDAR_CD', 'DEPT_AUTH_CD', 'PG_AUTH_CD', 'POST_CD', 'ADDRESS1', 'ADDRESS2', 'TEL', 'CELLULAR', 'MAIL', 'RSV1_CLS_CD', 'RSV2_CLS_CD', 'UPD_DATE', 'PH_GRANT', 'PH_GRANT_YEAR', 'PH_GRANT_MONTH', 'CLOSING_DATE_CD', 'COMPANY_CD', 'EMP2_CD', 'EMP3_CD'];
-
-    /**
      * The connection name for the model.
-     * 
+     *
      * @var string
      */
     protected $connection = 'sqlsrv';
@@ -97,4 +97,6 @@ class MT10Emp extends Model
         $filter->apply($query);
     }
 
+    // created_atとupdated_atを無効化
+    public $timestamps = false;
 }

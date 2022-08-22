@@ -1,42 +1,29 @@
+Complete = function() {
+    $('#gridview-container .GridViewPanelStyle1').width(1);
+    $('#gridview-container .GridViewPanelStyle1').width($('#contents').width() - 50);
+};
+Complete();
+$(window).on("resize", Complete);
 
-//table header add
+//***** table header add *****//
 function hh() {
     var header = '<tr class="d_head" ><th scope="col">部門コード</th><th scope="col">部門名</th><th scope="col">行削除</th></tr>';
     $(".gvDept").append(header);
 }
 
-
-//var count = 0;
-//table row add 
+var count = 0;
+//***** table row add *****//
 function hh_2() {
-    //count++;
-    var html_input = '<tr class="data"><td ><input tabindex="4" class="input_id" name="dept_id" style="width: 55px;" type="text" maxlength="6" value="" required></td><td><input tabindex="4" class="dept_name" name="dept_name" style="width: 270px;" type="text" maxlength="20" value="" required></td><td><input tabindex="4" class="DeleteRow" name="del-col" type="button" value="削除"></td><br><td><div id="adiv" style="color: red;"></div></td></tr>';
+    count++;
+    var html_input = '<tr class="data"><td ><input tabindex="4" class="dep_id" name="record_' + (count) + ' " style="width: 55px;" type="text" maxlength="6" value=""></td><td><input tabindex="4" style="width: 270px;" type="text" maxlength="20" value=""></td><td><input tabindex="4" class="DeleteRow" name="del-col" type="button" value="削除"></td></tr>';
 
     $(".gvDept").append(html_input);
 
 }
 
-// var which = true;
-// let lineNo = 0;
-// $(document).on('click', '#AddNewRow', function () {
-//     if (which) {
-//         hh()
-//         hh_2()
-//         which = false;
-//     } else {
-//         //hh()
-//         hh_2()
-
-//     }
-
-// })
-// lineNo++;
-
-// ????? 追加日日6/6/2020 ????? start//
-
-
+//***** テーブル行追加ボタン処理 *****//
 let lineNo = 0;
-$(document).on('click', '#AddNewRow', function () {
+$(document).on('click', '#AddNewRow', function() {
     if ($(".d_head")[0]) {
         hh_2()
     } else {
@@ -48,33 +35,8 @@ $(document).on('click', '#AddNewRow', function () {
 lineNo++;
 
 
-// ????? 追加日日6/6/2020 ????? end//
-
-
-//行削除ボタン
-// function d_head() {
-//     $(".gvDept").find('input[name="record_1"]').each(function () {
-
-//         $(this).parents(".d_head").remove();
-
-//     });
-// }
-
-// var IsClicked = false;
-// $(".gvDept").on("click", '.DeleteRow', function () {
-//     IsClicked = true;
-// });
-// if (IsClicked) {
-//     d_head();
-// }
-// else {
-//     $(this).closest('.data').remove();
-
-// }
-
-
 //***** 行削除ボタン処理 *****//
-$(".gvDept").on("click", ".DeleteRow", function () {
+$(".gvDept").on("click", ".DeleteRow", function() {
 
     if ($(".data")[1]) {
         $(this).closest('.data').remove();
@@ -85,467 +47,405 @@ $(".gvDept").on("click", ".DeleteRow", function () {
 
 });
 
-//....test.....end//
-
-// //行削除ボタン
-// $(".gvDept").on("click",'.DeleteRow',function(){
-
-//     $(this).closest('tr').remove(); 
-//  });
-
-//全行削除ボタン
-// $("#btnDelete").on("click", function () {
-//     $(this).closest("tr").find(".d_head").remove();
-//     $(".gvDept").find('input[name *="record"]').each(function () {
-
-//         // $(this).parents("tr").find(".d_head").remove();
-
-//         //$(this).parents(".data").remove();
-
-//     });
-
-// });
-
-// $(".ButtonField1").on("click", '#btnUpdate', function () {
-//     var val = $(".input_id").length > 0 && $("input_id").val() != '';
-//     var test = $($(".input_id").val());
-//     // if($("input[type='text']").length > 0 && $("input[type='text']").val() != ''){
-//     if (val) {
-//         // test.prop("disabled", true);
-//         // $(".input_id").prop("disabled", true);
-//         ($('.input_id').val()).prop("disabled", true); 
-
-//         confirm('更新します。よろしいですか?????');
-//     } else {
-//         alert('failed');
-//     };
-
-
-// });
-
-
-// $(".ButtonField1").on("click", '#btnUpdate', function () {
-//     var val = $(".input_id").length > 0 && $("input_id").val() != '';
-//     var check = $(".input_id").val();
-//     var error;
-//     $(".input_id").on("focusout",function(){
-//         if(check != ''){
-
-//         }else{
-
-//         }
-//     })
-//     if (check === '') {
-//         error = true;
-//         confirm('Error。よろしいですか?????');
-//     } else {
-
-
-//         if (val) {
-
-//             $(".input_id").prop("disabled", true);
-
-//             confirm('更新します。よろしいですか?????');
-//         }
-//     }
-
-// });
-// if (error) {
-//     // エラーが見つかった場合
-//     if (!$(this).next('span.error').length) { // この要素の後続要素が存在しない場合
-//         $(this).after('<span class="error">必須入力項目です。</span>'); // この要素の後にエラーメッセージを挿入 
-//     } else {
-//         // エラーがなかった場合
-//         $(this).next('span.error').remove(); // この要素の後続要素を削除
-//     }
-// }
-
-//***** 全行削除ボタン処理 *****//
-$(".ButtonField1").on("click", '#btnDelete', function () {
-    if (confirm('削除します。よろしいですか?')) {
-
-        $(".gvDept").find('input[name *="dept_id"]').each(function () {
-
-            // $(this).parents("tr").find(".d_head").remove();
-
-            $(this).parents(".data").remove();
-
-        });
-        $(this).parents("tr").find(".d_head").remove();
-    }
-});
-
-/**
- * sub-window処理
-*/
-// 削除*********start2022/01/26*********
-//新部門選択サブ画面
-// function SetUpDeptItem() {
-
-//     window.open('UpDeptSearch', '', 'width=600,height=750');
-//     // return false;
-// };
-
-// 削除*********end2022/01/26*********
-
-// 削除*********2022/2/1 S「ティン」*********
-// //部門情報検索サブ画面
-// $(function () {
-//     $("#btnSearchDeptCd").on('click', function () {
-//         window.open('/search/MT12DeptSearch', '', 'width=400, height=550, top=90, left=400');
-//     });
-// });
-
-// //社員情報検索サブ画面
-// $(function () {
-//     $("#btnSearchEmpCd").on('click', function () {
-//         window.open('/search/MT10EmpSearch', '', 'width=500, height=650, top=90, left=350');
-//     });
-// });
-// 削除*********2022/2/1 E 「ティン」*********
-
-// 追加*********2022/2/1 S 「ティン」*********
-// アンロード時にサブ画面を閉じる
-window.onunload = function() {
-    closeWindow();
-}
 var popupDept;
-//部門情報検索サブ画面
-function SearchDept() {
-    popupDept = window.open('/search/MT12DeptSearch','部門情報検索','height=550,width=400,left=400,top=90,resizable=yes,scrollbars=yes,toolbar=yes,menubar=no,location=no,directories=no, status=yes');
+// 部門情報検索サブ画面
+function SearchDept(element) {
+    $(".clickedTableRecord").remove();
+    $(element).closest('td').append("<input type='hidden' class='clickedTableRecord'>");
+    var deptNameObj = $(element).closest("td").find("#deptName");
+    var param = "";
+    if (Object.keys(deptNameObj.data()).length) {
+        var paramObject = {};
+        deptNameObj.data().dispclscd ? paramObject['dispClsCd'] = deptNameObj.data().dispclscd : null;
+        deptNameObj.data().isdeptauth ? paramObject['isDeptAuth'] = deptNameObj.data().isdeptauth : null;
+        var searchParam = new URLSearchParams(paramObject).toString();
+        param = searchParam ? '?' + searchParam : '';
+    }
+    var url = '/search/MT12DeptSearch' + param;
+    popupDept = window.open(url, '部門情報検索', 'height=550,width=400,left=400,top=90,resizable=yes,scrollbars=yes,toolbar=yes,menubar=no,location=no,directories=no, status=yes');
     window.focus();
-    popupDept.focus();        
+    popupDept.focus();
 }
 
-//ポップアップ画面を閉じる
+// ポップアップ画面を閉じる
 window.addEventListener('unload', function(event) {
     if (typeof popupDept != "undefined") {
         popupDept.close();
     }
 });
 
-//社員情報検索サブ画面
+// 社員情報検索サブ画面
 
 var popupEmp;
-//ポップアップ画面を開く
-function SearchEmp() {
-    popupEmp = window.open('/search/MT10EmpSearch','社員情報検索','height=650,width=500,left=350,top=90,resizable=yes,scrollbars=yes,toolbar=yes,menubar=no,location=no,directories=no, status=yes'); 
+// ポップアップ画面を開く
+function SearchEmp(element) {
+    $(".clickedTableRecord").remove();
+    $(element).closest('td').append("<input type='hidden' class='clickedTableRecord'>");
+    var empNameObj = $(element).closest("td").find("#empName");
+    var param = "";
+    if (Object.keys(empNameObj.data()).length) {
+        var paramObject = {};
+        empNameObj.data().regclscd ? paramObject['regClsCd'] = empNameObj.data().regclscd : null;
+        empNameObj.data().isdeptauth ? paramObject['isDeptAuth'] = empNameObj.data().isdeptauth : null;
+        empNameObj.data().calendarclscd ? paramObject['calendarClsCd'] = empNameObj.data().calendarclscd : null;
+        var searchParam = new URLSearchParams(paramObject).toString();
+        param = searchParam ? '?' + searchParam : '';
+    }
+    var url = '/search/MT10EmpSearch' + param;
+    popupEmp = window.open(url, '社員情報検索', 'height=650,width=500,left=350,top=90,resizable=yes,scrollbars=yes,toolbar=yes,menubar=no,location=no,directories=no, status=yes');
     window.focus();
     popupEmp.focus();
 }
-//ポップアップ画面を閉じる
+
+// ポップアップ画面を閉じる
 window.addEventListener('unload', function(event) {
     if (typeof popupEmp != "undefined") {
         popupEmp.close();
     }
 });
 
-// 追加*********2022/2/1 E 「ティン」*********
-
-// function OpenPopupWindow()
-// {
-//  var url = "/search/MT10EmpSearch";
-// myRef = window.open(url ,'mywin','width=500, height=650, top=90, left=350');
-// myRef.focus()
-
-// }
-
-
-
-
-
-/**
- * 部門権限情報入力 処理
-*/
-
-$('#btnSelectAll').on('click', function () {
-    $('input').prop('checked', true);
-});
-
-$('#btnNotSelectAll').on('click', function () {
-    $('input').prop('checked', false);
-});
-
-
-//祝祭日・会社休日情報入力 
-
-function month() {
-    var $select = $(".select_month");
-    for (i = 1; i <= 12; i++) {
-        $select.append($('<option></option > ').val(i).html(i))
-    }
-}
-function day() {
-    var $select = $(".select_day");
-    for (i = 1; i <= 31; i++) {
-        $select.append($('<option></option > ').val(i).html(i))
-    }
-}
-
-//table header add
-function MT08() {
-    var MT08_header = '<tr class="MT08_head" ><th scope="col">月</th><th scope="col">日</th><th scope="col">名称</th><th scope="col"> 行削除</th></tr>';
-    $(".gvDept_2").append(MT08_header);
-}
-
-
-
-//table row add 
-function MT08_2() {
-    // month();
-    // day();
-    var MT08_html = '<tr class="data"><td class="GridViewRowCenter"><select class="select_month" tabindex="6"  id="ddlChHldMonth" style="width: 45px;">' + month() + '</select><span id="MonthUnit">月</span></td><td><select class="select_day" tabindex="6"  id="ddlChHldDay" style="width: 45px;">' + day() + '</select><span id="DayUnit">日</span></td><td class="GridViewRowLeft"><input name="NhHldName" tabindex="3" class="imeOn" style="width: 170px;" onfocus="" type="text" maxlength="20" value=""><br></td><td><input tabindex="4" class="DeleteRow" name="del-col" type="button" value="削除"></td><br><td><div id="adiv" style="color: red;"></div></td></tr>';
-
-    $(".gvDept_2").append(MT08_html);
-
-}
-
-//let line = 0;
-$('#contents-stage').on('click', '#btnAddNationalHoliday', function add() {
-    if ($(".MT08_head")[0]) {
-        MT08_2()
-    } else {
-        MT08()
-        MT08_2()
-    }
-
-})
-
-//キャンセルボタンクリック
-function SetEmpItem(){
-    $("#gridview-warp").empty();
-}
-
-//line++;
-
-
-// function MT08() {
-//     var header = '<tr class="head_2" ><th scope="col">月</th><th scope="col">日</th><th scope="col">名称</th><th scope="col"> 行削除</th></tr>';
-//     $(".gvDept_2").append(header);
-// }
-
-// function MT08_2() {
-//     //count++;
-//     var $select = $(".select_month");
-//     for (i = 1; i <= 12; i++) {
-//         $select.append($('<option></option > ').val(i).html(i))
-//     }
-
-//     var $select = $(".select_day");
-//     for (i = 1; i <= 31; i++) {
-//         $select.append($('<option></option > ').val(i).html(i))
-//     }
-
-//     var html_input = '<tr class="data"><td class="GridViewRowCenter"><select class="select_month" tabindex="6"  id="ddlChHldMonth" style="width: 45px;"></select><span id="MonthUnit">月</span></td><td><select class="select_day" tabindex="6"  id="ddlChHldDay" style="width: 45px;"></select><span id="DayUnit">日</span></td><td class="GridViewRowLeft"><input name="NhHldName" tabindex="3" class="imeOn" style="width: 170px;" onfocus="" type="text" maxlength="20" value="元旦"><br></td><td><input tabindex="4" class="DeleteRow" name="del-col" type="button" value="削除"></td><br><td><div id="adiv" style="color: red;"></div></td></tr>';
-
-//     $(".gvDept_2").append(html_input);
-
-// }
-// // $(function () {
-// var $select = $(".data,.select_month");
-// for (i = 1; i <= 12; i++) {
-//     $select.append($('<option></option >').val(i).html(i))
-// }
-// // });
-// //$(function () {
-// var $select = $(".data,.select_day");
-// for (i = 1; i <= 31; i++) {
-//     $select.append($('<option></option >').val(i).html(i))
-// }
-// // });
-
-// var count = 0
-// var header = '<tr class="head_2" ><th scope="col">月</th><th scope="col">日</th><th scope="col">名称</th><th scope="col"> 行削除</th></tr>';
-
-// var html_input = '<tr class="data"><td class="GridViewRowCenter"><select class="select_month" tabindex="6" id="ddlChHldMonth" style="width: 45px;"></select><span id="MonthUnit">月</span></td><td><select class="select_day" tabindex="6"  id="ddlChHldDay" style="width: 45px;"></select><span id="DayUnit">日</span></td><td class="GridViewRowLeft"><input name="NhHldName" tabindex="3" class="imeOn" style="width: 170px;" onfocus="" type="text" maxlength="20" value=""><br></td><td><input tabindex="4" class="DeleteRow" name="del-col" type="button" value="削除"></td><br><td><div id="adiv" style="color: red;"></div></td></tr>';
-
-// function t_header() {
-//     // var header = '<tr class="head_2" ><th scope="col">月</th><th scope="col">日</th><th scope="col">名称</th><th scope="col"> 行削除</th></tr>';
-//     $(".gvDept_2").append(header);
-// }
-
-// function t_data() {
-//     var $select = $(".select_month");
-//     for (i = 1; i <= 12; i++) {
-//         if(html(i) = 12){
-//             break;
-//         }
-//         $select.append($('<option></option >').val(i).html(i));
-
-//     }
-//     var $select = $(".select_day");
-//     for (i = 1; i <= 31; i++) {
-
-//         $select.append($('<option></option >').val(i).html(i));
-
-//     }
-//     // var html_input = '<tr class="data"><td class="GridViewRowCenter"><select class="select_month" tabindex="6"  id="ddlChHldMonth" style="width: 45px;"></select><span id="MonthUnit">月</span></td><td><select class="select_day" tabindex="6"  id="ddlChHldDay" style="width: 45px;"></select><span id="DayUnit">日</span></td><td class="GridViewRowLeft"><input name="NhHldName" tabindex="3" class="imeOn" style="width: 170px;" onfocus="" type="text" maxlength="20" value=""><br></td><td><input tabindex="4" class="DeleteRow" name="del-col" type="button" value="削除"></td><br><td><div id="adiv" style="color: red;"></div></td></tr>';
-//     $(".gvDept_2").append(html_input);
-
-// }
-
-// function t_header2() {
-
-//     //var header = '<tr class="head_2" ><th scope="col">月</th><th scope="col">日</th><th scope="col">名称</th><th scope="col"> 行削除</th></tr>';
-//     $(".gvDept_3").append(header);
-// }
-
-// function t_data2() {
-//     var $select2 = $(".select_month");
-//     for (a = 1; a <= 12; a++) {
-
-//         $select2.append($('<option></option >').val(a).html(a));
-
-//     }
-//     var $select = $(".select_day");
-//     for (a = 1; a <= 31; a++) {
-//         $select.append($('<option></option >').val(a++).html(a))
-//     }
-//     //var html_input = '<tr class="data"><td class="GridViewRowCenter"><select class="select_month" tabindex="6"  id="ddlChHldMonth" style="width: 45px;"></select><span id="MonthUnit">月</span></td><td><select class="select_day" tabindex="6"  id="ddlChHldDay" style="width: 45px;"></select><span id="DayUnit">日</span></td><td class="GridViewRowLeft"><input name="NhHldName" tabindex="3" class="imeOn" style="width: 170px;" onfocus="" type="text" maxlength="20" value=""><br></td><td><input tabindex="4" class="DeleteRow" name="del-col" type="button" value="削除"></td><br><td><div id="adiv" style="color: red;"></div></td></tr>';
-//     $(".gvDept_3").append(html_input);
-// }
-
-// $(function () {
-//     var $select = $(".select_month");
-//     for (i = 1; i <= 12; i++) {
-//         $select.append($('<option></option >').val(i).html(i))
-//     }
-// });
-// $(function () {
-//     var $select = $(".select_day");
-//     for (i = 1; i <= 31; i++) {
-//         $select.append($('<option></option >').val(i).html(i))
-//     }
-// });
-
-//クリック
-// let lineNo_2 = 0;
-// $('#contents-stage').on('click', '#btnAddNationalHoliday', function (e) {
-
-//     e.preventDefault();
-
-//     if ($("#NationalHoliday").find(".head_2")[0]) {
-//         //$(".gvDept_2").append(html_input);
-//         t_data();
-//     } else {
-//         // $(".gvDept_2").append(header);
-//         // $(".gvDept_2").append(html_input);
-//         t_header();
-//         t_data();
-//     }
-//     //confirm('クリックしました。')
-
-// })
-// lineNo_2++;
-
-// let lineNo_3 = 0;
-// $('#contents-stage').on('click', '#btnAddCompanyHoliday', function (e) {
-//     e.preventDefault();
-
-//     if ($("#CompanyHoliday").find(".head_2")[0]) {
-//         //$(".gvDept_3").append(html_input);
-//         t_data2();
-//     } else {
-//         // $(".gvDept_3").append(header);
-//         // $(".gvDept_3").append(html_input);
-//         t_header2();
-//         t_data2();
-//     }
-
-// })
-// lineNo_3++;
-
-
-/**
- * 年
-*/
-// $(function () {
-//     //DropDownListを参照します。
-//     var ddlYears = $("#ddlTargetYear");
-
-//     //現在の年を決定します。
-//     var currentYear = (new Date()).getFullYear();
-
-//     //ループして、Year値をDropDownListに追加します。
-//     for (var i = currentYear - 3; i <= currentYear + 3; i++) {
-//         var option = $("<option />");
-//         option.html(i);
-//         option.val(i);
-//         ddlYears.append(option);
-//     }
-
-// });
-
-/**
- * 月
-*/
-// $(function () {
-//     //DropDownListを参照します。
-//     var ddlYears = $("#ddlTargetMonth");
-
-//     //ループして、Month値をDropDownListに追加します。
-//     for (var i = 1; i <= 12; i++) {
-//         var option = $("<option />");
-//         option.html(i);
-//         option.val(i);
-//         ddlYears.append(option);
-//     }
-// });
-
-
-
-/**
- * 勤務状況照会（管理者）
- */
-
-// $('input:radio').on('click', function () {
-//     $("#txtEmpCd, #btnSearchEmpCd").prop("disabled", true);
-//     $("#txtDeptCd, #ddlStartCompany, #ddlEndCompany, #ddlClosingDate, #btnSearchDeptCd").prop("disabled", false);
-//     if ($(this).hasClass('rbSearchEmp')) {
-//         $("#txtEmpCd, #btnSearchEmpCd").prop("disabled", false);
-//         $("#txtDeptCd, #ddlStartCompany, #ddlEndCompany, #ddlClosingDate, #btnSearchDeptCd").prop("disabled", true);
-//     }
-// })
-
-
-
 /**
  * 出退勤入力画面詳細枠の表示
-**/
+ **/
 
-$("#btnDisp").on('click', function () {
-    //var table = document.getElementById('#gridview-warp');
+$('#btnDisp').on('click', function() {
     $('#gridview-warp').show('slow');
     $(this).attr('disabled', 'disabled');
-
 });
 
-// function wte_edit() {
-//     if ($("#td_1")) {
-//         if ($("#td_1").style.display == 'none') {
-//             $("#td_1").style.display == 'block';
-//             $("#td_2").style.display == 'none';
-//         } else {
-//             $("#td_1").style.display == 'none';
-//             $("#td_2").style.display == 'block';
-//         }
-//     }
-// }
+/* 日プルダウン作成 */
+function AddDropDownList(txtYearClientId, ddlMonthClientId, ddlDayClientId, noSpace = false) {
+    var txtYear = document.getElementById(txtYearClientId);
+    var ddlMonth = document.getElementById(ddlMonthClientId);
+    var ddlDay = document.getElementById(ddlDayClientId);
+    if (txtYear.value.trim().length == 0 || ddlMonth.options[ddlMonth.selectedIndex].value.trim().length == 0) {
+        return false;
+    }
 
-// $("#td_1").on('click', function(){
+    var ddlDaySelectIndex = ddlDay.selectedIndex;
+    var yearValue = parseInt(txtYear.value);
+    var monthValue = parseInt(ddlMonth.options[ddlMonth.selectedIndex].value);
+    var nextYearValue;
+    var nextMonthValue;
+    if (monthValue == 12) {
+        nextYearValue = yearValue + 1;
+        nextMonthValue = 1;
+    } else {
+        nextYearValue = yearValue;
+        nextMonthValue = monthValue + 1;
+    }
+    var lastDay = new Date(nextYearValue, nextMonthValue - 1, 0);
+    lastDay = lastDay.getDate();
+    ddlDay.options.length = 0;
+    ddlDay.options[0] = new Option('', '');
 
-//     // $("#td_2").hide();
-//     $("#td_1").show();
-//     $(this).hide();
-// })
-// $("#btnUpdate").on('click', function () {
-//     $("#btnEdit,[id = 'b']").show();
+    var indexOffset = noSpace ? -1 : 0;
 
-//     $("#btnUpdate,[id = 'a']").hide();
+    for (index = 1; index <= lastDay; index++) {
+        ddlDay.options[index + indexOffset] = new Option(index, index);
+    }
+    if (ddlDay.options.length <= ddlDaySelectIndex) {
+        ddlDay.selectedIndex = ddlDay.options.length - 1;
+    } else {
+        ddlDay.selectedIndex = ddlDaySelectIndex;
+    }
+}
 
-// });
+// 「時間数」の「職務種別」プルダウン作成
+function SetTimeJobType(jobTypeId, itemJobId, startHourId, startMinId, endHourId, endMinId, startHourTextId, endHourTextId) {
+
+    var jobType = document.getElementById(jobTypeId);
+    var itemJob = document.getElementById(itemJobId);
+    var startHour = document.getElementById(startHourId);
+    var startMin = document.getElementById(startMinId);
+    var endHour = document.getElementById(endHourId);
+    var endMin = document.getElementById(endMinId);
+    var startHourText = document.getElementById(startHourTextId);
+    var endHourText = document.getElementById(endHourTextId);
+
+    var startHourSelectIndex = startHour.selectedIndex;
+    var endHourSelectIndex = endHour.selectedIndex;
+
+    // 空欄を選択する場合、他のセレクトも空欄のものを選択する
+    if (jobType.value === '') {
+        startHourText.textContent = "";
+        endHourText.textContent = "";
+        newLastStartHour = 23;
+        newLastEndHour = 24;
+        itemJob.selectedIndex = new Option('', '');
+        startMin.selectedIndex = new Option('', '');
+        endMin.selectedIndex = new Option('', '');
+        startHour.selectedIndex = new Option('', '');
+        endHour.selectedIndex = new Option('', '');
+    }
+
+    var jobTypeVal = parseInt(jobType.value);
+    var newLastStartHour;
+    var newLastEndHour;
+
+    if (jobTypeVal == 00) {
+        newLastStartHour = 35;
+        newLastEndHour = 36;
+        startHourText.textContent = "時";
+        endHourText.textContent = "時";
+    } else if (jobTypeVal == 01) {
+        newLastStartHour = 23;
+        newLastEndHour = 24;
+        startHourText.textContent = "時間";
+        endHourText.textContent = "時間";
+    }
+    startHour.options.length = 0;
+    startHour.options[0] = new Option('', '');
+
+    endHour.options.length = 0;
+    endHour.options[0] = new Option('', '');
+
+    for (index = 0; index <= newLastStartHour; index++) {
+        startHour.options[index + 1] = new Option(index, index);
+    }
+    for (index = 0; index <= newLastEndHour; index++) {
+        endHour.options[index + 1] = new Option(index, index);
+    }
+    if (startHour.options.length <= startHourSelectIndex || endHour.options.length <= endHourSelectIndex) {
+        startHour.selectedIndex = startHour.options.length - 1;
+        endHour.selectedIndex = endHour.options.length - 1;
+
+    } else {
+        startHour.selectedIndex = startHourSelectIndex;
+        endHour.selectedIndex = endHourSelectIndex;
+    }
+
+    // 入っている値に新たに選択したら全てを空欄を選択する
+    $(jobType).on('change ', function() {
+        itemJob.selectedIndex = new Option('', '');
+        startMin.selectedIndex = new Option('', '');
+        endMin.selectedIndex = new Option('', '');
+        startHour.selectedIndex = new Option('', '');
+        endHour.selectedIndex = new Option('', '');
+    });
+
+}
+// 休憩時間
+function SetBreakTime(startHourId, startMinId, endHourId, endMinId, spanTextId, hideTextId) {
+
+    var startHour = document.getElementById(startHourId);
+    var startMin = document.getElementById(startMinId);
+    var endHour = document.getElementById(endHourId);
+    var endMin = document.getElementById(endMinId);
+    var spanTextId = document.getElementById(spanTextId);
+    var hideTextId = document.getElementById(hideTextId);
+
+    var startHourVal = parseInt(startHour.value);
+    var startMinVal = parseInt(startMin.value);
+    var endHourVal = parseInt(endHour.value);
+    var endMinVal = parseInt(endMin.value);
+
+    // 空を選択したら計算を非表示
+    if (startHour.value === '' || startMin.value === '' || endHour.value === '' || endMin.value === '') {
+        spanTextId.textContent = "";
+        return false;
+    }
+
+    var breakTimeMin = ((endHourVal * 60) + endMinVal) - ((startHourVal * 60) + startMinVal);
+    // 計算結果がマイナスの数値の場合、
+    if (breakTimeMin <= 0) {
+        spanTextId.textContent = "";
+        return false;
+        // 計算が正しい場合
+    } else {
+        spanTextId.textContent = breakTimeMin + "分";
+        spanTextId.value = breakTimeMin;
+        hideTextId.value = breakTimeMin;
+    }
+}
+
+$(function() {
+    // 部門検索
+    var searchDeptName = function(element, first = false) {
+        if (!(element instanceof Element)) {
+            element = this;
+        }
+        var parent = $(element).closest("td");
+        var deptCdObj = parent.find("#txtDeptCd");
+        var deptNameObj = parent.find("#deptName");
+        var deptNameErrorObj = parent.find("#deptNameError");
+        var deptCdValidErrorObj = parent.find("#DeptCdValidError");
+        var beforeDeptObj = parent.find("#beforeDept");
+        // レスポンスの出力先が無い場合、何もせず終了
+        if (!deptNameObj.length || !deptNameErrorObj.length) {
+            return false;
+        }
+        var deptCd = deptCdObj.val();
+        // 変更なしの場合、再検索しない
+        var beforeDeptCd = beforeDeptObj.val();
+        // 変更なしの場合、再検索しない
+        if (beforeDeptCd && beforeDeptCd == deptCd) {
+            return false;
+        }
+        deptNameErrorObj.empty();
+        deptNameObj.prop("disabled", false);
+        deptNameObj.val('');
+        deptNameObj.prop("disabled", true);
+
+        // 部門コード未入力の場合、初期化のみ検索なし
+        if (!deptCd) {
+            return false;
+        }
+
+        if (!first && deptCdValidErrorObj.length) {
+            deptCdValidErrorObj.text('');
+        }
+
+        var param = "";
+        if (Object.keys(deptNameObj.data()).length) {
+            var paramObject = {};
+            deptNameObj.data().dispclscd ? paramObject['dispClsCd'] = deptNameObj.data().dispclscd : null;
+            deptNameObj.data().isdeptauth ? paramObject['isDeptAuth'] = deptNameObj.data().isdeptauth : null;
+            var searchParam = new URLSearchParams(paramObject).toString();
+            param = searchParam ? '?' + searchParam : '';
+        }
+        var url = '/search/MT12DeptSearch/' + deptCd + param;
+        $.get(url, function(data) {
+            if (beforeDeptObj.length === 0) {
+                parent.append("<input type='hidden' id='beforeDept' value=" + deptCd + ">")
+            } else {
+                beforeDeptObj.val(deptCd);
+            }
+            if (data.deptName != null) {
+                deptNameObj.prop("disabled", false);
+                deptNameObj.val(data.deptName);
+                deptNameObj.prop("disabled", true);
+            } else {
+                deptNameErrorObj.append(data.errorMessage);
+                if (deptCdValidErrorObj.length && deptNameErrorObj.text() === deptCdValidErrorObj.text()) {
+                    deptCdValidErrorObj.text('');
+                }
+            }
+        });
+    };
+    $('.searchDeptCd').each(function(i, e) {
+        searchDeptName(e, true);
+    });
+    $('.searchDeptCd').focusout(searchDeptName);
+
+    // 社員検索
+    var searchEmpName = function(element, first = false) {
+        if (!(element instanceof Element)) {
+            element = this;
+        }
+        var parent = $(element).closest("td");
+        var empCdObj = parent.find("#txtEmpCd");
+        var empNameObj = parent.find("#empName");
+        var empCdErrorObj = parent.find("#EmpCdError");
+        var empCdValidErrorObj = parent.find("#EmpCdValidError");
+        var beforeEmpObj = parent.find("#beforeEmp");
+        var deptNameObj = $('#deptNameWithEmp');
+
+        // レスポンスの出力先が無い場合、何もせず終了
+        if (!empNameObj.length || !empCdErrorObj.length) {
+            return false;
+        }
+        var empCd = empCdObj.val();
+        var beforeEmpCd = beforeEmpObj.val();
+        // 変更なしの場合、再検索しない
+        if (beforeEmpCd && beforeEmpCd == empCd) {
+            return false;
+        }
+
+        empCdErrorObj.empty();
+        empNameObj.prop("disabled", false);
+        empNameObj.val('');
+        empNameObj.prop("disabled", true);
+        if (deptNameObj.length) {
+            deptNameObj.prop("disabled", false);
+            deptNameObj.val('');
+            deptNameObj.prop("disabled", true);
+        }
+
+        // 社員コード未入力の場合、初期化のみ検索なし
+        if (!empCd) {
+            return false;
+        }
+
+        if (!first && empCdValidErrorObj.length) {
+            empCdValidErrorObj.text('');
+        }
+
+        var param = "";
+        if (Object.keys(empNameObj.data()).length) {
+            var paramObject = {};
+            empNameObj.data().regclscd ? paramObject['regClsCd'] = empNameObj.data().regclscd : null;
+            empNameObj.data().isdeptauth ? paramObject['isDeptAuth'] = empNameObj.data().isdeptauth : null;
+            empNameObj.data().calendarclscd ? paramObject['calendarClsCd'] = empNameObj.data().calendarclscd : null;
+            var searchParam = new URLSearchParams(paramObject).toString();
+            param = searchParam ? '?' + searchParam : '';
+        }
+        var url = '/search/MT10EmpSearch/' + empCd + param;
+        $.get(url, function(data) {
+            if (beforeEmpObj.length === 0) {
+                parent.append("<input type='hidden' id='beforeEmp' value=" + empCd + ">")
+            } else {
+                beforeEmpObj.val(empCd);
+            }
+            if (data.empName != null && data.deptName != null) {
+                empNameObj.prop("disabled", false);
+                empNameObj.val(data.empName);
+                empNameObj.prop("disabled", true);
+                if (deptNameObj.length) {
+                    deptNameObj.prop("disabled", false);
+                    deptNameObj.val(data.deptName);
+                    deptNameObj.prop("disabled", true);
+                }
+            } else {
+                empCdErrorObj.append(data.errorMessage);
+                if (empCdValidErrorObj.length && empCdErrorObj.text() == empCdValidErrorObj.text()) {
+                    empCdValidErrorObj.text('');
+                }
+            }
+        });
+    };
+    $('.searchEmpCd').each(function(i, e) {
+        searchEmpName(e, true);
+    });
+    $('.searchEmpCd').focusout(searchEmpName);
 
 
+    // 汎用loading
+    loading = function() {
+        $.LoadingOverlay("show");
+        setTimeout(function() {
+            $.LoadingOverlay("hide");
+        }, 10000);
+    }
 
+    ajaxWithLoading = function(arg) {
+        var opt = $.extend({ global: false }, $.ajaxSettings, arg);
+        var jqXHR = $.ajax(opt);
+        var defer = $.Deferred();
 
+        $.LoadingOverlay("show");
 
+        jqXHR.done(function(data, statusText, jqXHR) {
+            $.LoadingOverlay("hide");
+            defer.resolveWith(this, arguments);
+        });
+
+        jqXHR.fail(function(jqXHR, statusText, errorThrown) {
+            $.LoadingOverlay("hide");
+            if (jqXHR.status == 403) {
+
+            }
+
+            defer.rejectWith(this, arguments);
+        });
+        jqXHR.always(function() {});
+
+        return $.extend({}, jqXHR, defer.promise());
+    };
+
+    $(document).ajaxSend(function() {
+        $.LoadingOverlay("show");
+    }).ajaxComplete(function() {
+        $.LoadingOverlay("hide");
+    });
+});

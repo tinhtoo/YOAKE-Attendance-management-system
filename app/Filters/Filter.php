@@ -22,7 +22,7 @@ abstract class Filter
                 if ($data != null) {
                         foreach ($data as $filter => $value) {
                                 if (method_exists($this, $filter)) {
-                                        $this->$filter($value); 
+                                        $this->$filter($value);
                                 }
                         }
                 }
@@ -32,12 +32,11 @@ abstract class Filter
 
         public function getFilters()
         {
-                // return array_filter($this->request->only($this->filters));
                 $get_filter = array_filter($this->request->only(["filter"]));
                 if (isset($get_filter["filter"])) {
                         return $get_filter["filter"];
                 }
                 return null;
-                
+
         }
 }

@@ -2,6 +2,22 @@
 
 use Illuminate\Support\Str;
 
+// exeファイルのDB接続情報を、以下コマンド実行時にenvから作成
+// php artisan config:cache
+$db_host = env('DB_HOST');
+$db_port = env('DB_PORT');
+$db_database = env('DB_DATABASE');
+$db_username = env('DB_USERNAME');
+$db_password = env('DB_PASSWORD');
+$ini_data = "{\n"
+            ."\t\"db_connection_string\" : \"Data Source=tcp:".$db_host.",".$db_port
+            .";Initial Catalog=".$db_database
+            .";Persist Security Info=false;User ID=".$db_username
+            .";Password=".$db_password
+            .";Connection Timeout=30;\"\n"
+            ."}\n";
+file_put_contents(public_path().'\WorkTmSvc.ini', $ini_data);
+
 return [
 
     /*
@@ -60,9 +76,10 @@ return [
             'prefix_indexes' => true,
             'strict' => true,
             'engine' => null,
-            'options' => extension_loaded('pdo_mysql') ? array_filter([
-                PDO::MYSQL_ATTR_SSL_CA => env('MYSQL_ATTR_SSL_CA'),
-            ]) : [],
+            // 'options' => extension_loaded('pdo_mysql') ? array_filter([
+            //     PDO::MYSQL_ATTR_SSL_CA => env('MYSQL_ATTR_SSL_CA'),
+            //     PDO::MYSQL_ATTR_MAX_BUFFER_SIZE => 16777216
+            // ]) : [],
         ],
 
         'pgsql' => [
@@ -89,6 +106,7 @@ return [
             'username' => env('DB_USERNAME', 'forge'),
             'password' => env('DB_PASSWORD', ''),
             'charset' => 'utf8',
+            'collation' => 'utf8_unicode_ci',
             'prefix' => '',
             'prefix_indexes' => true,
         ],

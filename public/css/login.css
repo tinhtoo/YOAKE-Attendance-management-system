@@ -8,19 +8,6 @@
 
 /*----------------------------------------*/
 
-#header {
-    position: relative;
-    height: 65px;
-    padding-bottom: 17px;
-    background: #fff url('../images/header-bg.gif') repeat-x 0px bottom;
-}
-
-#header-inner {
-    height: 85px;
-    background: url('../images/header-inner-bg.gif') repeat-y right bottom;
-    text-align: left;
-}
-
 body {
     text-align: center;
     font-family: "MS UI Gothic";

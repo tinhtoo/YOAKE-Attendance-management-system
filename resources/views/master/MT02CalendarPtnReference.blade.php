@@ -5,90 +5,71 @@
 
 @section('content')
 <div id="contents-stage">
-    <table class="BaseContainerStyle1">
-        <tbody>
-            <tr>
-                <td>
+    <form action="" method="get" id="form">
+        @csrf
+        <table class="BaseContainerStyle1">
+            <tbody>
+                <tr>
+                    <td>
+                        <div id="UpdatePanel1">
 
-                    <div id="ctl00_cphContentsArea_UpdatePanel1">
-
-
-                        <p class="FunctionMenu1"><a id="ctl00_cphContentsArea_hlAddCalendarPtn" href="MT02CalendarPtnEditor?Id=Add">新規カレンダーパターン登録</a></p>
-                        <div class="line"></div>
-
-                        <div class="GridViewStyle1">
-
-                            <div>
-                                <table class="GridViewSpace" id="ctl00_cphContentsArea_gvCalendarPtn" style="border-collapse: collapse;" border="1" rules="all" cellspacing="0">
+                            <p class="FunctionMenu1">
+                                <a id="hlAddCalendarPtn" href="{{ route('MT02.storeIndex') }}">新規カレンダーパターン登録</a>
+                            </p>
+                            <div class="line"></div>
+                            <div class="GridViewStyle1">
+                                <table style="border-collapse: separate;">
                                     <tbody>
                                         <tr>
-                                            <th scope="col">
+                                            <th>
                                                 カレンダーパターン
                                             </th>
-                                            <th scope="col">
+                                            <th>
                                                 カレンダーパターン
                                             </th>
-                                        </tr>
-                                        <tr style="background-color: white;">
-                                            <td style="width: 350px;">
-                                                <a id="ctl00_cphContentsArea_gvCalendarPtn_ctl02_hlCalendarPtn1" href="MT02CalendarPtnEditor.aspx?Id=001">001:通常１(8:00～17:00)</a>
-                                            </td>
-                                            <td style="width: 350px;">
-
-                                            </td>
-                                        </tr>
-                                        <tr style="background-color: white;">
-                                            <td style="width: 350px;">
-                                                <a id="ctl00_cphContentsArea_gvCalendarPtn_ctl03_hlCalendarPtn1" href="MT02CalendarPtnEditor.aspx?Id=002">002:通常2(7:00～16:00)</a>
-                                            </td>
-                                            <td style="width: 350px;">
-
-                                            </td>
-                                        </tr>
-                                        <tr style="background-color: white;">
-                                            <td style="width: 350px;">
-                                                <a id="ctl00_cphContentsArea_gvCalendarPtn_ctl04_hlCalendarPtn1" href="MT02CalendarPtnEditor.aspx?Id=003">003:通常3(9:00～1800)</a>
-                                            </td>
-                                            <td style="width: 350px;">
-
-                                            </td>
-                                        </tr>
-                                        <tr style="background-color: white;">
-                                            <td style="width: 350px;">
-                                                <a id="ctl00_cphContentsArea_gvCalendarPtn_ctl05_hlCalendarPtn1" href="MT02CalendarPtnEditor.aspx?Id=010">010:夜勤Ⅰ(20:00～29:00)</a>
-                                            </td>
-                                            <td style="width: 350px;">
-
-                                            </td>
-                                        </tr>
-                                        <tr style="background-color: white;">
-                                            <td style="width: 350px;">
-                                                <a id="ctl00_cphContentsArea_gvCalendarPtn_ctl06_hlCalendarPtn1" href="MT02CalendarPtnEditor.aspx?Id=011">011:夜勤Ⅱ(16:00～25:00)</a>
-                                            </td>
-                                            <td style="width: 350px;">
-
-                                            </td>
-                                        </tr>
-                                        <tr style="background-color: white;">
-                                            <td style="width: 350px;">
-                                                <a id="ctl00_cphContentsArea_gvCalendarPtn_ctl07_hlCalendarPtn1" href="MT02CalendarPtnEditor.aspx?Id=100">100:シフト勤務用</a>
-                                            </td>
-                                            <td style="width: 350px;">
-
-                                            </td>
                                         </tr>
                                     </tbody>
                                 </table>
                             </div>
+                            @isset($calendar_ptns)
+                            <div class="GridViewStyle1">
+                                <div>
+                                    <table class="GridViewSpace" id="gvEmp" border="1" cellspacing="0">
+                                        <tbody>
+                                            @for($i = 0; $i < count($calendar_ptns) && $i < 20; $i++)
+                                            <tr>
+                                                <td class="col-sm-4">
+                                                    <a href="{{ url('master/MT02CalendarPtnEditor/'. $calendar_ptns[$i]->CALENDAR_CD )}}">
+                                                        {{ $calendar_ptns[$i]->CALENDAR_CD }} : {{ $calendar_ptns[$i]->CALENDAR_NAME }}
+                                                    </a>
+                                                </td>
+                                                <td class="col-sm-4">
+                                                    @if($calendar_ptns[$i + 20] != null )
+                                                    <a href="{{ url('master/MT02CalendarPtnEditor/'. $calendar_ptns[$i + 20]->CALENDAR_CD )}}">
+                                                        {{ $calendar_ptns[$i + 20]->CALENDAR_CD }} : {{ $calendar_ptns[$i + 20]->CALENDAR_NAME }}
+                                                    </a>
+                                                    @endif
+                                                </td>
+                                            </tr>
+                                            @endfor
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            @endisset
+                            @isset($calendar_ptns)
+                            <div class="line"></div>
+                            <div class="d-flex justify-content-center mx-auto" id="pegination">
+                                {{ $calendar_ptns->links() }}
+                            </div>
+                            @endisset
                         </div>
 
+                    </td>
+                </tr>
 
-                    </div>
-
-                </td>
-            </tr>
-
-        </tbody>
-    </table>
+            </tbody>
+        </table>
+    </form>
 </div>
 @endsection

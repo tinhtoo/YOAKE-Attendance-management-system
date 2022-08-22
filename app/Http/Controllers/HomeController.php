@@ -3,19 +3,26 @@
 namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
+use App\Models\MT12Dept;
+use App\Repositories\MT93PgRepository;
 
 class HomeController extends Controller
 {
-    // //////***** 勤怠管理 *****//////
-    // /**
-    //  * 出退勤入力処理
-    //  *
-    //  * @return view
-    //  */
-    // public function WorkTimeEditor()
-    // {
-    //     return view('work_time.WorkTimeEditor');
-    // }
+    public function __construct(MT93PgRepository $pg_repository)
+    {
+        parent::__construct($pg_repository);
+    }
+
+    //////***** 勤怠管理 *****//////
+    /**
+     * 出退勤入力処理
+     *
+     * @return view
+     */
+    public function WorkTimeEditor()
+    {
+        return parent::viewWithMenu('work_time.WorkTimeEditor');
+    }
 
     /**
      * 出退勤入力(部門別) 処理
@@ -24,27 +31,7 @@ class HomeController extends Controller
      */
     public function WorkTimeDeptEditor()
     {
-        return view('work_time.WorkTimeDeptEditor');
-    }
-
-    /**
-     * 出退勤照会 処理
-     *
-     * @return view
-     */
-    public function EmpWorkStatusReference()
-    {
-        return view('work_time.EmpWorkStatusReference');
-    }
-
-    /**
-     * 勤務状況照会(個人用) 処理
-     *
-     * @return view
-     */
-    public function WorkTimeReference()
-    {
-        return view('work_time.WorkTimeReference');
+        return parent::viewWithMenu('work_time.WorkTimeDeptEditor');
     }
 
     /**
@@ -54,7 +41,7 @@ class HomeController extends Controller
      */
     public function EmpWorkTimeReference()
     {
-        return view('work_time.EmpWorkTimeReference');
+        return parent::viewWithMenu('work_time.EmpWorkTimeReference');
     }
 
     //////***** 帳票 *****//////
@@ -65,7 +52,7 @@ class HomeController extends Controller
      */
     public function WorkPlanPrint()
     {
-        return view('form_print.WorkPlanPrint');
+        return parent::viewWithMenu('form_print.WorkPlanPrint');
     }
 
     /**
@@ -75,7 +62,7 @@ class HomeController extends Controller
      */
     public function WorkTimePrint()
     {
-        return view('form_print.WorkTimePrint');
+        return parent::viewWithMenu('form_print.WorkTimePrint');
     }
 
     /**
@@ -85,7 +72,7 @@ class HomeController extends Controller
      */
     public function TimeStampPrint()
     {
-        return view('form_print.TimeStampPrint');
+        return parent::viewWithMenu('form_print.TimeStampPrint');
     }
 
     /**
@@ -95,7 +82,7 @@ class HomeController extends Controller
      */
     public function ReasonWorkPtnPrint()
     {
-        return view('form_print.ReasonWorkPtnPrint');
+        return parent::viewWithMenu('form_print.ReasonWorkPtnPrint');
     }
 
     /**
@@ -105,7 +92,7 @@ class HomeController extends Controller
      */
     public function OvertimeAplPrint()
     {
-        return view('form_print.OvertimeAplPrint');
+        return parent::viewWithMenu('form_print.OvertimeAplPrint');
     }
 
     /////***** シフト管理　*****/////
@@ -116,7 +103,7 @@ class HomeController extends Controller
      */
     public function MT04ShiftPtnReference()
     {
-        return view('shift.MT04ShiftPtnReference');
+        return parent::viewWithMenu('shift.MT04ShiftPtnReference');
     }
 
     /**
@@ -126,7 +113,7 @@ class HomeController extends Controller
      */
     public function MT04ShiftPtnEditor()
     {
-        return view('shift.MT04ShiftPtnEditor');
+        return parent::viewWithMenu('shift.MT04ShiftPtnEditor');
     }
 
     /**
@@ -136,7 +123,7 @@ class HomeController extends Controller
      */
     public function MonthShiftEditor()
     {
-        return view('shift.MonthShiftEditor');
+        return parent::viewWithMenu('shift.MonthShiftEditor');
     }
 
     /**
@@ -146,7 +133,7 @@ class HomeController extends Controller
      */
     public function MonthShiftEmpEditor()
     {
-        return view('shift.MonthShiftEmpEditor');
+        return parent::viewWithMenu('shift.MonthShiftEmpEditor');
     }
 
     /////***** 管理業務　*****/////
@@ -158,7 +145,7 @@ class HomeController extends Controller
      */
     public function MT03CalendarEditor()
     {
-        return view('mng_oprt.MT03CalendarEditor');
+        return parent::viewWithMenu('mng_oprt.MT03CalendarEditor');
     }
 
     /**
@@ -168,7 +155,7 @@ class HomeController extends Controller
      */
     public function ShiftCalendarCarryOver()
     {
-        return view('mng_oprt.ShiftCalendarCarryOver');
+        return parent::viewWithMenu('mng_oprt.ShiftCalendarCarryOver');
     }
 
     /**
@@ -178,7 +165,7 @@ class HomeController extends Controller
      */
     public function WorkTimeFix()
     {
-        return view('mng_oprt.WorkTimeFix');
+        return parent::viewWithMenu('mng_oprt.WorkTimeFix');
     }
 
     /**
@@ -188,7 +175,7 @@ class HomeController extends Controller
      */
     public function WorkTimeFixReference()
     {
-        return view('mng_oprt/WorkTimeFixReference');
+        return parent::viewWithMenu('mng_oprt.WorkTimeFixReference');
     }
 
     /**
@@ -198,7 +185,7 @@ class HomeController extends Controller
      */
     public function WorkTimeConvert()
     {
-        return view('mng_oprt/WorkTimeConvert');
+        return parent::viewWithMenu('mng_oprt.WorkTimeConvert');
     }
 
     /**
@@ -208,7 +195,7 @@ class HomeController extends Controller
      */
     public function WorkTimeClear()
     {
-        return view('mng_oprt/WorkTimeClear');
+        return parent::viewWithMenu('mng_oprt.WorkTimeClear');
     }
 
     /**
@@ -218,7 +205,7 @@ class HomeController extends Controller
      */
     public function CalendarClear()
     {
-        return view('mng_oprt/CalendarClear');
+        return parent::viewWithMenu('mng_oprt.CalendarClear');
     }
 
     /**
@@ -228,7 +215,7 @@ class HomeController extends Controller
      */
     public function WorkTimeExport()
     {
-        return view('mng_oprt/WorkTimeExport');
+        return parent::viewWithMenu('mng_oprt.WorkTimeExport');
     }
 
 
@@ -241,7 +228,7 @@ class HomeController extends Controller
      */
     public function MT10EmpReference()
     {
-        return view('master.MT10EmpReference');
+        return parent::viewWithMenu('master.MT10EmpReference');
     }
 
     /**
@@ -251,7 +238,7 @@ class HomeController extends Controller
      */
     public function MT10EmpEditor()
     {
-        return view('master.MT10EmpEditor');
+        return parent::viewWithMenu('master.MT10EmpEditor');
     }
 
     /**
@@ -261,7 +248,7 @@ class HomeController extends Controller
      */
     public function MT11LoginReference()
     {
-        return view('master.MT11LoginReference');
+        return parent::viewWithMenu('master.MT11LoginReference');
     }
 
     /**
@@ -271,7 +258,7 @@ class HomeController extends Controller
      */
     public function MT11LoginEditor()
     {
-        return view('master.MT11LoginEditor');
+        return parent::viewWithMenu('master.MT11LoginEditor');
     }
 
     /**
@@ -281,7 +268,7 @@ class HomeController extends Controller
      */
     public function MT11PasswordEditor()
     {
-        return view('master.MT11PasswordEditor');
+        return parent::viewWithMenu('master.MT11PasswordEditor');
     }
 
     /**
@@ -291,7 +278,7 @@ class HomeController extends Controller
      */
     public function MT14PGAuthReference()
     {
-        return view('master.MT14PGAuthReference');
+        return parent::viewWithMenu('master.MT14PGAuthReference');
     }
 
     /**
@@ -301,7 +288,7 @@ class HomeController extends Controller
      */
     public function MT14PGAuthEditor()
     {
-        return view('master.MT14PGAuthEditor');
+        return parent::viewWithMenu('master.MT14PGAuthEditor');
     }
 
     /**
@@ -311,7 +298,7 @@ class HomeController extends Controller
      */
     public function MT12DeptReference()
     {
-        return view('master.MT12DeptReference');
+        return parent::viewWithMenu('master.MT12DeptReference');
     }
 
     /**
@@ -321,22 +308,7 @@ class HomeController extends Controller
      */
     public function MT12DeptEditor()
     {
-        return view('master.MT12DeptEditor');
-    }
-
-    /**
-     * 部門情報入力 処理_test
-     * いろいろテスト
-     * @return view
-     */
-    public function table_add_test(Request $request)
-    {
-        // $request->validate([
-        //     'txtUpDeptName' => 'required',
-        //     'dept_id' => 'required',
-
-        // ]);
-        return view('master.table_add_test');
+        return parent::viewWithMenu('master.MT12DeptEditor');
     }
 
     /**
@@ -346,7 +318,7 @@ class HomeController extends Controller
      */
     public function MT12OrgReference()
     {
-        return view('master.MT12OrgReference');
+        return parent::viewWithMenu('master.MT12OrgReference');
     }
 
     /**
@@ -356,7 +328,7 @@ class HomeController extends Controller
      */
     public function MT12OrgEditor()
     {
-        return view('master.MT12OrgEditor');
+        return parent::viewWithMenu('master.MT12OrgEditor');
     }
 
     /**
@@ -366,7 +338,7 @@ class HomeController extends Controller
      */
     public function UpDeptSearch()
     {
-        return view('master.UpDeptSearch');
+        return parent::viewWithMenu('master.UpDeptSearch');
     }
 
     /**
@@ -376,27 +348,27 @@ class HomeController extends Controller
      */
     public function MT13DeptAuthReference()
     {
-        return view('master.MT13DeptAuthReference');
+        return parent::viewWithMenu('master.MT13DeptAuthReference');
     }
 
     /**
-     * 部門権限情報入力 処理
+     * 部門権限情報入力  処理
      *
      * @return view
      */
     public function MT13DeptAuthEditor()
     {
-        return view('master.MT13DeptAuthEditor');
+        return parent::viewWithMenu('master.MT13DeptAuthEditor');
     }
 
     /**
-     * 祝祭日・会社休日情報入力 処理
+     * 祝祭日・会社休日情報入力   処理
      *
      * @return view
      */
     public function MT08HolidayEditor()
     {
-        return view('master.MT08HolidayEditor');
+        return parent::viewWithMenu('master.MT08HolidayEditor');
     }
 
     /**
@@ -406,27 +378,26 @@ class HomeController extends Controller
      */
     public function MT05WorkPtnReference()
     {
-        return view('master.MT05WorkPtnReference');
+        return parent::viewWithMenu('master.MT05WorkPtnReference');
     }
 
     /**
-     * 勤務体系情報照会 処理
+     * 勤務体系情報入力 処理
      *
      * @return view
      */
     public function MT05WorkPtnEditor()
     {
-        return view('master.MT05WorkPtnEditor');
+        return parent::viewWithMenu('master.MT05WorkPtnEditor');
     }
-
     /**
-     * 端数処理情報入力 処理
+     * 端数処理情報入力  処理
      *
      * @return view
      */
     public function MT07FractionEditor()
     {
-        return view('master.MT07FractionEditor');
+        return parent::viewWithMenu('master.MT07FractionEditor');
     }
 
     /**
@@ -436,7 +407,7 @@ class HomeController extends Controller
      */
     public function MT02CalendarPtnReference()
     {
-        return view('master.MT02CalendarPtnReference');
+        return parent::viewWithMenu('master.MT02CalendarPtnReference');
     }
 
     /**
@@ -446,10 +417,10 @@ class HomeController extends Controller
      */
     public function MT02CalendarPtnEditor()
     {
-        return view('master.MT02CalendarPtnEditor');
+        return parent::viewWithMenu('master.MT02CalendarPtnEditor');
     }
 
-    //未実施*******未実装
+    //*****未実施*******未実装*****//
 
     /**
      * 残業上限情報入力 処理
@@ -458,7 +429,7 @@ class HomeController extends Controller
      */
     public function MT06OverTmLmtEditor()
     {
-        return view('master.MT06OverTmLmtEditor');
+        return parent::viewWithMenu('master.MT06OverTmLmtEditor');
     }
 
     /**
@@ -468,37 +439,7 @@ class HomeController extends Controller
      */
     public function MT01ControlEditor()
     {
-        return view('master.MT01ControlEditor');
-    }
-
-    /**
-     * 有休情報照会 処理
-     *
-     * @return view
-     */
-    public function MT17PdHolidayReference()
-    {
-        return view('master.MT17PdHolidayReference');
-    }
-
-    /**
-     * 有休情報入力 処理
-     *
-     * @return view
-     */
-    public function MT17PdHolidayEditor()
-    {
-        return view('master.MT17PdHolidayEditor');
-    }
-
-    /**
-     * 社員番号一括変換 処理
-     *
-     * @return view
-     */
-    public function MT10EmpCnvert()
-    {
-        return view('master.MT10EmpCnvert');
+        return parent::viewWithMenu('master.MT01ControlEditor');
     }
 
     /**
@@ -508,7 +449,7 @@ class HomeController extends Controller
      */
     public function EmpExport()
     {
-        return view('master.EmpExport');
+        return parent::viewWithMenu('master.EmpExport');
     }
 
     /**
@@ -518,7 +459,7 @@ class HomeController extends Controller
      */
     public function EmpImport()
     {
-        return view('master.EmpImport');
+        return parent::viewWithMenu('master.EmpImport');
     }
 
     /**
@@ -528,7 +469,7 @@ class HomeController extends Controller
      */
     public function MT23CompanyReference()
     {
-        return view('master.MT23CompanyReference');
+        return parent::viewWithMenu('master.MT23CompanyReference');
     }
 
     /**
@@ -538,9 +479,8 @@ class HomeController extends Controller
      */
     public function MT23CompanyEditor()
     {
-        return view('master.MT23CompanyEditor');
+        return parent::viewWithMenu('master.MT23CompanyEditor');
     }
-
 
     //*****search sub-画面追加*****//
 
@@ -551,7 +491,9 @@ class HomeController extends Controller
      */
     public function MT12DeptSearch()
     {
-        return view('search.MT12DeptSearch');
+        $query = MT12Dept::all();
+
+        return parent::viewWithMenu('search.MT12DeptSearch',['dept' => $query]);
     }
 
     /**
@@ -561,6 +503,6 @@ class HomeController extends Controller
      */
     public function MT10EmpSearch()
     {
-        return view('search.MT10EmpSearch');
+        return parent::viewWithMenu('search.MT10EmpSearch');
     }
 }

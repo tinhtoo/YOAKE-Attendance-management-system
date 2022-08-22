@@ -1,4 +1,4 @@
-<!-- パスワード変更入力  -->
+<!-- パスワード変更入力 -->
 @extends('menu.main')
 
 @section('title','パスワード変更入力')
@@ -11,40 +11,121 @@
                 <td>
                     <div id="ctl00_cphContentsArea_UpdatePanel1">
 
+                        <form action="{{ route('MT11Pass.update') }}" method="post" name = "MT11Pass" onsubmit="return checkSubmit()">
+                        @csrf
 
                         <table class="InputFieldStyle1">
                             <tbody>
                                 <tr>
                                     <th>現パスワード</th>
                                     <td>
-                                        <input name="ctl00$cphContentsArea$txtPassword" tabindex="1" class="imeDisabled" id="ctl00_cphContentsArea_txtPassword" style="width: 90px;" onfocus="this.select();" type="password" maxlength="10">
+                                        <input name="txtPassword" tabindex="1" id="txtPassword"
+                                               style="width: 90px;" type="password" maxlength="10" onfocus="this.select();">
+                                        @if ($errors->has('txtPassword'))
+                                            <span class="text-danger">{{ $errors->first('txtPassword') }}
+                                            </span>
+                                        @endif
 
-                                        <span id="ctl00_cphContentsArea_cvPassword" style="color: red; display: none;">ErrorMessage</span>
+
                                     </td>
                                 </tr>
                                 <tr>
                                     <th>変更後パスワード</th>
                                     <td>
-                                        <input name="ctl00$cphContentsArea$txtNewPassword" tabindex="2" class="imeDisabled" id="ctl00_cphContentsArea_txtNewPassword" style="width: 90px;" onfocus="this.select();" type="password" maxlength="10">
+                                        <input name="txtNewPassword" tabindex="2" id="txtNewPassword"
+                                               style="width: 90px;" type="password" maxlength="10" onfocus="this.select();">
+                                        @if ($errors->has('txtNewPassword'))
+                                            <span class="text-danger">{{ $errors->first('txtNewPassword') }}
+                                            </span>
+                                        @endif
 
-                                        <span id="ctl00_cphContentsArea_cvNewPassword" style="color: red; display: none;">ErrorMessage</span>
+
                                     </td>
                                 </tr>
                                 <tr>
                                     <th>パスワード再入力</th>
                                     <td>
-                                        <input name="ctl00$cphContentsArea$txtRePassword" tabindex="3" class="imeDisabled" id="ctl00_cphContentsArea_txtRePassword" style="width: 90px;" onfocus="this.select();" type="password" maxlength="10">
+                                        <input name="txtRePassword" tabindex="3" id="txtRePassword"
+                                               style="width: 90px;" type="password" maxlength="10" onfocus="this.select();">
+                                        @if ($errors->has('txtRePassword'))
+                                            <span class="text-danger">{{ $errors->first('txtRePassword') }}</span>
 
-                                        <span id="ctl00_cphContentsArea_cvRePassword" style="color: red; display: none;">ErrorMessage</span>
+                                        @endif
                                     </td>
                                 </tr>
                             </tbody>
                         </table>
                         <div class="line"></div>
+
+
+                        <!-- 更新ボタン押下時 -->
                         <p class="ButtonField1">
-                            <input name="ctl00$cphContentsArea$btnUpdate" tabindex="4" id="ctl00_cphContentsArea_btnUpdate" onclick="if(confirm('更新します。よろしいですか?') ==  false){ return false;};WebForm_DoPostBackWithOptions(new WebForm_PostBackOptions())" type="button" value="更新">
-                            <input name="ctl00$cphContentsArea$btnCancel" tabindex="5" id="ctl00_cphContentsArea_btnCancel" onclick="javascript:__doPostBack('ctl00$cphContentsArea$btnCancel','')" type="button" value="キャンセル">
+                            <input name="btnUpdate" id="btnUpdate" tabindex="7" type="submit" value="更新">
+
+                            <input name="btnCancel" id="btnCancel" tabindex="8" type="button" value="キャンセル" onclick="location.href='MT11PasswordEditor'">
                         </p>
+
+                        {{-- 確認ダイアル --}}
+                        <script>
+                            function checkSubmit(){
+                                $checked = confirm("{{getArrValue($error_messages, '1005')}}")
+                                if($checked == true){
+                                    return true;
+                                } else {
+                                    return false;
+                                }
+                            }
+                             // ENTER時に送信されないようにする
+                                $(function(){
+                                    $('input').not('[type="button"]').not('[type="submit"]').keypress(function(e){
+                                        if(e.which == 13) {
+                                            return false;
+                                        }
+                                     });
+                                });
+
+                           // 'I'は入力不可
+                                window.onload=function(){
+                                    document.getElementById("txtPassword").addEventListener('keypress',function(){
+                                    // "|"（keyCode=124）が押された場合は入力を無効にする
+                                    if(event.keyCode == 124){
+                                         event.preventDefault();
+                                         }
+                                    });
+                                    document.getElementById("txtNewPassword").addEventListener('keypress',function(){
+                                    // "|"（keyCode=124）が押された場合は入力を無効にする
+                                    if(event.keyCode == 124){
+                                         event.preventDefault();
+                                         }
+                                    });
+                                    document.getElementById("txtRePassword").addEventListener('keypress',function(){
+                                    // "|"（keyCode=124）が押された場合は入力を無効にする
+                                    if(event.keyCode == 124){
+                                         event.preventDefault();
+                                         }
+                                    });
+                                }
+
+                        </script>
+
+
+                            {{-- フォーカス --}}
+                        <script>
+                            // ｛現パスワード｝テキストへフォーカス
+                            document.MT11Pass.txtPassword.focus();
+                            // E-1,E-2
+                            @if ($errors->has('txtPassword'))
+                                document.MT11Pass.btnUpdate.focus();
+                            @endif
+                            // E-3
+                            @if($errors->has('txtNewPassword'))
+                                document.MT11Pass.btnUpdate.focus();
+                            @endif
+                            // E-4,E-5
+                            @if($errors->has('txtRePassword'))
+                                document.MT11Pass.btnUpdate.focus();
+                            @endif
+                        </script>
 
                     </div>
                 </td>

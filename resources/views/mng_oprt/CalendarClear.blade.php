@@ -8,97 +8,94 @@
                 <tr>
                     <td>
                         <div id="ctl00_cphContentsArea_UpdatePanel1">
-                            <table class="InputFieldStyle1">
-                                <tbody>
-                                    <tr>
-                                        <th>対象月度</th>
-                                        <td>
-                                            <input name="ctl00$cphContentsArea$txtTargetYear" tabindex="1"
-                                                class="imeDisabled" id="ctl00_cphContentsArea_txtTargetYear"
-                                                style="width: 40px;" onfocus="this.select();" type="text" maxlength="4">
+                            <form action="" method="POST" id="form" >
+                                {{ csrf_field() }}
+                                <table class="InputFieldStyle1">
+                                    <tbody>
+                                        <tr>
+                                            <th>対象月度</th>
+                                            <td>
+                                                <input type="text"
+                                                        name="ym"
+                                                        id="tm"
+                                                        class="ym"
+                                                        autocomplete="off"
+                                                        onfocus="this.select();"
+                                                        autofocus
+                                                        tabindex="1"
+                                                        style="width: 80px;"
+                                                        value="{{ old('ym') }}"
+                                                />
+                                                @error('ym')
+                                                <span class="text-danger valid-error">{{ getArrValue($error_messages, $message) }}</span>
+                                                @enderror
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <th>社員番号</th>
+                                            <td>
+                                                <input name="txtEmpCd"
+                                                    id="txtEmpCd"
+                                                    class="searchEmpCd txtEmpCd"
+                                                    style="width: 80px;"
+                                                    type="text"
+                                                    maxlength="10"
+                                                    onfocus="this.select();"
+                                                    value="{{ old('txtEmpCd') }}"
+                                                    oninput="value=onlyHalfNumWord(value)"
+                                                    tabindex="2"
+                                                    >
+                                                <input name="btnSearchEmpCd"
+                                                    class="SearchButton eraseError"
+                                                    id="btnSearchEmpCd"
+                                                    type="button"
+                                                    value="?"
+                                                    onclick="SearchEmp(this);return false"
+                                                    tabindex="3"
+                                                >
+                                                <input name="empName"
+                                                    class="txtEmpName"
+                                                    type="text"
+                                                    style="width: 200px; display: inline-block;"
+                                                    id="empName"
+                                                    data-regclscd=00,01 data-isdeptauth=true
+                                                    disabled="disabled"
+                                                >
+                                                @error('txtEmpCd')
+                                                <span class="text-danger valid-error" id="EmpCdValidError">{{ getArrValue($error_messages, $message) }}</span>
+                                                @enderror
+                                                <span class="text-danger" id="EmpCdError"></span>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <th>最新カレンダー年月</th>
+                                            <td>
+                                                <input type="text" id="lastYM" name="lastYM" disabled style="width:80px" value="{{ old('lastYM') }}"></span>
+                                                <input type="button" id="getLastYM" tabindex="4" class="SearchButton eraseError" value="表示">
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </form>
 
-                                            &nbsp;年&nbsp;
-                                            <select name="ctl00$cphContentsArea$ddlTargetMonth" tabindex="2"
-                                                class="imeDisabled" id="ctl00_cphContentsArea_ddlTargetMonth"
-                                                style="width: 50px;">
-                                                <option selected="selected" value=""></option>
-                                                <option value="1">1</option>
-                                                <option value="2">2</option>
-                                                <option value="3">3</option>
-                                                <option value="4">4</option>
-                                                <option value="5">5</option>
-                                                <option value="6">6</option>
-                                                <option value="7">7</option>
-                                                <option value="8">8</option>
-                                                <option value="9">9</option>
-                                                <option value="10">10</option>
-                                                <option value="11">11</option>
-                                                <option value="12">12</option>
-
-                                            </select>
-                                            &nbsp;月度&nbsp;
-
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <th>社員番号</th>
-                                        <td>
-                                            <input name="ctl00$cphContentsArea$txtEmpCd" tabindex="3" class="imeDisabled"
-                                                id="ctl00_cphContentsArea_txtEmpCd" style="width: 80px;"
-                                                onkeypress="if (WebForm_TextBoxKeyHandler(event) == false) return false;"
-                                                onfocus="this.select();"
-                                                onchange="javascript:setTimeout('__doPostBack(\'ctl00$cphContentsArea$txtEmpCd\',\'\')', 0)"
-                                                type="text" maxlength="10">
-                                            <input name="ctl00$cphContentsArea$btnSearchEmpCd" tabindex="4"
-                                                class="SearchButton" id="ctl00_cphContentsArea_btnSearchEmpCd"
-                                                onclick="SetEmpItem();__doPostBack('ctl00$cphContentsArea$btnSearchEmpCd','')"
-                                                type="button" value="?">
-                                            <span class="OutlineLabel" id="ctl00_cphContentsArea_lblEmpName"
-                                                style="width: 200px; height: 17px; display: inline-block;"></span>
-
-                                        </td>
-                                    </tr>
-                                    <tr>
-                                        <th>最新カレンダー年月</th>
-                                        <td>
-                                            <span class="OutlineLabel" id="ctl00_cphContentsArea_lblMaxCald"
-                                                style="width: 80px; height: 17px; display: inline-block;"></span>
-                                            <input name="ctl00$cphContentsArea$btnSetData" tabindex="5" class="SearchButton"
-                                                id="ctl00_cphContentsArea_btnSetData"
-                                                onclick="javascript:__doPostBack('ctl00$cphContentsArea$btnSetData','')"
-                                                type="button" value="表示">
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
-
-                            <table class="style1">
-                                <tbody>
-                                    <tr>
-                                        <td align="center">
-                                            <br>
-                                            <br>
-                                            <br>
-                                            <span id="ctl00_cphContentsArea_lblInfoMsg"
-                                                style="height: 17px; color: red; display: inline-block;">打刻情報は削除されませんが、打刻時間は初期化されます。</span>
-                                            <br>
-                                            <br>
-                                            <br>
-                                        </td>
-                                    </tr>
-                                </tbody>
-                            </table>
+                            <div style="width:100%; display:table; text-align:center; margin:30px 0px">
+                                <span style="font-size:1.1em; color: red; vertical-align:middle; display:table-cell;">
+                                    打刻情報は削除されませんが、打刻時間は初期化されます。
+                                </span>
+                            </div>
 
                             <div class="line"></div>
 
                             <p class="ButtonField1">
-                                <input name="ctl00$cphContentsArea$btnUpdate" tabindex="6"
-                                    id="ctl00_cphContentsArea_btnUpdate"
-                                    onclick="if(confirm('カレンダー情報をクリアしますか？') ==  false){ return false;};WebForm_DoPostBackWithOptions(new WebForm_PostBackOptions(&quot;ctl00$cphContentsArea$btnUpdate&quot;, &quot;&quot;, true, &quot;Update&quot;, &quot;&quot;, false, true))"
+                                <input name="btnDataClear" tabindex="5"
+                                    id="btnDataClear"
+                                    class="clear"
+                                    data-url = "{{ route('CalendarClear.clear')}}"
                                     type="button" value="更新">
-                                <input name="ctl00$cphContentsArea$btnCancel" tabindex="7"
-                                    id="ctl00_cphContentsArea_btnCancel"
-                                    onclick="CloseSubWindow();__doPostBack('ctl00$cphContentsArea$btnCancel','')"
+                                <input name="btnCancel" tabindex="6"
+                                    id="btnCancel"
+                                    class="cancel"
+                                    onclick="location.href='{{ url('mng_oprt/CalendarClear') }}'"
                                     type="button" value="キャンセル">
                             </p>
                         </div>
@@ -107,4 +104,65 @@
             </tbody>
         </table>
     </div>
+@endsection
+@section('script')
+<script>
+$(function() {
+
+    var disableFlg = false;
+    $(document).on('click', '#getLastYM', function() {
+        disableFlg = true;
+        var target = $("#lastYM");
+        target.prop("disabled", false);
+        target.val('');
+        target.prop("disabled", true);
+
+        var empCd = $('#txtEmpCd').val();
+        if (!empCd) {
+            return false;
+        }
+        $.get('/search/GetLastCald/' + empCd, function(data) {
+            if (data) {
+                var target = $("#lastYM");
+                target.prop("disabled", false);
+                target.val(data.last_cald);
+                target.prop("disabled", true);
+                $('#btnDataClear').focus();
+            }
+            disableFlg = false;
+        });
+    });
+
+    // 入力可能文字：半角英数字・文字
+    onlyHalfNumWord = n => n.replace(/[０-９Ａ-Ｚａ-ｚ]/g, s => String.fromCharCode(s.charCodeAt(0) - 65248))
+        .replace(/[^0-9a-zA-Z]/g, '');
+
+    // 更新
+    $(document).on('click', '.clear', function() {
+        if (!window.confirm("{{ getArrValue($error_messages, 3002) }}")) {
+            $(this).focus();
+            return false;
+        }
+        var url = $(this).data('url');
+        $('#form').attr('action', url);
+        $('#lastYM').prop('disabled', false);
+        $('#form').submit();
+    });
+
+    $('.ym').datepicker({
+        format: 'yyyy年mm月',
+        autoclose: true,
+        language: 'ja', // カレンダー日本語化のため
+        minViewMode : 1
+    });
+
+    $("input[type=button].eraseError").click(function(){
+        $(".valid-error").text("");
+    })
+
+    $("input[type=text].eraseError").change(function(){
+        $(".valid-error").text("");
+    })
+})
+</script>
 @endsection

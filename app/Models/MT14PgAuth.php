@@ -26,6 +26,14 @@ class MT14PgAuth extends Model
      */
     protected $fillable = ['PG_AUTH_NAME', 'RSV1_CLS_CD', 'RSV2_CLS_CD', 'UPD_DATE'];
 
+      /**
+     * The primary key for the model.
+     *
+     * @var string
+     */
+    protected $primaryKey = ['PG_AUTH_CD','PG_CD'];
+    public $incrementing = false;
+
     /**
      * The connection name for the model.
      *
@@ -33,4 +41,11 @@ class MT14PgAuth extends Model
      */
     protected $connection = 'sqlsrv';
 
+    /**
+     * Query scope.
+     */
+    public function scopeFilter($query, $filter)
+    {
+        $filter->apply($query);
+    }
 }

@@ -75,5 +75,4 @@ class MT06OvertmLmt extends Model
      * @var string
      */
     protected $connection = 'sqlsrv';
-
 }

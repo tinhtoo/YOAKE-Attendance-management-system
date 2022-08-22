@@ -2,61 +2,40 @@
 @extends('menu.main')
 @section('title', 'シフト月次更新処理')
 @section('content')
-    <div id="contents-stage">
-        <table class="BaseContainerStyle1">
-            <tbody>
-                <tr>
-                    <td>
-
-                        <div id="ctl00_cphContentsArea_upShiftCalendarCarryOver">
-
+<div id="contents-stage">
+    <table class="BaseContainerStyle2">
+        <tbody>
+            <tr>
+                <td>
+                    <div id="ctl00_cphContentsArea_UpdatePanel1">
+                        <form action="" method="post" id="form">
+                            @csrf
                             <table class="InputFieldStyle1">
                                 <tbody>
                                     <tr>
                                         <th>対象月度</th>
                                         <td>
-                                            <select name="ctl00$cphContentsArea$ddlTargetYear" tabindex="1"
-                                                class="imeDisabled" id="ctl00_cphContentsArea_ddlTargetYear"
-                                                style="width: 70px;">
-                                                <option value="2020">2020</option>
-                                                <option selected="selected" value="2021">2021</option>
-                                                <option value="2022">2022</option>
-
-                                            </select>
-                                            &nbsp;年&nbsp;
-                                            <select name="ctl00$cphContentsArea$ddlTargetMonth" tabindex="2"
-                                                class="imeDisabled" id="ctl00_cphContentsArea_ddlTargetMonth"
-                                                style="width: 50px;">
-                                                <option value="1">1</option>
-                                                <option value="2">2</option>
-                                                <option value="3">3</option>
-                                                <option value="4">4</option>
-                                                <option value="5">5</option>
-                                                <option selected="selected" value="6">6</option>
-                                                <option value="7">7</option>
-                                                <option value="8">8</option>
-                                                <option value="9">9</option>
-                                                <option value="10">10</option>
-                                                <option value="11">11</option>
-                                                <option value="12">12</option>
-
-                                            </select>
-                                            &nbsp;月度
+                                            <input type="text" id="yearMonth" class="yearMonth" name="yearMonth" autocomplete="off" onfocus="this.select();"
+                                                tabindex="1" style="width: 100px;" value="{{ $def_year.'年'.sprintf('%02d', $def_month).'月' }}" />
+                                            <span class="text-danger error" id="dateError">
+                                            @error('yearMonth')
+                                                {{ getArrValue($error_messages, $message) }}
+                                            @enderror
+                                            </span>
                                         </td>
                                     </tr>
                                     <tr>
                                         <th>締日</th>
                                         <td>
-                                            <select name="ctl00$cphContentsArea$ddlClosingDate" tabindex="3"
-                                                id="ctl00_cphContentsArea_ddlClosingDate" style="width: 150px;">
-                                                <option selected="selected" value="15">１５日締</option>
-                                                <option value="25">２５日締</option>
-                                                <option value="31">末締</option>
-
+                                            <select name="closingDateCd" tabindex="3"
+                                                id="closingDateCd" style="width: 150px;">
+                                                @foreach ($closing_dates as $closing_date)
+                                                <option value="{{ $closing_date->CLOSING_DATE_CD }}"
+                                                    {{ $closing_date->CLOSING_DATE_CD == $def_closing_date_cd ? 'selected' : '' }}>
+                                                    {{ $closing_date->CLOSING_DATE_NAME }}
+                                                </option>
+                                                @endforeach
                                             </select>
-                                            <span id="ctl00_cphContentsArea_cvClosingDate"
-                                                style="color: red; display: none;">ErrorMessage</span>
-
                                         </td>
                                     </tr>
                                 </tbody>
@@ -65,22 +44,23 @@
                             <div class="line"></div>
 
                             <input name="ctl00$cphContentsArea$btnSelectAll" tabindex="4"
-                                id="ctl00_cphContentsArea_btnSelectAll"
-                                onclick="ChangeAllCheckBoxStates('ctl00_cphContentsArea_gvShiftCalendarCarryOver_ctl02_chkIsSelect,ctl00_cphContentsArea_gvShiftCalendarCarryOver_ctl03_chkIsSelect,ctl00_cphContentsArea_gvShiftCalendarCarryOver_ctl04_chkIsSelect,ctl00_cphContentsArea_gvShiftCalendarCarryOver_ctl05_chkIsSelect,ctl00_cphContentsArea_gvShiftCalendarCarryOver_ctl06_chkIsSelect,ctl00_cphContentsArea_gvShiftCalendarCarryOver_ctl07_chkIsSelect,ctl00_cphContentsArea_gvShiftCalendarCarryOver_ctl08_chkIsSelect,ctl00_cphContentsArea_gvShiftCalendarCarryOver_ctl09_chkIsSelect,ctl00_cphContentsArea_gvShiftCalendarCarryOver_ctl10_chkIsSelect,ctl00_cphContentsArea_gvShiftCalendarCarryOver_ctl11_chkIsSelect,ctl00_cphContentsArea_gvShiftCalendarCarryOver_ctl12_chkIsSelect,ctl00_cphContentsArea_gvShiftCalendarCarryOver_ctl13_chkIsSelect,ctl00_cphContentsArea_gvShiftCalendarCarryOver_ctl14_chkIsSelect,ctl00_cphContentsArea_gvShiftCalendarCarryOver_ctl15_chkIsSelect,ctl00_cphContentsArea_gvShiftCalendarCarryOver_ctl16_chkIsSelect,ctl00_cphContentsArea_gvShiftCalendarCarryOver_ctl17_chkIsSelect,ctl00_cphContentsArea_gvShiftCalendarCarryOver_ctl18_chkIsSelect,ctl00_cphContentsArea_gvShiftCalendarCarryOver_ctl19_chkIsSelect', true)"
+                                onclick="changeAllCheckBoxStates(true)"
                                 type="button" value="全選択">
                             <input name="ctl00$cphContentsArea$btnNotSelectAll" tabindex="5"
-                                id="ctl00_cphContentsArea_btnNotSelectAll"
-                                onclick="ChangeAllCheckBoxStates('ctl00_cphContentsArea_gvShiftCalendarCarryOver_ctl02_chkIsSelect,ctl00_cphContentsArea_gvShiftCalendarCarryOver_ctl03_chkIsSelect,ctl00_cphContentsArea_gvShiftCalendarCarryOver_ctl04_chkIsSelect,ctl00_cphContentsArea_gvShiftCalendarCarryOver_ctl05_chkIsSelect,ctl00_cphContentsArea_gvShiftCalendarCarryOver_ctl06_chkIsSelect,ctl00_cphContentsArea_gvShiftCalendarCarryOver_ctl07_chkIsSelect,ctl00_cphContentsArea_gvShiftCalendarCarryOver_ctl08_chkIsSelect,ctl00_cphContentsArea_gvShiftCalendarCarryOver_ctl09_chkIsSelect,ctl00_cphContentsArea_gvShiftCalendarCarryOver_ctl10_chkIsSelect,ctl00_cphContentsArea_gvShiftCalendarCarryOver_ctl11_chkIsSelect,ctl00_cphContentsArea_gvShiftCalendarCarryOver_ctl12_chkIsSelect,ctl00_cphContentsArea_gvShiftCalendarCarryOver_ctl13_chkIsSelect,ctl00_cphContentsArea_gvShiftCalendarCarryOver_ctl14_chkIsSelect,ctl00_cphContentsArea_gvShiftCalendarCarryOver_ctl15_chkIsSelect,ctl00_cphContentsArea_gvShiftCalendarCarryOver_ctl16_chkIsSelect,ctl00_cphContentsArea_gvShiftCalendarCarryOver_ctl17_chkIsSelect,ctl00_cphContentsArea_gvShiftCalendarCarryOver_ctl18_chkIsSelect,ctl00_cphContentsArea_gvShiftCalendarCarryOver_ctl19_chkIsSelect', false)"
+                                onclick="changeAllCheckBoxStates(false)"
                                 type="button" value="全解除">
-                            <span id="ctl00_cphContentsArea_cvShiftCalendarCarryOver"
-                                style="color: red; display: none;">ErrorMessage</span>
+                            <span id="error" class="text-danger error">
+                                @error('dept_cd')
+                                {{ getArrValue($error_messages, $message) }}
+                                @enderror
+                            </span>
 
                             <div class="GridViewStyle1 mg10" id="gridview-container">
                                 <div class="GridViewPanelStyle7" id="ctl00_cphContentsArea_pnlDeptAuth"
-                                    style="height: 615px;">
+                                    style="height: 645px;">
 
                                     <div>
-                                        <table tabindex="6" class="GridViewBorder GridViewPadding"
+                                        <table class="GridViewBorder GridViewPadding"
                                             id="ctl00_cphContentsArea_gvShiftCalendarCarryOver"
                                             style="border-collapse: collapse;" border="1" rules="all" cellspacing="0">
                                             <tbody>
@@ -88,282 +68,110 @@
                                                     <th scope="col">&nbsp;</th>
                                                     <th scope="col">部門</th>
                                                 </tr>
+                                                @foreach ($dept_list as $dept)
                                                 <tr>
-                                                    <td class="GridViewRowCenter" style="width: 30px; white-space: nowrap;">
-                                                        <input
-                                                            name="ctl00$cphContentsArea$gvShiftCalendarCarryOver$ctl02$chkIsSelect"
-                                                            tabindex="7"
-                                                            id="ctl00_cphContentsArea_gvShiftCalendarCarryOver_ctl02_chkIsSelect"
-                                                            type="checkbox">
+                                                    <td class="GridViewRowCenter" style="width: 30px; white-space: nowrap; padding-top: 3px;">
+                                                        @if(in_array($dept->DEPT_CD, $changeable_dept_cd_list))
+                                                        <input type="checkbox" class="deptCheckbox" tabindex="6"
+                                                            name="dept_cd[]" value="{{ $dept->DEPT_CD }}"
+                                                            id="checkbox{{ $dept->DEPT_CD }}">
+                                                        @endif
                                                     </td>
                                                     <td class="GridViewRowLeft">
-                                                        <span class="OutlineLabel"
-                                                            id="ctl00_cphContentsArea_gvShiftCalendarCarryOver_ctl02_lblDeptName"
-                                                            style="width: 300px; height: 17px; display: inline-block;">アイティーエス</span>
+                                                        <label class="OutlineLabel"
+                                                            style="width: 100%; height: 17px; display: inline-block;
+                                                            @if(in_array($dept->DEPT_CD, $changeable_dept_cd_list))
+                                                            cursor: pointer;" for="checkbox{{ $dept->DEPT_CD }}@endif">
+                                                        @for ($i = 0; $i < $dept->LEVEL_NO; $i++)
+                                                        　　　
+                                                        @endfor
+                                                        {{ $dept->DEPT_NAME }}
+                                                        </span>
                                                     </td>
                                                 </tr>
-                                                <tr>
-                                                    <td class="GridViewRowCenter" style="width: 30px; white-space: nowrap;">
-                                                        <input
-                                                            name="ctl00$cphContentsArea$gvShiftCalendarCarryOver$ctl03$chkIsSelect"
-                                                            tabindex="7"
-                                                            id="ctl00_cphContentsArea_gvShiftCalendarCarryOver_ctl03_chkIsSelect"
-                                                            type="checkbox">
-                                                    </td>
-                                                    <td class="GridViewRowLeft">
-                                                        <span class="OutlineLabel"
-                                                            id="ctl00_cphContentsArea_gvShiftCalendarCarryOver_ctl03_lblDeptName"
-                                                            style="width: 300px; height: 17px; display: inline-block;">　　　営業部</span>
-                                                    </td>
-                                                </tr>
-                                                <tr>
-                                                    <td class="GridViewRowCenter" style="width: 30px; white-space: nowrap;">
-                                                        <input
-                                                            name="ctl00$cphContentsArea$gvShiftCalendarCarryOver$ctl04$chkIsSelect"
-                                                            tabindex="7"
-                                                            id="ctl00_cphContentsArea_gvShiftCalendarCarryOver_ctl04_chkIsSelect"
-                                                            type="checkbox">
-                                                    </td>
-                                                    <td class="GridViewRowLeft">
-                                                        <span class="OutlineLabel"
-                                                            id="ctl00_cphContentsArea_gvShiftCalendarCarryOver_ctl04_lblDeptName"
-                                                            style="width: 300px; height: 17px; display: inline-block;">　　　　　　営業一課</span>
-                                                    </td>
-                                                </tr>
-                                                <tr>
-                                                    <td class="GridViewRowCenter" style="width: 30px; white-space: nowrap;">
-                                                        <input
-                                                            name="ctl00$cphContentsArea$gvShiftCalendarCarryOver$ctl05$chkIsSelect"
-                                                            tabindex="7"
-                                                            id="ctl00_cphContentsArea_gvShiftCalendarCarryOver_ctl05_chkIsSelect"
-                                                            type="checkbox">
-                                                    </td>
-                                                    <td class="GridViewRowLeft">
-                                                        <span class="OutlineLabel"
-                                                            id="ctl00_cphContentsArea_gvShiftCalendarCarryOver_ctl05_lblDeptName"
-                                                            style="width: 300px; height: 17px; display: inline-block;">　　　　　　営業二課</span>
-                                                    </td>
-                                                </tr>
-                                                <tr>
-                                                    <td class="GridViewRowCenter" style="width: 30px; white-space: nowrap;">
-                                                        <input
-                                                            name="ctl00$cphContentsArea$gvShiftCalendarCarryOver$ctl06$chkIsSelect"
-                                                            tabindex="7"
-                                                            id="ctl00_cphContentsArea_gvShiftCalendarCarryOver_ctl06_chkIsSelect"
-                                                            type="checkbox">
-                                                    </td>
-                                                    <td class="GridViewRowLeft">
-                                                        <span class="OutlineLabel"
-                                                            id="ctl00_cphContentsArea_gvShiftCalendarCarryOver_ctl06_lblDeptName"
-                                                            style="width: 300px; height: 17px; display: inline-block;">　　　製造部</span>
-                                                    </td>
-                                                </tr>
-                                                <tr>
-                                                    <td class="GridViewRowCenter" style="width: 30px; white-space: nowrap;">
-                                                        <input
-                                                            name="ctl00$cphContentsArea$gvShiftCalendarCarryOver$ctl07$chkIsSelect"
-                                                            tabindex="7"
-                                                            id="ctl00_cphContentsArea_gvShiftCalendarCarryOver_ctl07_chkIsSelect"
-                                                            type="checkbox">
-                                                    </td>
-                                                    <td class="GridViewRowLeft">
-                                                        <span class="OutlineLabel"
-                                                            id="ctl00_cphContentsArea_gvShiftCalendarCarryOver_ctl07_lblDeptName"
-                                                            style="width: 300px; height: 17px; display: inline-block;">　　　　　　製造一課</span>
-                                                    </td>
-                                                </tr>
-                                                <tr>
-                                                    <td class="GridViewRowCenter" style="width: 30px; white-space: nowrap;">
-                                                        <input
-                                                            name="ctl00$cphContentsArea$gvShiftCalendarCarryOver$ctl08$chkIsSelect"
-                                                            tabindex="7"
-                                                            id="ctl00_cphContentsArea_gvShiftCalendarCarryOver_ctl08_chkIsSelect"
-                                                            type="checkbox">
-                                                    </td>
-                                                    <td class="GridViewRowLeft">
-                                                        <span class="OutlineLabel"
-                                                            id="ctl00_cphContentsArea_gvShiftCalendarCarryOver_ctl08_lblDeptName"
-                                                            style="width: 300px; height: 17px; display: inline-block;">　　　　　　製造二課</span>
-                                                    </td>
-                                                </tr>
-                                                <tr>
-                                                    <td class="GridViewRowCenter" style="width: 30px; white-space: nowrap;">
-                                                        <input
-                                                            name="ctl00$cphContentsArea$gvShiftCalendarCarryOver$ctl09$chkIsSelect"
-                                                            tabindex="7"
-                                                            id="ctl00_cphContentsArea_gvShiftCalendarCarryOver_ctl09_chkIsSelect"
-                                                            type="checkbox">
-                                                    </td>
-                                                    <td class="GridViewRowLeft">
-                                                        <span class="OutlineLabel"
-                                                            id="ctl00_cphContentsArea_gvShiftCalendarCarryOver_ctl09_lblDeptName"
-                                                            style="width: 300px; height: 17px; display: inline-block;">　　　　　　製造三課</span>
-                                                    </td>
-                                                </tr>
-                                                <tr>
-                                                    <td class="GridViewRowCenter" style="width: 30px; white-space: nowrap;">
-                                                        <input
-                                                            name="ctl00$cphContentsArea$gvShiftCalendarCarryOver$ctl10$chkIsSelect"
-                                                            tabindex="7"
-                                                            id="ctl00_cphContentsArea_gvShiftCalendarCarryOver_ctl10_chkIsSelect"
-                                                            type="checkbox">
-                                                    </td>
-                                                    <td class="GridViewRowLeft">
-                                                        <span class="OutlineLabel"
-                                                            id="ctl00_cphContentsArea_gvShiftCalendarCarryOver_ctl10_lblDeptName"
-                                                            style="width: 300px; height: 17px; display: inline-block;">　　　経理部</span>
-                                                    </td>
-                                                </tr>
-                                                <tr>
-                                                    <td class="GridViewRowCenter" style="width: 30px; white-space: nowrap;">
-                                                        <input
-                                                            name="ctl00$cphContentsArea$gvShiftCalendarCarryOver$ctl11$chkIsSelect"
-                                                            tabindex="7"
-                                                            id="ctl00_cphContentsArea_gvShiftCalendarCarryOver_ctl11_chkIsSelect"
-                                                            type="checkbox">
-                                                    </td>
-                                                    <td class="GridViewRowLeft">
-                                                        <span class="OutlineLabel"
-                                                            id="ctl00_cphContentsArea_gvShiftCalendarCarryOver_ctl11_lblDeptName"
-                                                            style="width: 300px; height: 17px; display: inline-block;">　　　総務部</span>
-                                                    </td>
-                                                </tr>
-                                                <tr>
-                                                    <td class="GridViewRowCenter" style="width: 30px; white-space: nowrap;">
-                                                        <input
-                                                            name="ctl00$cphContentsArea$gvShiftCalendarCarryOver$ctl12$chkIsSelect"
-                                                            tabindex="7"
-                                                            id="ctl00_cphContentsArea_gvShiftCalendarCarryOver_ctl12_chkIsSelect"
-                                                            type="checkbox">
-                                                    </td>
-                                                    <td class="GridViewRowLeft">
-                                                        <span class="OutlineLabel"
-                                                            id="ctl00_cphContentsArea_gvShiftCalendarCarryOver_ctl12_lblDeptName"
-                                                            style="width: 300px; height: 17px; display: inline-block;">　　　購買部</span>
-                                                    </td>
-                                                </tr>
-                                                <tr>
-                                                    <td class="GridViewRowCenter" style="width: 30px; white-space: nowrap;">
-                                                        <input
-                                                            name="ctl00$cphContentsArea$gvShiftCalendarCarryOver$ctl13$chkIsSelect"
-                                                            tabindex="7"
-                                                            id="ctl00_cphContentsArea_gvShiftCalendarCarryOver_ctl13_chkIsSelect"
-                                                            type="checkbox">
-                                                    </td>
-                                                    <td class="GridViewRowLeft">
-                                                        <span class="OutlineLabel"
-                                                            id="ctl00_cphContentsArea_gvShiftCalendarCarryOver_ctl13_lblDeptName"
-                                                            style="width: 300px; height: 17px; display: inline-block;">　　　　　　購買一課</span>
-                                                    </td>
-                                                </tr>
-                                                <tr>
-                                                    <td class="GridViewRowCenter" style="width: 30px; white-space: nowrap;">
-                                                        <input
-                                                            name="ctl00$cphContentsArea$gvShiftCalendarCarryOver$ctl14$chkIsSelect"
-                                                            tabindex="7"
-                                                            id="ctl00_cphContentsArea_gvShiftCalendarCarryOver_ctl14_chkIsSelect"
-                                                            type="checkbox">
-                                                    </td>
-                                                    <td class="GridViewRowLeft">
-                                                        <span class="OutlineLabel"
-                                                            id="ctl00_cphContentsArea_gvShiftCalendarCarryOver_ctl14_lblDeptName"
-                                                            style="width: 300px; height: 17px; display: inline-block;">　　　　　　購買二課</span>
-                                                    </td>
-                                                </tr>
-                                                <tr>
-                                                    <td class="GridViewRowCenter" style="width: 30px; white-space: nowrap;">
-                                                        <input
-                                                            name="ctl00$cphContentsArea$gvShiftCalendarCarryOver$ctl15$chkIsSelect"
-                                                            tabindex="7"
-                                                            id="ctl00_cphContentsArea_gvShiftCalendarCarryOver_ctl15_chkIsSelect"
-                                                            type="checkbox">
-                                                    </td>
-                                                    <td class="GridViewRowLeft">
-                                                        <span class="OutlineLabel"
-                                                            id="ctl00_cphContentsArea_gvShiftCalendarCarryOver_ctl15_lblDeptName"
-                                                            style="width: 300px; height: 17px; display: inline-block;">　　　資材部</span>
-                                                    </td>
-                                                </tr>
-                                                <tr>
-                                                    <td class="GridViewRowCenter" style="width: 30px; white-space: nowrap;">
-                                                        <input
-                                                            name="ctl00$cphContentsArea$gvShiftCalendarCarryOver$ctl16$chkIsSelect"
-                                                            tabindex="7"
-                                                            id="ctl00_cphContentsArea_gvShiftCalendarCarryOver_ctl16_chkIsSelect"
-                                                            type="checkbox">
-                                                    </td>
-                                                    <td class="GridViewRowLeft">
-                                                        <span class="OutlineLabel"
-                                                            id="ctl00_cphContentsArea_gvShiftCalendarCarryOver_ctl16_lblDeptName"
-                                                            style="width: 300px; height: 17px; display: inline-block;">　　　品質保証一部</span>
-                                                    </td>
-                                                </tr>
-                                                <tr>
-                                                    <td class="GridViewRowCenter" style="width: 30px; white-space: nowrap;">
-                                                        <input
-                                                            name="ctl00$cphContentsArea$gvShiftCalendarCarryOver$ctl17$chkIsSelect"
-                                                            tabindex="7"
-                                                            id="ctl00_cphContentsArea_gvShiftCalendarCarryOver_ctl17_chkIsSelect"
-                                                            type="checkbox">
-                                                    </td>
-                                                    <td class="GridViewRowLeft">
-                                                        <span class="OutlineLabel"
-                                                            id="ctl00_cphContentsArea_gvShiftCalendarCarryOver_ctl17_lblDeptName"
-                                                            style="width: 300px; height: 17px; display: inline-block;">　　　　　　品質保証一課</span>
-                                                    </td>
-                                                </tr>
-                                                <tr>
-                                                    <td class="GridViewRowCenter" style="width: 30px; white-space: nowrap;">
-                                                        <input
-                                                            name="ctl00$cphContentsArea$gvShiftCalendarCarryOver$ctl18$chkIsSelect"
-                                                            tabindex="7"
-                                                            id="ctl00_cphContentsArea_gvShiftCalendarCarryOver_ctl18_chkIsSelect"
-                                                            type="checkbox">
-                                                    </td>
-                                                    <td class="GridViewRowLeft">
-                                                        <span class="OutlineLabel"
-                                                            id="ctl00_cphContentsArea_gvShiftCalendarCarryOver_ctl18_lblDeptName"
-                                                            style="width: 300px; height: 17px; display: inline-block;">　　　品質保証二部</span>
-                                                    </td>
-                                                </tr>
-                                                <tr>
-                                                    <td class="GridViewRowCenter" style="width: 30px; white-space: nowrap;">
-                                                        <input
-                                                            name="ctl00$cphContentsArea$gvShiftCalendarCarryOver$ctl19$chkIsSelect"
-                                                            tabindex="7"
-                                                            id="ctl00_cphContentsArea_gvShiftCalendarCarryOver_ctl19_chkIsSelect"
-                                                            type="checkbox">
-                                                    </td>
-                                                    <td class="GridViewRowLeft">
-                                                        <span class="OutlineLabel"
-                                                            id="ctl00_cphContentsArea_gvShiftCalendarCarryOver_ctl19_lblDeptName"
-                                                            style="width: 300px; height: 17px; display: inline-block;">　　　　　　品質保証二課</span>
-                                                    </td>
-                                                </tr>
+                                                @endforeach
                                             </tbody>
                                         </table>
                                     </div>
-
                                 </div>
                             </div>
 
                             <div class="line"></div>
                             <p class="ButtonField1">
-                                <input name="ctl00$cphContentsArea$btnUpdate" tabindex="8"
-                                    id="ctl00_cphContentsArea_btnUpdate"
-                                    onclick="if(confirm('更新します。よろしいですか?') ==  false){ return false;};WebForm_DoPostBackWithOptions(new WebForm_PostBackOptions(&quot;ctl00$cphContentsArea$btnUpdate&quot;, &quot;&quot;, true, &quot;Update&quot;, &quot;&quot;, false, true))"
-                                    type="button" value="更新">
-                                <input name="ctl00$cphContentsArea$btnCancel" tabindex="9"
-                                    id="ctl00_cphContentsArea_btnCancel"
-                                    onclick="javascript:__doPostBack('ctl00$cphContentsArea$btnCancel','')" type="button"
-                                    value="キャンセル">
+                                <input type="button" value="更新" tabindex="7"
+                                    id="btnUpdate" name="btnUpdate" class="ButtonStyle1 update"
+                                    data-url="{{ url('mng_oprt/ShiftCalendarCarryOver') }}">
+                                <input type="button" value="キャンセル" tabindex="8"
+                                    id="btnCancel" name="btnCancel" class="ButtonStyle1"
+                                    onclick="location.href='{{ url('mng_oprt/ShiftCalendarCarryOver') }}'">
                             </p>
+                        </form>
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+@endsection
 
+@section('script')
+<script>
+    $(function() {
+        // ENTER時に送信されないようにする
+        $('input').not('[type="button"]').keypress(function(e) {
+            if (e.which == 13) {
+                return false;
+            }
+        });
 
-                        </div>
-                    </td>
-                </tr>
-            </tbody>
-        </table>
-    </div>
+        // 更新
+        $(document).on('click', '.update', function() {
+            if (!window.confirm("{{ getArrValue($error_messages, 1005) }}")) {
+                $("#btnUpdate").focus()
+                return false;
+            }
+
+            var noChecked = $(".deptCheckbox:checked").length === 0;
+            if (noChecked) {
+                $('#error').text("{{ getArrValue($error_messages, 4002) }}")
+            }
+
+            var noDate = !$(".yearMonth").val();
+            if (noDate) {
+                $('#dateError').text("{{ getArrValue($error_messages, 2002) }}")
+            }
+
+            if (noChecked || noDate) {
+                $("#btnUpdate").focus()
+                return false;
+            }
+
+            var url = $(this).data('url');
+            $('#form').attr('action', url);
+            $('#form').submit();
+        });
+
+        // 値選択後、エラー文言削除
+        $('#yearMonth').change(function() {
+            if ($('.error').text()) {
+                $('.error').text("");
+            }
+        });
+
+        // 全チェックor全チェック外し
+        changeAllCheckBoxStates = function(check) {
+            $(".deptCheckbox").prop("checked", check);
+        }
+
+        // カレンダー機能の設定
+        $('.yearMonth').datepicker({
+            format: 'yyyy年mm月',
+            autoclose: true,
+            language: 'ja',
+            minViewMode: 1,
+            startDate: '{{ $def_year - 1 }}年01月',
+            endDate: '{{ $def_year + 1 }}年12月'
+        });
+    });
+</script>
 @endsection
