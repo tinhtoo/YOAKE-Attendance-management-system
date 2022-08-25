@@ -40,5 +40,4 @@ class MT13DeptAuth extends Model
      * @var string
      */
     protected $connection = 'sqlsrv';
-
 }

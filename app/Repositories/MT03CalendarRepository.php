@@ -5,9 +5,7 @@ namespace App\Repositories;
 use App\Models\MT03Calendar;
 
 use App\Filters\MT03CalendarEditorFilter;
-use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Support\Facades\DB;
-
 
 class MT03CalendarRepository extends MT03Calendar
 {
@@ -33,5 +31,15 @@ class MT03CalendarRepository extends MT03Calendar
                 ->where('CALD_MONTH', $cald_month)
                 ->where('CLOSING_DATE_CD', $closing_date_cd)
                 ->delete();
+    }
+
+    public function getWithPrimary($calendar_cd, $cald_year, $cald_month, $closing_date_cd, $cald_date)
+    {
+        return MT03Calendar::where('CALENDAR_CD', $calendar_cd)
+                            ->where('CALD_YEAR', $cald_year)
+                            ->where('CALD_MONTH', $cald_month)
+                            ->where('CLOSING_DATE_CD', $closing_date_cd)
+                            ->where('CALD_DATE', $cald_date)
+                            ->first();
     }
 }

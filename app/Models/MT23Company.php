@@ -64,5 +64,4 @@ class MT23Company extends Model
      * @var string
      */
     protected $connection = 'sqlsrv';
-
 }

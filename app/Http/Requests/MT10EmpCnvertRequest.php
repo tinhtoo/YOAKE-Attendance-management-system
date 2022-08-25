@@ -81,7 +81,6 @@ class MT10EmpCnvertRequest extends FormRequest
                     $newEmpCd = FormRequest::get('txtNewEmpCd');
                     // {新社員番号}で検索し社員名取得
                     $newEmpRegClsCd = MT10Emp::where('MT10_EMP.EMP_CD', $newEmpCd)->pluck('EMP_NAME')->all();
-                    // dd($newEmpRegClsCd);
                     $msg_4033 = MT99Msg::where('MSG_NO', '4033')->pluck('MSG_CONT')->first();
                     // {新社員番号}で検索し該当データの確認
                     if ($newEmpRegClsCd) {

@@ -73,7 +73,6 @@ class WorkTimeFixReferenceController extends Controller
         if (is_nullorwhitespace($year)
                 || is_nullorwhitespace($month)
                 || is_nullorwhitespace($closing_date_cd)) {
-
             // 検索条件が設定されていない場合、再表示する
             return redirect('mng_oprt/WorkTimeFixReference');
         }
@@ -81,7 +80,14 @@ class WorkTimeFixReferenceController extends Controller
         // 検索
         $login_emp_dept_cd = $this->mt10_emp->getEmp($this->mt11_login->getEmpCd(session('id')))->DEPT_CD;
         $view_dept = $this->mt13_deptauth->getChangeableDept(session('id'));
-        $results = $this->tr01_work->searchFixEmp($login_emp_dept_cd, $view_dept, $year, $month, $closing_date_cd, $no_fix);
+        $results = $this->tr01_work->searchFixEmp(
+            $login_emp_dept_cd,
+            $view_dept,
+            $year,
+            $month,
+            $closing_date_cd,
+            $no_fix
+        );
 
         $view_data = $this->createViewData();
         return parent::viewWithMenu('mng_oprt.WorkTimeFixReference', compact('view_data', 'search_data', 'results'));

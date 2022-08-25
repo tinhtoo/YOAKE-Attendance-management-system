@@ -45,6 +45,14 @@ class TR02EmpCalendarRepository extends TR02EmpCalendar
                     ->get();
     }
 
+    public function getWithPrimary($year, $month, $emp_cd)
+    {
+        return TR02EmpCalendar::where('CALD_YEAR', $year)
+                            ->where('CALD_MONTH', $month)
+                            ->where('EMP_CD', $emp_cd)
+                            ->first();
+    }
+
     public function existWithPrimary($year, $month, $emp_cd)
     {
         return TR02EmpCalendar::where('CALD_YEAR', $year)

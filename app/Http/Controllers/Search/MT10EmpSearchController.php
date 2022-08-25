@@ -35,8 +35,7 @@ class MT10EmpSearchController extends Controller
 
         $search_result = $this->emp_repository->search($filter, $reg_cls_cd, $is_dept_auth, $calendar_cls_cd);
 
-        return view('search.MT10EmpSearch', compact('request_data','search_data', 'search_result'));
-
+        return view('search.MT10EmpSearch', compact('request_data', 'search_data', 'search_result'));
     }
 
     /**
@@ -57,5 +56,4 @@ class MT10EmpSearchController extends Controller
             return ['empName' => $get_name['EMP_NAME'], 'deptName' => $get_name['DEPT_NAME']];
         }
     }
-
 }

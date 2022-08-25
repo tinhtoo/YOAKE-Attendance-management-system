@@ -52,7 +52,6 @@ class EmpWorkTimeReferenceController extends Controller
      */
     public function empworktimeRef(Request $request)
     {
-        // $request->session()->put(['filter.ddlDate' => $request->old('filter.ddlDate')]);
         $closing_dates = $this->emp_repo->shimebi();
         $company_list = $this->company->getDisp();
 

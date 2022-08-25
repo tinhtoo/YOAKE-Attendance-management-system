@@ -5,35 +5,33 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Model;
 
 /**
- * @property string $WORK_DESC_CD
- * @property string $WORK_DESC_NAME
- * @property string $WORK_DESC_CLS_CD
- * @property string $RSV1_CLS_CD
- * @property string $RSV2_CLS_CD
- * @property string $UPD_DATE
+ * @property integer $GRT_NO
+ * @property integer $WORK_YEAR
+ * @property integer $WORK_MONTH
+ * @property float $PD_GRANT_NUM
  */
-class MT94WorkDesc extends Model
+class MT21PdholidayGrt extends Model
 {
     /**
      * The table associated with the model.
      *
      * @var string
      */
-    protected $table = 'MT94_WORK_DESC';
+    protected $table = 'MT21_PDHOLIDAY_GRT';
 
     /**
      * The primary key for the model.
      *
      * @var string
      */
-    protected $primaryKey = 'WORK_DESC_CD';
+    protected $primaryKey = 'GRT_NO';
 
     /**
      * The "type" of the auto-incrementing ID.
      *
      * @var string
      */
-    protected $keyType = 'string';
+    protected $keyType = 'integer';
 
     /**
      * Indicates if the IDs are auto-incrementing.
@@ -45,7 +43,7 @@ class MT94WorkDesc extends Model
     /**
      * @var array
      */
-    protected $fillable = ['WORK_DESC_NAME', 'WORK_DESC_CLS_CD', 'RSV1_CLS_CD', 'RSV2_CLS_CD', 'UPD_DATE'];
+    protected $fillable = ['WORK_YEAR', 'WORK_MONTH', 'PD_GRANT_NUM'];
 
     /**
      * The connection name for the model.
@@ -53,4 +51,5 @@ class MT94WorkDesc extends Model
      * @var string
      */
     protected $connection = 'sqlsrv';
+
 }

@@ -53,5 +53,4 @@ class MT22ClosingDate extends Model
      * @var string
      */
     protected $connection = 'sqlsrv';
-
 }

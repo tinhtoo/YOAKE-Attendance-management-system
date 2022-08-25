@@ -30,5 +30,4 @@ class TR05WorkTimeFixDly extends Model
      * @var string
      */
     protected $connection = 'sqlsrv';
-
 }

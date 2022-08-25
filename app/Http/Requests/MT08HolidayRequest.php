@@ -9,13 +9,11 @@ class MT08HolidayRequest extends BaseRequest
 {
     public function rules()
     {
-
         return $rules = [
             'nationalHolidays.*.nameNat' => ['required'],
             'companyHolidays.*.nameCom' => ['required'],
             'nationalHolidays.*' => [
-                function($attribute, $value, $fail)
-                {
+                function ($attribute, $value, $fail) {
                     if (empty($value)) {
                         return;
                     }
@@ -30,7 +28,7 @@ class MT08HolidayRequest extends BaseRequest
                             $count++;
                             if ($count > 1) {
                                 // 4000,'日付が重複しています。'
-                                $msg_4000 = MT99Msg::where('MSG_NO','4000')->pluck('MSG_CONT')->first();
+                                $msg_4000 = MT99Msg::where('MSG_NO', '4000')->pluck('MSG_CONT')->first();
                                 $fail($msg_4000);
                                 return;
                             }
@@ -39,8 +37,7 @@ class MT08HolidayRequest extends BaseRequest
                 }
             ],
             'companyHolidays.*' => [
-                function($attribute, $value, $fail)
-                {
+                function ($attribute, $value, $fail) {
                     if (empty($value)) {
                         return;
                     }
@@ -55,7 +52,7 @@ class MT08HolidayRequest extends BaseRequest
                             $count++;
                             // 4000,'日付が重複しています。'
                             if ($count > 1) {
-                                $msg_4000 = MT99Msg::where('MSG_NO','4000')->pluck('MSG_CONT')->first();
+                                $msg_4000 = MT99Msg::where('MSG_NO', '4000')->pluck('MSG_CONT')->first();
                                 $fail($msg_4000);
                                 return;
                             }
@@ -75,5 +72,4 @@ class MT08HolidayRequest extends BaseRequest
             'companyHolidays.*.nameCom.required' => $msg_2002
          ];
     }
-
 }

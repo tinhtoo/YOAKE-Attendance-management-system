@@ -24,6 +24,8 @@
                                             value="{{ old('ddlDate', !is_nullorwhitespace(Session::get('date')) ? Session::get('date') : date('Y年m月') ) }}"
                                             @if(!empty($results))
                                             disabled="disabled"
+                                            @else
+                                            autofocus
                                             @endif
                                             />
                                             @error('ddlDate')
@@ -45,8 +47,6 @@
                                                 autocomplete="off"
                                                 @if(!empty($results))
                                                 disabled="disabled"
-                                                @else
-                                                autofocus
                                                 @endif
                                                 >
                                             <input name="btnSearchEmpCd"
@@ -74,8 +74,7 @@
                                             @error('txtEmpCd')
                                             <span class="text-danger" id="EmpCdValidError">{{ getArrValue($error_messages, $message) }}</span>
                                             @enderror
-                                            <span class="text-danger" id="EmpCdError">
-                                            </span>
+                                            <span class="text-danger" id="EmpCdError"></span>
                                         </td>
                                         <td>
 
@@ -175,6 +174,7 @@
                                                                 <td><span>{{ $messages }}</span></td>
                                                             </tr>
                                                         @else
+                                                            <input type="hidden" name="empCd" value="{{ $emp_cd }}">
                                                             <tr class="sticky-head">
                                                                 <th class="fixedcol" scope="col" style="background: #4682B4; left: 0px;">
                                                                     日付
@@ -667,7 +667,7 @@
                                                     <span id="lblSumLeaveTime" style="display: inline-block;">@isset($leavetime){{ ($leavetime['SUM_LEAVE_TIME'] == '0:00' ? '' : ($leavetime['SUM_LEAVE_TIME'] ? $leavetime['SUM_LEAVE_TIME'] : '')) }} @endisset</span>
                                                 </td>
                                                 <td>
-                                                    <span id="lblSumOut1Time" style="display: inline-block;">@isset($out1time){{ ($out1time['SUM_OUT_TIME'] == '0:00' ? '' : ($out1time['SUM_OUT_TIME'] ? $out1time['SUM_OUT_TIME'] : '')) }} @endisset</span>
+                                                    <span id="lblSumOut1Time" style="display: inline-block;">@isset($outtime){{ ($outtime['SUM_OUT_TIME'] == '0:00' ? '' : ($outtime['SUM_OUT_TIME'] ? $outtime['SUM_OUT_TIME'] : '')) }} @endisset</span>
                                                 </td>
                                                 <td>
                                                     <span id="lblSumOvtm1Time" style="display: inline-block;">@isset($ovtm1time){{ ($ovtm1time['SUM_OVTM1_TIME'] == '0:00' ? '' : ($ovtm1time['SUM_OVTM1_TIME'] ? $ovtm1time['SUM_OVTM1_TIME'] : '')) }} @endisset</span>
@@ -765,7 +765,6 @@ $(document).on('click', '.update', function() {
 });
 
 $(function() {
-    gotoSearch();
     $('#ddlDate').datepicker({
         format: 'yyyy年mm月',
         autoclose: true,
@@ -784,15 +783,6 @@ $(function() {
         $(ele.target).css('color', $(ele.target).children("option:selected").css("color"))
     });
 })
-
-// ローディング設定
-var gotoSearch = function(e) {
-    var is_index = "{{ !empty($is_index) ? true : false; }}";
-    if(emp_cd != "" && is_index) {
-        $.LoadingOverlay("show");
-        $("#btnShow").click();
-    }
-};
 </script>
 <script src="{{ asset('js/work_time/WorkTimeEditor.js') }}" defer></script>
 @endsection

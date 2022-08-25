@@ -11,7 +11,6 @@ class WorkTimePrintRequest extends BaseRequest
         $rules = [];
 
         $data = $this->all();
-        // dd($data);
         $check = $data['OutputCls'];
 
         // 出力区分「月度」
@@ -73,7 +72,7 @@ class WorkTimePrintRequest extends BaseRequest
                 'filter.txtStartEmpCd' => ['nullable'
                                         ,function ($attribute, $value, $fail) {
                                             $input_data = $this->all();
-                                            if (key_exists('regCls', $input_data['filter'])) {
+                                            if (key_exists('chkRegCls', $input_data['filter'])) {
                                                 (parent::existEmpCdWithAuth('00', true))($attribute, $value, $fail);
                                             } else {
                                                 (parent::existEmpCdWithAuth(null, true))($attribute, $value, $fail);
@@ -83,7 +82,7 @@ class WorkTimePrintRequest extends BaseRequest
                 'filter.txtEndEmpCd' => ['nullable'
                                         ,function ($attribute, $value, $fail) {
                                             $input_data = $this->all();
-                                            if (key_exists('regCls', $input_data['filter'])) {
+                                            if (key_exists('chkRegCls', $input_data['filter'])) {
                                                 (parent::existEmpCdWithAuth('00', true))($attribute, $value, $fail);
                                             } else {
                                                 (parent::existEmpCdWithAuth(null, true))($attribute, $value, $fail);

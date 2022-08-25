@@ -51,4 +51,14 @@ class MT16DeptShiftCalendarRepository extends MT16DeptShiftCalendar
     {
         return \DB::table($this->table)->upsert($records, $this->primaryKey, $update_col);
     }
+
+    public function getWithPrimary($year, $month, $closing_date_cd, $dept_cd, $date)
+    {
+        return MT16DeptShiftCalendar::where('CALD_YEAR', $year)
+            ->where('CALD_MONTH', (int)$month)
+            ->where('DEPT_CD', $dept_cd)
+            ->where('CLOSING_DATE_CD', $closing_date_cd)
+            ->where('CALD_DATE', $date)
+            ->first();
+    }
 }

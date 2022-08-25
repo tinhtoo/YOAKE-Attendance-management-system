@@ -38,6 +38,15 @@ class TR03DeptCalendarRepository extends TR03DeptCalendar
                     ->get();
     }
 
+    public function getWithPrimary($year, $month, $dept_cd, $closing_date_cd)
+    {
+        return TR03DeptCalendar::where('CALD_YEAR', $year)
+                            ->where('CALD_MONTH', $month)
+                            ->where('DEPT_CD', $dept_cd)
+                            ->where('CLOSING_DATE_CD', $closing_date_cd)
+                            ->first();
+    }
+
     public function existWithPrimary($year, $month, $dept_cd, $closing_date_cd)
     {
         return TR03DeptCalendar::where('CALD_YEAR', $year)

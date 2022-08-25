@@ -228,8 +228,8 @@
                                 <div class="clearBoth"></div>
                                 <input type="hidden" id="startDate" value={{ $search_results[0]->CALD_DATE->format('Y/m/d') }}>
                                 <input type="hidden" id="endDate" value={{ $search_results[count($search_results) - 1]->CALD_DATE->format('Y/m/d') }}>
-                                <input type="hidden" id="endShiftptnCd" value="">
-                                <input type="hidden" id="endDayNo" value="">
+                                <input type="hidden" id="endShiftptnCd" value="{{ $last_shift_ptn_cd }}">
+                                <input type="hidden" id="endDayNo" value="{{ $last_day_no }}">
                                 <script type="text/javascript">
                                     document.getElementById('txtWorkPtnCd0').focus();
                                 </script>

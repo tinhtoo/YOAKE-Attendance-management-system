@@ -113,5 +113,4 @@ class MT07Fraction extends Model
      * @var string
      */
     protected $connection = 'sqlsrv';
-
 }

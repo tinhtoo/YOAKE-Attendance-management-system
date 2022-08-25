@@ -8,11 +8,8 @@ use App\Repositories\MT93PgRepository;
 use App\Http\Requests\WorkPlanPrintRequest;
 use App\Repositories\TR01WorkRepository;
 use App\Filters\WorkPlanPrintFilter;
-
 use Carbon\Carbon;
-use PDF;
-
-use function Symfony\Component\VarDumper\Dumper\esc;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 /**
  * 勤務予定表(週・月別) 処理

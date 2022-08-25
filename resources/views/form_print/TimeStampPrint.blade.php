@@ -52,15 +52,14 @@
                                         <td>
                                             <input type="text"
                                                     name="filter[startDate]"
-                                                    id="YearMonth"
                                                     class="date"
                                                     autocomplete="off"
                                                     onfocus="this.select();"
                                                     tabindex="3"
-                                                    value="{{ old('filter.startDate', !empty(Session::get('ymd_date')) ? Session::get('ymd_date'): '' ) }}"
+                                                    value="{{ old('filter.startDate') }}"
                                             />
                                             @error('filter.startDate')
-                                            <span class="text-danger">{{ getArrValue($error_messages, $message) }}</span>
+                                            <span class="text-danger date-error">{{ getArrValue($error_messages, $message) }}</span>
                                             @enderror
                                         </td>
                                     </tr>
@@ -69,15 +68,14 @@
                                         <td>
                                             <input type="text"
                                                     name="filter[endDate]"
-                                                    id="YearMonth"
                                                     class="date"
                                                     autocomplete="off"
                                                     onfocus="this.select();"
                                                     tabindex="4"
-                                                    value="{{ old('filter.endDate', !empty(Session::get('ymd_date')) ? Session::get('ymd_date'): '' ) }}"
+                                                    value="{{ old('filter.endDate') }}"
                                             />
                                             @error('filter.endDate')
-                                            <span class="text-danger">{{ getArrValue($error_messages, $message) }}</span>
+                                            <span class="text-danger date-error">{{ getArrValue($error_messages, $message) }}</span>
                                             @enderror
                                         </td>
                                     </tr>
@@ -87,12 +85,14 @@
                                                 <input type="text"
                                                     name="filter[yearMonthDate]"
                                                     tabindex="5"
-                                                    id="yearMonth"
                                                     class="yearMonth"
                                                     autocomplete="off"
-                                                    value="{{ old('filter.yearMonthDate', !empty(Session::get('ym_date')) ? Session::get('ym_date'): '' ) }}"
+                                                    value="{{ old('filter.yearMonthDate') }}"
                                                     disabled
                                                     />
+                                                @error('filter.yearMonthDate')
+                                                <span class="text-danger ymd-error">{{ getArrValue($error_messages, $message) }}</span>
+                                                @enderror
                                             </td>
                                         </tr>
                                         <tr>
@@ -292,22 +292,22 @@ $(function() {
         $(".yearMonth").prop("disabled", true);
         if (!first) {
             $(".yearMonth").val('');
-            $(".YearMonth-Error").text('');
+            $(".ymd-error").text('');
         }
         if (ele.hasClass('rbMonthCls')) {
             $(".date").prop("disabled", true);
             $(".yearMonth").prop("disabled", false);
             $(".date").val('');
-            $(".Date-Error").text('');
+            $(".date-error").text('');
         } else {
             $(".yearMonth").val('');
-            $(".YearMonth-Error").text('');
+            $(".ymd-error").text('');
         }
     }
     toggleRadio($("input[type='radio']:checked"), true);
 
-    // 無効化
-    $("input[type='radio'][name='OutputCls']").on('click', function() {
+    // 出力区分操作
+    $("input[type='radio'][name='OutputCls']").on('change', function() {
         toggleRadio($(this));
     })
 

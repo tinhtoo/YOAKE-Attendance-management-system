@@ -14,14 +14,14 @@ class MT10EmpEditRequest extends BaseRequest
             'EMP_CD' => [
                 'required',
                 'regex:/^[a-zA-Z0-9]+$/',
-                function($attribute, $value, $fail) {
+                function ($attribute, $value, $fail) {
                     $input_data = $this->all();
                     $changeEmpCd = $input_data['change'];
                     $check = MT10Emp::where('EMP_CD', $value)->exists();
                     if ($changeEmpCd == null && $check) {
                         // 2001メッセージ取得（該当データが存在します。)
                         $fail('2001');
-                    } else if ($changeEmpCd != null && !$check) {
+                    } elseif ($changeEmpCd != null && !$check) {
                         // 更新時、更新前データなし
                         // 2000メッセージ取得（該当データが存在しません。)
                         $fail('2000');

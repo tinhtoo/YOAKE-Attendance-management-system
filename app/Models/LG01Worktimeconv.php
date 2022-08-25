@@ -52,4 +52,7 @@ class LG01Worktimeconv extends Model
      * @var string
      */
     protected $connection = 'sqlsrv';
+
+    // created_atとupdated_atを無効化
+    public $timestamps = false;
 }

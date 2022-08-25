@@ -30,5 +30,4 @@ class PdHolidayCarryOverController extends Controller
     {
         return parent::viewWithMenu('mng_oprt.PdHolidayCarryOver');
     }
-
 }

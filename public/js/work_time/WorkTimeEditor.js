@@ -65,13 +65,6 @@ $(function() {
             }
         }
 
-        // 同行に不正な入力があれば時間計算をしない
-        $(targetElement).closest('tr').find("span.timeError").each(function(i, element) {
-            if ($(element).text()) {
-                return false;
-            }
-        });
-
         var parent = $(targetElement).closest('tr');
         var targetTd = $(targetElement).closest('td');
 
@@ -101,7 +94,8 @@ $(function() {
                     $('#sizeError').text('*4 ' + dataSizeError);
                     return false;
                 } else {
-                    targetTd.find('.timeError').empty();
+                    parent.find('.ofcTime').closest('td').find('.timeError').empty();
+                    parent.find('.levTime').closest('td').find('.timeError').empty();
                     var exist = false;
                     $('.timeError').each(function(i, element) {
                         if ($(element).text() == '*4') {
@@ -124,7 +118,8 @@ $(function() {
                     $('#sizeError').text('*4 ' + dataSizeError);
                     return false;
                 } else {
-                    targetTd.find('.timeError').empty();
+                    parent.find('.out1Time').closest('td').find('.timeError').empty();
+                    parent.find('.in1Time').closest('td').find('.timeError').empty();
                     var exist = false;
                     $('.timeError').each(function(i, element) {
                         if ($(element).text() == '*4') {
@@ -146,7 +141,8 @@ $(function() {
                 $('#sizeError').text('*4 ' + dataSizeError);
                 return false;
             } else {
-                targetTd.find('.timeError').empty();
+                parent.find('.out2Time').closest('td').find('.timeError').empty();
+                parent.find('.in2Time').closest('td').find('.timeError').empty();
                 var exist = false;
                 $('.timeError').each(function(i, element) {
                     if ($(element).text() == '*4') {
@@ -158,6 +154,13 @@ $(function() {
                 }
             }
         }
+
+        // 同行に不正な入力があれば時間計算をしない
+        $(targetElement).closest('tr').find("span.timeError").each(function(i, element) {
+            if ($(element).text()) {
+                return false;
+            }
+        });
 
         if ($('#txtEmpCd').val()) {
             var empCd = $('#txtEmpCd').val();
@@ -291,7 +294,6 @@ $(function() {
         });
     };
     $('.workPtnCd, .reasonCd, .ofcTime, .levTime, .out1Time, .in1Time, .out2Time, .in2Time').focusout(cwTimeCalculate);
-
 
     var setBeforeValue = function(e) {
         beforeVal = e.target.value;

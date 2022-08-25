@@ -13,8 +13,6 @@ use App\Repositories\TR01WorkRepository;
 use App\Repositories\TR04WorkTimeFixRepository;
 use App\http\Requests\WorkTimeFixUpdateRequest;
 
-use function Symfony\Component\VarDumper\Dumper\esc;
-
 /**
  * 月次確定処理画面
  */
@@ -84,8 +82,14 @@ class WorkTimeFixController extends Controller
         $closing_dates = $this->mt22_closing_date->getMt22();
         $def_closing_date_cd = $closing_dates->firstWhere('RSV1_CLS_CD', '01')->CLOSING_DATE_CD;
 
-        return compact('def_year', 'def_month', 'dept_list',
-                'changeable_dept_cd_list', 'closing_dates', 'def_closing_date_cd');
+        return compact(
+            'def_year',
+            'def_month',
+            'dept_list',
+            'changeable_dept_cd_list',
+            'closing_dates',
+            'def_closing_date_cd'
+        );
     }
 
     /**

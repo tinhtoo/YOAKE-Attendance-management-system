@@ -1,8 +1,8 @@
 <?php
 
 namespace App\Http\Middleware;
-use Closure;
 
+use Closure;
 use Illuminate\Foundation\Http\Middleware\VerifyCsrfToken as Middleware;
 
 class VerifyCsrfToken extends Middleware
@@ -25,10 +25,8 @@ class VerifyCsrfToken extends Middleware
      */
     public function handle($request, Closure $next)
     {
-        if(!session()->has('id') && $request->route()->named('logout.form')) {
-
+        if (!session()->has('id') && $request->route()->named('logout.form')) {
             $this->except[] = route('logout.form');
-
         }
 
         return parent::handle($request, $next);

@@ -74,8 +74,13 @@
         <!-- ページ番号表示 -->
         <script type="text/php">
             if(isset($pdf)) {
+                $x = 800;
+                $y = 20;
+                $text = "{PAGE_NUM} / {PAGE_COUNT}";
                 $font = $fontMetrics->get_font("MS Pゴシック, メイリオ", "normal");
-                $pdf->page_text(800, 20, "{PAGE_NUM} / {PAGE_COUNT}", $font, 6, [0,0,0]);
+                $size = 6;
+                $color = [0,0,0];
+                $pdf->page_text($x, $y, $text, $font, $size, $color);
             }
         </script>
         <table class="workTable" style="width: 100%;">
@@ -146,14 +151,19 @@
         <!-- ページ番号表示 -->
         <script type="text/php">
             if(isset($pdf)) {
+                $x = 800;
+                $y = 20;
+                $text = "{PAGE_NUM} / {PAGE_COUNT}";
                 $font = $fontMetrics->get_font("MS Pゴシック, メイリオ", "normal");
-                $pdf->page_text(800, 20, "{PAGE_NUM} / {PAGE_COUNT}", $font, 6, [0,0,0]);
+                $size = 6;
+                $color = [0,0,0];
+                $pdf->page_text($x, $y, $text, $font, $size, $color);
             }
         </script>
         <table class="workTable">
             <thead>
                 <tr>
-                    <th colspan="11" style="border: none; height:2px; text-align: right; padding-bottom:15px;">作表日：</th>
+                    <th colspan="10" style="border: none; height:2px; text-align: right; padding-bottom:15px;">作表日：</th>
                     <th style="border: none; height:2px; text-align: left; padding-bottom:15px;">
                         {{ date('Y/m/d', strtotime($now_date)) }}
                     </th>
@@ -177,13 +187,13 @@
                     </th>
                 </tr>
                 <tr style="width: 100%;">
-                    <th style="width: 60px; padding-left: 5px; text-align: left;">社員<br>&nbsp;&nbsp;</th>
+                    <th style="width: 65px; padding-left: 5px; text-align: left;">社員<br>&nbsp;&nbsp;</th>
                     <th></th>
-                    <th style="width: 60px;">出勤日数<br>休出日数</th>
-                    <th style="width: 60px;">特休日数<br>有休日数</th>
-                    <th style="width: 60px;">欠勤日数<br>代休日数</th>
-                    <th style="width: 60px;">出勤時間<br>遅刻時間</th>
-                    <th style="width: 60px;">早退時間<br>外出時間</th>
+                    <th style="width: 70px;">出勤日数<br>休出日数</th>
+                    <th style="width: 70px;">特休日数<br>有休日数</th>
+                    <th style="width: 70px;">欠勤日数<br>代休日数</th>
+                    <th style="width: 70px;">出勤時間<br>遅刻時間</th>
+                    <th style="width: 70px;">早退時間<br>外出時間</th>
                     <th style="width: 90px;">
                         {{ $dept->WORK_DESC_NAME_100 }}<br>
                         {{ $dept->WORK_DESC_NAME_101 }}
@@ -331,8 +341,7 @@
                  
                 @endphp
                 <tr class="record-sum">
-                    <td></td>
-                    <td style="text-align: right;">部門計<br>&nbsp;&nbsp;</td>
+                    <td colspan="2" style="text-align: right;">部門計<br>&nbsp;&nbsp;</td>
                     <td>{{ $sum_workday_cnt }}<br>&nbsp;{{ $sum_holwork_cnt }}</td>
                     <td>{{ $sum_spchol_cnt }}<br>&nbsp;{{ $sum_padhol_cnt }}</td>
                     <td>{{ $sum_abcwork_cnt }}<br>&nbsp;{{ $sum_compday_cnt }}</td>

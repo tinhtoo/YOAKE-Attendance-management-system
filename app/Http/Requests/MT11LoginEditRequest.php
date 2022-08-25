@@ -22,9 +22,7 @@ class MT11LoginEditRequest extends FormRequest
                 function ($attribute, $value, $fail) {
                     // 現パスワード取得
                     $empCd =  FormRequest::get('txtEmpCd');
-                    // dd($empId);
                     $check = MT11Login::where('LOGIN_ID', $value)->where('EMP_CD', '<>', $empCd)->exists();
-                    // dd($check);
                     // 2022メッセージ取得（既に使用されているログインIDです。)
                     $msg_2022 = MT99Msg::where('MSG_NO', '2022')->pluck('MSG_CONT')->first();
                     // 2002メッセージ取得（必須入力項目です)

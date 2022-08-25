@@ -62,7 +62,7 @@ class WorkTimeDeptEditorController extends Controller
         $haken_company = $this->mt23_company->getDisp(); // 会社所属情報
         $ovtm_header_names = $this->work_desc->getOvtms()->toArray(); // テーブルヘッダー（残業）
         $ext_header_names = $this->work_desc->getExts()->toArray(); // テーブルヘッダー（割増）
-        $input_search_data['txtDeptCd'] = session('dept_cd'); // 部門コード
+        $input_search_data['txtDeptCd'] = '';
         $is_index = true;
 
         return parent::viewWithMenu('work_time.WorkTimeDeptEditor', compact(
@@ -93,7 +93,6 @@ class WorkTimeDeptEditorController extends Controller
         $ext_header_names = $this->work_desc->getExts()->toArray(); // テーブルヘッダー（割増）
 
         $request->session()->put('ymd_date', $input_search_data['ddlDate']); // 対象年月日
-        $request->session()->put('dept_cd', $input_search_data['txtDeptCd']); // 部門コード
 
         return parent::viewWithMenu('work_time.WorkTimeDeptEditor', compact(
             'input_search_data',
@@ -380,10 +379,7 @@ class WorkTimeDeptEditorController extends Controller
     {
         $data = $request->session()->all();
 
-        if (!is_nullorwhitespace($data['dept_cd'])) {
-            $request->session()->forget('dept_cd');
-        }
-        if (!is_nullorwhitespace($data['ymd_date'])) {
+        if (key_exists('ymd_date', $data) && !is_nullorwhitespace($data['ymd_date'])) {
             return redirect()->back()->with('ymd_date', $data['ymd_date']);
         } else {
             return redirect()->back();

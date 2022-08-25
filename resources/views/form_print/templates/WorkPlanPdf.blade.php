@@ -78,7 +78,8 @@
                 $y = 23;
                 $font = $fontMetrics->get_font("MS Pゴシック, メイリオ", "normal");
                 $size = 6;
-                $pdf->page_text($x, $y, "{PAGE_NUM} / {PAGE_COUNT}", $font, $size, [0,0,0]);
+                $color = [0,0,0];
+                $pdf->page_text($x, $y, "{PAGE_NUM} / {PAGE_COUNT}", $font, $size, $color);
             }
         </script>
         @else
@@ -89,7 +90,8 @@
                 $y = 23;
                 $font = $fontMetrics->get_font("MS Pゴシック, メイリオ", "normal");
                 $size = 6;
-                $pdf->page_text($x, $y, "{PAGE_NUM} / {PAGE_COUNT}", $font, $size, [0,0,0]);
+                $color = [0,0,0];
+                $pdf->page_text($x, $y, "{PAGE_NUM} / {PAGE_COUNT}", $font, $size, $color);
             }
         </script>
         @endif

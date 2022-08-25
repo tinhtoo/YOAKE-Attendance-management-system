@@ -5,15 +5,12 @@ namespace App\Http\Controllers\Mng_Oprt;
 use App\Filters\WorkTimeExportFilter;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\WorkTimeExportRequest;
-use App\Models\TR01Work;
 use App\Repositories\Master\MT11LoginRefRepository;
 use App\Repositories\MT13DeptAuthRepository;
 use App\Repositories\MT23CompanyRepository;
 use Illuminate\Http\Request;
 use App\Repositories\MT93PgRepository;
 use App\Repositories\TR01WorkRepository;
-
-use function Symfony\Component\VarDumper\Dumper\esc;
 
 /**
  * 勤務実績情報出力画面
@@ -74,12 +71,13 @@ class WorkTimeExportController extends Controller
      * @param
      * @return void
      */
-    public function __construct(MT93PgRepository $pg_repository
-                                , MT11LoginRefRepository $mt11_rep
-                                , MT13DeptAuthRepository $mt13_rep
-                                , MT23CompanyRepository $mt23_rep
-                                , TR01WorkRepository $tr01_rep)
-    {
+    public function __construct(
+        MT93PgRepository $pg_repository,
+        MT11LoginRefRepository $mt11_rep,
+        MT13DeptAuthRepository $mt13_rep,
+        MT23CompanyRepository $mt23_rep,
+        TR01WorkRepository $tr01_rep
+    ) {
         parent::__construct($pg_repository, '042000');
         $this->mt11 = $mt11_rep;
         $this->mt13 = $mt13_rep;
@@ -123,8 +121,9 @@ class WorkTimeExportController extends Controller
         return response()->streamDownload(parent::outputCsv($csv_header, $output_data), $filename, $header);
     }
 
-    private function notExist() {
-        return function($attribute, $value, $fail) {
+    private function notExist()
+    {
+        return function ($attribute, $value, $fail) {
             // 該当データが存在しません。
             $fail('2000');
         };

@@ -2,13 +2,8 @@
 
 namespace App\Http\Controllers;
 
-use GuzzleHttp\Promise\Create;
-use Illuminate\Support\Facades\Hash;
-use Illuminate\Support\Facades\Redirect;
-use Illuminate\Foundation\Exceptions\Handler;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Session;
-use Illuminate\Validation\ValidationException;
 use Illuminate\Http\Request;
 use App\Models\MT11Login;
 use App\Models\MT10Emp;
@@ -39,25 +34,23 @@ class UserAuthController extends Controller
      * @param Request $request
      * @return void
      */
-    public function loginCheck(Request $request){
+    public function loginCheck(Request $request)
+    {
         // 検証チェック
 
         // ログインId の取得
-        $loginId = $request->txtLoginId;
-        $loginPw = $request->password;
-        $loginUser = MT11Login::WHERE('LOGIN_ID', $loginId)->first();
+        $login_id = $request->txtLoginId;
+        $login_user = MT11Login::WHERE('LOGIN_ID', $login_id)->first();
 
-        if($loginUser){
-            if($request->password == $loginUser->PASSWORD){
-
-                $request->session()->put('id', $loginUser->LOGIN_ID);
-
+        if ($login_user) {
+            if ($request->password == $login_user->PASSWORD) {
+                $request->session()->put('id', $login_user->LOGIN_ID);
                 return redirect('main');
-            }else{
-                return back()->with('fail','ログインIDまたは、パスワードに誤りがあります。');
+            } else {
+                return back()->with('fail', 'ログインIDまたは、パスワードに誤りがあります。');
             }
-        }else{
-            return back()->with('fail','ログインIDまたは、パスワードに誤りがあります。');
+        } else {
+            return back()->with('fail', 'ログインIDまたは、パスワードに誤りがあります。');
         }
     }
 
@@ -67,7 +60,7 @@ class UserAuthController extends Controller
      *
      * @return view
      */
-    function main(Request $request)
+    public function main(Request $request)
     {
         $loginId = session()->get('id');
         $loginUser = MT11Login::WHERE('LOGIN_ID', $loginId)->pluck('EMP_CD');

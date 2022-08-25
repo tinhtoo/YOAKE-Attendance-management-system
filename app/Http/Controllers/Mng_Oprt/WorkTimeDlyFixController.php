@@ -31,5 +31,4 @@ class WorkTimeDlyFixController extends Controller
     {
         return parent::viewWithMenu('mng_oprt.WorkTimeDlyFix');
     }
-
 }

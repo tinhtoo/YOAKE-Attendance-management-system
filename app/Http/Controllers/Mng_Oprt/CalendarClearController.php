@@ -11,8 +11,6 @@ use App\Repositories\TR04WorkTimeFixRepository;
 use App\Repositories\TR50WorkTimeRepository;
 use App\Repositories\TR02EmpCalendarRepository;
 
-use function Symfony\Component\VarDumper\Dumper\esc;
-
 /**
  * カレンダー情報クリア処理画面
  */

@@ -89,7 +89,7 @@
                                                     autocomplete="off"
                                                     onfocus="this.select();"
                                                     tabindex="5"
-                                                    value="{{ old('filter.startDate', !empty(Session::get('ymd_date')) ? Session::get('ymd_date'): '' ) }}"
+                                                    value="{{ old('filter.startDate') }}"
                                                     @isset($input_datas)
                                                     @if($input_datas['OutputCls'] == 'rbMonthCls')
                                                     disabled
@@ -111,7 +111,7 @@
                                                     autocomplete="off"
                                                     onfocus="this.select();"
                                                     tabindex="6"
-                                                    value="{{ old('filter.endDate', !empty(Session::get('ymd_date')) ? Session::get('ymd_date'): '' ) }}"
+                                                    value="{{ old('filter.endDate') }}"
                                                     @isset($input_datas)
                                                     @if($input_datas['OutputCls'] == 'rbMonthCls' )
                                                     disabled
@@ -132,7 +132,7 @@
                                                     id="yearMonth"
                                                     class="yearMonth"
                                                     autocomplete="off"
-                                                    value="{{ old('filter.yearMonthDate', !empty(Session::get('ym_date')) ? Session::get('ym_date'): '' ) }}"
+                                                    value="{{ old('filter.yearMonthDate') }}"
                                                     disabled
                                                     @isset($input_datas)
                                                     @if($input_datas['OutputCls'] == 'rbDateRange' )

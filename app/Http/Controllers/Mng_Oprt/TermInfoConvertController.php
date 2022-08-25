@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Mng_Oprt;
 
 use App\Http\Controllers\Controller;
-use App\Repositories\MT95TermRepository;
+use App\Repositories\Work_Time\MT95TermRepository;
 use App\Repositories\MT93PgRepository;
 
 /**
@@ -65,7 +65,6 @@ class TermInfoConvertController extends Controller
 
 
             // 社員情報更新
-
         }
 
         return $fail_terms;

@@ -11,9 +11,7 @@ use App\Repositories\MT01ControlRepository;
 use App\Repositories\TR01WorkRepository;
 use App\Repositories\MT09ReasonRepository;
 use Carbon\Carbon;
-use PDF;
-
-use function Symfony\Component\VarDumper\Dumper\esc;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 /**
  * 事由／勤怠一覧表 処理

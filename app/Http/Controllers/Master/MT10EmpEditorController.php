@@ -21,10 +21,11 @@ class MT10EmpEditorController extends Controller
      * @param  UserRepository  $emp_ref_repository
      * @return void
      */
-    public function __construct(MT10EmpRefRepository $emp_ref_repository
-                                , MT22ClosingDateRepository $mt22_closing_date_repository
-                                , MT93PgRepository $pg_repository)
-    {
+    public function __construct(
+        MT10EmpRefRepository $emp_ref_repository,
+        MT22ClosingDateRepository $mt22_closing_date_repository,
+        MT93PgRepository $pg_repository
+    ) {
         parent::__construct($pg_repository, '000001');
         $this->emp_ref = $emp_ref_repository;
         $this->mt22_closing_date = $mt22_closing_date_repository;
@@ -36,7 +37,8 @@ class MT10EmpEditorController extends Controller
      * @param [string] $param
      * @return void
      */
-    private function addZero($param) {
+    private function addZero($param)
+    {
         return strlen($param) == 1 ? '0'.$param : $param;
     }
 
@@ -65,10 +67,20 @@ class MT10EmpEditorController extends Controller
         $closing_date_disable = $this->emp_ref->existTr01Work($id);
         $company_cd = $this->emp_ref->getCompanyCd();
 
-        return parent::viewWithMenu('master.MT10EmpEditor', compact('emp_data',
-                    'reg_cls_cd', 'sex_cls_cd', 'emp_csl1_cd', 'emp_csl2_cd',
-                    'calendar_cd', 'dept_auth_cd', 'can_change_dept', 'closing_date_cd_list',
-                    'def_closing_date_cd', 'closing_date_disable', 'company_cd'));
+        return parent::viewWithMenu('master.MT10EmpEditor', compact(
+            'emp_data',
+            'reg_cls_cd',
+            'sex_cls_cd',
+            'emp_csl1_cd',
+            'emp_csl2_cd',
+            'calendar_cd',
+            'dept_auth_cd',
+            'can_change_dept',
+            'closing_date_cd_list',
+            'def_closing_date_cd',
+            'closing_date_disable',
+            'company_cd'
+        ));
     }
 
     public function update(MT10EmpEditRequest $request)
@@ -82,20 +94,26 @@ class MT10EmpEditorController extends Controller
             'EMP_ABR' => '',
             'DEPT_CD' => $request->DEPT_CD,
             'ENT_DATE' => $request->ENT_DATE
-                        ? substr($request->ENT_DATE, 0, 4).substr($request->ENT_DATE, 7, 2).substr($request->ENT_DATE, 12, 2)
+                        ? substr($request->ENT_DATE, 0, 4)
+                            .substr($request->ENT_DATE, 7, 2)
+                            .substr($request->ENT_DATE, 12, 2)
                         : '',
             'ENT_YEAR' => $request->ENT_DATE ? substr($request->ENT_DATE, 0, 4) : '',
             'ENT_MONTH' => $request->ENT_DATE ? (int)substr($request->ENT_DATE, 7, 2) : '',
             'ENT_DAY' => $request->ENT_DATE ? (int)substr($request->ENT_DATE, 12, 2) : '',
             'RET_DATE' => $request->RET_DATE
-                        ? substr($request->RET_DATE, 0, 4).substr($request->RET_DATE, 7, 2).substr($request->RET_DATE, 12, 2)
+                        ? substr($request->RET_DATE, 0, 4)
+                            .substr($request->RET_DATE, 7, 2)
+                            .substr($request->RET_DATE, 12, 2)
                         : '',
             'RET_YEAR' => $request->RET_DATE ? substr($request->RET_DATE, 0, 4) : '',
             'RET_MONTH' => $request->RET_DATE ? (int)substr($request->RET_DATE, 7, 2) : '',
             'RET_DAY' => $request->RET_DATE ? (int)substr($request->RET_DATE, 12, 2) : '',
             'REG_CLS_CD' => $request->REG_CLS_CD,
             'BIRTH_DATE' => $request->BIRTH_DATE
-                        ? substr($request->BIRTH_DATE, 0, 4).substr($request->BIRTH_DATE, 7, 2).substr($request->BIRTH_DATE, 12, 2)
+                        ? substr($request->BIRTH_DATE, 0, 4)
+                            .substr($request->BIRTH_DATE, 7, 2)
+                            .substr($request->BIRTH_DATE, 12, 2)
                         : '',
             'BIRTH_YEAR' => $request->BIRTH_DATE ? substr($request->BIRTH_DATE, 0, 4) : '',
             'BIRTH_MONTH' => $request->BIRTH_DATE ? (int)substr($request->BIRTH_DATE, 7, 2) : '',

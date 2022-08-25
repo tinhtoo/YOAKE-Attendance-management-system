@@ -93,13 +93,13 @@
                                                             <span id="strDate">{{ date('Y/m/d', strtotime($record->STR_DATE)) }}</span>
                                                         </td>
                                                         <td class="GridViewRowLeft" style="width: 90px;">
-                                                            <span id="strTime">{{ date('h:m:s', strtotime($record->STR_DATE)) }}</span>
+                                                            <span id="strTime">{{ date('H:i:s', strtotime($record->STR_DATE)) }}</span>
                                                         </td>
                                                         <td class="GridViewRowLeft" style="width: 85px;">
                                                             <span id="endDate">{{ $record->END_DATE ? date('Y/m/d', strtotime($record->END_DATE)) : '' ; }}</span>
                                                         </td>
                                                         <td class="GridViewRowLeft" style="width: 90px;">
-                                                            <span id="endTime">{{ $record->END_DATE ? date('h:m:s', strtotime($record->END_DATE)) : '' ; }}</span>
+                                                            <span id="endTime">{{ $record->END_DATE ? date('H:i:s', strtotime($record->END_DATE)) : '' ; }}</span>
                                                         </td>
                                                         <td class="GridViewRowLeft" style="width: 355px;">
                                                             <span id="errCont">{{ $record->ERR_CONT }}</span>

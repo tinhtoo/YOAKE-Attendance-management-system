@@ -181,6 +181,11 @@ class MonthShiftEmpEditorController extends Controller
     {
         $records = [];
         foreach ($emp_cd_list as $index => $emp_cd) {
+            // 登録済み、且つendShiftptnCdがnullの場合、更新しない
+            if (is_nullorempty($calendar[$index]['endShiftptnCd'])
+                    && $this->tr02->existWithPrimary($year, $month, $emp_cd)) {
+                continue;
+            }
             $records[] = [
                 'CALD_YEAR' => $year,
                 'CALD_MONTH' => $month,

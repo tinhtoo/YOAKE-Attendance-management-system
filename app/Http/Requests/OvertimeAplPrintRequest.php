@@ -19,10 +19,10 @@ class OvertimeAplPrintRequest extends BaseRequest
                                         ,parent::existDeptCdWithAuth('01', true)
                                         ,parent::startEndCheck('txtStartDeptCd', 'txtEndDeptCd')],
             'filter.txtStartEmpCd' => ['nullable'
-                                        ,parent::existEmpCdWithAuth(null, true, null)
+                                        ,parent::existEmpCdWithAuth('00', true, null)
                                         ,parent::startEndCheck('txtStartEmpCd', 'txtEndEmpCd')],
             'filter.txtEndEmpCd' => ['nullable'
-                                        ,parent::existEmpCdWithAuth(null, true, null)
+                                        ,parent::existEmpCdWithAuth('00', true, null)
                                         ,parent::startEndCheck('txtStartEmpCd', 'txtEndEmpCd')]
         ];
         return $rules;

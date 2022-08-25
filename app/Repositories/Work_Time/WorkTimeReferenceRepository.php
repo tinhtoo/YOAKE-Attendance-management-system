@@ -48,22 +48,28 @@ class WorkTimeReferenceRepository
             'MT09_REASON.REASON_PTN_CD',
         )
             ->selectRaw("Case When TR01_WORK.OFC_TIME_HH Is Null THEN ''
-                        Else Cast(TR01_WORK.OFC_TIME_HH As VarChar) + ':' + RIGHT('00' + Cast(TR01_WORK.OFC_TIME_MI As VarChar), 2)
+                        Else Cast(TR01_WORK.OFC_TIME_HH As VarChar) + "
+                            . "':' + RIGHT('00' + Cast(TR01_WORK.OFC_TIME_MI As VarChar), 2)
                         End As OFC_TIME")
             ->selectRaw("Case When TR01_WORK.LEV_TIME_HH Is Null Then ''
-                        Else Cast(TR01_WORK.LEV_TIME_HH As VarChar) + ':' + RIGHT('00' + Cast(TR01_WORK.LEV_TIME_MI As VarChar), 2)
+                        Else Cast(TR01_WORK.LEV_TIME_HH As VarChar) + "
+                            . "':' + RIGHT('00' + Cast(TR01_WORK.LEV_TIME_MI As VarChar), 2)
                         End As LEV_TIME")
             ->selectRaw("Case When TR01_WORK.OUT1_TIME_HH Is Null Then ''
-                        Else Cast(TR01_WORK.OUT1_TIME_HH As VarChar) + ':' + RIGHT('00' + Cast(TR01_WORK.OUT1_TIME_MI As VarChar), 2)
+                        Else Cast(TR01_WORK.OUT1_TIME_HH As VarChar) + "
+                            . "':' + RIGHT('00' + Cast(TR01_WORK.OUT1_TIME_MI As VarChar), 2)
                         End As OUT1_TIME")
             ->selectRaw("Case When TR01_WORK.IN1_TIME_HH Is Null Then ''
-                        Else Cast(TR01_WORK.IN1_TIME_HH As VarChar) + ':' + RIGHT('00' + Cast(TR01_WORK.IN1_TIME_MI As VarChar), 2)
+                        Else Cast(TR01_WORK.IN1_TIME_HH As VarChar) + "
+                            . "':' + RIGHT('00' + Cast(TR01_WORK.IN1_TIME_MI As VarChar), 2)
                         End As IN1_TIME")
             ->selectRaw("Case When TR01_WORK.OUT2_TIME_HH Is Null Then ''
-                        Else Cast(TR01_WORK.OUT2_TIME_HH As VarChar) + ':' + RIGHT('00' + Cast(TR01_WORK.OUT2_TIME_MI As VarChar), 2)
+                        Else Cast(TR01_WORK.OUT2_TIME_HH As VarChar) + "
+                            . "':' + RIGHT('00' + Cast(TR01_WORK.OUT2_TIME_MI As VarChar), 2)
                         End As OUT2_TIME")
             ->selectRaw("Case When TR01_WORK.IN2_TIME_HH Is Null Then ''
-                        Else Cast(TR01_WORK.IN2_TIME_HH As VarChar) + ':' + RIGHT('00' + Cast(TR01_WORK.IN2_TIME_MI As VarChar), 2)
+                        Else Cast(TR01_WORK.IN2_TIME_HH As VarChar) + "
+                            . "':' + RIGHT('00' + Cast(TR01_WORK.IN2_TIME_MI As VarChar), 2)
                         End As IN2_TIME")
             ->join('MT05_WORKPTN', 'TR01_WORK.WORKPTN_CD', 'MT05_WORKPTN.WORKPTN_CD')
             ->join('MT09_REASON', 'TR01_WORK.REASON_CD', 'MT09_REASON.REASON_CD')
@@ -86,7 +92,7 @@ class WorkTimeReferenceRepository
     {
         $inputSearchName =  $request->Input();
         if (!empty($inputSearchName['txtEmpCd'])) {
-            $emp_dep_name = MT10Emp::join('MT12_DEPT', 'MT10_EMP.DEPT_CD', 'MT12_DEPT.DEPT_CD',)
+            $emp_dep_name = MT10Emp::join('MT12_DEPT', 'MT10_EMP.DEPT_CD', 'MT12_DEPT.DEPT_CD')
                 ->where('EMP_CD', $inputSearchName['txtEmpCd'])->get();
             return $emp_dep_name;
         }

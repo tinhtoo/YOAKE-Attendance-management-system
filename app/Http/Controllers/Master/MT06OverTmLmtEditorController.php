@@ -3,7 +3,7 @@
 namespace App\Http\Controllers\Master;
 
 use App\Http\Controllers\Controller;
-use App\Http\Requests\MT06OverTmLmtEditorRequest;// クラス宣言
+use App\Http\Requests\MT06OverTmLmtEditorRequest;
 use Illuminate\Http\Request;
 use App\Models\MT06OvertmLmt;
 use App\Models\MT02CalendarPtn;
@@ -79,13 +79,29 @@ class MT06OverTmLmtEditorController extends Controller
         $NoOvertmMis = MT91ClsDetail::where('CLS_CD', '05')->orderBy('CLS_DETAIL_CD', 'ASC')->get();
 
         // ビューに変数を渡す
-        return parent::viewWithMenu('master.MT06OverTmLmtEditor', [
-            'items' => $items, 'works' => $works, 'CalendarCdKey' =>$CalendarCdKey,'enabled02' =>$enabled02 ,
-            'OVTM1key' => $OVTM1key,  'OVTM2key' => $OVTM2key, 'OVTM3key' => $OVTM3key,  'OVTM4key' => $OVTM4key, 'OVTM5key' => $OVTM5key,  'OVTM6key' => $OVTM6key,
-            'OVTM1HRkey' => $OVTM1HRkey,  'OVTM2HRkey' => $OVTM2HRkey, 'OVTM3HRkey' => $OVTM3HRkey,  'OVTM4HRkey' => $OVTM4HRkey, 'OVTM5HRkey' => $OVTM5HRkey,  'OVTM6HRkey' => $OVTM6HRkey,
-            'TtlOvtm1Hr' => $TtlOvtm1Hr,   'TtlOvtm2Hr' => $TtlOvtm2Hr,  'TtlOvtm3Hr' => $TtlOvtm3Hr,
-            'NoOvertmMis' =>$NoOvertmMis , 'NoOvertmMisOld' =>$NoOvertmMisOld
-        ]);
+        return parent::viewWithMenu('master.MT06OverTmLmtEditor', compact(
+            'items',
+            'works',
+            'CalendarCdKey',
+            'enabled02',
+            'OVTM1key',
+            'OVTM2key',
+            'OVTM3key',
+            'OVTM4key',
+            'OVTM5key',
+            'OVTM6key',
+            'OVTM1HRkey',
+            'OVTM2HRkey',
+            'OVTM3HRkey',
+            'OVTM4HRkey',
+            'OVTM5HRkey',
+            'OVTM6HRkey',
+            'TtlOvtm1Hr',
+            'TtlOvtm2Hr',
+            'TtlOvtm3Hr',
+            'NoOvertmMis',
+            'NoOvertmMisOld'
+        ));
     }
 
     public function update(MT06OverTmLmtEditorRequest $request)

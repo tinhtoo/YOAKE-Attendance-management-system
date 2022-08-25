@@ -79,7 +79,7 @@ return array (
     'normal' => $rootDir . '/lib/fonts/DejaVuSerif',
   ),
   'ms pゴシック' => array(
-    'normal' => $fontDir . '/_0aacababfb8a30cafc59c02b4f22302e',
+    'normal' => $fontDir . '/_9010cfac9ec907ba13aed9e6c8933fcd',
     'bold' => $fontDir . '/_acb81b3e810f7c86258b9c97f95c39a9',
   ),
   'ms ゴシック' => array(

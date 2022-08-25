@@ -12,7 +12,7 @@ use App\Http\Requests\WorkTimePrintRequest;
 use App\Filters\WorkTimePrintFilter;
 use App\Repositories\WorkTimePrintRepository;
 use Carbon\Carbon;
-use PDF;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 /**
  * 勤務実績表(日・週・月別) 処理

@@ -10,9 +10,7 @@ use App\Http\Requests\OvertimeAplPrintRequest;
 use App\Repositories\Master\MT10EmpRefRepository;
 use App\Filters\WorkPlanPrintFilter;
 use Carbon\Carbon;
-use PDF;
-
-use function Symfony\Component\VarDumper\Dumper\esc;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 /**
  * 残業申請書 処理

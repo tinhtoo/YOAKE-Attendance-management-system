@@ -123,5 +123,4 @@ class Wk01Work extends Model
     {
         $filter->apply($query);
     }
-
 }

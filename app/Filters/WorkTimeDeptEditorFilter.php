@@ -23,7 +23,7 @@ class WorkTimeDeptEditorFilter extends Filter
     public function ddlStartCompany($value)
     {
         if (!empty($value)) {
-            $this->builder->where('MT10_EMP.COMPANY_CD', '>=', $value);
+            $this->builder->where('MT10.COMPANY_CD', '>=', $value);
         }
     }
 
@@ -34,7 +34,7 @@ class WorkTimeDeptEditorFilter extends Filter
     public function ddlEndCompany($value)
     {
         if (!empty($value)) {
-            $this->builder->where('MT10_EMP.COMPANY_CD', '<=', $value);
+            $this->builder->where('MT10.COMPANY_CD', '<=', $value);
         }
     }
 }

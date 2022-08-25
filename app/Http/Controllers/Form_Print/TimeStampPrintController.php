@@ -12,7 +12,7 @@ use App\Repositories\MT01ControlRepository;
 use App\Repositories\MT13DeptAuthRepository;
 use App\Repositories\TR50WorkTimeRepository;
 use Carbon\Carbon;
-use PDF;
+use Barryvdh\DomPDF\Facade\Pdf;
 
 /**
  * 未打刻／二重打刻一覧表 処理
@@ -96,15 +96,18 @@ class TimeStampPrintController extends Controller
 
         if (!empty($time_stamp_datas)) {
             foreach ($time_stamp_datas as $key => $record) {
-                $time_stamp_datas[$key]->time_records = $this->tr50_worktime->getWorkTimeRecords($record->EMP_CD, $record->WORKPTN_STR_TIME, $record->WORKPTN_END_TIME);
+                $time_stamp_datas[$key]->time_records = $this->tr50_worktime->getWorkTimeRecords(
+                    $record->EMP_CD,
+                    $record->WORKPTN_STR_TIME,
+                    $record->WORKPTN_END_TIME
+                );
             }
         }
-        $pdf = PDF::loadView(
+        $pdf = Pdf::loadView(
             'form_print.templates.TimeStampPdf',
             compact('input_datas', 'time_stamp_datas', 'now_date', 'str_date', 'end_date')
         );
         $pdf->setPaper('A4');
         return $pdf->stream();
-
     }
 }

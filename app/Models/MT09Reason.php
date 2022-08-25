@@ -64,5 +64,4 @@ class MT09Reason extends Model
      * @var string
      */
     protected $connection = 'sqlsrv';
-
 }

@@ -1,6 +1,7 @@
 <?php
 
 namespace App\Http\Controllers\Master;
+
 use App\Repositories\Search\MT12DeptSearchRepository;
 use App\Http\Controllers\Controller;
 use Illuminate\Http\Request;
@@ -17,9 +18,10 @@ class MT12DeptReferenceController extends Controller
      * @param  UserRepository  $mt12dept_repository
      * @return
      */
-    public function __construct(MT12DeptSearchRepository $mt12dept_repository
-                                            ,MT93PgRepository $pg_repository)
-    {
+    public function __construct(
+        MT12DeptSearchRepository $mt12dept_repository,
+        MT93PgRepository $pg_repository
+    ) {
         parent::__construct($pg_repository, '000004');
         $this->mt12dept_repository = $mt12dept_repository;
     }
@@ -34,7 +36,6 @@ class MT12DeptReferenceController extends Controller
     {
         $paginateDept = $this->mt12dept_repository
                         ->getPage($request->page, $request->url());
-        return parent::viewWithMenu('master.MT12DeptReference',compact('paginateDept'));
+        return parent::viewWithMenu('master.MT12DeptReference', compact('paginateDept'));
     }
-
 }

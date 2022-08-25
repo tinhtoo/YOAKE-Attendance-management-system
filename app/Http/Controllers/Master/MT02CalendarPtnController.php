@@ -42,7 +42,7 @@ class MT02CalendarPtnController extends Controller
     public function storeIndex(Request $request)
     {
         $request_data = $request->all();
-        $workptns = $this->CalendarPtn_repository->WorkPtn();
+        $workptns = $this->CalendarPtn_repository->workPtn();
         return parent::viewWithMenu('master.MT02CalendarPtnEditor', compact('request_data', 'workptns'));
     }
 
@@ -55,7 +55,7 @@ class MT02CalendarPtnController extends Controller
 
     public function search(Request $request)
     {
-        $calendar_ptns = $this->CalendarPtn_repository->CalendarPtns();
+        $calendar_ptns = $this->CalendarPtn_repository->calendarPtns();
         return parent::viewWithMenu('master.MT02CalendarPtnReference', compact('calendar_ptns'));
     }
 
@@ -110,8 +110,8 @@ class MT02CalendarPtnController extends Controller
     public function edit(Request $request, $id)
     {
         $request_data = $request->all();
-        $workptns = $this->CalendarPtn_repository->WorkPtn();
-        $MT02calendarPtnEdit = $this->CalendarPtn_repository->CalendarPtnsEdit($id);
+        $workptns = $this->CalendarPtn_repository->workPtn();
+        $MT02calendarPtnEdit = $this->CalendarPtn_repository->calendarPtnsEdit($id);
 
         return parent::viewWithMenu('master.MT02CalendarPtnEditor', compact(
             'request_data',

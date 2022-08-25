@@ -5,7 +5,6 @@ namespace App\Http\Controllers\Mng_Oprt;
 use App\Filters\WorkTimeClearFilter;
 use App\Http\Controllers\Controller;
 use App\Http\Requests\WorkTimeClearRequest;
-use App\Models\TR50WorkTime;
 use App\Repositories\Master\MT10EmpRefRepository;
 use App\Repositories\MT13DeptAuthRepository;
 use Illuminate\Http\Request;
@@ -13,8 +12,6 @@ use App\Repositories\MT93PgRepository;
 use App\Repositories\Search\MT12DeptSearchRepository;
 use App\Repositories\TR01WorkRepository;
 use App\Repositories\TR50WorkTimeRepository;
-
-use function Symfony\Component\VarDumper\Dumper\esc;
 
 /**
  * 出退勤情報クリア処理画面

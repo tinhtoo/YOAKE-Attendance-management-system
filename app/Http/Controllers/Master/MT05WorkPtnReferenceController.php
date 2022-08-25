@@ -16,9 +16,10 @@ class MT05WorkPtnReferenceController extends Controller
      * @param
      * @return void
      */
-    public function __construct(MT05WorkptnRepository $mt05_workptn
-                                            ,MT93PgRepository $pg_repository)
-    {
+    public function __construct(
+        MT05WorkptnRepository $mt05_workptn,
+        MT93PgRepository $pg_repository
+    ) {
         parent::__construct($pg_repository, '000006');
         $this->mt05_workptn = $mt05_workptn;
     }

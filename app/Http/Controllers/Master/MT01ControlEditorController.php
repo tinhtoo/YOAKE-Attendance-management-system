@@ -3,7 +3,6 @@ namespace App\Http\Controllers\Master;
 
 use App\Http\Controllers\Controller;
 use App\Http\Requests\MT01ControlEditorRequest;
-use Illuminate\Http\Request;
 use App\Models\MT01Control;
 use App\Models\MT91ClsDetail;
 
@@ -19,15 +18,15 @@ class MT01ControlEditorController extends Controller
     public function index()
     {
         $mt01control = MT01Control::where("CONTROL_CD", "=", "1")->first();
-        if ($mt01control == null){
+        if ($mt01control == null) {
             $mt01control = new MT01Control();
         }
 
         // 月度リストボックスを取得
-        $mt91list = MT91ClsDetail::where('CLS_CD','06')->orderBy('CLS_DETAIL_CD','ASC')->get();
+        $mt91list = MT91ClsDetail::where('CLS_CD', '06')->orderBy('CLS_DETAIL_CD', 'ASC')->get();
 
         // ビューに変数を渡す
-        return parent::viewWithMenu('master.MT01ControlEditor',['item' => $mt01control, 'monthlist' => $mt91list]);
+        return parent::viewWithMenu('master.MT01ControlEditor', ['item' => $mt01control, 'monthlist' => $mt91list]);
     }
 
     public function update(MT01ControlEditorRequest $request)
@@ -36,7 +35,7 @@ class MT01ControlEditorController extends Controller
         $data = MT01Control::find("1");
 
         // 新規登録
-        if($data == null){
+        if ($data == null) {
             $data = new MT01Control;
             $data->CONTROL_CD = "1";
             $data->REMARK1 = $request->REMARK1 ?? "";
@@ -87,9 +86,9 @@ class MT01ControlEditorController extends Controller
 
         // 空白時空文字
         $data->COMNT1 = $request->COMNT1 ?? "";
-       $data->timestamps = false;
-       $data->save();
+        $data->timestamps = false;
+        $data->save();
 
-       return redirect('master/MT01ControlEditor');
-     }
+        return redirect('master/MT01ControlEditor');
+    }
 }

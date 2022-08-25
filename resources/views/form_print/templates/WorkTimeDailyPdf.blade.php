@@ -65,10 +65,16 @@
     <!-- 該当データがない場合 -->
     @if (count($dailyReportDatas) < 1)
     <body>
+        <!-- ページ番号作成 -->
         <script type="text/php">
             if(isset($pdf)) {
+                $x = 790;
+                $y = 20;
+                $text = "{PAGE_NUM} / {PAGE_COUNT}";
                 $font = $fontMetrics->get_font("MS Pゴシック, メイリオ", "normal");
-                $pdf->page_text(790, 20, "{PAGE_NUM} / {PAGE_COUNT}", $font, 6, [0,0,0]);
+                $size = 6;
+                $color = [0,0,0];
+                $pdf->page_text($x, $y, $text, $font, $size, $color);
             }
         </script>
         <table class="workTable" style="width: 100%;">
@@ -142,11 +148,16 @@
         @endphp
         @foreach ($same_date_dept_list as $dept)
         <body>
-            <!-- ページ番号表示 -->
+            <!-- ページ番号作成 -->
             <script type="text/php">
                 if(isset($pdf)) {
+                    $x = 780;
+                    $y = 20;
+                    $text = "{PAGE_NUM} / {PAGE_COUNT}";
                     $font = $fontMetrics->get_font("MS Pゴシック, メイリオ", "normal");
-                    $pdf->page_text(780, 20, "{PAGE_NUM} / {PAGE_COUNT}", $font, 6, [0,0,0]);
+                    $size = 6;
+                    $color = [0,0,0];
+                    $pdf->page_text($x, $y, $text, $font, $size, $color);
                 }
             </script>
             <table class="workTable">
@@ -176,12 +187,12 @@
                         </th>
                     </tr>
                     <tr style="width: 100%;">
-                        <th style="padding-left: 5px; text-align: left;">社員<br>&nbsp;&nbsp;</th>
-                        <th style=""></th>
+                        <th style="width: 60px; padding-left: 5px; text-align: left;">社員<br>&nbsp;&nbsp;</th>
+                        <th></th>
                         <th style="width: 140px; text-align: left;">勤務体系<br>事由</th>
-                        <th style="width: 50px;">出勤<br>退出</th>
-                        <th style="width: 50px;">外出１<br>再入１</th>
-                        <th style="width: 50px;">外出２<br>再入２</th>
+                        <th style="width: 45px;">出勤<br>退出</th>
+                        <th style="width: 45px;">外出１<br>再入１</th>
+                        <th style="width: 45px;">外出２<br>再入２</th>
                         <th style="width: 75px;">出勤時間<br>遅刻時間</th>
                         <th style="width: 75px;">早退時間<br>外出時間</th>
                         <th style="width: 75px;">

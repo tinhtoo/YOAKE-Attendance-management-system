@@ -35,32 +35,30 @@ class EmpWorkTimeRefFilter extends Filter
 
     public function txtDeptCd($value)
     {
-        if(!empty($value)){
+        if (!empty($value)) {
             $this->builder->where('MT10_EMP.DEPT_CD', $value);
         }
     }
 
     public function ddlStartCompany($value)
     {
-        if(!empty($value)){
+        if (!empty($value)) {
             $this->builder->where('MT10_EMP.COMPANY_CD', '>=', $value);
         }
-
     }
 
     public function ddlEndCompany($value)
     {
-        if(!empty($value)){
+        if (!empty($value)) {
             $this->builder->where('MT10_EMP.COMPANY_CD', '<=', $value);
         }
     }
 
     public function txtEmpCd($value)
     {
-        if(!empty($value)){
-            $this->builder->where('MT10_EMP.REG_CLS_CD','<>','02')
+        if (!empty($value)) {
+            $this->builder->where('MT10_EMP.REG_CLS_CD', '<>', '02')
                       ->where('MT10_EMP.EMP_CD', $value);
         }
     }
-
 }

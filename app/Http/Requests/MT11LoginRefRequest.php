@@ -16,7 +16,7 @@ class MT11LoginRefRequest extends FormRequest
         $rules = [];
 
         $rules = [
-             'filter.txtDeptCd' => [
+            'filter.txtDeptCd' => [
                 'nullable',
                 function ($attribute, $value, $fail) {
 
@@ -31,7 +31,6 @@ class MT11LoginRefRequest extends FormRequest
                     }
                 },
             ],
-
         ];
         return $rules;
     }

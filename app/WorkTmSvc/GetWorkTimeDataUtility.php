@@ -5,6 +5,7 @@ use App\Repositories\LG01WorktimeconvRepository;
 use App\Repositories\Work_Time\MT95TermRepository;
 use App\Repositories\TR50WorkTimeRepository;
 use Illuminate\Support\Facades\Facade;
+use App\Models\TR50WorkTime;
 
 use App\WorkTmSvc\UtilCommon;
 use function PHPUnit\Framework\isNull;
@@ -23,7 +24,7 @@ class GetWorkTimeDataUtility extends Facade
         try {
             // 端末情報全件取得
             $term_dt = $mt95->getList();
-            if ($term_dt->count === 0) {
+            if ($term_dt->count() === 0) {
                 throw new WorkTmSvcException("MT95_TERM(端末情報)が1件も登録されていません。");
             }
 
@@ -36,7 +37,6 @@ class GetWorkTimeDataUtility extends Facade
                     $term_row->USER_NAME,
                     $term_row->USER_PASSWORD
                 );
-
                 // 出退勤情報取得処理
                 self::getWorkTimeDataFromSingleTerminalToServer2($term_row->TERM_NO, $db_connect);
             }
@@ -84,7 +84,7 @@ class GetWorkTimeDataUtility extends Facade
      */
     private function getWorkTimeDataFromSingleTerminalToServer2($term_no, $db_connection)
     {
-        $str_date = date('Y/m/d H:i:s.v');
+        $str_date = date('Y/m/d H:i:s');
         $lg01 = new LG01WorktimeconvRepository;
         $tr50 = new TR50WorkTimeRepository;
 
@@ -94,32 +94,28 @@ class GetWorkTimeDataUtility extends Facade
 
             \DB::beginTransaction();
 
-            // 登録先の[TR50_WORKTIME(出退勤情報)]の登録用データテーブル取得
-            $tr50_work_time = $tr50->getNoOuted();
-
             // 接続先のデータベースから[TR50_WORKTIME_TM(出退勤情報)]を全件取得
-            $db_connection->transaction(function () use ($tr50, $tr50_work_time, $db_connection) {
+            $db_connection->transaction(function () use ($tr50, $db_connection) {
 
                 $tr50_new_records = [];
-                $tr50_work_time_tm = $db_connection::from('TR50_WORKTIME_TM')->get();
+                $tr50_work_time_tm = $db_connection->select('select * from TR50_WORKTIME_TM');
                 foreach ($tr50_work_time_tm as $tr50_tm_row) {
                     // 登録先の出退勤情報データテーブルの行を定義
                     // TR50_WORKTIME_TM(出退勤情報) → TR50_WORKTIME(出退勤情報)
-
                     // 同一レコードがあれば更新
-                    if ($tr50_work_time->where('EMP_CD', $tr50_tm_row['EMP_CD'])
-                                    ->where('CRT_DATE', $tr50_tm_row['CRT_DATE'])
-                                    ->wehre('TERM_NO', $tr50_tm_row['TERM_NO'])
-                                    ->exists()) {
+                    if (TR50WorkTime::where('EMP_CD', $tr50_tm_row->EMP_CD)
+                            ->where('CRT_DATE', $tr50_tm_row->CRT_DATE)
+                            ->where('TERM_NO', $tr50_tm_row->TERM_NO)
+                            ->exists()) {
                         $tr50->updateWithPrimary(
-                            $tr50_tm_row['EMP_CD'],
-                            $tr50_tm_row['CRT_DATE'],
-                            $tr50_tm_row['TERM_NO'],
+                            $tr50_tm_row->EMP_CD,
+                            $tr50_tm_row->CRT_DATE,
+                            $tr50_tm_row->TERM_NO,
                             [
-                                'WORKTIME_CLS_CD' => $tr50_tm_row['WORKTIME_CLS_CD'],
-                                'WORK_DATE' => $tr50_tm_row['WORK_DATE'],
-                                'WORK_TIME_HH' => $tr50_tm_row['WORK_TIME_HH'],
-                                'WORK_TIME_MI' => $tr50_tm_row['WORK_TIME_MI'],
+                                'WORKTIME_CLS_CD' => $tr50_tm_row->WORKTIME_CLS_CD,
+                                'WORK_DATE' => $tr50_tm_row->WORK_DATE,
+                                'WORK_TIME_HH' => $tr50_tm_row->WORK_TIME_HH,
+                                'WORK_TIME_MI' => $tr50_tm_row->WORK_TIME_MI,
                                 'DATA_OUT_CLS_CD' => "00",
                                 'DATA_OUT_DATE' => '',
                             ]
@@ -127,13 +123,13 @@ class GetWorkTimeDataUtility extends Facade
                     } else {
                         // 新規行は登録を行う
                         $new_tr50 = [
-                            'EMP_CD' => $tr50_tm_row['EMP_CD'],                    // 社員コード
-                            'CRT_DATE' => $tr50_tm_row['CRT_DATE'],                // 登録日時
-                            'TERM_NO' => $tr50_tm_row['TERM_NO'],                  // 端末番号
-                            'WORKTIME_CLS_CD' => $tr50_tm_row['WORKTIME_CLS_CD'],  // 出退区分コード
-                            'WORK_DATE' => $tr50_tm_row['WORK_DATE'],              // 日付
-                            'WORK_TIME_HH' => $tr50_tm_row['WORK_TIME_HH'],        // 時刻(時間)
-                            'WORK_TIME_MI' => $tr50_tm_row['WORK_TIME_MI'],        // 時刻(分)
+                            'EMP_CD' => $tr50_tm_row->EMP_CD,                    // 社員コード
+                            'CRT_DATE' => $tr50_tm_row->CRT_DATE,                // 登録日時
+                            'TERM_NO' => $tr50_tm_row->TERM_NO,                  // 端末番号
+                            'WORKTIME_CLS_CD' => $tr50_tm_row->WORKTIME_CLS_CD,  // 出退区分コード
+                            'WORK_DATE' => $tr50_tm_row->WORK_DATE,              // 日付
+                            'WORK_TIME_HH' => $tr50_tm_row->WORK_TIME_HH,        // 時刻(時間)
+                            'WORK_TIME_MI' => $tr50_tm_row->WORK_TIME_MI,        // 時刻(分)
                             'DATA_OUT_CLS_CD' => "00",                             // 勤怠システム書出区分コード(00:未,01:済)
                             'DATA_OUT_DATE' => '',                                 // 勤怠システム書出日付
                         ];
@@ -143,9 +139,9 @@ class GetWorkTimeDataUtility extends Facade
                 }
                 // [TR50_WORKTIME(出退勤情報)] 更新
                 $tr50->insertRecords($tr50_new_records);
-    
+
                 // サーバー側の出退勤情報にデータを追加したら、端末側のレコードを削除
-                $tr50_tm_row->truncate();
+                $db_connection->table('TR50_WORKTIME_TM')->truncate();
             });
             // トランザクションコミット
             \DB::commit();

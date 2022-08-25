@@ -32,5 +32,4 @@ class MT08HolidayRepository
         return DB::table('MT08_HOLIDAY')
                     ->insert($record);
     }
-
 }

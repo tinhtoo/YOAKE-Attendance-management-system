@@ -19,9 +19,10 @@ class MT08HolidayEditorController extends Controller
      * @param
      * @return void
      */
-    public function __construct(MT08HolidayRepository $mt08_holiday
-                                            ,MT93PgRepository $pg_repository)
-    {
+    public function __construct(
+        MT08HolidayRepository $mt08_holiday,
+        MT93PgRepository $pg_repository
+    ) {
         parent::__construct($pg_repository, '000012');
         $this->mt08_holiday = $mt08_holiday;
     }
@@ -39,7 +40,7 @@ class MT08HolidayEditorController extends Controller
         $holidays = $this->mt08_holiday->getHolidaysWithCls($hld_cls_cd_holidays);
         $company_holidays = $this->mt08_holiday->getHolidaysWithCls($hld_cls_cd_company_holidays);
 
-        return parent::viewWithMenu('master.MT08HolidayEditor', compact('holidays', 'company_holidays','year'));
+        return parent::viewWithMenu('master.MT08HolidayEditor', compact('holidays', 'company_holidays', 'year'));
     }
 
     public function update(MT08HolidayRequest $request)
@@ -54,7 +55,8 @@ class MT08HolidayEditorController extends Controller
                 foreach ($request['nationalHolidays'] as $i => $nationalHoliday) {
                     $paramNationalHld[] = array (
                         'HLD_NO' => $i + 1,
-                        'HLD_DATE' => substr('0' . $nationalHoliday["monthNat"], -2).substr('0' . $nationalHoliday["dayNat"], -2),
+                        'HLD_DATE' => substr('0' . $nationalHoliday["monthNat"], -2).
+                                        substr('0' . $nationalHoliday["dayNat"], -2),
                         'HLD_MONTH' => $nationalHoliday["monthNat"],
                         'HLD_DAY' => $nationalHoliday["dayNat"],
                         'HLD_NAME' => $nationalHoliday["nameNat"],
@@ -76,7 +78,8 @@ class MT08HolidayEditorController extends Controller
                 foreach ($request['companyHolidays'] as $nationalHoliday) {
                     $paramCompanyHld[] = array (
                         'HLD_NO' => $countparamNat,
-                        'HLD_DATE' => substr('0' . $nationalHoliday["monthCom"], -2).substr('0' . $nationalHoliday["dayCom"], -2),
+                        'HLD_DATE' => substr('0' . $nationalHoliday["monthCom"], -2).
+                                        substr('0' . $nationalHoliday["dayCom"], -2),
                         'HLD_MONTH' => $nationalHoliday["monthCom"],
                         'HLD_DAY' => $nationalHoliday["dayCom"],
                         'HLD_NAME' => $nationalHoliday["nameCom"],

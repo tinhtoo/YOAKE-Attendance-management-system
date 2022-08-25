@@ -108,6 +108,8 @@ class MonthShiftEditorController extends Controller
         $search_data = $request->input(['filter']);
         $year = (int)substr($search_data['caldYearMonth'], 0, 4);
         $month = (int)substr($search_data['caldYearMonth'], 7, 2);
+        $last_shift_ptn_cd = '';
+        $last_day_no = '';
         if ($search_data['searchCondition']) {
             $emp_cd = $search_data['txtEmpCd'];
             $emp = $this->mt10->getEmp($emp_cd);
@@ -123,6 +125,12 @@ class MonthShiftEditorController extends Controller
                 $closing_date_cd = $this->mt10->getEmp($emp_cd)->CLOSING_DATE_CD;
                 $search_results = $this->createCalendar($year, $month, $closing_date_cd);
             }
+            $tr02_record = $this->tr02->getWithPrimary($year, $month, $emp_cd);
+            if ($tr02_record) {
+                // 該当データがあれば初期値に設定
+                $last_shift_ptn_cd = $tr02_record->LAST_PTN_CD;
+                $last_day_no = $tr02_record->LAST_DAY_NO;
+            }
         } else {
             // 部門
             $dept_cd = $search_data['txtDeptCd'];
@@ -136,6 +144,12 @@ class MonthShiftEditorController extends Controller
             if ($search_results->isEmpty()) {
                 $search_results = $this->createCalendar($year, $month, $closing_date_cd);
             }
+            $tr03_record = $this->tr03->getWithPrimary($year, $month, $dept_cd, $closing_date_cd);
+            if ($tr03_record) {
+                // 該当データがあれば初期値に設定
+                $last_shift_ptn_cd = $tr03_record->LAST_PTN_CD;
+                $last_day_no = $tr03_record->LAST_DAY_NO;
+            }
         }
         $workptn_names = $this->mt05->workptnsNormal();
         $holidays = $this->mt08->getHolidays();
@@ -147,7 +161,7 @@ class MonthShiftEditorController extends Controller
             'shift.MonthShiftEditor',
             array_merge(
                 $this->createViewData(),
-                compact('search_data', 'search_results', 'workptn_names', 'holidays', 'fix_flg')
+                compact('search_data', 'search_results', 'workptn_names', 'holidays', 'fix_flg', 'last_shift_ptn_cd', 'last_day_no')
             )
         );
     }
@@ -201,21 +215,21 @@ class MonthShiftEditorController extends Controller
                 // TR02_EMPCALENDAR
                 $this->tr02Update($year, $month, $emp_cd, $end_shiftptn_cd, $end_day_no);
                 // TR01_WORK
-                $this->tr01Update($year, $month, $emp_cd, $calendar_data, $today);
+                $this->tr01Update($year, $month, $emp_cd, $calendar_data, $today, $dept_cd, $closing_date_cd);
             } else {
                 // 部門
+                // MT16から変更されている場合にTR01を更新するケースがあるため、MT16を更新する前にTR01を更新する。
+                foreach ($this->mt10->getShiftEmpWithDeptAndClosing($dept_cd, $closing_date_cd) as $emp) {
+                    // TR02_EMPCALENDAR
+                    $this->tr02Update($year, $month, $emp->EMP_CD, $end_shiftptn_cd, $end_day_no);
+                    // TR01_WORK
+                    $this->tr01Update($year, $month, $emp->EMP_CD, $calendar_data, $today, $dept_cd, $closing_date_cd);
+                }
                 // MT16_DEPTSHIFTCALENDAR
                 $this->mt16Update($year, $month, $closing_date_cd, $dept_cd, $calendar_data, $today);
 
                 // TR03_DEPTCALENDAR
                 $this->tr03Update($year, $month, $closing_date_cd, $dept_cd, $end_shiftptn_cd, $end_day_no);
-
-                foreach ($this->mt10->getShiftEmpWithDeptAndClosing($dept_cd, $closing_date_cd) as $emp) {
-                    // TR02_EMPCALENDAR
-                    $this->tr02Update($year, $month, $emp->EMP_CD, $end_shiftptn_cd, $end_day_no);
-                    // TR01_WORK
-                    $this->tr01Update($year, $month, $emp->EMP_CD, $calendar_data, $today);
-                }
             }
 
             \DB::commit();
@@ -279,6 +293,7 @@ class MonthShiftEditorController extends Controller
             'LAST_PTN_CD' => $end_shiftptn_cd,
             'LAST_DAY_NO' => $end_day_no
         ];
+
         $update_target = [
             'LAST_PTN_CD',
             'LAST_DAY_NO'
@@ -286,7 +301,7 @@ class MonthShiftEditorController extends Controller
         $this->tr02->upsertRecord($record, $update_target);
     }
 
-    private function tr01Update($year, $month, $emp_cd, $calendar_data, $today)
+    private function tr01Update($year, $month, $emp_cd, $calendar_data, $today, $dept_cd, $closing_date_cd)
     {
         // TR01_WORKを更新
         $work_records = $this->tr01->getWithEmpAndCaldYearMonth($emp_cd, $year, $month);
@@ -304,6 +319,13 @@ class MonthShiftEditorController extends Controller
                 if ($calendar_data[$cal_i]['workPtnCd'] === $work_record->WORKPTN_CD) {
                     // 変更なしの場合、更新しない
                     continue;
+                } elseif (($work_record->UPD_CLS_CD === '01' || $work_record->FIX_CLS_CD === '01') && $dept_cd) {
+                    // 元のカレンダーから変更しておらず、且つ変更済みの場合更新しない
+                    $before_calendar = $this->mt16->getWithPrimary($year, $month, $closing_date_cd, $dept_cd, $work_record->CALD_DATE);
+                    if ($before_calendar
+                        && $calendar_data[$cal_i]['workPtnCd'] === $before_calendar->WORKPTN_CD) {
+                        continue;
+                    }
                 }
 
                 // 共通部分設定

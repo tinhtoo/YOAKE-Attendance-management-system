@@ -57,7 +57,7 @@ class LG01WorktimeconvRepository
      */
     public function logEnd($term_no, $str_date)
     {
-        LG01Worktimeconv::wehre('TERM_NO', $term_no)
+        LG01Worktimeconv::where('TERM_NO', $term_no)
             ->where('STR_DATE', $str_date)
             ->update([
                 'END_DATE' => date('Y/m/d H:i:s.v'),
@@ -76,7 +76,7 @@ class LG01WorktimeconvRepository
      */
     public function abend($term_no, $str_date, $exception)
     {
-        LG01Worktimeconv::wehre('TERM_NO', $term_no)
+        LG01Worktimeconv::where('TERM_NO', $term_no)
             ->where('STR_DATE', $str_date)
             ->update([
                 'END_DATE' => date('Y/m/d H:i:s.v'),

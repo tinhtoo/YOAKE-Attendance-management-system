@@ -313,13 +313,6 @@
             if ($(this).val() && $(this).parent().find('span').text()) {
                 $(this).parent().find('span').text("");
             }
-
-            // 値選択後、LAST_PTN_CDとLAST_DAY_NOをnull設定
-            var parent = $(this).parent().parent();
-            if (parent.find('#endShiftptnCd').val() || parent.find('#endDayNo').val()) {
-                parent.find('#endShiftptnCd').val(""),
-                parent.find('#endDayNo').val("");
-            }
         });
 
         // プルダウンの色設定

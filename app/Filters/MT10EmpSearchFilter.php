@@ -20,7 +20,7 @@ class MT10EmpSearchFilter extends Filter
     // カナ検索
     public function txtEmpKana($value)
     {
-        if(!empty($value)){
+        if (!empty($value)) {
             $this->builder->where('MT10_EMP.EMP_KANA', 'like', "%$value%");
         }
     }
@@ -28,10 +28,8 @@ class MT10EmpSearchFilter extends Filter
     // 部門
     public function txtDeptCd($value)
     {
-        if(!empty($value)){
+        if (!empty($value)) {
             $this->builder->where('MT10_EMP.DEPT_CD', $value);
         }
     }
-
-
 }

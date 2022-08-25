@@ -18,9 +18,10 @@ class MT13DeptAuthReferenceController extends Controller
      * @param
      * @return void
      */
-    public function __construct(MT13DeptAuthRepository $mt13_dept_auth_repository,
-                                            MT93PgRepository $pg_repository)
-    {
+    public function __construct(
+        MT13DeptAuthRepository $mt13_dept_auth_repository,
+        MT93PgRepository $pg_repository
+    ) {
         parent::__construct($pg_repository, '000005');
         $this->mt13_dept_auth = $mt13_dept_auth_repository;
     }

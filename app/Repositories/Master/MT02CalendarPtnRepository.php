@@ -8,7 +8,7 @@ use App\Models\MT05Workptn;
 
 class MT02CalendarPtnRepository
 {
-    public function CalendarPtns()
+    public function calendarPtns()
     {
         /**
          * カレンダーパターン情報取得
@@ -26,7 +26,7 @@ class MT02CalendarPtnRepository
      * MT02CalendarPtnEditor(カレンダーパターン情報入力「勤怠体系ドロップダウン」)
      * @return void
      */
-    public function WorkPtn()
+    public function workPtn()
     {
         $workptn = MT05Workptn::where('COM_CLS_CD', '01')->get();
         return $workptn;
@@ -37,7 +37,7 @@ class MT02CalendarPtnRepository
      * MT02CalendarPtnEditor(カレンダーパターン情報入力「更新・修正用」)
      * @return void
      */
-    public function CalendarPtnsEdit($id)
+    public function calendarPtnsEdit($id)
     {
         $calendarPtnEdit = MT02CalendarPtn::where('CALENDAR_CLS_CD', '<>', '02')
             ->where('MT02_CALENDAR_PTN.CALENDAR_CD', $id)

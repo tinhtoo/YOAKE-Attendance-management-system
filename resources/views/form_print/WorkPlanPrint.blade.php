@@ -55,6 +55,7 @@
                                                 <input type="text"
                                                     name="txtStartTargetDate"
                                                     class="yearMonthDay"
+                                                    autofocus
                                                     autocomplete="off"
                                                     tabindex="3"
                                                     value="{{ old('txtStartTargetDate', !empty( $input_data['txtStartTargetDate']) ? $input_data['txtStartTargetDate'] : '') }}"

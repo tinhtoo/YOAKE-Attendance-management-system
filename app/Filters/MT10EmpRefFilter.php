@@ -28,7 +28,7 @@ class MT10EmpRefFilter extends Filter
     public function txtEmpKana($value)
     {
         if (!is_nullorwhitespace($value)) {
-            $this->builder->where('MT10_EMP.EMP_KANA', 'like' , "%{$value}%");
+            $this->builder->where('MT10_EMP.EMP_KANA', 'like', "%{$value}%");
         }
     }
 
@@ -39,6 +39,4 @@ class MT10EmpRefFilter extends Filter
             $this->builder->where('MT10_EMP.DEPT_CD', $value);
         }
     }
-
-
 }

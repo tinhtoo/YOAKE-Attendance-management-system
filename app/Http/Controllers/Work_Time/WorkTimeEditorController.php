@@ -49,7 +49,7 @@ class WorkTimeEditorController extends Controller
     {
         $ovtm_header_names = $this->work_desc->getOvtms()->toArray(); // テーブルヘッダー（残業）
         $ext_header_names = $this->work_desc->getExts()->toArray(); // テーブルヘッダー（割増）
-        $search_data['txtEmpCd'] = session('emp_cd');
+        $search_data['txtEmpCd'] = '';
         $is_index = true;
         return parent::viewWithMenu(
             'work_time.WorkTimeEditor',
@@ -98,8 +98,7 @@ class WorkTimeEditorController extends Controller
         $reason_names = $this->wtime_repository->reasons(); // 事由
 
         $request->session()->put('date', $search_data['ddlDate']);
-        $request->session()->put('emp_cd', $search_data['txtEmpCd']);
-
+        $emp_cd = ($request->all())['txtEmpCd'];
 
         $ovtm_header_names = $this->work_desc->getOvtms()->toArray(); // テーブルヘッダー（残業）
         $ext_header_names = $this->work_desc->getExts()->toArray(); // テーブルヘッダー（割増）
@@ -109,6 +108,7 @@ class WorkTimeEditorController extends Controller
         return parent::viewWithMenu(
             'work_time.WorkTimeEditor',
             compact(
+                'emp_cd',
                 'results',
                 'confirmCheck',
                 'messages',
@@ -154,7 +154,7 @@ class WorkTimeEditorController extends Controller
         $results = $this->wtime_repository->timeCal($request->all()); // 対象データ表示
         return $results;
     }
-    
+
     /**
      * 日数計算処理
      *
@@ -176,11 +176,7 @@ class WorkTimeEditorController extends Controller
     public function cancel(Request $request)
     {
         $data = $request->session()->all();
-        if (!is_nullorwhitespace($data['emp_cd'])) {
-            $request->session()->forget('emp_cd');
-        }
-
-        if (!is_nullorwhitespace($data['date'])) {
+        if (key_exists('date', $data) && !is_nullorwhitespace($data['date'])) {
             return redirect()->back()->with('date', $data['date']);
         } else {
             return redirect()->back();
@@ -191,9 +187,9 @@ class WorkTimeEditorController extends Controller
     {
         $today = date('Y-m-d H:i:s');
         $date = session('date');
-        $emp_cd = session('emp_cd');
         $year = (int)substr($date, 0, 4);
         $month = (int)abs(substr($date, 7, 2));
+        $emp_cd = $request->only('empCd')['empCd'];
 
         try {
             \DB::beginTransaction();

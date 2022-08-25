@@ -22,7 +22,7 @@ class WorkPlanPrintFilter extends Filter
     // 開始部門コード
     public function txtStartDeptCd($value)
     {
-        if(!empty($value)){
+        if (!empty($value)) {
             $this->builder->where('MT12.DEPT_CD', '>=', $value);
         }
     }
@@ -30,7 +30,7 @@ class WorkPlanPrintFilter extends Filter
     // 終了部門コード
     public function txtEndDeptCd($value)
     {
-        if(!empty($value)){
+        if (!empty($value)) {
             $this->builder->where('MT12.DEPT_CD', '<=', $value);
         }
     }
@@ -38,7 +38,7 @@ class WorkPlanPrintFilter extends Filter
     // 開始社員コード
     public function txtStartEmpCd($value)
     {
-        if(!empty($value)){
+        if (!empty($value)) {
             $this->builder->where('MT10.EMP_CD', '>=', $value);
         }
     }
@@ -46,9 +46,8 @@ class WorkPlanPrintFilter extends Filter
     // 終了社員コード
     public function txtEndEmpCd($value)
     {
-        if(!empty($value)){
+        if (!empty($value)) {
             $this->builder->where('MT10.EMP_CD', '<=', $value);
         }
     }
-
 }

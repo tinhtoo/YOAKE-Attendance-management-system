@@ -42,5 +42,4 @@ class MT99Msg extends Model
      * @var string
      */
     protected $connection = 'sqlsrv';
-
 }

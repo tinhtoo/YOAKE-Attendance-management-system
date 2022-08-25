@@ -8,7 +8,6 @@ use Illuminate\Foundation\Testing\DatabaseTransactions;
 use Illuminate\Support\Collection;
 use Illuminate\Support\Facades\DB;
 
-
 class TR04WorkTimeFixRepository extends TR04WorkTimeFix
 {
 

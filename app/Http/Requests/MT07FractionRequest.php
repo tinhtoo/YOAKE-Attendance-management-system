@@ -11,7 +11,7 @@ class MT07FractionRequest extends BaseRequest
         return $rules = [
             'overTime.*' =>[
                 // 必須入力項目です。
-                parent::fractionRequiredThereIsNoInput('ovtCD','ovtUnderMi','ovtFrcClsCd'),
+                parent::fractionRequiredThereIsNoInput('ovtCD', 'ovtUnderMi', 'ovtFrcClsCd'),
                 // '項目が重複しています。'
                 parent::fractionDuplicateItems('ovtCD', 'overTime'),
             ],

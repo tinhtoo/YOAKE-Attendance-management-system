@@ -3,11 +3,7 @@
 namespace App\Repositories;
 
 use Illuminate\Http\Request;
-
 use App\Models\MT01Control;
-
-use Illuminate\Support\Facades\DB;
-
 
 class MT01ControlRepository
 {

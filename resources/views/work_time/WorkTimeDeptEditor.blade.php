@@ -16,7 +16,7 @@
                             <table class="InputFieldStyle1">
                                 <tbody>
                                     <tr>
-                                        <th>対象年月日度</th>
+                                        <th>対象年月日</th>
                                         <td>
                                             <input type="text"
                                                 name="ddlDate"
@@ -25,6 +25,8 @@
                                                 value="{{ old('ddlDate', !is_nullorwhitespace(Session::get('ymd_date')) ? Session::get('ymd_date'): date('Y年m月d日') ) }}"
                                                 @if(!empty($results))
                                                 disabled="disabled"
+                                                @else
+                                                autofocus
                                                 @endif
                                             />
                                             @error('ddlDate')
@@ -47,8 +49,6 @@
                                                 autocomplete="off"
                                                 @if(!empty($results))
                                                 disabled="disabled"
-                                                @else
-                                                autofocus
                                                 @endif
                                             >
                                             <input name="btnSearchDeptCd"
@@ -586,7 +586,6 @@ $(document).on('click', '.update', function() {
 });
 
 $(function() {
-    gotoSearch();
     $('#YearMonth').datepicker({
         format: 'yyyy年mm月dd日',
         autoclose: true,
@@ -605,14 +604,6 @@ $(function() {
     });
 });
 
-// ローディング設定
-var gotoSearch = function(e) {
-    var is_index = "{{ !empty($is_index) ? true : false; }}";
-    if(dept_cd != "" && is_index) {
-        $.LoadingOverlay("show");
-        $("#btnShow").click();
-    }
-};
 </script>
 
 @endsection

@@ -53,7 +53,7 @@ class SetWorkTimeToWorkUtility
             }
 
             // 取得した(処理対象となった)就業情報の主キーリストを作成
-            $tr01_pk = $this->TR01_WORK_PRIMARY_KEY_COLMN;
+            $tr01_pk = self::TR01_WORK_PRIMARY_KEY_COLMN;
             $tr01_pk['EmpCd'] = $work->EMP_CD;
             $tr01_pk['CaldDate'] = $work->CALD_DATE;
             if (!in_array($tr01_pk, $this->tr01_work_key_list, true)) {
@@ -80,8 +80,8 @@ class SetWorkTimeToWorkUtility
                         ];
                     } else {
                         $tr01_update_data = [
-                            'OFC_TIME_HHN' => null,
-                            'OFC_TIME_MIN' => null,
+                            'OFC_TIME_HH' => null,
+                            'OFC_TIME_MI' => null,
                             'OFC_CNT' => (int) ($work->OFC_CNT + 1),
                         ];
                     }

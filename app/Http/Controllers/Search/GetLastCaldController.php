@@ -11,9 +11,10 @@ class GetLastCaldController extends Controller
 {
     private $tr01;
     private $mt10;
-    public function __construct(MT10EmpSearchRepository $mt10_rep
-                                ,TR01WorkRepository $tr01_rep)
-    {
+    public function __construct(
+        MT10EmpSearchRepository $mt10_rep,
+        TR01WorkRepository $tr01_rep
+    ) {
         $this->mt10 = $mt10_rep;
         $this->tr01 = $tr01_rep;
     }
@@ -37,5 +38,4 @@ class GetLastCaldController extends Controller
 
         return ['last_cald' => $last_cald[0]->CALD_YEAR.'年'.$last_cald[0]->CALD_MONTH.'月'];
     }
-
 }

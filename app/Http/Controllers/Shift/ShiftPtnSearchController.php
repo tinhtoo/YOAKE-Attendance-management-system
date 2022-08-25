@@ -19,7 +19,7 @@ class ShiftPtnSearchController extends Controller
 {
     private $mt04;
     private $mt08;
-    
+
     /**
      * コントローラインスタンスの生成
      * @param

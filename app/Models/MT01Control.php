@@ -74,5 +74,4 @@ class MT01Control extends Model
      * @var string
      */
     protected $connection = 'sqlsrv';
-
 }

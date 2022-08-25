@@ -186,7 +186,7 @@
             <span>対象月度</span>
             <span>:</span>
             <span>
-                {{ $year }}/{{ $month }}
+                {{ $year }}/{{ substr('00'. $month, -2) }}
             </span>
             <span>月度</span>
         </div>
@@ -200,49 +200,49 @@
         <table class="workTable" style="width: 100%;">
             <thead>
                 <tr class="table-head1" style="width: 100%;">
-                    <th colspan="5" style="padding-left: 5px; text-align: left;">
+                    <th colspan="6" style="padding-left: 5px; text-align: left;">
                     {{ $wt_data->EMP_CD }}&nbsp;&nbsp;&nbsp;{{ $wt_data->EMP_NAME }}
                     </th>
-                    <th colspan="1" style="width: 35px;">出勤:{{ $wt_data->SUM_WORKDAY_CNT }}</th>
-                    <th colspan="1" style="width: 35px;">有休:{{ $wt_data->SUM_PADHOL_CNT }}</th>
-                    <th colspan="1" style="width: 35px;">代休:{{ $wt_data->SUM_COMPDAY_CNT }}</th>
-                    <th colspan="1" style="width: 35px;">特休:{{ $wt_data->SUM_SPCHOL_CNT }}</th>
-                    <th colspan="1" style="width: 35px;">休出:{{ $wt_data->SUM_HOLWORK_CNT }}</th>
-                    <th colspan="1" style="width: 35px;">欠勤:{{ $wt_data->SUM_ABCWORK_CNT }}</th>
-                    <th colspan="1" style="width: 35px;">遅刻:{{ $wt_data->SUM_TARD_CNT }}</th>
-                    <th colspan="1" style="width: 35px;">早退:{{ $wt_data->SUM_LEAVE_CNT }}</th>
-                    <th colspan="6"></th>
+                    <th colspan="1" style="width: 30px;">出勤:{{ $wt_data->SUM_WORKDAY_CNT }}</th>
+                    <th colspan="1" style="width: 30px;">有休:{{ $wt_data->SUM_PADHOL_CNT }}</th>
+                    <th colspan="1" style="width: 30px;">代休:{{ $wt_data->SUM_COMPDAY_CNT }}</th>
+                    <th colspan="1" style="width: 30px;">特休:{{ $wt_data->SUM_SPCHOL_CNT }}</th>
+                    <th colspan="1" style="width: 30px;">休出:{{ $wt_data->SUM_HOLWORK_CNT }}</th>
+                    <th colspan="1" style="width: 30px;">欠勤:{{ $wt_data->SUM_ABCWORK_CNT }}</th>
+                    <th colspan="1" style="width: 30px;">遅刻:{{ $wt_data->SUM_TARD_CNT }}</th>
+                    <th colspan="1" style="width: 30px;">早退:{{ $wt_data->SUM_LEAVE_CNT }}</th>
+                    <th colspan="5"></th>
                 </tr>
                 <tr class="table-head2" style="width: 100%;">
-                    <th style="width: 35px; padding-left: 5px; text-align: left;">日付</th>
-                    <th style="width: 90px; text-align: left;">勤務体系</th>
-                    <th style="width: 20px; text-align: left;">事由</th>
-                    <th style="width: 20px;">出勤</th>
-                    <th style="width: 30px;">退出</th>
-                    <th style="width: 30px;">外出1</th>
-                    <th style="width: 30px;">再入1</th>
-                    <th style="width: 35px;">出勤時間</th>
-                    <th style="width: 35px;">休日出勤</th>
-                    <th style="width: 35px;">休外出勤</th>
-                    <th style="width: 35px;">遅刻時間</th>
-                    <th style="width: 35px;">早退時間</th>
-                    <th style="width: 35px;">外出時間</th>
-                    <th style="width: 35px;">
+                    <th style="width: 50px; padding-left: 5px; text-align: left;">日付</th>
+                    <th style="width: 140px; text-align: left;">勤務体系</th>
+                    <th style="width: 8px; text-align: right;">事由</th>
+                    <th style="width: 35px;">出勤</th>
+                    <th style="width: 35px;">退出</th>
+                    <th style="width: 35px;">外出1</th>
+                    <th style="width: 35px;">再入1</th>
+                    <th style="width: 50px;">出勤時間</th>
+                    <th style="width: 50px;">休日出勤</th>
+                    <th style="width: 50px;">休外出勤</th>
+                    <th style="width: 50px;">遅刻時間</th>
+                    <th style="width: 50px;">早退時間</th>
+                    <th style="width: 50px;">外出時間</th>
+                    <th style="width: 50px;">
                         {{ mb_substr($wt_data->WORK_DESC_NAME_100, 0, 4) }}
                     </th>
-                    <th style="width: 35px;">
+                    <th style="width: 50px;">
                         {{ mb_substr($wt_data->WORK_DESC_NAME_101, 0, 4) }}
                     </th>
-                    <th style="width: 35px;">
+                    <th style="width: 50px;">
                         {{ mb_substr($wt_data->WORK_DESC_NAME_102, 0, 4) }}
                     </th>
-                    <th style="width: 35px;">
+                    <th style="width: 50px;">
                         {{ mb_substr($wt_data->WORK_DESC_NAME_103, 0, 4) }}
                     </th>
-                    <th style="width: 35px;">
+                    <th style="width: 50px;">
                         {{ mb_substr($wt_data->WORK_DESC_NAME_104, 0, 4) }}
                     </th>
-                    <th style="width: 35px; padding-right: 5px;">
+                    <th style="width: 50px; padding-right: 5px;">
                         {{ mb_substr($wt_data->WORK_DESC_NAME_105, 0, 4) }}
                     </th>
                 </tr>
@@ -273,7 +273,7 @@
                     ({{ config('consts.weeks')[date('w', strtotime($w_time->CALD_DATE))] }})
                     </td>
                     <td style="width:110px; text-align: left;">{{ $w_time->WORKPTN_NAME }}</td>
-                    <td style="width:25px; text-align: left;">{{ $w_time->REASON_NAME }}</td>
+                    <td style="width:25px; text-align: right;">{{ $w_time->REASON_NAME }}</td>
                     <td>{{ $w_time->OFC_TIME }}</td>
                     <td>{{ $w_time->LEV_TIME }}</td>
                     <td>{{ $w_time->OUT1_TIME }}</td>
