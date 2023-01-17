@@ -1,0 +1,66 @@
+<?php
+
+namespace App\Http\Controllers\Work_Time;
+
+use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
+
+
+use App\Http\Requests\WorkTimeRequest;
+use App\Repositories\Work_Time\WorkTimeRepository;
+
+class WorkTimeEditorController extends Controller
+{
+    /**
+     * Work_Timeリポジトリの実装
+     *
+     * @var WorkTimeRepository
+     */
+    
+    protected $wtime_Repository;
+
+    /**
+     * 新しいコントローラインスタンスの生成
+     *
+     * @param  UserRepository  $wtime_Repository
+     * @return void
+     */
+    public function __construct(WorkTimeRepository $wtime_Repository)
+    {
+        $this->wtime_Repository = $wtime_Repository;
+    }
+
+    /**
+     * 指定画面の表示
+     *
+     * @param  int  $request
+     * @return view
+     */
+    public function worktimeeditor(Request $request)
+    {
+        return view('work_time.worktimeeditor');   
+    }
+
+    /**
+     * 指定ユーザーのプロファイル表示
+     *
+     * @param  int  $request
+     * @return Response
+     */
+    public function search(WorkTimeRequest $request)
+    {
+
+
+        $results = $this->wtime_Repository->select($request);
+        $messages = $this->wtime_Repository->messages();
+
+        
+        $week = array( "日", "月", "火", "水", "木", "金", "土" );
+
+        
+        return view('work_time.WorkTimeEditor',compact('results','week','messages'));
+        
+    }
+
+    
+}

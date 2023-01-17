@@ -1,0 +1,24 @@
+<?php
+
+namespace App\Http\Requests;
+
+use App\Models\MT99Msg;
+use App\Models\MT10Emp;
+use Illuminate\Foundation\Http\FormRequest;
+
+class MT10EmpRefRequest extends FormRequest
+{
+
+    public function rules()
+    {
+        // チェック無し
+        return $rules = [];
+    }
+    
+
+    public function messages()
+    {
+        return [
+        ];
+    }
+}

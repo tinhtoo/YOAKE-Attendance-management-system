@@ -1,0 +1,89 @@
+table.yoko-tate .fixed01{
+  position: sticky;
+  position: -webkit-sticky;
+  top: 0;
+  border-right : none;
+  background: #fff;
+}
+
+table.yoko-tate .fixed02{
+  position: sticky;
+  position: -webkit-sticky;
+  top: 0;
+  border-right : none;
+  background: #fff;
+}
+
+table.yoko-tate .fixed03{
+  position: sticky;
+  position: -webkit-sticky;
+  top: 0;
+  border-right : none;
+  background: #fff;
+}
+
+table.yoko-tate .fixed04{
+  position: sticky;
+  position: -webkit-sticky;
+  top: 0;
+  border-right : none;
+  background: #fff;
+}
+
+table.yoko-tate .fixed05{
+  position: sticky;
+  position: -webkit-sticky;
+  top: 0;
+  border-right : none;
+  background: #fff;
+}
+
+table.yoko-tate .fixed01:before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border-right : 1px solid #aaa ;
+}
+
+table.yoko-tate .fixed02:before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border-right : 1px solid #aaa ;
+}
+
+table.yoko-tate .fixed03:before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border-right : 1px solid #aaa ;
+}
+
+table.yoko-tate .fixed04:before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border-right : 1px solid #aaa ;
+}
+
+table.yoko-tate .fixed05:before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  border-right : 1px solid #aaa ;
+}

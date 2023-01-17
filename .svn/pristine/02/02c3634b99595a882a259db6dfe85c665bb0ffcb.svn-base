@@ -1,0 +1,18 @@
+<?php
+
+namespace App\Http\Controllers\master;
+
+use App\Http\Controllers\Controller;
+use App\Http\Requests\MT23CompanyEditorRequest;
+use App\Models\MT01Control;
+use Illuminate\Http\Request;
+
+class MT23CompanyEditorController extends Controller
+{
+    public function MT23CompanyEditorIndex()
+    {
+        $query = MT01Control::all();
+
+        return view('master.MT23CompanyEditor');
+    }
+}

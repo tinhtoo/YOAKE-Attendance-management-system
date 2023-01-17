@@ -1,0 +1,34 @@
+<?php
+
+namespace App\Http\Controllers\Master;
+
+use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
+use App\Repositories\MT93PgRepository;
+
+use function Symfony\Component\VarDumper\Dumper\esc;
+
+/**
+ * 勤務体系情報照会 処理
+ */
+class MT05WorkPtnReferenceController extends Controller
+{
+    /**
+     * コントローラインスタンスの生成
+     * @param
+     * @return void
+     */
+    public function __construct(MT93PgRepository $pg_repository)
+    {
+        parent::__construct($pg_repository, '000006');
+    }
+
+    /**
+     * 勤務体系情報照会 処理 画面表示
+     * @return view
+     */
+    public function index(Request $request)
+    {
+        return parent::viewWithMenu('master.MT05WorkPtnReference');
+    }
+}

@@ -1,0 +1,47 @@
+<?php
+
+namespace App\Filters;
+
+use App\Filters\Filter;
+use Illuminate\Http\Request;
+
+class MT14PGAuthEditorFilter extends Filter
+{
+    /**
+     * filter properties.
+     */
+    protected $filters = [
+        'filter' => [
+            'PG_AUTH_CD',
+            'PG_AUTH_NAME',
+            'PG_CD',
+            'RSV1_CLS_CD',
+            'RSV2_CLS_CD',
+        ]
+    ];
+    //機能権限コード
+    public function PG_AUTH_CD($value)
+    {
+        // dd($value);
+        if(!empty($value)){
+            $this->builder->where('MT14_PG_AUTH.PG_AUTH_CD', $value);
+        }
+    }
+
+    //機能権限名
+    public function PG_AUTH_NAME($value)
+    {
+        if(!empty($value)){
+            $this->builder->where('MT14_PG_AUTH.PG_AUTH_NAME', $value);
+        }
+    }
+
+    public function PG_CD($value)
+    {
+        if(!empty($value)){
+            $this->builder->where('MT14_PG_AUTH.PG_CD', $value);
+        }
+    }
+
+
+}

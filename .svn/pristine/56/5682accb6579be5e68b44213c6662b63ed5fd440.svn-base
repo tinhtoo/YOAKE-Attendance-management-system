@@ -1,0 +1,14 @@
+<?php
+
+namespace App\Http\Controllers\Master;
+
+use App\Http\Controllers\Controller;
+use App\Http\Requests\MT10EmpCnvertRequest;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
+
+
+class MT10EmpCnvertController extends Controller
+{
+
+}

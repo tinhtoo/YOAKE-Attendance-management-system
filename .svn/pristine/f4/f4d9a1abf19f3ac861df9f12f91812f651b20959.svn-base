@@ -1,0 +1,469 @@
+<?php
+
+namespace App\Repositories;
+
+use App\Models\TR01Work;
+
+use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\DB;
+use App\Filters\WorkPlanPrintFilter;
+use Carbon\Carbon;
+
+class TR01WorkRepository extends TR01Work
+{
+    public function getWithEmpAndCaldYearMonth($emp_cd, $cald_year, $cald_month)
+    {
+        return TR01Work::where('EMP_CD', $emp_cd)
+                    ->where('CALD_YEAR', $cald_year)
+                    ->where('CALD_MONTH', (int)$cald_month)
+                    ->get();
+    }
+
+    public function getWithPrimaryKey($emp_cd, $cald_date)
+    {
+        return TR01Work::where('EMP_CD', $emp_cd)
+                    ->where('CALD_DATE', $cald_date)
+                    ->first();
+    }
+
+    public function existWithEmpAndCaldYearMonth($emp_cd, $cald_year, $cald_month)
+    {
+        return TR01Work::where('EMP_CD', $emp_cd)
+                    ->where('CALD_YEAR', $cald_year)
+                    ->where('CALD_MONTH', (int)$cald_month)
+                    ->exists();
+    }
+
+    public function insertWork($record)
+    {
+        return TR01Work::insert($record);
+    }
+
+    /**
+     * TR01_WORKの更新
+     *
+     * @param [type] $emp_cd
+     * @param [type] $cald_date
+     * @param [type] $udpate_data
+     * @return void
+     */
+    public function updateWithKey($emp_cd, $cald_date, $udpate_data)
+    {
+        return TR01Work::where('EMP_CD', $emp_cd)
+                        ->where('CALD_DATE', $cald_date)
+                        ->update($udpate_data);
+    }
+
+    public function updateWithKeyAndNotFix($emp_cd, $cald_date, $udpate_data)
+    {
+        return TR01Work::where('EMP_CD', $emp_cd)
+                        ->where('CALD_DATE', $cald_date)
+                        ->where('UPD_CLS_CD', '00')
+                        ->where('FIX_CLS_CD', '00')
+                        ->update($udpate_data);
+    }
+
+    /**
+     * 就業情報を確定させる
+     * .netの実装より、退職かの判定は行っていない（退職者にも就業情報の確定を行う可能性があるため？）
+     *
+     * @param [type] $year
+     * @param [type] $month
+     * @param [type] $closing_date_cd
+     * @param [type] $dept_cd_list
+     * @param [type] $today
+     * @return void
+     */
+    public function updateForFix($year, $month, $closing_date_cd, $dept_cd_list, $today) 
+    {
+        return TR01Work::from('TR01_WORK as TR01')
+                        ->leftJoin('MT10_EMP as MT10', 'TR01.EMP_CD', '=', 'MT10.EMP_CD')
+                        ->where('TR01.CALD_YEAR', $year)
+                        ->where('TR01.CALD_MONTH', $month)
+                        ->where('MT10.CLOSING_DATE_CD', $closing_date_cd)
+                        ->whereIn('MT10.DEPT_CD', $dept_cd_list)
+                        ->update([
+                            'FIX_CLS_CD' => '01',
+                            'UPD_DATE' => $today
+                        ]);
+    }
+
+    /**
+     * 就業情報から、指定年月の社員名部署名を取得する
+     *
+     * @param [type] $login_emp_dept_cd
+     * @param [type] $dept_cd_list
+     * @param [type] $year
+     * @param [type] $month
+     * @param [type] $closing_date_cd
+     * @param boolean $no_fix falseを指定すると、「確定済み」の場合〇を設定する
+     * @return object
+     */
+    public function searchFixEmp($login_emp_dept_cd, $dept_cd_list, $year, $month, $closing_date_cd, $no_fix = true) : object
+    {
+        return TR01Work::select('MT12.DEPT_CD', 'MT12.DEPT_NAME', 'MT10.EMP_CD', 'MT10.EMP_NAME')
+                        ->when(!$no_fix, function($q) {
+                            $q->selectRaw("CASE WHEN MIN([FIX_CLS_CD]) = '00' THEN '' ELSE '〇' END AS FIXED");
+                        })
+                        ->when($no_fix, function($q) {
+                            $q->selectRaw(" '' AS FIXED");
+                        })
+                        ->from('TR01_WORK as TR01')
+                        ->join('MT10_EMP as MT10', 'TR01.EMP_CD', '=', 'MT10.EMP_CD')
+                        ->leftJoin('MT11_LOGIN as MT11', 'TR01.EMP_CD', '=', 'MT11.EMP_CD')
+                        ->join('MT12_DEPT as MT12', 'MT10.DEPT_CD', '=', 'MT12.DEPT_CD')
+                        ->where('TR01.CALD_YEAR', $year)
+                        ->where('TR01.CALD_MONTH', $month)
+                        ->where('MT10.CLOSING_DATE_CD', $closing_date_cd)
+                        ->when($no_fix, function($q) {
+                            $q->where('TR01.FIX_CLS_CD', '00');
+                        })
+                        ->where(function($q) use ($dept_cd_list, $login_emp_dept_cd) {
+                            $q->whereIn('MT10.DEPT_CD', $dept_cd_list)
+                                ->orWhere('MT10.DEPT_CD', $login_emp_dept_cd);
+                        })
+                        ->groupBy('MT10.EMP_CD', 'MT10.EMP_NAME', 'MT12.DEPT_CD', 'MT12.DEPT_NAME')
+                        ->orderby('MT12.DEPT_CD')
+                        ->orderby('MT10.EMP_CD')
+                        ->get();
+    }
+
+    public function getEmpWorkStatusData($filter, $login_emp_dept_cd, $dept_cd_list)
+    {
+        return TR01Work::selectRaw("'' OFC_TERM_NAME, '' LEV_TERM_NAME")
+            ->select('MT10.DEPT_CD',
+                    'MT12.DEPT_NAME',
+                    'TR01.EMP_CD',
+                    'MT10.EMP_NAME',
+                    'TR01.WORKPTN_CD',
+                    'MT05.WORKPTN_NAME',
+                    'MT05.WORK_CLS_CD',
+                    'TR01.REASON_CD',
+                    'MT09.REASON_NAME',
+                    'TR01.OFC_TIME_HH', 'TR01.OFC_CNT',
+                    'TR01.LEV_TIME_HH', 'TR01.LEV_CNT')
+            ->selectRaw("Case When TR01.OFC_TIME_HH Is Null Then '' 
+                         Else Cast(TR01.OFC_TIME_HH As VarChar) + ':' + RIGHT('00' + Cast(TR01.OFC_TIME_MI As VarChar), 2) 
+                         End As OFC_TIME")
+            ->selectRaw("Case When TR01.LEV_TIME_HH Is Null Then '' 
+                         Else Cast(TR01.LEV_TIME_HH As VarChar) + ':' + RIGHT('00' + Cast(TR01.LEV_TIME_MI As VarChar), 2)
+                         End As LEV_TIME")
+            ->from('TR01_WORK as TR01')
+            ->join('MT10_EMP as MT10', function ($join) {
+                $join->on('TR01.EMP_CD', '=', 'MT10.EMP_CD')
+                     ->where('MT10.REG_CLS_CD', '=', '00');
+            })
+            ->join('MT12_DEPT as MT12', 'MT10.DEPT_CD', '=', 'MT12.DEPT_CD')
+            ->join('MT05_WORKPTN as MT05', 'TR01.WORKPTN_CD', '=', 'MT05.WORKPTN_CD')
+            ->join('MT09_REASON as MT09', 'TR01.REASON_CD', '=', 'MT09.REASON_CD')
+            ->filter($filter)
+            ->where(function($q) use ($dept_cd_list, $login_emp_dept_cd) {
+                $q->whereIn('MT10.DEPT_CD', $dept_cd_list)
+                    ->orWhere('MT10.DEPT_CD', $login_emp_dept_cd);
+            })
+            ->orderby('MT10.DEPT_CD')
+            ->orderby('TR01.EMP_CD')
+            ->get();
+    }
+
+    /**
+     * 勤務予定表PDFに表示するデータの取得
+     *
+     * @param [type] $str_date
+     * @param [type] $end_date
+     * @param [type] $filter
+     * @return void
+     */
+    public function getWorkPlanReportData($str_date, $end_date, $filter)
+    {
+        return TR01Work::from('TR01_WORK as TR01')
+                         ->leftjoin('MT10_EMP as MT10', 'TR01.EMP_CD', '=', 'MT10.EMP_CD')
+                         ->join('MT12_DEPT as MT12', 'MT10.DEPT_CD', '=', 'MT12.DEPT_CD')
+                         ->join('MT05_WORKPTN as MT05', 'TR01.WORKPTN_CD', '=', 'MT05.WORKPTN_CD')
+                         ->filter($filter)
+                         ->where('MT12.DISP_CLS_CD', '=', '01')
+                         ->whereBetween('TR01.CALD_DATE', [$str_date, $end_date])
+                         ->select('MT10.DEPT_CD', 'MT12.DEPT_NAME', 'TR01.EMP_CD', 'MT10.EMP_NAME', 'MT05.WORKPTN_ABR_NAME', 'TR01.CALD_DATE')
+                         ->orderby('MT10.DEPT_CD')
+                         ->orderby('TR01.EMP_CD')
+                         ->orderby('TR01.CALD_DATE')
+                         ->get();
+    }
+
+    /**
+     * 部門コードまたは社員コードで勤怠情報を取得する
+     *
+     * @param [boolean] $dept_flg trueの場合部門コードで検索、falseの場合社員コードで検索
+     * @param [String] $key 部門コードまたは社員コードを設定
+     * @param [Object] $filter
+     * @return object
+     */
+    public function getWorkWithEmpOrDept($dept_flg, $key = null, $filter) : object
+    {
+        return TR01Work::select('TR01.EMP_CD', 'TR01.CALD_YEAR', 'TR01.CALD_MONTH', 'TR01.CALD_DATE',
+                                'MT09.SPCHOL_CLS_CD',  'TR01.SPCHOL_CNT',
+                                'MT09.PADHOL_CLS_CD',  'TR01.PADHOL_CNT',
+                                'MT09.ABCWORK_CLS_CD', 'TR01.ABCWORK_CNT',
+                                'MT09.COMPDAY_CLS_CD', 'TR01.COMPDAY_CNT',
+                                'MT09.RSV1_CLS_CD',    'TR01.RSV1_CNT',
+                                'MT09.SUBHOL_CLS_CD',  'TR01.SUBHOL_CNT',
+                                'MT09.SUBWORK_CLS_CD', 'TR01.SUBWORK_CNT')
+                        ->from('TR01_WORK as TR01')
+                        ->when(!$dept_flg, function($sql) use ($key) {
+                            $sql->where('TR01.EMP_CD', '=', $key);
+                        })
+                        ->when($dept_flg, function($sql) use ($key) {
+                            $sql->leftJoin('MT10_EMP as MT10', 'TR01.EMP_CD', '=', 'MT10.EMP_CD')
+                                ->where('MT10.DEPT_CD', '=', $key)
+                                ->where('MT10.REG_CLS_CD', '<>', '02');
+                        })
+                        ->leftJoin('MT09_REASON as MT09', 'TR01.REASON_CD', '=', 'MT09.REASON_CD')
+                        ->filter($filter)
+                        ->get();
+    }
+
+    /**
+     * emp_cdで検索して、cald_dateが最新のレコードの「年月」を返す
+     *
+     * @param [type] $emp_cd
+     * @return void
+     */
+    public function getLastCald($emp_cd)
+    {
+        return TR01Work::select('CALD_YEAR', 'CALD_MONTH')
+                        ->where('EMP_CD', $emp_cd)
+                        ->orderby('CALD_DATE', 'desc')
+                        ->limit(1)
+                        ->get();
+    }
+
+    /**
+     * 引数に指定された主キーで該当データを削除する
+     * （社員情報が登録されているレコードのみ削除）
+     *
+     * @param $emp_cd
+     * @param $cald_date
+     * @return 
+     */
+    public function deleteWithPrimaryKey($emp_cd, $cald_date)
+    {
+        return TR01Work::join('MT10_EMP', 'TR01_WORK.EMP_CD', '=', 'MT10_EMP.EMP_CD')
+                        ->where('TR01_WORK.EMP_CD', $emp_cd)
+                        ->where('TR01_WORK.CALD_DATE', $cald_date)
+                        ->delete();
+    }
+
+    /**
+     * 事由一覧表用情報取得
+     *
+     * @param [type] $filter
+     * @param [type] $start
+     * @param [type] $end
+     * @return void
+     */
+    public function getReasonReportData($filter, $start, $end)
+    {
+        $reson_01_sub_query = \DB::table('TR01_WORK')->select('EMP_CD', DB::raw('count(*) as WORKD_COUNT'))
+            ->whereRaw("CALD_DATE between '". $start ."' and '". $end."'")
+            ->whereRaw("REASON_CD = 01")
+            ->groupBy('EMP_CD')
+            ->toSql();
+        $reson_02_sub_query = \DB::table('TR01_WORK')->select('EMP_CD', DB::raw('count(*) as PADH_COUNT'))
+            ->whereRaw("CALD_DATE between '". $start ."' and '". $end."'")
+            ->whereRaw("REASON_CD = 02")
+            ->groupBy('EMP_CD')
+            ->toSql();
+        $reson_03_sub_query = \DB::table('TR01_WORK')->select('EMP_CD', DB::raw('count(*) as PADBH_COUNT'))
+            ->whereRaw("CALD_DATE between '". $start ."' and '". $end."'")
+            ->whereRaw("REASON_CD = 03")
+            ->groupBy('EMP_CD')
+            ->toSql();
+        $reson_04_sub_query = \DB::table('TR01_WORK')->select('EMP_CD', DB::raw('count(*) as PADAH_COUNT'))
+            ->whereRaw("CALD_DATE between '". $start ."' and '". $end."'")
+            ->whereRaw("REASON_CD = 04")
+            ->groupBy('EMP_CD')
+            ->toSql();
+        
+        $reson_05_sub_query = \DB::table('TR01_WORK')->select('EMP_CD', DB::raw('count(*) as COMPD_COUNT'))
+            ->whereRaw("CALD_DATE between '". $start ."' and '". $end."'")
+            ->whereRaw("REASON_CD = 05")
+            ->groupBy('EMP_CD')
+            ->toSql();
+        $reson_06_sub_query = \DB::table('TR01_WORK')->select('EMP_CD', DB::raw('count(*) as COMPBD_COUNT'))
+            ->whereRaw("CALD_DATE between '". $start ."' and '". $end."'")
+            ->whereRaw("REASON_CD = 06")
+            ->groupBy('EMP_CD')
+            ->toSql();
+        $reson_07_sub_query = \DB::table('TR01_WORK')->select('EMP_CD', DB::raw('count(*) as COMPAD_COUNT'))
+            ->whereRaw("CALD_DATE between '". $start ."' and '". $end."'")
+            ->whereRaw("REASON_CD = 07")
+            ->groupBy('EMP_CD')
+            ->toSql();
+        $reson_08_sub_query = \DB::table('TR01_WORK')->select('EMP_CD', DB::raw('count(*) as SPCH_COUNT'))
+            ->whereRaw("CALD_DATE between '". $start ."' and '". $end."'")
+            ->whereRaw("REASON_CD = 08")
+            ->groupBy('EMP_CD')
+            ->toSql();
+        $reson_09_sub_query = \DB::table('TR01_WORK')->select('EMP_CD', DB::raw('count(*) as ABCD_COUNT'))
+            ->whereRaw("CALD_DATE between '". $start ."' and '". $end."'")
+            ->whereRaw("REASON_CD = 09")
+            ->groupBy('EMP_CD')
+            ->toSql();
+        $reson_10_sub_query = \DB::table('TR01_WORK')->select('EMP_CD', DB::raw('count(*) as DIRG_COUNT'))
+            ->whereRaw("CALD_DATE between '". $start ."' and '". $end."'")
+            ->whereRaw("REASON_CD = 10")
+            ->groupBy('EMP_CD')
+            ->toSql();
+        $reson_11_sub_query = \DB::table('TR01_WORK')->select('EMP_CD', DB::raw('count(*) as DIRR_COUNT'))
+            ->whereRaw("CALD_DATE between '". $start ."' and '". $end."'")
+            ->whereRaw("REASON_CD = 11")
+            ->groupBy('EMP_CD')
+            ->toSql();
+        $reson_12_sub_query = \DB::table('TR01_WORK')->select('EMP_CD', DB::raw('count(*) as DIRQR_COUNT'))
+            ->whereRaw("CALD_DATE between '". $start ."' and '". $end."'")
+            ->whereRaw("REASON_CD = 12")
+            ->groupBy('EMP_CD')
+            ->toSql();
+        $reson_13_sub_query = \DB::table('TR01_WORK')->select('EMP_CD', DB::raw('count(*) as BUSJ_COUNT'))
+            ->whereRaw("CALD_DATE between '". $start ."' and '". $end."'")
+            ->whereRaw("REASON_CD = 13")
+            ->groupBy('EMP_CD')
+            ->toSql();
+        $reson_14_sub_query = \DB::table('TR01_WORK')->select('EMP_CD', DB::raw('count(*) as DELAY_COUNT'))
+            ->whereRaw("CALD_DATE between '". $start ."' and '". $end."'")
+            ->whereRaw("REASON_CD = 14")
+            ->groupBy('EMP_CD')
+            ->toSql();
+    
+        return TR01Work::select('MT10.DEPT_CD', 'MT12.DEPT_NAME',
+                                'TR01.EMP_CD', 'MT10.EMP_NAME')
+                        ->selectRaw('IsNull(TR01_WORKD.WORKD_COUNT, 0)   WORKD_COUNT')
+                        ->selectRaw('IsNull(TR01_PADH.PADH_COUNT, 0)     PADH_COUNT')
+                        ->selectRaw('IsNull(TR01_PADBH.PADBH_COUNT, 0)   PADBH_COUNT')
+                        ->selectRaw('IsNull(TR01_PADAH.PADAH_COUNT, 0)   PADAH_COUNT')
+                        ->selectRaw('IsNull(TR01_COMPD.COMPD_COUNT, 0)   COMPD_COUNT')
+                        ->selectRaw('IsNull(TR01_COMPBD.COMPBD_COUNT, 0) COMPBD_COUNT')
+                        ->selectRaw('IsNull(TR01_COMPAD.COMPAD_COUNT, 0) COMPAD_COUNT')
+                        ->selectRaw('IsNull(TR01_SPCH.SPCH_COUNT, 0)     SPCH_COUNT')
+                        ->selectRaw('IsNull(TR01_ABCD.ABCD_COUNT, 0)     ABCD_COUNT')
+                        ->selectRaw('IsNull(TR01_DIRG.DIRG_COUNT, 0)     DIRG_COUNT')
+                        ->selectRaw('IsNull(TR01_DIRR.DIRR_COUNT, 0)     DIRR_COUNT')
+                        ->selectRaw('IsNull(TR01_DIRQR.DIRQR_COUNT, 0)   DIRQR_COUNT')
+                        ->selectRaw('IsNull(TR01_BUSJ.BUSJ_COUNT, 0)     BUSJ_COUNT')
+                        ->selectRaw('IsNull(TR01_DELAY.DELAY_COUNT, 0)   DELAY_COUNT')
+                        ->from('TR01_WORK as TR01')
+                        ->leftJoin('MT10_EMP as MT10', 'TR01.EMP_CD', '=', 'MT10.EMP_CD')
+                        ->leftJoin('MT12_DEPT as MT12', 'MT10.DEPT_CD', '=', 'MT12.DEPT_CD')
+                        ->leftJoinSub($reson_01_sub_query, 'TR01_WORKD', function($join) {
+                            $join->on('TR01.EMP_CD', '=', 'TR01_WORKD.EMP_CD');
+                        })
+                        ->leftJoinSub($reson_02_sub_query, 'TR01_PADH', function($join) {
+                            $join->on('TR01.EMP_CD', '=', 'TR01_PADH.EMP_CD');
+                        })
+                        ->leftJoinSub($reson_03_sub_query, 'TR01_PADBH', function($join) {
+                            $join->on('TR01.EMP_CD', '=', 'TR01_PADBH.EMP_CD');
+                        })
+                        ->leftJoinSub($reson_04_sub_query, 'TR01_PADAH', function($join) {
+                            $join->on('TR01.EMP_CD', '=', 'TR01_PADAH.EMP_CD');
+                        })
+                        ->leftJoinSub($reson_05_sub_query, 'TR01_COMPD', function($join) {
+                            $join->on('TR01.EMP_CD', '=', 'TR01_COMPD.EMP_CD');
+                        })
+                        ->leftJoinSub($reson_06_sub_query, 'TR01_COMPBD', function($join) {
+                            $join->on('TR01.EMP_CD', '=', 'TR01_COMPBD.EMP_CD');
+                        })
+                        ->leftJoinSub($reson_07_sub_query, 'TR01_COMPAD', function($join) {
+                            $join->on('TR01.EMP_CD', '=', 'TR01_COMPAD.EMP_CD');
+                        })
+                        ->leftJoinSub($reson_08_sub_query, 'TR01_SPCH', function($join) {
+                            $join->on('TR01.EMP_CD', '=', 'TR01_SPCH.EMP_CD');
+                        })
+                        ->leftJoinSub($reson_09_sub_query, 'TR01_ABCD', function($join) {
+                            $join->on('TR01.EMP_CD', '=', 'TR01_ABCD.EMP_CD');
+                        })
+                        ->leftJoinSub($reson_10_sub_query, 'TR01_DIRG', function($join) {
+                            $join->on('TR01.EMP_CD', '=', 'TR01_DIRG.EMP_CD');
+                        })
+                        ->leftJoinSub($reson_11_sub_query, 'TR01_DIRR', function($join) {
+                            $join->on('TR01.EMP_CD', '=', 'TR01_DIRR.EMP_CD');
+                        })
+                        ->leftJoinSub($reson_12_sub_query, 'TR01_DIRQR', function($join) {
+                            $join->on('TR01.EMP_CD', '=', 'TR01_DIRQR.EMP_CD');
+                        })
+                        ->leftJoinSub($reson_13_sub_query, 'TR01_BUSJ', function($join) {
+                            $join->on('TR01.EMP_CD', '=', 'TR01_BUSJ.EMP_CD');
+                        })
+                        ->leftJoinSub($reson_14_sub_query, 'TR01_DELAY', function($join) {
+                            $join->on('TR01.EMP_CD', '=', 'TR01_DELAY.EMP_CD');
+                        })
+                        ->whereBetween('CALD_DATE',[$start,$end])
+                        ->filter($filter)
+                        ->distinct()
+                        ->orderBy('MT10.DEPT_CD')
+                        ->orderBy('TR01.EMP_CD')
+                        ->get();
+    }
+
+    /**
+     * 勤怠一覧表用情報取得
+     *
+     * @param [type] $filter
+     * @param [type] $start
+     * @param [type] $end
+     * @return void
+     */
+    public function getWorkPtnReportData($filter, $start, $end)
+    {
+        $sum_count_query = \DB::table('TR01_WORK')
+                            ->select('EMP_CD', 
+                                DB::raw('Sum(WORKDAY_CNT) SUM_WORKDAY_CNT'),
+                                DB::raw('Sum(HOLWORK_CNT) SUM_HOLWORK_CNT'),
+                                DB::raw('Sum(SPCHOL_CNT) SUM_SPCHOL_CNT'),
+                                DB::raw('Sum(PADHOL_CNT) SUM_PADHOL_CNT'),
+                                DB::raw('Sum(ABCWORK_CNT) SUM_ABCWORK_CNT'),
+                                DB::raw('Sum(COMPDAY_CNT) SUM_COMPDAY_CNT'))
+                            ->whereRaw("CALD_DATE between '". $start ."' and '". $end."'")
+                            ->groupBy('EMP_CD')
+                            ->toSql();
+        $sum_tard_query = \DB::table('TR01_WORK')->select('EMP_CD', DB::raw('Count(*) SUM_TARD_CNT'))
+                    ->whereRaw("CALD_DATE between '". $start ."' and '". $end."'")
+                    ->whereRaw("Not(TARD_TIME_HH = 0 And TARD_TIME_MI = 0)")
+                    ->groupBy('EMP_CD')
+                    ->toSql();
+        $sum_leave_query = \DB::table('TR01_WORK')->select('EMP_CD', DB::raw('Count(*) SUM_LEAVE_CNT'))
+                    ->whereRaw("CALD_DATE between '". $start ."' and '". $end."'")
+                    ->whereRaw("Not(LEAVE_TIME_HH = 0 And LEAVE_TIME_MI = 0)")
+                    ->groupBy('EMP_CD')
+                    ->toSql();
+
+        return TR01Work::select('MT10.DEPT_CD', 'MT12.DEPT_NAME',
+                                    'TR01.EMP_CD', 'MT10.EMP_NAME')
+                        ->selectRaw('IsNull(TR01_SUB.SUM_WORKDAY_CNT, 0) SUM_WORKDAY_CNT')
+                        ->selectRaw('IsNull(TR01_SUB.SUM_HOLWORK_CNT, 0) SUM_HOLWORK_CNT')
+                        ->selectRaw('IsNull(TR01_SUB.SUM_SPCHOL_CNT, 0)  SUM_SPCHOL_CNT')
+                        ->selectRaw('IsNull(TR01_SUB.SUM_PADHOL_CNT, 0)  SUM_PADHOL_CNT')
+                        ->selectRaw('IsNull(TR01_SUB.SUM_ABCWORK_CNT, 0) SUM_ABCWORK_CNT')
+                        ->selectRaw('IsNull(TR01_SUB.SUM_COMPDAY_CNT, 0) SUM_COMPDAY_CNT')
+                        ->selectRaw('IsNull(TR01_TARD.SUM_TARD_CNT, 0)   SUM_TARD_CNT')
+                        ->selectRaw('IsNull(TR01_LEAVE.SUM_LEAVE_CNT, 0) SUM_LEAVE_CNT')
+                        ->from('TR01_WORK as TR01')
+                        ->leftJoin('MT10_EMP as MT10', 'TR01.EMP_CD', '=', 'MT10.EMP_CD')
+                        ->leftJoin('MT12_DEPT as MT12', 'MT10.DEPT_CD', '=', 'MT12.DEPT_CD')
+                        ->leftJoinSub($sum_count_query, 'TR01_SUB', function($join) {
+                            $join->on('TR01.EMP_CD', '=', 'TR01_SUB.EMP_CD');
+                        })
+                        ->leftJoinSub($sum_tard_query, 'TR01_TARD', function($join) {
+                            $join->on('TR01.EMP_CD', '=', 'TR01_TARD.EMP_CD');
+                        })
+                        ->leftJoinSub($sum_leave_query, 'TR01_LEAVE', function($join) {
+                            $join->on('TR01.EMP_CD', '=', 'TR01_LEAVE.EMP_CD');
+                        })
+                        ->whereBetween('CALD_DATE',[$start,$end])
+                        ->filter($filter)
+                        ->distinct()
+                        ->orderBy('MT10.DEPT_CD')
+                        ->orderBy('TR01.EMP_CD')
+                        ->get();
+    }
+}

@@ -1,0 +1,60 @@
+<?php
+
+namespace App\Http\Controllers\Master;
+
+use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
+use App\Models\MT10Emp;
+use App\Repositories\Master\MT10EmpRefRepository;
+use App\Repositories\MT93PgRepository;
+use App\Filters\MT10EmpRefFilter;
+use App\Http\Requests\MT10EmpRefRequest;
+
+class MT10EmpReferenceController extends Controller
+{
+    private $EmpRef_repository;
+    /**
+     * コンストラクタ
+     * リポジトリのインスタンスを生成、格納
+     *
+     * @param  UserRepository  $EmpRef_repository
+     * @return void
+     */
+    public function __construct(MT10EmpRefRepository $EmpRef_repository
+                                , MT93PgRepository $pg_repository)
+    {
+        $this->EmpRef_repository = $EmpRef_repository;
+        parent::__construct($pg_repository);
+    }
+
+    /**
+     * 初期表示
+     *
+     * @param Request $request
+     * @return void
+     */
+    public function mt10empref(Request $request)
+    {
+        $query = MT10Emp::query(session('id'));
+        $data = $query->paginate(40);
+        return parent::viewWithMenu('master.MT10EmpReference', compact('data'));
+    }
+
+    /**
+     * 検索
+     *
+     * @param Request $request
+     * @return void
+     */
+    public function search(MT10EmpRefRequest $request, MT10EmpRefFilter $filter)
+    {
+        $request_data = $request->all();
+        $search_data = $request->input(['filter']);
+        $dept_name = $request->input('deptName');
+        $search_results = $this->EmpRef_repository->search($filter, session('id'));
+        $messages = $this->EmpRef_repository->messages();
+        $Emp = $request->input('filter.txtEmpCd');
+
+        return parent::viewWithMenu('master.MT10EmpReference', compact('request_data','search_data', 'search_results', 'messages'));
+    }
+}

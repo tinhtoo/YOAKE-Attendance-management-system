@@ -1,0 +1,239 @@
+<!-- 所属情報入力 -->
+@extends('menu.main')
+
+@section('title', '所属情報入力')
+
+@section('content')
+    <div id="contents-stage">
+        <table class="BaseContainerStyle1">
+            <tbody>
+                <tr>
+                    <td>
+                        <div id="UpdatePanel1">
+                            <form action="" method="POST" id="form">
+                                @csrf
+                                <table class="InputFieldStyle1">
+                                    <tbody>
+                                        <tr>
+                                            <th>所属番号</th>
+                                            <td>
+                                                <input type="hidden" name="COMPANY_CD"
+                                                    value="{{ $query_data->COMPANY_CD }}">
+                                                <input name="editCompanyCd" tabindex="1" class="imeDisabled"
+                                                    id="editCompanyCd" style="width: 80px;" onfocus="" type="text"
+                                                    maxlength="6"
+                                                    disabled="{{ (!empty($query_data->COMPANY_CD) ? $query_data->COMPANY_CD : $query_data->COMPANY_CD) ? 'disabled' : '' }}"
+                                                    value="{{ $query_data->COMPANY_CD ?? old('editCompanyCd') }}">
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <th>所属先名</th>
+                                            <td>
+                                                <input name="editCompanyName" tabindex="2" class="imeOn"
+                                                    id="editCompanyName" style="width: 370px;" onfocus="" type="text"
+                                                    maxlength="20" autofocus
+                                                    value="{{ $query_data->COMPANY_NAME ?? old('editCompanyName') }}">
+                                                @if ($errors->has('editCompanyName'))
+                                                    <span class="alert-danger">
+                                                        {{ $errors->first('editCompanyName') }}
+                                                    </span>
+                                                @endif
+
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <th>所属先カナ名</th>
+                                            <td>
+                                                <input name="editCompanyKana" tabindex="3" class="imeOn"
+                                                    id="editCompanyKana" style="width: 370px;" onfocus="" type="text"
+                                                    maxlength="20"
+                                                    value="{{ $query_data->COMPANY_KANA ?? old('editCompanyKana') }}">
+                                                @if ($errors->has('editCompanyKana'))
+                                                    <span class="alert-danger">
+                                                        {{ $errors->first('editCompanyKana') }}
+                                                    </span>
+                                                @endif
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <th>所属先略名</th>
+                                            <td>
+                                                <input name="editCompanyAbr" tabindex="4" class="imeOn"
+                                                    id="editCompanyAbr" style="width: 180px;" onfocus="" type="text"
+                                                    maxlength="10"
+                                                    value="{{ $query_data->COMPANY_ABR ?? old('editCompanyAbr') }}">
+                                                @if ($errors->has('editCompanyAbr'))
+                                                    <span class="alert-danger">
+                                                        {{ $errors->first('editCompanyAbr') }}
+                                                    </span>
+                                                @endif
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <th>郵便番号</th>
+                                            <td>
+                                                <input name="txtPostCd" tabindex="5" class="imeDisabled" id="txtPostCd"
+                                                    style="width: 70px;" onfocus="" type="text" maxlength="8"
+                                                    value="{{ $query_data->POST_CD ?? old('txtPostCd') }}">
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <th>住所１</th>
+                                            <td>
+                                                <input name="txtAddress1" tabindex="6" class="imeOn"
+                                                    id="txtAddress1" style="width: 430px;" onfocus="" type="text"
+                                                    maxlength="30"
+                                                    value="{{ $query_data->ADDRESS1 ?? old('txtAddress1') }}">
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <th>住所２</th>
+                                            <td>
+                                                <input name="txtAddress2" tabindex="7" class="imeOn"
+                                                    id="txtAddress2" style="width: 430px;" onfocus="" type="text"
+                                                    maxlength="30"
+                                                    value="{{ $query_data->ADDRESS2 ?? old('txtAddress2') }}">
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <th>住所３</th>
+                                            <td>
+                                                <input name="txtAddress3" tabindex="8" class="imeOn"
+                                                    id="txtAddress3" style="width: 430px;" onfocus="" type="text"
+                                                    maxlength="30"
+                                                    value="{{ $query_data->ADDRESS3 ?? old('txtAddress3') }}">
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <th>電話番号</th>
+                                            <td>
+                                                <input name="txtTel" tabindex="9" class="imeDisabled" id="txtTel"
+                                                    style="width: 120px;" onfocus="" type="text" maxlength="15"
+                                                    value="{{ $query_data->TEL ?? old('txtTel') }}">
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <th>ＦＡＸ番号</th>
+                                            <td>
+                                                <input name="txtFax" tabindex="10" class="imeDisabled" id="txtFax"
+                                                    style="width: 120px;" onfocus="" type="text" maxlength="15"
+                                                    value="{{ $query_data->FAX ?? old('txtFax') }}">
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <th>表示区分</th>
+                                            <td>
+                                                <select name="ddlDispCls" tabindex="11" id="ddlDispCls"
+                                                    style="width: 100px;">
+                                                    @foreach ($dispcls_cd as $dispclsCd)
+                                                        <option value="{{ $dispclsCd->CLS_DETAIL_CD }}"
+                                                            {{ $dispclsCd->CLS_DETAIL_CD == $query_data->DISP_CLS_CD ? 'selected' : '' }}>
+                                                            {{ $dispclsCd->CLS_DETAIL_NAME }}
+                                                        </option>
+                                                    @endforeach
+                                                </select>
+                                            </td>
+                                        </tr>
+
+                                    </tbody>
+                                </table>
+
+                                <div class="line"></div>
+
+                                <div class="ButtonField1">
+                                    <input type="button" class="ButtonStyle1 submit-form" id="btnUpdate" name="btnUpdate"
+                                        onclick="return checkSubmit(this)" tabindex="7" value="更新"
+                                        data-url="{{ route('MT23.update', ['id' => $query_data->COMPANY_CD]) }}">
+
+                                    <input name="btnCancel" tabindex="13" id="btnCancel" onclick="" type="button"
+                                        class="ButtonStyle1 submit-form" value="キャンセル"
+                                        data-url="{{ url('master/MT23CompanyEditor/' . $query_data->COMPANY_CD) }}">
+
+                                    <input type="submit" name="btnDelete" tabindex="14" id="btnDelete"
+                                        class="ButtonStyle1 submit-form" value="削除"
+                                        data-url="{{ route('MT23.delete', $query_data->COMPANY_CD) }}">
+                                </div>
+                            </form>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+@endsection
+@section('script')
+
+    <script>
+        $(document).on('click', '.submit-form', function() {
+            var url = $(this).data('url');
+            $('#form').attr('action', url);
+            $('#form').submit();
+        });
+
+        // 確認ダイアル
+        function checkSubmit() {
+            if (window.confirm("{{ $msg_1005 }}")) {
+                return true;
+            } else {
+                return false;
+            }
+        }
+
+        // ENTER時に送信されないようにする
+        $(function() {
+            $('input').keypress(function(e) {
+                if (e.which == 13) {
+                    return false;
+                }
+            });
+        });
+
+        // 入力不可：'|'
+        $(function() {
+            $('#txtCompanyName').on('keydown', function(e) {
+                var k = e.keyCode;
+                //* '|':code220,は禁則文字 *//
+                if (k == 220) {
+                    return false;
+                }
+            });
+        });
+
+        // 入力可能文字：数値、ハイフン
+        $(function() {
+            $('#txtPostCd').on('keydown', function(e) {
+                var k = e.keyCode;
+                //* 0～9:code48-57, テンキ―0～9:code96-105, ハイフン:code189, テンキー:code109, backspace:code8, delete:code46, →:code39, ←:code37,Tab:code9,Enter:code13,insert:45 以外は禁則文字 *//
+                if (!((k >= 48 && k <= 57) || (k >= 96 && k <= 105) || k == 189 || k == 109 || k == 8 ||
+                        k == 46 || k == 39 || k == 37 || k == 9 || k == 13 || k == 45)) {
+                    return false;
+                }
+            });
+        });
+
+        $(function() {
+            $('#txtTel').on('keydown', function(e) {
+                var k = e.keyCode;
+                // 0～9:code48-57, テンキ―0～9:code96-105, ハイフン:code189, テンキー:code109, backspace:code8, delete:code46, →:code39, ←:code37,Tab:code9,Enter:code13,insert:45 以外は禁則文字 *//
+                if (!((k >= 48 && k <= 57) || (k >= 96 && k <= 105) || k == 189 || k == 109 || k == 8 ||
+                        k == 46 || k == 39 || k == 37 || k == 9 || k == 13 || k == 45 || k == 56 || k == 57
+                    )) {
+                    return false;
+                }
+            });
+        });
+
+        $(function() {
+            $('#txtFax').on('keydown', function(e) {
+                var k = e.keyCode;
+                // 0～9:code48-57, テンキ―0～9:code96-105, ハイフン:code189, テンキー:code109, backspace:code8, delete:code46, →:code39, ←:code37,Tab:code9,Enter:code13,insert:45 以外は禁則文字 *//
+                if (!((k >= 48 && k <= 57) || (k >= 96 && k <= 105) || k == 189 || k == 109 || k == 8 ||
+                        k == 46 || k == 39 || k == 37 || k == 9 || k == 13 || k == 45 || k == 56 || k == 57
+                    )) {
+                    return false;
+                }
+            });
+        });
+    </script>
+
+@endsection

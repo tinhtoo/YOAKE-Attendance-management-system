@@ -1,0 +1,43 @@
+<?php
+
+namespace App\Repositories;
+
+use App\Models\MT95Term;
+
+class MT95TermRepository
+{
+    /**
+     * 全端末情報を取得
+     *
+     * @return
+     */
+    public function getList()
+    {
+        return MT95Term::orderBy('TERM_NO')
+                    ->get();
+    }
+
+    /**
+     * 端末の存在チェック
+     *
+     * @param int $term_no
+     * @return boolean exist:true
+     */
+    public function termExist($term_no)
+    {
+        return MT95Term::where($term_no)
+                    ->exists();
+    }
+
+    /**
+     * 端末を取得
+     *
+     * @param int $term_no
+     * @return object
+     */
+    public function getTerm($term_no)
+    {
+        return MT95Term::where($term_no)
+                    ->first();
+    }
+}

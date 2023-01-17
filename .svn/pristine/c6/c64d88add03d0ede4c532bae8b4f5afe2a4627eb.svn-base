@@ -1,0 +1,83 @@
+<!-- 社員番号一括変換 -->
+@extends('menu.main')
+
+@section('title', '社員番号一括変換 ')
+
+@section('content')
+    <div id="contents-stage">
+        <table class="BaseContainerStyle1">
+            <tbody>
+                <tr>
+                    <td>
+                        <div id="UpdatePanel1">
+                            <form action="{{ route('MT10EmpCnvert.update') }}" method="post"
+                                onsubmit="return checkSubmit()">
+                                @csrf
+                                <table class="InputFieldStyle1">
+                                    <tbody>
+                                        <tr>
+                                            <th>旧社員番号</th>
+                                            <td>
+                                                <input name="txtEmpCd" class="imeDisabled" id="txtEmpCd"
+                                                    style="width: 80px;" type="text" maxlength="10" value="{{ old('txtEmpCd') }}" autofocus>
+                                                <input name="btnSearchEmpCd" class="SearchButton" id="btnSearchEmpCd"
+                                                    type="button" value="?" onclick="SearchEmp();return false">
+                                                <input name="empName" class="OutlineLabel" type="text"
+                                                    style="width: 200px; height: 17px; display: inline-block;" id="empName"
+                                                    disabled="disabled">
+                                                @if ($errors->has('txtEmpCd'))
+                                                    <span class="alert-danger">
+                                                        {{ $errors->first('txtEmpCd') }}
+                                                    </span>
+                                                @endif
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <th>新社員番号</th>
+                                            <td>
+                                                <input name="txtNewEmpCd" tabindex="3" class="imeDisabled"
+                                                    id="txtNewEmpCd" style="width: 80px;" type="text" maxlength="10">
+                                                @if ($errors->has('txtNewEmpCd'))
+                                                    <span class="alert-danger">
+                                                        {{ $errors->first('txtNewEmpCd') }}
+                                                    </span>
+                                                @endif
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                                <div class="line"></div>
+                                <p class="ButtonField1">
+                                    <input name="btnUpdate" tabindex="4" id="btnUpdate" onclick="" type="submit" value="更新">
+                                    <input name="btnCancel" tabindex="13" id="btnCancel"
+                                        onclick="location.href='MT10EmpCnvert'" type="button" value="キャンセル">
+                                </p>
+                            </form>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+    </div>
+@endsection
+@section('script')
+
+    <script>
+        //キャセンル、削除処理submit-form
+        $(document).on('click', '.submit-form', function() {
+            var url = $(this).data('url');
+            $('#form').attr('action', url);
+            $('#form').submit();
+        });
+
+        function checkSubmit() {
+            $checked = confirm("{{ $msg_1005 }}")
+            if ($checked == true) {
+                return true;
+            } else {
+                return false;
+            }
+        }
+    </script>
+@endsection

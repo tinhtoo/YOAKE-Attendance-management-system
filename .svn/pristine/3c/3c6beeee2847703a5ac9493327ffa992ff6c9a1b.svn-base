@@ -1,0 +1,128 @@
+<?php
+
+namespace App\Http\Controllers\Work_Time;
+
+use App\Models\TR01Work;
+use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
+
+use App\Http\Requests\WorkTimeRequest;
+use App\Http\Requests\WorkTimeUpdateRequest;
+use App\Repositories\Work_Time\WorkTimeRepository;
+
+class WorkTimeEditorController extends Controller
+{
+    /**
+     * Work_Timeリポジトリの実装
+     *
+     * @var WorkTimeRepository
+     */
+    
+    protected $wtime_Repository;
+
+    /**
+     * 新しいコントローラインスタンスの生成
+     *
+     * @param  UserRepository  $wtime_Repository
+     * @return void
+     */
+    public function __construct(WorkTimeRepository $wtime_Repository)
+    {
+        $this->wtime_Repository = $wtime_Repository;
+    }
+
+    /**
+     * 指定画面の表示
+     *
+     * @param  int  $request
+     * @return view
+     */
+    public function worktimeeditor(Request $request)
+    {
+        return view('work_time.worktimeeditor');   
+    }
+
+    /**
+     * 指定ユーザーのプロファイル表示
+     *
+     * @param  int  $request
+     * @return Response
+     */
+    public function search(WorkTimeRequest $request)
+    {
+
+
+        $search_data = $request->all();
+        $results = $this->wtime_Repository->select($request);
+        $messages = $this->wtime_Repository->messages();
+        $workptn_names = $this->wtime_Repository->workptns();
+        $reason_names = $this->wtime_Repository->reasons();
+
+        return view('work_time.WorkTimeEditor', compact('results', 'messages', 'workptn_names', 'reason_names', 'search_data'));
+        
+    }
+
+    public function edit(WorkTimeRequest $request)
+    {
+        $search_data = $request->all();
+        $results = $this->wtime_Repository->select($request);
+        $messages = $this->wtime_Repository->messages();
+        $workptn_names = $this->wtime_Repository->workptns();
+        $reason_names = $this->wtime_Repository->reasons();
+        
+        return view('work_time.WorkTimeEditor', compact('results', 'messages', 'workptn_names', 'reason_names', 'search_data'));
+     
+    }
+
+    public function update(WorkTimeUpdateRequest $request)
+    {
+        $data = $request->all();
+        
+        if (!empty($data['worktime'])) {
+            foreach ($data['worktime'] as $worktime) {
+                $worktime = getTimeToHhMm($worktime, 'OFC_TIME');
+                $worktime = getTimeToHhMm($worktime, 'LEV_TIME');
+                $worktime = getTimeToHhMm($worktime, 'OUT1_TIME');
+                $worktime = getTimeToHhMm($worktime, 'IN1_TIME');
+                $worktime = getTimeToHhMm($worktime, 'OUT2_TIME');
+                $worktime = getTimeToHhMm($worktime, 'IN2_TIME');
+                $worktime = getTimeToHhMm($worktime, 'WORK_TIME');
+                $worktime = getTimeToHhMm($worktime, 'TARD_TIME');
+                $worktime = getTimeToHhMm($worktime, 'LEAVE_TIME');
+                $worktime = getTimeToHhMm($worktime, 'OUT_TIME');
+                $worktime = getTimeToHhMm($worktime, 'OVTM1_TIME');
+                $worktime = getTimeToHhMm($worktime, 'OVTM2_TIME');
+                $worktime = getTimeToHhMm($worktime, 'OVTM3_TIME');
+                $worktime = getTimeToHhMm($worktime, 'OVTM4_TIME');
+                $worktime = getTimeToHhMm($worktime, 'OVTM5_TIME');
+                $worktime = getTimeToHhMm($worktime, 'OVTM6_TIME');
+                $worktime = getTimeToHhMm($worktime, 'EXT1_TIME');
+                $worktime = getTimeToHhMm($worktime, 'EXT2_TIME');
+                $worktime = getTimeToHhMm($worktime, 'EXT3_TIME');
+                $worktime = getTimeToHhMm($worktime, 'RSV1_TIME');
+
+                TR01Work::where('EMP_CD', $data['txtEmpCd'])
+                    ->where('CALD_DATE', $worktime['CALD_DATE'])
+                    ->update($worktime);
+                
+            }
+            return redirect('/work_time/WorkTimeEditor');
+        }
+    }    
+
+    /**
+     * 指定ユーザーのプロファイルをキャンセル処理
+     *
+     * @param  int  $request
+     * @return Response
+     */
+    public function cancel(Request $request)
+    {   
+        return redirect()->route('worktimeeditor')->withInput($request->only([
+            'ddlTargetYear',
+            'ddlTargetMonth'
+        ]));
+    }
+
+    
+}

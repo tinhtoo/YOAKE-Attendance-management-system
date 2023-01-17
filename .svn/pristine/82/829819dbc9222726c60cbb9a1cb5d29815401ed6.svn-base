@@ -1,0 +1,63 @@
+<?php
+
+namespace App\Repositories\Master;
+
+use App\Filters\MT14PGAuthEditorFilter;
+use App\Http\Requests\MT14PgAuthEditorRequest;
+use Illuminate\Http\Request;
+
+use App\Models\MT10Emp;
+use App\Models\MT91ClsDetail;
+use App\Models\MT99Msg;
+use App\Models\MT14PgAuth;
+use App\Models\MT93Pg;
+use Illuminate\Support\Facades\DB;
+
+use Illuminate\Foundation\Testing\DatabaseTransactions;
+
+
+class MT14AuthRefRepository extends MT14PgAuth
+{
+    public function edit($id)
+    {
+        $pg_auth_cd = MT14PgAuth::where('PG_AUTH_CD', $id)->first();
+        return $pg_auth_cd;
+    }
+
+    public function pg($id)
+    {
+        return DB::table('MT93_PG')
+                     ->leftJoin('MT14_PG_AUTH', function ($join) use($id) {
+                                         $join->on('MT14_PG_AUTH.PG_CD', '=', 'MT93_PG.PG_CD')
+                                             ->where('MT14_PG_AUTH.PG_AUTH_CD', '=', $id);
+                                          })
+                     ->select('MT14_PG_AUTH.PG_AUTH_CD',
+                              'MT14_PG_AUTH.PG_AUTH_NAME',
+                              'MT93_PG.PG_CD',
+                              'MT93_PG.PG_NAME',
+                              'MT93_PG.MCLS_NAME')
+                     ->get();
+    }
+
+    public function empExist($pg_auth_cd)
+    {
+        return DB::table('MT10_EMP')
+                    ->select('MT10_EMP.PG_AUTH_CD')
+                    ->where('PG_AUTH_CD', '=', $pg_auth_cd)
+                    ->exists();
+    }
+
+    public function upsertEmp($record)
+    {
+        return DB::table($this->table)
+                ->upsert($record, $this->primaryKey, $this->fillable);
+    }
+
+    public function deleteAuth($record)
+    {
+            return DB::table('MT14_PG_AUTH')
+                ->where('PG_AUTH_CD' ,$record)
+                ->delete();
+    }
+
+}

@@ -1,0 +1,42 @@
+$(function() {
+    // 社員検索
+    var searchedEmpCd = undefined;
+    var searchEmpName = function() {
+        // レスポンスの出力先が無い場合、何もせず終了
+        if (!$('#empName').length || !$('#deptName').length || !$('#EmpCdError').length) {
+            return false;
+        }
+        var empCd = $('#txtEmpCd').val();
+        // 変更なしの場合、再検索しない
+        if (searchedEmpCd && searchedEmpCd == empCd) {
+            return false;
+        }
+        $('#EmpCdError').empty();
+        $('#empName').prop("disabled", false);
+        $('#deptName').prop("disabled", false);
+        $('#empName').val('');
+        $('#deptName').val('');
+        $('#empName').prop("disabled", true);
+        $('#deptName').prop("disabled", true);
+
+        // 部門コード未入力の場合、初期化のみ検索なし
+        if (!empCd) {
+            return false;
+        }
+        $.get('/search/MT10EmpSearch/' + empCd, function(data) {
+            searchedEmpCd = empCd;
+            if (data.empName != null && data.deptName != null) {
+                $('#empName').prop("disabled", false);
+                $('#deptName').prop("disabled", false);
+                $('#empName').val(data.empName);
+                $('#deptName').val(data.deptName);
+                $('#empName').prop("disabled", true);
+                $('#deptName').prop("disabled", true);
+            } else {
+                $('#EmpCdError').append(data.errorMessage);
+            }
+        });
+    };
+    searchEmpName();
+    $('#txtEmpCd').focusout(searchEmpName);
+});

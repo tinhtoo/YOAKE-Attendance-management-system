@@ -1,0 +1,21 @@
+<?php
+
+namespace App\Http\Controllers\Master;
+
+use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
+use App\Models\MT14PgAuth;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Pagination\Paginator;
+
+class MT14PGAuthReferenceController extends Controller
+{
+        public function index(){
+               // $all = DB::select('select * from MT14_PG_AUTH', [1]);
+                $all = DB::table('MT14_PG_AUTH')->get();
+                $all = MT14PgAuth::orderBy('PG_AUTH_CD', 'desc')->get();
+                $all = MT14PgAuth::paginate(20);
+                Paginator::useBootstrap();
+                return view('master.MT14PGAuthReference',compact('all'));
+        }
+}

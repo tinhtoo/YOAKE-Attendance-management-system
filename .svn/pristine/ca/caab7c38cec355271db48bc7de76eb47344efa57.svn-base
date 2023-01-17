@@ -1,0 +1,84 @@
+<!-- シフトパターン情報入力(新規シフトパタン登録)画面 -->
+@extends('menu.main')
+@section('title', 'シフトパターン情報入力')
+@section('content')
+    <div id="contents-stage">
+        <table class="BaseContainerStyle1">
+            <tbody>
+                <tr>
+                    <td>
+
+                        <div id="ctl00_cphContentsArea_UpdatePanel1">
+
+
+                            <table class="InputFieldStyle1">
+                                <tbody>
+                                    <tr>
+                                        <th>パターンコード</th>
+                                        <td>
+                                            <input name="ctl00$cphContentsArea$txtShiftPtnCd" tabindex="1"
+                                                class="OutlineLabel" id="ctl00_cphContentsArea_txtShiftPtnCd"
+                                                style="width: 35px;" onfocus="this.select();" type="text" maxlength="3">
+
+                                            <span id="ctl00_cphContentsArea_cvShiftPtnCd"
+                                                style="color: red; display: none;">ErrorMessage</span>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th>パターン名</th>
+                                        <td>
+                                            <input name="ctl00$cphContentsArea$txtShiftPtnName" tabindex="2" class="OutlineLabel"
+                                                id="ctl00_cphContentsArea_txtShiftPtnName" style="width: 300px;"
+                                                onfocus="this.select();" type="text" maxlength="20">
+
+                                            <span id="ctl00_cphContentsArea_cvShiftPtnName"
+                                                style="color: red; display: none;">ErrorMessage</span>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+
+                            <div class="line"></div>
+
+                            <input name="ctl00$cphContentsArea$btnAddNewRow" tabindex="3"
+                                id="ctl00_cphContentsArea_btnAddNewRow"
+                                onclick="javascript:__doPostBack('ctl00$cphContentsArea$btnAddNewRow','')" type="button"
+                                value="新規行追加">
+                            <span id="ctl00_cphContentsArea_cvShiftPtn"
+                                style="color: red; display: none;">ErrorMessage</span>
+
+
+                            <div class="GridViewStyle1 mg10">
+                                <div class="GridViewPanelStyle5" id="ctl00_cphContentsArea_pnlShiftPtn"
+                                    style="width: 450px; height: 482px;">
+
+                                    <div>
+
+                                    </div>
+
+                                </div>
+                            </div>
+
+                            <div class="line"></div>
+
+                            <p class="ButtonField1">
+                                <input name="ctl00$cphContentsArea$btnUpdate" tabindex="6"
+                                    id="ctl00_cphContentsArea_btnUpdate"
+                                    onclick="if(confirm('更新します。よろしいですか?') ==  false){ return false;};WebForm_DoPostBackWithOptions(new WebForm_PostBackOptions(&quot;ctl00$cphContentsArea$btnUpdate&quot;, &quot;&quot;, true, &quot;Update&quot;, &quot;&quot;, false, true))"
+                                    type="button" value="更新">
+                                <input name="ctl00$cphContentsArea$btnCancel" tabindex="7"
+                                    id="ctl00_cphContentsArea_btnCancel"
+                                    onclick="javascript:__doPostBack('ctl00$cphContentsArea$btnCancel','')" type="button"
+                                    value="キャンセル">
+                                <input name="ctl00$cphContentsArea$btnDelete" tabindex="8" disabled="disabled"
+                                    id="ctl00_cphContentsArea_btnDelete" type="button" value="削除">
+                            </p>
+
+                        </div>
+
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+@endsection

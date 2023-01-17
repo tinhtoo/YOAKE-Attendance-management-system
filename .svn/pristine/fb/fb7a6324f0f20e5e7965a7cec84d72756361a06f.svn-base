@@ -1,0 +1,57 @@
+<?php
+
+namespace App\Repositories;
+
+use App\Models\TR01Work;
+
+use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\DB;
+
+
+class TR01WorkRepository extends TR01Work
+{
+    public function getWithEmpAndCaldYearMonth($emp_cd, $cald_year, $cald_month)
+    {
+        return TR01Work::where('EMP_CD', $emp_cd)
+                    ->where('CALD_YEAR', $cald_year)
+                    ->where('CALD_MONTH', (int)$cald_month)
+                    ->get();
+    }
+
+    public function getWithPrimaryKey($emp_cd, $cald_date)
+    {
+        return TR01Work::where('EMP_CD', $emp_cd)
+                    ->where('CALD_DATE', $cald_date)
+                    ->first();
+    }
+
+    public function existWithEmpAndCaldYearMonth($emp_cd, $cald_year, $cald_month)
+    {
+        return TR01Work::where('EMP_CD', $emp_cd)
+                    ->where('CALD_YEAR', $cald_year)
+                    ->where('CALD_MONTH', (int)$cald_month)
+                    ->exists();
+    }
+
+    public function insertWork($record)
+    {
+        return TR01Work::insert($record);
+    }
+
+    public function updateWithKey($emp_cd, $cald_date, $udpate_data)
+    {
+        return TR01Work::where('EMP_CD', $emp_cd)
+                        ->where('CALD_DATE', $cald_date)
+                        ->update($udpate_data);
+    }
+
+    public function updateWithKeyAndNotFix($emp_cd, $cald_date, $udpate_data)
+    {
+        return TR01Work::where('EMP_CD', $emp_cd)
+                        ->where('CALD_DATE', $cald_date)
+                        ->where('UPD_CLS_CD', '00')
+                        ->where('FIX_CLS_CD', '00')
+                        ->update($udpate_data);
+    }
+}

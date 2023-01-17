@@ -1,0 +1,98 @@
+<?php
+
+namespace App\Repositories\Work_Time;
+
+use Illuminate\Http\Request;
+use App\Models\MT08Holiday;
+use App\Models\MT10Emp;
+use App\Models\TR01Work;
+use App\Models\MT99Msg;
+use App\Models\TR04WorkTimeFix;
+use App\Models\MT23Company;
+use Illuminate\Support\Facades\DB;
+
+class EmpWorkStatusReferenceRepository
+{
+    //** 出退勤照会 処理 */
+    /**
+     * ヘッダーの検索条件表示
+     * 「部門コード、部門名、社員番号、社員名、勤務体系、事由、出勤打刻場所、出勤、退出、退出打刻場所 データ取得」
+     * @return EmpWorkStatusReferenceController
+     */
+    public function empInput(Request $request)
+    {
+        $inputEmpData = $request->all();
+
+        $empWorkTimeResults = TR01Work::select(
+            'TR01_WORK.*',
+            'MT05_WORKPTN.WORKPTN_NAME',
+            'MT05_WORKPTN.WORK_CLS_CD',
+            'MT09_REASON.REASON_NAME',
+            'MT09_REASON.REASON_PTN_CD',
+            'MT08_HOLIDAY.HLD_DATE'
+        )
+            ->join('MT05_WORKPTN', 'TR01_WORK.WORKPTN_CD', 'MT05_WORKPTN.WORKPTN_CD')
+            ->join('MT09_REASON', 'TR01_WORK.REASON_CD', 'MT09_REASON.REASON_CD')
+            ->join('MT10_EMP', 'TR01_WORK.EMP_CD', 'MT10_EMP.EMP_CD')
+            ->leftjoin('MT08_HOLIDAY', 'TR01_WORK.CALD_MONTH', 'MT08_HOLIDAY.HLD_MONTH')
+            ->where('CALD_YEAR', $inputEmpData['ddlTargetYear'])
+            ->where('CALD_MONTH', $inputEmpData['ddlTargetMonth'])
+            ->where('TR01_WORK.EMP_CD', $inputEmpData['txtEmpCd'])
+            ->where('MT10_EMP.REG_CLS_CD', '=', '00')
+            ->selectRaw("Case When TR01_WORK.OFC_TIME_HH Is Null THEN ''
+                        Else Cast(TR01_WORK.OFC_TIME_HH As VarChar) + ':' + RIGHT('00' + Cast(TR01_WORK.OFC_TIME_MI As VarChar), 2)
+                    End As OFC_TIME")
+            ->selectRaw("Case When TR01_WORK.LEV_TIME_HH Is Null Then ''
+                        Else Cast(TR01_WORK.LEV_TIME_HH As VarChar) + ':' + RIGHT('00' + Cast(TR01_WORK.LEV_TIME_MI As VarChar), 2)
+                    End As LEV_TIME")
+            ->selectRaw("Case When TR01_WORK.OUT1_TIME_HH Is Null Then ''
+                        Else Cast(TR01_WORK.OUT1_TIME_HH As VarChar) + ':' + RIGHT('00' + Cast(TR01_WORK.OUT1_TIME_MI As VarChar), 2)
+                    End As OUT1_TIME")
+            ->selectRaw("Case When TR01_WORK.IN1_TIME_HH Is Null Then ''
+                        Else Cast(TR01_WORK.IN1_TIME_HH As VarChar) + ':' + RIGHT('00' + Cast(TR01_WORK.IN1_TIME_MI As VarChar), 2)
+                    End As IN1_TIME")
+            ->selectRaw("Case When TR01_WORK.OUT2_TIME_HH Is Null Then ''
+                        Else Cast(TR01_WORK.OUT2_TIME_HH As VarChar) + ':' + RIGHT('00' + Cast(TR01_WORK.OUT2_TIME_MI As VarChar), 2)
+                    End As OUT2_TIME")
+            ->selectRaw("Case When TR01_WORK.IN2_TIME_HH Is Null Then ''
+                        Else Cast(TR01_WORK.IN2_TIME_HH As VarChar) + ':' + RIGHT('00' + Cast(TR01_WORK.IN2_TIME_MI As VarChar), 2)
+                    End As IN2_TIME")
+            ->selectRaw("Case When TR01_WORK.WORK_TIME_HH + TR01_WORK.WORK_TIME_MI = 0 Then ''
+                        Else Cast(TR01_WORK.WORK_TIME_HH  As VarChar) + ':' + RIGHT('00' + Cast(TR01_WORK.WORK_TIME_MI As VarChar), 2)
+                    End AS WORK_TIME")
+            ->selectRaw("Case When TR01_WORK.TARD_TIME_HH + TR01_WORK.TARD_TIME_MI = 0 Then ''
+                        Else Cast(TR01_WORK.TARD_TIME_HH  As VarChar) + ':' + RIGHT('00' + Cast(TR01_WORK.TARD_TIME_MI As VarChar), 2)
+                    End AS TARD_TIME")
+            ->selectRaw("Case When TR01_WORK.LEAVE_TIME_HH + TR01_WORK.LEAVE_TIME_MI = 0 Then ''
+                        Else Cast(TR01_WORK.LEAVE_TIME_HH As VarChar) + ':' + RIGHT('00' + Cast(TR01_WORK.LEAVE_TIME_MI As VarChar), 2)
+                    End AS LEAVE_TIME")
+            ->selectRaw("Case When TR01_WORK.OUT_TIME_HH + TR01_WORK.OUT_TIME_MI = 0 Then ''
+                        Else Cast(TR01_WORK.OUT_TIME_HH As VarChar) + ':' + RIGHT('00' + Cast(TR01_WORK.OUT_TIME_MI As VarChar), 2)
+                    End AS OUT_TIME")
+            ->get();
+        return $empWorkTimeResults;
+    }
+
+    //** 該当データ無し時エラーメッセージ表示 */
+    /**カレンダー情報が作成されていません。
+     * @return $errMsg_4029 ->WorkTimeReferecneController
+     */
+    public function messages()
+    {
+        $errMsg_4029 = MT99Msg::where('MSG_NO', '4029')->pluck('MSG_CONT')->first();
+        return $errMsg_4029;
+    }
+
+    //** 開始、終了所属表示 */
+    /**
+     * A派遣、B派遣、C派遣など
+     * @return $errMsg_4029 ->WorkTimeReferecneController
+     */
+    public function companyName()
+    {
+        $company = MT23Company::select('COMPANY_ABR')->orderBy('COMPANY_CD','asc')->get();
+        return $company;
+    }
+
+
+}

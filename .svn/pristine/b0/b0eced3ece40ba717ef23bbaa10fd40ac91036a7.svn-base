@@ -1,0 +1,108 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
+use Illuminate\Foundation\Bus\DispatchesJobs;
+use Illuminate\Foundation\Validation\ValidatesRequests;
+use Illuminate\Routing\Controller as BaseController;
+
+use App\Repositories\MT93PgRepository;
+
+define('WITH_MENU_VIEW_LIST', [
+    'menu.main' => ['mcls' => '', 'pg' => '', 'default' => ''],
+
+    'master.EmpExport' => ['mcls' => '00', 'pg' => '000020'],
+    'master.EmpImport' => ['mcls' => '00', 'pg' => '000021'],
+    'master.MT01ControlEditor' => ['mcls' => '00', 'pg' => '000011'],
+    'master.MT02CalendarPtnEditor' => ['mcls' => '00', 'pg' => '000008'],
+    'master.MT02CalendarPtnReference' => ['mcls' => '00', 'pg' => '000008'],
+    'master.MT05WorkPtnEditor' => ['mcls' => '00', 'pg' => '000006'],
+    'master.MT05WorkPtnReference' => ['mcls' => '00', 'pg' => '000006'],
+    'master.MT06OverTmLmtEditor' => ['mcls' => '00', 'pg' => '000010'],
+    'master.MT07FractionEditor' => ['mcls' => '00', 'pg' => '000007'],
+    'master.MT08HolidayEditor' => ['mcls' => '00', 'pg' => '000012'],
+    'master.MT10EmpCnvert' => ['mcls' => '00', 'pg' => '000019'],
+    'master.MT10EmpEditor' => ['mcls' => '00', 'pg' => '000001'],
+    'master.MT10EmpReference' => ['mcls' => '00', 'pg' => '000001'],
+    'master.MT11LoginEditor' => ['mcls' => '00', 'pg' => '000002'],
+    'master.MT11LoginReference' => ['mcls' => '00', 'pg' => '000002'],
+    'master.MT11PasswordEditor' => ['mcls' => '00', 'pg' => '000014'],
+    'master.MT12DeptEditor' => ['mcls' => '00', 'pg' => '000004'],
+    'master.MT12DeptReference' => ['mcls' => '00', 'pg' => '000004'],
+    'master.MT12OrgEditor' => ['mcls' => '00', 'pg' => '000018'],
+    'master.MT12OrgReference' => ['mcls' => '00', 'pg' => '000018'],
+    'master.MT13DeptAuthEditor' => ['mcls' => '00', 'pg' => '000005'],
+    'master.MT13DeptAuthReference' => ['mcls' => '00', 'pg' => '000005'],
+    'master.MT14PGAuthEditor' => ['mcls' => '00', 'pg' => '000003'],
+    'master.MT14PGAuthReference' => ['mcls' => '00', 'pg' => '000003'],
+    'master.MT23CompanyEditor' => ['mcls' => '00', 'pg' => '000022'],
+    'master.MT23CompanyReference' => ['mcls' => '00', 'pg' => '000022'],
+    'master.MT23CompanyRegister' => ['mcls' => '00', 'pg' => '000022'],
+
+    'work_time.EmpWorkStatusReference' => ['mcls' => '01', 'pg' => '010004'],
+    'work_time.EmpWorkTimeReference' => ['mcls' => '01', 'pg' => '010003'],
+    'work_time.WorkTimeDeptEditor' => ['mcls' => '01', 'pg' => '010005'],
+    'work_time.WorkTimeDeptEditorEdit' => ['mcls' => '01', 'pg' => '010005'],
+    'work_time.WorkTimeEditor' => ['mcls' => '01', 'pg' => '010001'],
+    'work_time.WorkTimeEditorEdit' => ['mcls' => '01', 'pg' => '010001'],
+    'work_time.WorkTimeReference' => ['mcls' => '01', 'pg' => '010002'],
+
+    'form_print.WorkPlanPrint' => ['mcls' => '02', 'pg' => '020001'],
+    'form_print.WorkTimePrint' => ['mcls' => '02', 'pg' => '020002'],
+    'form_print.OvertimeAplPrint' => ['mcls' => '02', 'pg' => '020005'],
+    'form_print.ReasonWorkPtnPrint' => ['mcls' => '02', 'pg' => '020004'],
+    'form_print.TimeStampPrint' => ['mcls' => '02', 'pg' => '020003'],
+
+    'shift.MonthShiftEditor' => ['mcls' => '03', 'pg' => '030003'],
+    'shift.MonthShiftEmpEditor' => ['mcls' => '03', 'pg' => '030004'],
+    'shift.MT04ShiftPtnEditor' => ['mcls' => '03', 'pg' => '030001'],
+    'shift.MT04ShiftPtnReference' => ['mcls' => '03', 'pg' => '030001'],
+
+    'mng_oprt.WorkTimeClear' => ['mcls' => '04', 'pg' => '040007'],
+    'mng_oprt.WorkTimeConvert' => ['mcls' => '04', 'pg' => '040003'],
+    'mng_oprt.WorkTimeExport' => ['mcls' => '04', 'pg' => '042000'],
+    'mng_oprt.WorkTimeFix' => ['mcls' => '04', 'pg' => '040006'],
+    'mng_oprt.WorkTimeFixReference' => ['mcls' => '04', 'pg' => '040009'],
+    'mng_oprt.CalendarClear' => ['mcls' => '04', 'pg' => '040011'],
+    'mng_oprt.MT03CalendarEditor' => ['mcls' => '04', 'pg' => '040001'],
+    'mng_oprt.ShiftCalendarCarryOver' => ['mcls' => '04', 'pg' => '040002'],
+]);
+
+class Controller extends BaseController
+{
+    use AuthorizesRequests, DispatchesJobs, ValidatesRequests;
+
+    private $pg_repository = null;
+    /**
+     * コンストラクタ
+     * リポジトリのインスタンスを生成、格納
+     *
+     * @param  UserRepository  $EmpRef_repository
+     * @return void
+     */
+    public function __construct(MT93PgRepository $pg_repository)
+    {
+        $this->pg_repository = $pg_repository;
+    }
+
+    protected function viewWithMenu($view, $data = []) {
+
+        // 画面存在チェック
+        if (!key_exists($view, WITH_MENU_VIEW_LIST)) {
+            abort(404, 'Not Found');
+        }
+
+        $data['menu_list'] = $this->pg_repository->getMenu(session('id'));
+
+        if (!key_exists('default', WITH_MENU_VIEW_LIST[$view])
+            && (!key_exists(WITH_MENU_VIEW_LIST[$view]['mcls'], $data['menu_list'])
+                || !key_exists(WITH_MENU_VIEW_LIST[$view]['pg'], $data['menu_list'][WITH_MENU_VIEW_LIST[$view]['mcls']]))) {
+            abort(403, 'Forbidden');
+        }
+
+        $data['this_pg_cd'] = WITH_MENU_VIEW_LIST[$view];
+
+        return view($view, $data);
+    }
+}

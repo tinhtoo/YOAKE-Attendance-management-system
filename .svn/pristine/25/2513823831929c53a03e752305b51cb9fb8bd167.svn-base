@@ -1,0 +1,161 @@
+<?php
+
+namespace App\Repositories\Master;
+
+use Illuminate\Http\Request;
+
+use App\Models\MT02CalendarPtn;
+use App\Models\MT10Emp;
+use App\Models\MT13DeptAuth;
+use App\Models\MT22ClosingDate;
+use App\Models\MT23Company;
+use App\Models\MT91ClsDetail;
+use App\Models\MT92DescDetail;
+use App\Models\TR01Work;
+
+use App\Filters\MT10EmpRefFilter;
+use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Illuminate\Support\Facades\DB;
+
+
+class MT10EmpRefRepository extends MT10Emp
+{
+    public function search(MT10EmpRefFilter $filter, $loginId)
+    {
+        $query = MT10Emp::filter($filter)
+            ->orderBy('EMP_CD');
+        
+        $dept_cd = MT13DeptAuth::join('MT10_EMP', 'MT13_DEPT_AUTH.DEPT_AUTH_CD', '=', 'MT10_EMP.DEPT_AUTH_CD')
+                    ->join('MT11_LOGIN', 'MT10_EMP.EMP_CD', '=', 'MT11_LOGIN.EMP_CD')
+                    ->wHERE('MT11_LOGIN.LOGIN_ID', '=', $loginId)
+                    ->pluck('MT13_DEPT_AUTH.DEPT_CD')->all();
+
+        $query->whereIn('DEPT_CD', $dept_cd);
+
+        $head_filter = null;
+        if (isset($_GET['button_A'])) {
+            $head_filter = '[ァ-オ]';           
+        } else if (isset($_GET['button_KA'])) {
+            $head_filter = '[カ-ゴ]';           
+        } else if (isset($_GET['button_SA'])) {
+            $head_filter = '[サ-ゾ]';           
+        } else if (isset($_GET['button_TA'])) {
+            $head_filter = '[タ-ド]';           
+        } else if (isset($_GET['button_NA'])) {
+            $head_filter = '[ナ-ノ]';           
+        } else if (isset($_GET['button_HA'])) {
+            $head_filter = '[ハ-ポ]';           
+        } else if (isset($_GET['button_MA'])) {
+            $head_filter = '[マ-モ]';           
+        } else if (isset($_GET['button_YA'])) {
+            $head_filter = '[ャ-ヨ]';           
+        } else if (isset($_GET['button_RA'])) {
+            $head_filter = '[ラ-ロ]';           
+        } else if (isset($_GET['button_WA'])) {
+            $head_filter = '[ヮ-ン]';           
+        } else if (isset($_GET['button_EN'])) {
+            $head_filter = '[a-zA-Z]';           
+        }
+        if ($head_filter != null) {
+            $query->where('EMP_KANA', 'like', "{$head_filter}%");
+        }
+        $query_results = $query->paginate(40);
+
+        return $query_results;
+    }        
+
+    public function edit($id)
+    {
+        return MT10Emp::where('EMP_CD', $id)->first();
+    }
+
+    public function getRegClsCd()
+    {
+        return MT91ClsDetail::select('CLS_DETAIL_CD', 'CLS_DETAIL_NAME')
+                    ->where('CLS_CD', '02')
+                    ->orderBy('CLS_DETAIL_CD')
+                    ->get();
+    }
+    
+    public function getSexClsCd()
+    {
+        return MT91ClsDetail::select('CLS_DETAIL_CD', 'CLS_DETAIL_NAME')
+                    ->where('CLS_CD', '03')
+                    ->orderBy('CLS_DETAIL_CD')
+                    ->get();
+    }
+    
+    public function getEmpCsl1Cd()
+    {
+        return MT92DescDetail::select('DESC_DETAIL_CD', 'DESC_DETAIL_NAME')
+                    ->where('CLS_CD', '50')
+                    ->orderBy('DESC_DETAIL_CD')
+                    ->get();
+    }
+    
+    public function getEmpCsl2Cd()
+    {
+        return MT92DescDetail::select('DESC_DETAIL_CD', 'DESC_DETAIL_NAME')
+                    ->where('CLS_CD', '51')
+                    ->orderBy('DESC_DETAIL_CD')
+                    ->get();
+    }
+    
+    public function getCalendarCd()
+    {
+        return MT02CalendarPtn::select('CALENDAR_CD', 'CALENDAR_NAME')
+                    ->WHERE('CALENDAR_CD', '<>', '999')
+                    ->orderBy('CALENDAR_CD')
+                    ->get();
+    }
+
+    public function canChengeDept($loginId)
+    {
+        return MT13DeptAuth::join('MT10_EMP', 'MT13_DEPT_AUTH.DEPT_AUTH_CD', '=', 'MT10_EMP.DEPT_AUTH_CD')
+                    ->join('MT11_LOGIN', 'MT10_EMP.EMP_CD', '=', 'MT11_LOGIN.EMP_CD')
+                    ->leftJoin('MT12_DEPT', 'MT13_DEPT_AUTH.DEPT_CD', '=', 'MT12_DEPT.DEPT_CD')
+                    ->wHERE('MT11_LOGIN.LOGIN_ID', '=', $loginId)
+                    ->WHERE('MT12_DEPT.LEVEL_NO', '=', '0')
+                    ->exists();
+    }
+    
+    public function getDeptAuthCd()
+    {
+        return MT13DeptAuth::select('DEPT_AUTH_CD', 'DEPT_AUTH_NAME')
+                    ->orderBy('DEPT_AUTH_CD')
+                    ->get();
+    }
+    
+    public function getClosingDateCd()
+    {
+        return MT22ClosingDate::select('CLOSING_DATE_CD', 'CLOSING_DATE_NAME')
+                    ->orderBy('CLOSING_DATE_CD')
+                    ->get();
+    }
+    
+    public function existTr01Work($emp_cd) {
+        return TR01Work::where('EMP_CD', $emp_cd)
+                    ->exists();
+    }
+    
+    public function getCompanyCd()
+    {
+        return MT23Company::select('COMPANY_CD', 'COMPANY_ABR')
+                    ->orderBy('COMPANY_CD')
+                    ->where('DISP_CLS_CD', '01')
+                    ->get();
+    }
+    
+    public function upsertEmp($record)
+    {
+        return DB::table($this->table)
+                ->upsert($record, $this->primaryKey, $this->fillable);
+    }
+
+    public function deleteEmp($id)
+    {
+        return DB::table($this->table)
+                ->where('EMP_CD', $id)
+                ->delete();
+    }
+}

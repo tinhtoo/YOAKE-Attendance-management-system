@@ -1,0 +1,61 @@
+<?php
+
+namespace App\Http\Requests;
+
+use Illuminate\Foundation\Http\FormRequest;
+use App\Http\Requests\BaseRequest;
+
+class TimeStampPrintRequest extends BaseRequest
+{
+    public function rules()
+    {
+        $rules = [];
+
+        $data = $this->all();
+        $check = $data['OutputCls'];
+
+        // 出力区分「月度」
+        if( $check == 'rbMonthCls') {
+            $rules = [
+                'filter.yearMonthDate' => 'required',
+            ];
+            return $rules;
+        }
+
+        // 出力区分「日付範囲」
+        if( $check == 'rbDateRange') {
+            $rules = [
+                'filter.startDate' => ['required'
+                                    ,parent::startEndCheck('startDate', 'endDate')],
+                'filter.endDate' => ['required'
+                                    ,parent::startEndCheck('startDate', 'endDate')],
+            ];
+            return $rules;
+        }
+        
+        $rules = [
+            'filter.txtStartDeptCd' => ['nullable'
+                                        ,parent::existDeptCdWithAuth('01', true)
+                                        ,parent::startEndCheck('txtStartDeptCd', 'txtEndDeptCd')],
+            'filter.txtEndDeptCd' => ['nullable'
+                                        ,parent::existDeptCdWithAuth('01', true)
+                                        ,parent::startEndCheck('txtStartDeptCd', 'txtEndDeptCd')],
+            'filter.txtStartEmpCd' => ['nullable'
+                                        ,parent::existEmpCdWithAuth('00', true)
+                                        ,parent::startEndCheck('txtStartEmpCd', 'txtEndEmpCd')],
+            'filter.txtEndEmpCd' => ['nullable'
+                                        ,parent::existEmpCdWithAuth('00', true)
+                                        ,parent::startEndCheck('txtStartEmpCd', 'txtEndEmpCd')]
+        ];
+        return $rules;
+    }
+
+    public function messages()
+    {
+        return [
+            'filter.startDate.required' => '2002',
+            'filter.endDate.required' => '2002',
+            'filter.yearMonthDate.required' => '2002',
+        ];
+    }
+}

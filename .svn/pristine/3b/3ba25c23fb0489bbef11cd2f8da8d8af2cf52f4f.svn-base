@@ -1,0 +1,160 @@
+<?php
+
+namespace App\Repositories;
+
+use App\Models\TR01Work;
+
+use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Illuminate\Support\Collection;
+use Illuminate\Support\Facades\DB;
+use Carbon\Carbon;
+
+class TR01WorkRepository extends TR01Work
+{
+    public function getWithEmpAndCaldYearMonth($emp_cd, $cald_year, $cald_month)
+    {
+        return TR01Work::where('EMP_CD', $emp_cd)
+                    ->where('CALD_YEAR', $cald_year)
+                    ->where('CALD_MONTH', (int)$cald_month)
+                    ->get();
+    }
+
+    public function getWithPrimaryKey($emp_cd, $cald_date)
+    {
+        return TR01Work::where('EMP_CD', $emp_cd)
+                    ->where('CALD_DATE', $cald_date)
+                    ->first();
+    }
+
+    public function existWithEmpAndCaldYearMonth($emp_cd, $cald_year, $cald_month)
+    {
+        return TR01Work::where('EMP_CD', $emp_cd)
+                    ->where('CALD_YEAR', $cald_year)
+                    ->where('CALD_MONTH', (int)$cald_month)
+                    ->exists();
+    }
+
+    public function insertWork($record)
+    {
+        return TR01Work::insert($record);
+    }
+
+    public function updateWithKey($emp_cd, $cald_date, $udpate_data)
+    {
+        return TR01Work::where('EMP_CD', $emp_cd)
+                        ->where('CALD_DATE', $cald_date)
+                        ->update($udpate_data);
+    }
+
+    public function updateWithKeyAndNotFix($emp_cd, $cald_date, $udpate_data)
+    {
+        return TR01Work::where('EMP_CD', $emp_cd)
+                        ->where('CALD_DATE', $cald_date)
+                        ->where('UPD_CLS_CD', '00')
+                        ->where('FIX_CLS_CD', '00')
+                        ->update($udpate_data);
+    }
+
+    /**
+     * 就業情報を確定させる
+     * .netの実装より、退職かの判定は行っていない（退職者にも就業情報の確定を行う可能性があるため？）
+     *
+     * @param [type] $year
+     * @param [type] $month
+     * @param [type] $closing_date_cd
+     * @param [type] $dept_cd_list
+     * @param [type] $today
+     * @return void
+     */
+    public function updateForFix($year, $month, $closing_date_cd, $dept_cd_list, $today) 
+    {
+        return TR01Work::from('TR01_WORK as TR01')
+                        ->leftJoin('MT10_EMP as MT10', 'TR01.EMP_CD', '=', 'MT10.EMP_CD')
+                        ->where('TR01.CALD_YEAR', $year)
+                        ->where('TR01.CALD_MONTH', $month)
+                        ->where('MT10.CLOSING_DATE_CD', $closing_date_cd)
+                        ->whereIn('MT10.DEPT_CD', $dept_cd_list)
+                        ->update([
+                            'FIX_CLS_CD' => '01',
+                            'UPD_DATE' => $today
+                        ]);
+    }
+
+    /**
+     * 就業情報から、指定年月の社員名部署名を取得する
+     *
+     * @param [type] $login_emp_dept_cd
+     * @param [type] $dept_cd_list
+     * @param [type] $year
+     * @param [type] $month
+     * @param [type] $closing_date_cd
+     * @param boolean $no_fix falseを指定すると、「確定済み」の場合〇を設定する
+     * @return object
+     */
+    public function searchFixEmp($login_emp_dept_cd, $dept_cd_list, $year, $month, $closing_date_cd, $no_fix = true) : object
+    {
+        return TR01Work::select('MT12.DEPT_CD', 'MT12.DEPT_NAME', 'MT10.EMP_CD', 'MT10.EMP_NAME')
+                        ->when(!$no_fix, function($q) {
+                            $q->selectRaw("CASE WHEN MIN([FIX_CLS_CD]) = '00' THEN '' ELSE '〇' END AS FIXED");
+                        })
+                        ->when($no_fix, function($q) {
+                            $q->selectRaw(" '' AS FIXED");
+                        })
+                        ->from('TR01_WORK as TR01')
+                        ->join('MT10_EMP as MT10', 'TR01.EMP_CD', '=', 'MT10.EMP_CD')
+                        ->leftJoin('MT11_LOGIN as MT11', 'TR01.EMP_CD', '=', 'MT11.EMP_CD')
+                        ->join('MT12_DEPT as MT12', 'MT10.DEPT_CD', '=', 'MT12.DEPT_CD')
+                        ->where('TR01.CALD_YEAR', $year)
+                        ->where('TR01.CALD_MONTH', $month)
+                        ->where('MT10.CLOSING_DATE_CD', $closing_date_cd)
+                        ->when($no_fix, function($q) {
+                            $q->where('TR01.FIX_CLS_CD', '00');
+                        })
+                        ->where(function($q) use ($dept_cd_list, $login_emp_dept_cd) {
+                            $q->whereIn('MT10.DEPT_CD', $dept_cd_list)
+                                ->orWhere('MT10.DEPT_CD', $login_emp_dept_cd);
+                        })
+                        ->groupBy('MT10.EMP_CD', 'MT10.EMP_NAME', 'MT12.DEPT_CD', 'MT12.DEPT_NAME')
+                        ->orderby('MT12.DEPT_CD')
+                        ->orderby('MT10.EMP_CD')
+                        ->get();
+    }
+
+    public function getEmpWorkStatusData($filter, $login_emp_dept_cd, $dept_cd_list)
+    {
+        return TR01Work::selectRaw("'' OFC_TERM_NAME, '' LEV_TERM_NAME")
+            ->select('MT10.DEPT_CD',
+                    'MT12.DEPT_NAME',
+                    'TR01.EMP_CD',
+                    'MT10.EMP_NAME',
+                    'TR01.WORKPTN_CD',
+                    'MT05.WORKPTN_NAME',
+                    'MT05.WORK_CLS_CD',
+                    'TR01.REASON_CD',
+                    'MT09.REASON_NAME',
+                    'TR01.OFC_TIME_HH', 'TR01.OFC_CNT',
+                    'TR01.LEV_TIME_HH', 'TR01.LEV_CNT')
+            ->selectRaw("Case When TR01.OFC_TIME_HH Is Null Then '' 
+                         Else Cast(TR01.OFC_TIME_HH As VarChar) + ':' + RIGHT('00' + Cast(TR01.OFC_TIME_MI As VarChar), 2) 
+                         End As OFC_TIME")
+            ->selectRaw("Case When TR01.LEV_TIME_HH Is Null Then '' 
+                         Else Cast(TR01.LEV_TIME_HH As VarChar) + ':' + RIGHT('00' + Cast(TR01.LEV_TIME_MI As VarChar), 2)
+                         End As LEV_TIME")
+            ->from('TR01_WORK as TR01')
+            ->join('MT10_EMP as MT10', function ($join) {
+                $join->on('TR01.EMP_CD', '=', 'MT10.EMP_CD')
+                     ->where('MT10.REG_CLS_CD', '=', '00');
+            })
+            ->join('MT12_DEPT as MT12', 'MT10.DEPT_CD', '=', 'MT12.DEPT_CD')
+            ->join('MT05_WORKPTN as MT05', 'TR01.WORKPTN_CD', '=', 'MT05.WORKPTN_CD')
+            ->join('MT09_REASON as MT09', 'TR01.REASON_CD', '=', 'MT09.REASON_CD')
+            ->filter($filter)
+            ->where(function($q) use ($dept_cd_list, $login_emp_dept_cd) {
+                $q->whereIn('MT10.DEPT_CD', $dept_cd_list)
+                    ->orWhere('MT10.DEPT_CD', $login_emp_dept_cd);
+            })
+            ->orderby('MT10.DEPT_CD')
+            ->orderby('TR01.EMP_CD')
+            ->get();
+    }
+}

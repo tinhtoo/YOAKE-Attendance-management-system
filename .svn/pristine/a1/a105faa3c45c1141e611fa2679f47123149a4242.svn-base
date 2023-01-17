@@ -1,0 +1,16 @@
+<?php
+
+namespace App\Repositories;
+
+use Illuminate\Http\Request;
+use App\Models\MT08Holiday;
+
+class MT08HolidayRepository
+{    
+    // 祝日を取得
+    public function getHolidays()
+    {
+        return MT08Holiday::orderby('HLD_NO')->pluck('HLD_DATE');
+    }
+
+}

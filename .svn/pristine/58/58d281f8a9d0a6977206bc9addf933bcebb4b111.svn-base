@@ -1,0 +1,14 @@
+<!doctype html>
+<html>
+@extends('layouts.app')
+<head>   
+@yield('header')
+</head>
+
+<body>
+@yield('login')
+@yield('main')
+@yield('content_search')
+</body>
+
+</html>

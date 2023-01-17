@@ -1,0 +1,68 @@
+<!-- カレンダーパターン情報入力   -->
+@extends('menu.main')
+
+@section('title','カレンダーパターン情報入力 ')
+
+@section('content')
+<div id="contents-stage">
+    <form action="" method="get" id="form">
+        @csrf 
+        <table class="BaseContainerStyle1">
+            <tbody>
+                <tr>
+                    <td>
+                        <div id="UpdatePanel1">
+
+                            <p class="FunctionMenu1">
+                                <a id="hlAddCalendarPtn" href="{{ route('MT02.storeIndex') }}">新規カレンダーパターン登録</a>
+                            </p>
+                            <div class="line"></div>
+                            <div class="GridViewStyle1">
+                                <table style="border-collapse: separate;">
+                                    <tbody>
+                                        <tr>
+                                            <th>
+                                                カレンダーパターン
+                                            </th>
+                                            <th>
+                                                カレンダーパターン
+                                            </th>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            @isset($calendar_ptns)
+                            <div class="GridViewStyle1">
+                                <div class="two-col" style="column-count:2;">
+                                    <table class="GridViewSpace" id="gvEmp" style="border-collapse: collapse;" border="1" cellspacing="0">
+                                        <tbody>
+                                            @foreach ($calendar_ptns as $key=>$item)
+                                                <tr>
+                                                    <td class="col-sm-4">
+                                                        <a value ="{{ $key }}" href="{{ url('master/MT02CalendarPtnEditor/'. $item->CALENDAR_CD )}}">
+                                                            {{ $item->CALENDAR_CD }} : {{ $item->CALENDAR_NAME }}
+                                                        </a>
+                                                    </td>
+                                                </tr>
+                                            @endforeach
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            @endisset
+                            @isset($calendar_ptns)
+                            <div class="line"></div>
+                            <div class="d-flex justify-content-center mx-auto" id="pegination">
+                                {{ $calendar_ptns->links() }}
+                            </div>
+                            @endisset
+                        </div>
+
+                    </td>
+                </tr>
+
+            </tbody>
+        </table>
+    </form>    
+</div>
+@endsection

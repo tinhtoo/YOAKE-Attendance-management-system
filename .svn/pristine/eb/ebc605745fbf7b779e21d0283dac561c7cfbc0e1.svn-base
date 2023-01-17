@@ -1,0 +1,77 @@
+<?php
+
+namespace App\Http\Requests;
+
+use Illuminate\Support\Facades\DB;
+use Illuminate\Foundation\Http\FormRequest;
+use App\Models\MT23Company;
+use App\Models\MT99Msg;
+
+class MT23CompanyEditorRequest extends FormRequest
+{
+    public function rules()
+    {
+
+        $rules = [];
+
+        $rules = [
+            'txtCompanyName' => ['required'],
+            'txtCompanyKana' => ['required'],
+            'txtCompanyAbr' => ['required'],
+
+            'regCompanyCd' => [
+                'required',
+                /**
+                 *登録の時入力された所属番号検索し該当データあればエラー
+                 *@param $attribute
+                 *@param $value
+                 *@param $fail
+                 *@return \illuminate\Http\Response
+                 */
+                function ($attribute, $value, $fail) {
+
+                    //Sessionで入力された所属番号の取得 */
+                    $regCompanyCd = FormRequest::get('regCompanyCd');
+                    // $regCompanyCd =session('regCompanyCd');
+                    // dd($regCompanyCd);
+
+                    //入力された所属番号より所属CDをチェック */
+                    $companyCd = MT23Company::where('COMPANY_CD', $regCompanyCd)->pluck('COMPANY_CD')->first();
+                    // dd($companyCd);
+
+                    $msg_2001 = MT99Msg::where('MSG_NO', '2001')->pluck('MSG_CONT')->first();
+
+                    //該当データ存在確認処理 */
+                    if ($regCompanyCd == $companyCd) {
+                        $fail($msg_2001);
+                    };
+
+
+                    $msg_2002 = MT99Msg::where('MSG_NO', '2002')->pluck('MSG_CONT')->first();
+
+                    //空白の場合2002メッセージエラー */
+                    if (empty($regCompanyCd)) {
+                        $fail($msg_2002);
+                    }
+                },
+            ]
+        ];
+        return $rules;
+    }
+
+    public function messages()
+    {
+        //2001メッセージ取得（該当データ存在します。)
+        $msg_2001 = MT99Msg::where('MSG_NO', '2001')->pluck('MSG_CONT')->first();
+        //2002メッセージ取得（必須入力項目です)
+        $msg_2002 = MT99Msg::where('MSG_NO', '2002')->pluck('MSG_CONT')->first();
+
+        return [
+            'txtCompanyName.required' => $msg_2002,
+            'txtCompanyKana.required' => $msg_2002,
+            'txtCompanyAbr.required' => $msg_2002,
+            'regCompanyCd.required' => $msg_2001,
+            'regCompanyCd.required' => $msg_2002
+        ];
+    }
+}

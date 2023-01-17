@@ -1,0 +1,11 @@
+<?php
+namespace App\Http\Requests;
+
+use App\Models\MT99Msg;
+use App\Models\MT12Dept;
+use Illuminate\Foundation\Http\FormRequest;
+
+class MT12DeptSearchRequest extends FormRequest
+{
+
+}

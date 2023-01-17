@@ -1,0 +1,34 @@
+<?php
+
+namespace App\Repositories;
+
+use Illuminate\Http\Request;
+use App\Models\MT05Workptn;
+
+class MT05WorkptnRepository
+{    
+    // 勤務体系から一般のみ取得 
+    public function workptnsNormal()
+    {
+        return MT05Workptn::where('COM_CLS_CD', '01')
+                ->orderby('WORKPTN_CD')
+                ->get();
+    }
+
+    public function getAll() 
+    {
+        return MT05Workptn::get();
+    }
+
+    /**
+     * 引数のワークパターン配列に該当するレコードを取得
+     *
+     * @param array $workptns
+     * @return object
+     */
+    public function getWithWorkptn($workptns = []) : object
+    {
+        return MT05Workptn::whereIn('WORKPTN_CD', $workptns)
+            ->get();
+    }
+}

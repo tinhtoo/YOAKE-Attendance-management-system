@@ -1,0 +1,76 @@
+<?php
+
+namespace App\Http\Requests;
+
+use App\Models\MT99Msg;
+use App\Http\Requests\BaseRequest;
+use Illuminate\Foundation\Http\FormRequest;
+
+class WorkTimeExportRequest extends BaseRequest
+{
+    public function rules()
+    {
+        return $rules = [
+            'filter.startDate' => [
+                'required',
+                parent::validYear(),
+                parent::startEndCheck('startDate', 'endDate')
+            ],
+            'filter.endDate' => [
+                'required',
+                parent::validYear(),
+                parent::startEndCheck('startDate', 'endDate')
+            ],
+            'filter.txtStartDeptCd' => [
+                'nullable',
+                parent::existDeptCdWithAuth('01', true),
+                parent::startEndCheck('txtStartDeptCd', 'txtEndDeptCd')
+            ],
+            'filter.txtEndDeptCd' => [
+                'nullable',
+                parent::existDeptCdWithAuth('01', true),
+                parent::startEndCheck('txtStartDeptCd', 'txtEndDeptCd')
+            ],
+            'filter.startCompany' => [
+                'nullable',
+                parent::startEndCheck('startCompany', 'endCompany')
+            ],
+            'filter.endCompany' => [
+                'nullable',
+                parent::startEndCheck('startCompany', 'endCompany')
+            ],
+            'filter.txtStartEmpCd' => [
+                'nullable',
+                function($attribute, $value, $fail) {
+                    $input_data = $this->all();
+                    if (key_exists('regCls', $input_data['filter'])) {
+                        (parent::existEmpCdWithAuth('00', true))($attribute, $value, $fail);
+                    } else {
+                        (parent::existEmpCdWithAuth(null, true))($attribute, $value, $fail);
+                    }
+                },
+                parent::startEndCheck('txtStartEmpCd', 'txtEndEmpCd')
+            ],
+            'filter.txtEndEmpCd' => [
+                'nullable',
+                function($attribute, $value, $fail) {
+                    $input_data = $this->all();
+                    if (key_exists('regCls', $input_data['filter'])) {
+                        (parent::existEmpCdWithAuth('00', true))($attribute, $value, $fail);
+                    } else {
+                        (parent::existEmpCdWithAuth(null, true))($attribute, $value, $fail);
+                    }
+                },
+                parent::startEndCheck('txtStartEmpCd', 'txtEndEmpCd')
+            ],
+        ];
+    }
+
+    public function messages()
+    {
+        return [
+            'filter.startDate.required' => '2002',
+            'filter.endDate.required' => '2002',
+        ];
+    }
+}

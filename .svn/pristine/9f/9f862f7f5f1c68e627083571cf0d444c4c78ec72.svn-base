@@ -1,0 +1,36 @@
+<!--ログイン画面-->
+@extends('layouts.app')
+
+@section('title','勤怠管理システム')
+
+@section('content')
+    <div class="contents-login">
+        <div class="login-inner">
+            <strong class="title">
+                <span id="login_title">ログインIDとパスワードを入力してください。</span>
+            </strong>
+            <table>
+                <tr>
+                    <th>
+                        <label for="loginId">ログインID：</label>
+                    </th>
+                    <td>
+                        <input name="inputLoginId" class="input-txt imeoff" type="text" style="width: 90px;" maxlength="10">
+                    </td>
+                </tr>
+                <tr>
+                    <th>
+                        <label for="loginPwd">パスワード：</label>
+                    </th>
+                    <td>
+                        <input name="input-Pwd" class="input-txt imeoff" type="password" style="width: 90px" maxlength="10">
+                        <br />
+                        <div class="button">
+                            <a href="{{url('/main')}}"><button type="button" id="loginBtn" name="login-btn">ログイン</button></a>
+                        </div>
+                    </td>
+                </tr>
+            </table>
+        </div>
+    </div>
+@endsection

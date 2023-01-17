@@ -1,0 +1,67 @@
+<?php
+
+namespace App\Http\Controllers\master;
+
+use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
+use App\Http\Requests\MT23CompanyEditorRequest;
+use App\Repositories\Master\Mt23CompanyRepository;
+use App\Models\MT99Msg;
+use App\Models\MT05Workptn;
+use App\Models\MT94WorkDesc;
+use App\Models\MT91ClsDetail;
+
+
+class MT23CompanyController extends Controller
+{
+    //** $Mt23Company_Repositoryリポジトリの実装 */
+    /**
+     * @var Mt23CompanyRepository
+     */
+    protected $Mt23Company_Repository;
+
+    //** コントローラインスタンスの生成 */
+    /**
+     * @param  Mt23CompanyRepository $Mt23Company_Repository
+     * @return void
+     */
+    public function __construct(Mt23CompanyRepository $Mt23Company_Repository)
+    {
+        $this->Mt23Company_Repository = $Mt23Company_Repository;
+    }
+
+    //**所属情報照会 画面表示 **//
+    /**
+     * MT23 Comany会社名表示
+     * @return view (MT23CompanyReference.blade)
+     */
+    public function MT23CompanyReferenceIndex(Request $request)
+    {
+        $haken_company = $this->Mt23Company_Repository->companyName();
+        // dd($companyName);
+        return view('master.MT23CompanyReference', compact('haken_company'));
+    }
+
+    //詳細画面の表示 修正モード
+    public function edit($id)
+    {
+        // $book = MT23Company::find($id);
+
+        return view('master.MT23CompanyEditor');
+    }
+
+    public function update(MT23CompanyEditorRequest $request)
+    {
+        $inputData = $request->all();
+        return view('master.MT23CompanyReference');
+    }
+
+    //** 所属情報照会 キャセンル処理 */
+    /**
+     * @return view (MT23CompanyReference.blade)
+     */
+    public function cancelBtn(Request $request)
+    {
+        return redirect()->route('empworkstatusRef')->withInput($request->only(['ddlTargetYear', 'ddlTargetMonth', 'ddlTargetDay']));
+    }
+}

@@ -1,0 +1,62 @@
+<?php
+
+namespace App\Repositories;
+
+use App\Models\TR50WorkTime;
+
+use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Illuminate\Support\Facades\DB;
+
+
+class TR50WorkTimeRepository extends TR50WorkTime
+{
+    /**
+     * 社員コードと日付をキーに更新する
+     *
+     * @param [type] $emp_cd
+     * @param [type] $cald_date
+     * @param [type] $udpate_data
+     * @return void
+     */
+    public function update50WorkWithEmpCdCaldDate($emp_cd, $cald_date, $udpate_data)
+    {
+        return TR50WorkTime::where('EMP_CD', $emp_cd)
+                        ->where('CALD_DATE', $cald_date)
+                        ->update($udpate_data);
+    }
+
+    public function getTermName($emp_cd, $cald_date)
+    {
+        return TR50WorkTime::select("TR50.WORKTIME_CLS_CD", "MT95.TERM_NAME")
+                        ->from("TR50_WORKTIME as TR50")
+                        ->join("MT95_TERM as MT95", "TR50.TERM_NO", "=", "MT95.TERM_NO")
+                        ->where("TR50.EMP_CD", $emp_cd)
+                        ->where("TR50.CALD_DATE", $cald_date)
+                        ->whereIn("TR50.WORKTIME_CLS_CD", ['00', '01'])
+                        ->groupBy("TR50.EMP_CD")
+                        ->groupBy("TR50.CALD_DATE")
+                        ->groupBy("TR50.TERM_NO")
+                        ->groupBy("TR50.WORKTIME_CLS_CD")
+                        ->groupBy("MT95.TERM_NAME")
+                        ->get();
+    }
+
+    /**
+     * 未打刻・二重打刻一覧表のデータ取得
+     * @param [type] $emp_cd
+     * @param [type] $str_time
+     * @param [type] $end_time
+     * @return void
+     */
+    public function getWorkTimeRecords($emp_cd, $str_time, $end_time)
+    {
+        return TR50WorkTime::select("CRT_DATE", "WORKTIME_CLS_CD", "WORK_DATE", "WORK_TIME_HH", "WORK_TIME_MI")
+                        ->from("TR50_WORKTIME")
+                        ->where("EMP_CD", $emp_cd)
+                        ->whereBetween("CRT_DATE", [$str_time, $end_time])
+                        ->where("WORKTIME_CLS_CD", '00')
+                        ->orderBy("CRT_DATE")
+                        ->orderBy("WORKTIME_CLS_CD")
+                        ->get();
+    }
+}

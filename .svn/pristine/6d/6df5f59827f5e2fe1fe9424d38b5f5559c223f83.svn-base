@@ -1,0 +1,29 @@
+<?php
+
+namespace App\Http\Requests;
+
+use Illuminate\Foundation\Http\FormRequest;
+use App\Models\MT99Msg;
+use App\Models\MT10Emp;
+
+class MT02CalendarPtnDelRequest extends FormRequest
+{
+    public function rules()
+    {
+        $rules = [];
+
+        $rules = [
+            'CalendarCd' => [
+                function ($attribute, $value, $fail) {
+                    // チェック２処理（CD-4017）'社員情報で使用されているので削除できません。'
+                    $msg_4017 = MT99Msg::where('MSG_NO', '4017')->pluck('MSG_CONT')->first();
+                    $exitCheck = MT10Emp::where(['CALENDAR_CD' => $value])->exists();
+                    if ($exitCheck) {
+                        $fail($msg_4017);
+                    }
+                },
+            ]
+        ];
+        return $rules;
+    }
+}

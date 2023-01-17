@@ -1,0 +1,80 @@
+<?php
+
+namespace App\Http\Controllers\Work_Time;
+
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Http\Request;
+use App\Http\Requests\WorkTimeReferenceRequest;
+use App\Repositories\Work_Time\WorkTimeReferenceRepository;
+use App\Repositories\MT93PgRepository;
+
+/**
+ * 勤務状況照会(個人用)
+ * [history date="2021/12/07" editor="カウン" ]
+ */
+class WorkTimeReferenceController extends Controller
+{
+
+    //** $wtRef_Repositoryリポジトリの実装 */
+    /**
+     * @var WorkTimeReferenceRepository
+     */
+    protected $wtRef_Repository;
+
+    //** コントローラインスタンスの生成 */
+    /**
+     * @param  WorkTimeReferenceRepository  $wtRef_Repository
+     * @return void
+     */
+    public function __construct(WorkTimeReferenceRepository $wtRef_Repository
+                                , MT93PgRepository $pg_repository)
+    {
+        parent::__construct($pg_repository);
+        $this->wtRef_Repository = $wtRef_Repository;
+    }
+
+    /**
+     * 勤務状況照会(個人用) 画面表示
+     * @return view
+     */
+    public function WorkTimeReference(Request $request)
+    {
+        return parent::viewWithMenu('work_time.WorkTimeReference');
+    }
+
+    /**
+     * 勤務状況照会(個人用) 画面各機能(データ渡し)処理
+     * @return view
+     */
+    public function searchBtn(WorkTimeReferenceRequest $request)
+    {
+        $FIX_MSG = '確定済み';
+
+        $inputSearchData = $request->all();
+        $empWorkTimeResults = $this->wtRef_Repository->empInput($request);
+        $errMsg_4029 = $this->wtRef_Repository->messages();
+        $weekday = $this->wtRef_Repository->calHolidayDate();
+        $workTimeFix = $this->wtRef_Repository->check($request);
+        $depEmpName = $this->wtRef_Repository->depEmpName($request);
+
+        return parent::viewWithMenu('work_time.WorkTimeReference', compact(
+            'empWorkTimeResults',
+            'weekday',
+            'errMsg_4029',
+            'FIX_MSG',
+            'workTimeFix',
+            'inputSearchData',
+            'depEmpName'
+        ));
+    }
+
+    /**
+     * 勤務状況照会(個人用) 画面機能キャセンル処理
+     * @return redirect
+     */
+    public function cancelBtn(Request $request)
+    {
+        return redirect()->route('worktimeRef')->withInput($request->only(['ddlTargetYear', 'ddlTargetMonth']));
+    }
+}

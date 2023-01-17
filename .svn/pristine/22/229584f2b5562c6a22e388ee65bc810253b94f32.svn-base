@@ -1,0 +1,113 @@
+<?php
+
+namespace App\Http\Controllers\Master;
+
+use App\Http\Controllers\Controller;
+use App\Http\Requests\MT10EmpCnvertRequest;
+use App\Models\MT10Emp;
+use App\Models\MT11Login;
+use App\Models\MT17PdHoliday;
+use App\Models\MT99Msg;
+use App\Models\TR01Work;
+use App\Models\TR02EmpCalendar;
+use App\Models\TR50WorkTime;
+use Illuminate\Support\Facades\DB;
+use mysqli;
+
+/**社員番号一括変換
+ *[history date="2022/03/31" editor="カウン" ]
+ */
+class MT10EmpCnvertController extends Controller
+{
+    //*** 社員番号一括変換 画面表示 ***//
+    /**
+     * @return view (MT10EmpCnvert.Blade)
+     */
+    public function index()
+    {
+        //1005メッセージ取得（更新しますか？）
+        $msg_1005 = MT99Msg::where('MSG_NO', '1005')->pluck('MSG_CONT')->first();
+        return view('master.MT10EmpCnvert', ['msg_1005' => $msg_1005]);
+    }
+
+    //*** 社員番号一括変換更新処理 ***//
+    /**
+     * [MT10_EMP],[MT11_LOGIN],[MT17_PDHOLIDAY],[TR01_WORK],[TR02_EMPCALENDAR],[TR50_WORKTIME]更新処理
+     *キー：EMP_CDの修正
+     * @return view (MT10EmpCnvert.Blade)
+     */
+    public function update(MT10EmpCnvertRequest $request)
+    {
+        // 画面から入力フォームデータ取得
+        $request_data = $request->all();
+        //{旧社員番号}でMT10＿EMPを検索
+        $mt10EmpUpdate = MT10Emp::find($request_data['txtEmpCd']);
+        //{旧社員番号}でMT11_LOGINを検索
+        $mt11LoginUpdate = MT11Login::find($request_data['txtEmpCd']);
+        //{旧社員番号}でMT17_PDHOLIDAYを検索
+        $mt17HolidayUpdate = MT17PdHoliday::find($request_data['txtEmpCd']);
+        //{旧社員番号}でTR01_WORKを検索
+        $tr01WorkUpdate = TR01Work::find($request_data['txtEmpCd']);
+        //{旧社員番号}でTR02_EMPCALENDARを検索
+        $tr02EmpCalUpdate = TR02EmpCalendar::find($request_data['txtEmpCd']);
+        //{旧社員番号}でTR50_WORKTIMEを検索
+        $tr50WorktimeUpdate = TR50WorkTime::find($request_data['txtEmpCd']);
+
+        if ($mt10EmpUpdate !== null) {
+            try {
+                $mt10EmpUpdate->EMP_CD = $request->txtNewEmpCd;
+                $mt10EmpUpdate->timestamps = false;
+                $mt10EmpUpdate->save();
+            } catch (\Throwable $e) {
+                abort(500);
+            }
+        }
+        if ($mt11LoginUpdate !== null) {
+            try {
+                $mt11LoginUpdate->EMP_CD = $request->txtNewEmpCd;
+                $mt11LoginUpdate->timestamps = false;
+                $mt11LoginUpdate->save();
+            } catch (\Throwable $e) {
+                abort(500);
+            }
+        }
+        if ($mt17HolidayUpdate !== null) {
+            try {
+                $mt17HolidayUpdate->EMP_CD = $request->txtNewEmpCd;
+                $mt17HolidayUpdate->timestamps = false;
+                $mt17HolidayUpdate->save();
+            } catch (\Throwable $e) {
+                abort(500);
+            }
+        }
+        if ($tr01WorkUpdate !== null) {
+            try {
+                $tr01WorkUpdate->EMP_CD = $request->txtNewEmpCd;
+                $tr01WorkUpdate->timestamps = false;
+                $tr01WorkUpdate->save();
+            } catch (\Throwable $e) {
+                abort(500);
+            }
+        }
+        if ($tr02EmpCalUpdate !== null) {
+            try {
+                $tr02EmpCalUpdate->EMP_CD = $request->txtNewEmpCd;
+                $tr02EmpCalUpdate->timestamps = false;
+                $tr02EmpCalUpdate->save();
+            } catch (\Throwable $e) {
+                abort(500);
+            }
+        }
+        if ($tr50WorktimeUpdate !== null) {
+            try {
+                $tr50WorktimeUpdate->EMP_CD = $request->txtNewEmpCd;
+                $tr50WorktimeUpdate->timestamps = false;
+                $tr50WorktimeUpdate->save();
+            } catch (\Throwable $e) {
+                abort(500);
+            }
+        }
+        DB::commit();
+        return redirect()->route('MT10EmpCnvert.index');
+    }
+}

@@ -1,0 +1,138 @@
+<?php
+
+namespace App\Repositories\Work_Time;
+
+use Illuminate\Http\Request;
+
+use App\Models\WK01Work;
+use App\Models\MT11Login;
+use App\Http\Requests\WorkTimeDeptEditorRequest;
+use App\Filters\WorkTimeDeptEditorFilter;
+
+class WorkTimeDeptEditorRepository
+{
+    //** 出退勤入力（部門別） 処理 */
+    /**
+     * ヘッダーの検索条件表示
+     * @return WorkTimeDeptEditorController
+     */
+    public function select(WorkTimeDeptEditorRequest $request, WorkTimeDeptEditorFilter $filter)
+    {
+        $input = $request->all();
+        $procCd = 'SWD';
+        $logCd = MT11Login::where('LOGIN_ID', session('id'))->pluck('EMP_CD')->first();
+        $year = substr(($input['ddlDate']), 0, 4);
+        $month = substr(($input['ddlDate']), 7, 2);
+        $day = mb_substr(($input['ddlDate']), 8, 2);
+        $date = $year . '/' . $month . '/' . $day;
+        $dept_cd = $input['txtDeptCd'];
+        $str_company_cd = $input['filter']['ddlStartCompany'];
+        $end_company_cd = $input['filter']['ddlEndCompany'];
+
+        $totalString = '"' . $procCd . "," . $logCd . "," . $date . "," . $dept_cd . "," . $str_company_cd . "," . $end_company_cd . '"';
+        $command = ".\\WorkTmCon\WorkTmCon " . $totalString;
+        exec($command, $output, $result_code);
+
+        $targetdata_search = WK01Work::join('MT10_EMP', 'WK01_WORK.EMP_CD', '=','MT10_EMP.EMP_CD')
+            ->join('MT05_WORKPTN', 'WK01_WORK.WORKPTN_CD', '=', 'MT05_WORKPTN.WORKPTN_CD')
+            ->join('MT09_REASON', 'WK01_WORK.REASON_CD', '=', 'MT09_REASON.REASON_CD')
+            ->leftjoin('MT12_DEPT', 'MT10_EMP.DEPT_CD', '=', 'MT12_DEPT.DEPT_CD')
+            ->where('MT10_EMP.REG_CLS_CD', '=', '00' )
+            ->where('WK01_WORK.CALD_DATE', $date)
+            ->where('MT12_DEPT.DEPT_CD', $dept_cd)
+            ->where('WK01_WORK.LOGIN_ID', $logCd)
+            ->filter($filter)
+            ->select('WK01_WORK.*', 'MT10_EMP.DEPT_CD', 'MT12_DEPT.DEPT_NAME', 'MT10_EMP.EMP_CD', 'MT10_EMP.EMP_NAME', 'MT05_WORKPTN.WORKPTN_NAME', 'MT05_WORKPTN.WORK_CLS_CD', 'MT09_REASON.REASON_NAME', 'MT09_REASON.REASON_PTN_CD')
+            ->selectRaw("Case When WK01_WORK.OFC_TIME_HH = '0' OR WK01_WORK.OFC_TIME_HH Is Null THEN ''
+                        Else Cast(WK01_WORK.OFC_TIME_HH As VarChar) + ':' + RIGHT('00' + Cast(WK01_WORK.OFC_TIME_MI As VarChar), 2)
+                    End As OFC_TIME")
+            ->selectRaw("Case When WK01_WORK.LEV_TIME_HH = '0' OR WK01_WORK.LEV_TIME_HH Is Null Then ''
+                        Else Cast(WK01_WORK.LEV_TIME_HH As VarChar) + ':' + RIGHT('00' + Cast(WK01_WORK.LEV_TIME_MI As VarChar), 2)
+                    End As LEV_TIME")
+            ->selectRaw("Case When WK01_WORK.OUT1_TIME_HH = '0' OR WK01_WORK.OUT1_TIME_HH Is Null Then ''
+                        Else Cast(WK01_WORK.OUT1_TIME_HH As VarChar) + ':' + RIGHT('00' + Cast(WK01_WORK.OUT1_TIME_MI As VarChar), 2)
+                    End As OUT1_TIME")
+            ->selectRaw("Case When WK01_WORK.IN1_TIME_HH = '0' OR WK01_WORK.IN1_TIME_HH Is Null Then ''
+                        Else Cast(WK01_WORK.IN1_TIME_HH As VarChar) + ':' + RIGHT('00' + Cast(WK01_WORK.IN1_TIME_MI As VarChar), 2)
+                    End As IN1_TIME")
+            ->selectRaw("Case When WK01_WORK.OUT2_TIME_HH = '0' OR WK01_WORK.OUT2_TIME_HH Is Null Then ''
+                        Else Cast(WK01_WORK.OUT2_TIME_HH As VarChar) + ':' + RIGHT('00' + Cast(WK01_WORK.OUT2_TIME_MI As VarChar), 2)
+                    End As OUT2_TIME")
+            ->selectRaw("Case When WK01_WORK.IN2_TIME_HH = '0' OR WK01_WORK.IN2_TIME_HH Is Null Then ''
+                        Else Cast(WK01_WORK.IN2_TIME_HH As VarChar) + ':' + RIGHT('00' + Cast(WK01_WORK.IN2_TIME_MI As VarChar), 2)
+                    End As IN2_TIME")
+            ->selectRaw("Case When WK01_WORK.WORK_TIME_HH + WK01_WORK.WORK_TIME_MI = 0 Then ''
+                        Else Cast(WK01_WORK.WORK_TIME_HH  As VarChar) + ':' + RIGHT('00' + Cast(WK01_WORK.WORK_TIME_MI  As VarChar), 2)
+                    End As WORK_TIME")
+            ->selectRaw("Case When WK01_WORK.TARD_TIME_HH + WK01_WORK.TARD_TIME_MI = 0 Then ''
+                        Else Cast(WK01_WORK.TARD_TIME_HH  As VarChar) + ':' + RIGHT('00' + Cast(WK01_WORK.TARD_TIME_MI  As VarChar), 2)
+                    End As TARD_TIME")
+            ->selectRaw("Case When WK01_WORK.LEAVE_TIME_HH + WK01_WORK.LEAVE_TIME_MI = 0 Then ''
+                        Else Cast(WK01_WORK.LEAVE_TIME_HH As VarChar) + ':' + RIGHT('00' + Cast(WK01_WORK.LEAVE_TIME_MI As VarChar), 2)
+                    End As LEAVE_TIME")
+            ->selectRaw("Case When WK01_WORK.OUT_TIME_HH + WK01_WORK.OUT_TIME_MI = 0 Then ''
+                        Else Cast(WK01_WORK.OUT_TIME_HH   As VarChar) + ':' + RIGHT('00' + Cast(WK01_WORK.OUT_TIME_MI   As VarChar), 2)
+                    End As OUT_TIME")
+            ->selectRaw("Case When WK01_WORK.OVTM1_TIME_HH + WK01_WORK.OVTM1_TIME_MI = 0 Then ''
+                        Else Cast(WK01_WORK.OVTM1_TIME_HH As VarChar) + ':' + RIGHT('00' + Cast(WK01_WORK.OVTM1_TIME_MI As VarChar), 2)
+                    End As OVTM1_TIME")
+            ->selectRaw("Case When WK01_WORK.OVTM2_TIME_HH + WK01_WORK.OVTM2_TIME_MI = 0 Then ''
+                        Else Cast(WK01_WORK.OVTM2_TIME_HH As VarChar) + ':' + RIGHT('00' + Cast(WK01_WORK.OVTM2_TIME_MI As VarChar), 2)
+                    End As OVTM2_TIME")
+            ->selectRaw("Case When WK01_WORK.OVTM3_TIME_HH + WK01_WORK.OVTM3_TIME_MI = 0 Then ''
+                        Else Cast(WK01_WORK.OVTM3_TIME_HH As VarChar) + ':' + RIGHT('00' + Cast(WK01_WORK.OVTM3_TIME_MI As VarChar), 2)
+                    End As OVTM3_TIME")
+            ->selectRaw("Case When WK01_WORK.OVTM4_TIME_HH + WK01_WORK.OVTM4_TIME_MI = 0 Then ''
+                        Else Cast(WK01_WORK.OVTM4_TIME_HH As VarChar) + ':' + RIGHT('00' + Cast(WK01_WORK.OVTM4_TIME_MI As VarChar), 2)
+                    End As OVTM4_TIME")
+            ->selectRaw("Case When WK01_WORK.OVTM5_TIME_HH + WK01_WORK.OVTM5_TIME_MI = 0 Then ''
+                        Else Cast(WK01_WORK.OVTM5_TIME_HH As VarChar) + ':' + RIGHT('00' + Cast(WK01_WORK.OVTM5_TIME_MI As VarChar), 2)
+                    End As OVTM5_TIME")
+            ->selectRaw("Case When WK01_WORK.OVTM6_TIME_HH + WK01_WORK.OVTM6_TIME_MI = 0 Then ''
+                        Else Cast(WK01_WORK.OVTM6_TIME_HH As VarChar) + ':' + RIGHT('00' + Cast(WK01_WORK.OVTM6_TIME_MI As VarChar), 2)
+                    End As OVTM6_TIME")
+            ->selectRaw("Case When WK01_WORK.EXT1_TIME_HH + WK01_WORK.EXT1_TIME_MI = 0 Then ''
+                        Else Cast(WK01_WORK.EXT1_TIME_HH As VarChar) + ':' + RIGHT('00' + Cast(WK01_WORK.EXT1_TIME_MI As VarChar), 2)
+                    End As EXT1_TIME")
+            ->selectRaw("Case When WK01_WORK.EXT2_TIME_HH + WK01_WORK.EXT2_TIME_MI = 0 Then ''
+                        Else Cast(WK01_WORK.EXT2_TIME_HH As VarChar) + ':' + RIGHT('00' + Cast(WK01_WORK.EXT2_TIME_MI As VarChar), 2)
+                    End As EXT2_TIME")
+            ->selectRaw("Case When WK01_WORK.EXT3_TIME_HH + WK01_WORK.EXT3_TIME_MI = 0 Then ''
+                        Else Cast(WK01_WORK.EXT3_TIME_HH As VarChar) + ':' + RIGHT('00' + Cast(WK01_WORK.EXT3_TIME_MI As VarChar), 2)
+                    End As EXT3_TIME")
+            ->get();
+        return $targetdata_search;
+    }
+
+    /**
+     * 社員番号と対象年月度で検索
+     *
+     * @param Request $request
+     * @return WorkTimeController
+     */
+    public function getWithEmpAndYearMonthDate($dept_cd, $cald_year, $cald_month, $date)
+    {
+        return Wk01Work::join('MT10_EMP', 'WK01_WORK.EMP_CD', '=','MT10_EMP.EMP_CD')
+            ->where('CALD_YEAR', $cald_year)
+            ->where('CALD_MONTH', $cald_month)
+            ->where('DEPT_CD', $dept_cd)
+            ->where('CALD_DATE', $date)
+            ->get();
+    }
+
+
+    public function getWk01Work(Request $request)
+    {
+        $year = substr(session('ymd_date'), 0, 4);
+        $month = substr(session('ymd_date'), 7, 2);
+        $day = mb_substr(session('ymd_date'), 8, 2);
+        $joinDate = $year . '-' . $month . '-' . $day;
+        $changeDateType = date('Y-m-d H:i:s', strtotime($joinDate));
+        $logCd = MT11Login::where('LOGIN_ID', session('id'))->pluck('EMP_CD')->first();
+
+        return WK01Work::join('MT10_EMP', 'WK01_WORK.EMP_CD', '=','MT10_EMP.EMP_CD')
+            ->where('WK01_WORK.CALD_DATE', $changeDateType)
+            ->where('WK01_WORK.LOGIN_ID', $logCd)
+            ->get();
+    }
+}

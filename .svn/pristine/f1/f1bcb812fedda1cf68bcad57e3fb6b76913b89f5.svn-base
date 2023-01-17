@@ -1,0 +1,37 @@
+<?php
+
+namespace App\Http\Requests;
+
+use Illuminate\Foundation\Http\FormRequest;
+use App\Http\Requests\BaseRequest;
+
+class WorkPlanPrintRequest extends BaseRequest
+{
+    public function rules()
+    {
+        $rules = [];
+        
+        $rules = [
+            'txtStartTargetYear' => parent::ymdCheckRequired('txtStartTargetYear', 'ddlStartTargetMonth', 'ddlStartTargetDay'),
+            'filter.txtStartDeptCd' => ['nullable'
+                                        ,parent::existDeptCdWithAuth('01', true)
+                                        ,parent::deptRelationCheck('txtStartDeptCd', 'txtEndDeptCd')],
+            'filter.txtEndDeptCd' => ['nullable'
+                                        ,parent::existDeptCdWithAuth('01', true)
+                                        ,parent::deptRelationCheck('txtStartDeptCd', 'txtEndDeptCd')],
+            'filter.txtStartEmpCd' => ['nullable'
+                                        ,parent::existEmpCdWithAuth('01', true)
+                                        ,parent:: empRelationCheck('txtStartEmpCd', 'txtEndEmpCd')],
+            'filter.txtEndEmpCd' => ['nullable'
+                                        ,parent::existEmpCdWithAuth('01', true)
+                                        ,parent:: empRelationCheck('txtStartEmpCd', 'txtEndEmpCd')]
+        ];
+        return $rules;
+    }
+
+    public function messages()
+    {
+        return [
+        ];
+    }
+}

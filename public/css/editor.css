@@ -1,0 +1,519 @@
+@import url(https://fonts.googleapis.com/css?family=Nunito);
+
+/*----------------------------------------*/
+
+
+/* 出退勤入力画面 */
+
+
+/*----------------------------------------*/
+
+#contents-stage {
+    margin-left: 8px;
+}
+
+.InputFieldStyle1 td,
+.InputFieldStyle1 th {
+    border-bottom: 4px solid #fff;
+    border-right: 5px solid #fff;
+    text-align: left;
+}
+
+.InputFieldStyle1 th {
+    text-align: right;
+    white-space: nowrap;
+    font-weight: bold;
+    vertical-align: middle;
+    width: 140px;
+    padding: 0 10px 0 0;
+    background: #4682B4;
+    color: #fff;
+}
+
+.InputFieldStyle1 th.required {
+    background: #FF8C00;
+}
+
+.InputFieldStyle1 td {
+    vertical-align: middle;
+    padding: 0;
+}
+
+.InputFieldStyle1 input,
+.InputFieldStyle1 select {
+    margin: 0;
+    padding: 0 1px 0 0;
+    font-size: 1.1em;
+}
+
+.InputFieldStyle1 input.right {
+    text-align: right;
+}
+
+.InputFieldStyle1 input.SearchButton {
+    margin: 0;
+    padding: 0;
+    width: 50px;
+    line-height: 1.3em;
+}
+
+.InputFieldStyle1 .OutlineLabel {
+    border: solid 1px #666;
+    background: #f9f9f9;
+    vertical-align: top;
+    padding: 2px 0px 0px 2px;
+    white-space: nowrap;
+    height: 20px;
+}
+
+#div .bkcolor:hover {
+    background-color: #2b688f;
+}
+
+
+/* --------- GroupBox --------- */
+
+.GroupBox1,
+.GroupBox2,
+.GroupBox3 {
+    border: solid 1px #666;
+    padding: 0px 0px 0px 7px;
+    height: 21px;
+}
+
+.GroupBox1 input,
+.GroupBox2 input,
+.GroupBox3 input {
+    float: left;
+    display: block;
+    /* vertical-align:middle; */
+    line-height: 20px;
+    padding: 3px 0px 0px 3px;
+    margin: 4px 0px 0px 4px;
+}
+
+.GroupBox1 label,
+.GroupBox2 label,
+.GroupBox3 label {
+    float: left;
+    display: block;
+    /* vertical-align:bottom; */
+    line-height: 17px;
+    padding: 3px 0px 0px 3px;
+    width: 80px;
+}
+
+.GroupBox2 label {
+    width: 170px;
+}
+
+.GroupBox3 label {
+    width: auto;
+    margin-right: 20px;
+}
+
+
+/* --------- CategoryTitle --------- */
+
+.CategoryTitle1 {
+    padding: 6px 10px 6px 20px;
+    margin: 20px 0 10px 0;
+    color: #111;
+    border-bottom: 1px solid #333;
+    font-weight: bold;
+    background: #f1f1f1 url('../images/CategoryTitle-bg.gif') repeat-y center left;
+}
+
+
+/* --------- GridView --------- */
+
+.GridViewStyle1 table {
+    width: 100%;
+    border: none;
+    background: #fff;
+}
+
+.GridViewStyle1 th {
+    padding: 4px 2px;
+    text-align: center;
+    white-space: nowrap;
+    font-weight: bold;
+    vertical-align: middle;
+    color: #fff;
+    background: #4682B4;
+    border: none;
+    border-bottom: 1px solid #333;
+}
+
+.GridViewStyle1 td {
+    text-indent: 10px;
+    /* white-space: nowrap; */
+    border: none;
+    border-bottom: 1px solid #ddd;
+}
+.GridViewSpace {
+    table-layout: fixed;
+}
+
+.GridViewStyle1 .GridViewSpace th,
+.GridViewStyle1 .GridViewSpace td {
+    border-left: 5px solid #fff;
+    border-right: 5px solid #fff;
+}
+
+.GridViewStyle1 .GridViewBorder th,
+.GridViewStyle1 .GridViewBorder td {
+    border-right: 1px solid #aaa;
+}
+
+.GridViewStyle1 td.GridViewPadding,
+.GridViewStyle1 .GridViewPadding td {
+    line-height: 1.5em;
+}
+
+.GridViewStyle1 td.GridViewRowCenter,
+.GridViewStyle1 .GridViewRowCenter td {
+    text-align: center!important;
+    text-indent: 0px!important;
+}
+
+.GridViewStyle1 td.GridViewRowLeft {
+    text-align: left!important;
+    text-indent: 2px!important;
+}
+
+.GridViewStyle1 .GridViewRowCut td span {
+    vertical-align: middle;
+    overflow: hidden;
+}
+
+.GridViewStyle1 input {
+    margin: 0;
+    padding: 0;
+    font-size: 1.1em;
+}
+
+.GridViewStyle1 a {
+    width: 100%;
+    padding: 3px 0px;
+    height: 100%;
+    text-decoration: none;
+    display: block;
+}
+
+.GridViewStyle1 a:hover {
+    background: #eee;
+}
+
+.GridViewHeaderTitle1 {
+    text-align: center;
+    white-space: nowrap;
+    background: #4682B4;
+    color: #fff;
+}
+
+
+/* 2022/04/13社員情報検索、部門検索背景色追加_カウン */
+
+.GridViewStyle1 tr.GridViewPadding,
+.GridViewStyle1 .GridViewPadding tr:hover {
+    background-color: #ddd;
+}
+
+
+/*---------------------------------------*/
+
+
+/* .GridViewStyle2 {} */
+
+.GridViewStyle2 th {
+    padding: 4px 10px;
+    text-align: center;
+    background: #4682B4;
+    color: #fff;
+}
+
+.GridViewStyle2 th.RowTitle {
+    padding: 0 10px 0 0;
+    text-align: right;
+    font-weight: bold;
+    vertical-align: middle;
+    width: 140px;
+}
+
+.GridViewStyle2 th.RowTitle2 {
+    text-align: right;
+    font-weight: bold;
+    vertical-align: middle;
+    background: #9a9a9a;
+    width: 40px;
+}
+
+.GridViewStyle2 td,
+.GridViewStyle2 th {
+    border-bottom: 4px solid #fff;
+    border-right: 5px solid #fff;
+    white-space: nowrap;
+}
+
+.GridViewStyle2 .OutlineLabel {
+    border: solid 1px #666;
+    background: #f9f9f9;
+    vertical-align: top;
+    padding: 2px 0px 0px 2px;
+    white-space: nowrap;
+    height: 15px;
+}
+
+.GridViewStyle2 input.right {
+    text-align: right;
+}
+
+.GridViewStyle2 span.right {
+    text-align: right;
+    padding: 2px 2px 0px 0px;
+}
+
+
+/*---------------------------------------*/
+
+
+/* .GridViewStyle3 {} */
+
+.GridViewStyle3 th,
+.GridViewStyle3 td {
+    white-space: nowrap;
+    width: 70px;
+    border: 1px solid #aaa;
+    padding: 4px 10px;
+}
+
+.GridViewStyle3 th {
+    text-align: center;
+    background: #4682B4;
+    color: #fff;
+}
+
+.GridViewStyle3 td {
+    text-align: center;
+}
+
+
+/* --------- GridViewPanelStyle --------- */
+
+.GridViewPanelStyle1 {
+    width: 990px;
+    height: 500px;
+    background: #ccc;
+    border: 1px solid #111;
+    margin: 10px 0px;
+    overflow: auto;
+}
+
+.GridViewPanelStyle2 {
+    width: 800px;
+    height: 390px;
+    background: #ccc;
+    border: 1px solid #111;
+    margin: 10px 0px;
+    overflow: auto;
+}
+
+.GridViewPanelStyle3 {
+    overflow-x: hidden;
+    overflow-y: auto;
+    height: 481px;
+}
+
+.GridViewPanelStyle4 {
+    overflow-x: hidden;
+    overflow-y: auto;
+    height: 402px;
+}
+
+.GridViewPanelStyle5 {
+    width: 650px;
+    height: 395px;
+    background: #ccc;
+    border: 1px solid #111;
+    margin: 10px 0px;
+    overflow: auto;
+}
+
+.GridViewPanelStyle6 {
+    overflow-x: hidden;
+    overflow-y: auto;
+    height: 452px;
+}
+
+.GridViewPanelStyle7 {
+    overflow-x: hidden;
+    overflow-y: auto;
+    height: 481px;
+    width: 460px;
+}
+
+
+/* --------- GridViewPagerStyle --------- */
+
+.GridViewPagerStyle1 td {
+    border: 0px!important;
+}
+
+
+/* Container */
+
+.BaseContainerStyle1 {
+    width: 700px;
+}
+
+.BaseContainerStyle2 {
+    width: 800px;
+}
+
+.BaseContainerStyle3 {
+    width: 900px;
+}
+
+.BaseContainerStyle4 {
+    width: 950px;
+}
+
+
+/* --------- LinkMenu LinkButton --------- */
+
+.HolizonListMenu1 {
+    /* **22/01/27** S*/
+    /* margin: 5px auto 10px auto; */
+    margin: 5px auto;
+    /* **22/01/27** E*/
+    padding: 0;
+    list-style: none;
+}
+
+.HolizonListMenu1 li {
+    display: inline;
+    margin: 0 5px 0px 0px;
+    padding: 0;
+}
+
+.HolizonListMenu1 span {
+    margin: 0;
+    padding: 5px;
+}
+
+.HolizonListMenu1 li input {
+    margin: 0;
+    padding: 5px;
+    display: inline;
+    font-size: 1.1em;
+    border: 1px solid #999;
+    text-decoration: none;
+    background: #fcfcfc;
+    color: #3B70DA;
+}
+
+.HolizonListMenu1 li input:hover {
+    background: #f0f0f0;
+}
+
+.FunctionMenu1 {
+    margin: 10px 0px;
+}
+
+.FunctionMenu1 a {
+    text-align: center;
+    padding: 9px 10px;
+    display: block;
+    width: 150px;
+    color: #000;
+    text-decoration: none;
+    background: url('../images/FunctionMenu1-bg.gif') repeat-x 0px bottom;
+    border: 1px solid #700;
+    white-space: pre;
+}
+
+.FunctionMenu1 a.left {
+    float: left;
+    display: inline;
+    margin-right: 10px;
+}
+
+.FunctionMenu1 input {
+    width: 100px;
+    float: left;
+    display: inline;
+    margin: 4px 10px 0px 0px;
+}
+
+.ButtonStyle1 {
+    width: 80px;
+}
+
+.ButtonField1,
+.ButtonField2 {
+    padding: 0;
+    margin-bottom: 10px;
+    text-align: center;
+}
+
+.ButtonField2 {
+    text-align: left;
+}
+
+.ButtonField1 input,
+.ButtonField2 input {
+    width: 100px;
+}
+
+.SearchButtonField input {
+    width: 50px;
+}
+
+
+/* コガックス様向けキーボード入力支援用スタイル */
+
+#EmpCdInputHelper {
+    width: 900px;
+}
+
+#EmpCdInputHelper input {
+    width: 70px;
+    height: 70px;
+    font-size: 1.5em;
+    background: #87cefa;
+}
+
+#EmpCdInputHelper input.num {
+    font-size: 2em;
+}
+
+#EmpCdInputHelper input.search {
+    background: #000080;
+    color: #fff;
+}
+
+#EmpCdInputHelper input.clear {
+    background: #eee;
+}
+
+.two-col {
+    column-count: 2;
+}
+
+.FieldTitle {
+    border-bottom:4px solid #fff;
+    border-right:5px solid #fff;
+    text-align:center;
+    vertical-align:middle;
+    white-space:nowrap;
+    font-weight:bold;
+    vertical-align:middle;
+    /* padding:5px 5px 0 0; */
+    background-color:#4682B4;
+    color:#fff;
+}
+
+.text-default {
+    color:#000;
+}

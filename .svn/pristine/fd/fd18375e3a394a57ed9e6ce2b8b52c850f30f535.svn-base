@@ -1,0 +1,23 @@
+<?php
+
+namespace App\Repositories;
+
+use Illuminate\Http\Request;
+
+use App\Models\MT13DeptAuth;
+use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Illuminate\Support\Facades\DB;
+
+
+class MT13DeptAuthRepository extends MT13DeptAuth
+{
+
+    public function getChangeableDept($loginId)
+    {
+        return MT13DeptAuth::join('MT10_EMP', 'MT13_DEPT_AUTH.DEPT_AUTH_CD', '=', 'MT10_EMP.DEPT_AUTH_CD')
+                    ->join('MT11_LOGIN', 'MT10_EMP.EMP_CD', '=', 'MT11_LOGIN.EMP_CD')
+                    ->wHERE('MT11_LOGIN.LOGIN_ID', '=', $loginId)
+                    ->select('MT13_DEPT_AUTH.DEPT_CD')
+                    ->get();
+    }
+}

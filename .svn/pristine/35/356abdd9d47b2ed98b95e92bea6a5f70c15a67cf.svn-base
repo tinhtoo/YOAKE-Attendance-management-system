@@ -1,0 +1,147 @@
+<?php
+
+namespace App\Http\Controllers\Master;
+
+use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
+use App\Models\MT10Emp;
+use App\Http\Requests\WorkTimeRequest;
+
+class MT10EmpReferenceController extends Controller
+{
+
+    public function mt10empref(Request $request)
+    {
+        // クエリビルダ
+        $query = MT10Emp::query();
+
+        $data = $query->paginate(40);
+
+        // ビューにdataを変数として渡す
+        return view('master.MT10EmpReference', compact('data'));
+    }
+
+    public function search(Request $request)
+    {
+
+        // クエリビルダ
+        $query = MT10Emp::query();
+
+        // 検索フォームで入力された値を取得する
+        $cdsearch = $request->input('cdsearch');
+        $kanasearch = $request->input('kanasearch');
+        $deptsearch = $request->input('deptsearch');
+
+        $alert = "<script type='text/javascript'>alert('alert_test');</script>";
+        // echo $alert;
+        
+
+        // 検索フォームにキーワードが入力されたら
+        if ($cdsearch !== null) {
+            if ($request->has('cdsearch') && $cdsearch != '') {
+                $query->where('EMP_CD', '=', "{$cdsearch}")->get();
+            }
+        }
+
+        if ($kanasearch !== null) {
+            if ($request->has('kanasearch') && $kanasearch != '') {
+                $query->where('EMP_KANA', 'like', "%{$kanasearch}%")->get();
+            }
+        }
+
+        if ($deptsearch !== null) {
+            if ($request->has('deptsearch') && $deptsearch != '') {
+                $query->where('DEPT_CD', '=', "{$deptsearch}")->get();
+            }
+        }
+
+        if (isset($_POST['button_A'])) {
+
+            $Agyou = '[ァ-オ]';
+
+            $query->where('EMP_KANA', 'like', "%{$Agyou}%");
+        }
+
+        if (isset($_POST['button_KA'])) {
+
+            $KAgyou = '[カ-ゴ]';
+
+            $query->where('EMP_KANA', 'like', "%{$KAgyou}%");
+        }
+
+        if (isset($_POST['button_SA'])) {
+
+            $SAgyou = '[サ-ゾ]';
+
+            $query->where('EMP_KANA', 'like', "%{$SAgyou}%");
+        }
+
+        if (isset($_POST['button_TA'])) {
+
+            $TAgyou = '[タ-ド]';
+
+            $query->where('EMP_KANA', 'like', "%{$TAgyou}%");
+        }
+
+        if (isset($_POST['button_NA'])) {
+
+            $NAgyou = '[ナ-ノ]';
+
+            $query->where('EMP_KANA', 'like', "%{$NAgyou}%");
+        }
+
+        if (isset($_POST['button_HA'])) {
+
+            $HAgyou = '[ハ-ポ]';
+
+            $query->where('EMP_KANA', 'like', "%{$HAgyou}%");
+        }
+
+        if (isset($_POST['button_MA'])) {
+
+            $MAgyou = '[マ-モ]';
+
+            $query->where('EMP_KANA', 'like', "%{$MAgyou}%");
+        }
+
+        if (isset($_POST['button_YA'])) {
+
+            $YAgyou = '[ャ-ヨ]';
+
+            $query->where('EMP_KANA', 'like', "%{$YAgyou}%");
+        }
+
+        if (isset($_POST['button_RA'])) {
+
+            $RAgyou = '[ラ-ロ]';
+
+            $query->where('EMP_KANA', 'like', "%{$RAgyou}%");
+        }
+
+        if (isset($_POST['button_WA'])) {
+
+            $WAgyou = '[ヮ-ン]';
+
+            $query->where('EMP_KANA', 'like', "%{$WAgyou}%");
+        }
+
+        if (isset($_POST['button_EN'])) {
+
+            $EN = '[a-zA-Z0-9]';
+
+            $query->where('EMP_KANA', 'like', "%{$EN}%");
+        }
+
+        if (isset($_POST['CancelButton'])) {
+            return redirect(route('Mt10empref'));
+        }
+
+
+        $data = $query->paginate(40);
+
+        // $request->flash();
+        $search_data = $request->all();
+
+        return view('master.MT10EmpReference', compact('cdsearch', 'deptsearch', 'kanasearch', 'data', 'search_data'));
+    }
+}

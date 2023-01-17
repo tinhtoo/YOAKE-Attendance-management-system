@@ -1,0 +1,326 @@
+<?php use Carbon\CarbonPeriod; ?>
+<html lang="ja">
+    <head>
+        <title>印刷</title>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+        <style>
+            @font-face{
+                font-family: "MS Pゴシック";
+                font-style: normal;
+                font-weight: normal;
+                src: url("{{ public_path('fonts/migmix-2p-regular.ttf')}}") format('truetype');
+            }
+            @page { 
+                margin: 25px 15px 9px 15px;
+            }
+            body {
+                font-family: "MS Pゴシック";
+                line-height: 8px;
+                text-align: center;
+                font-size: 9px;
+            }
+            .workTable {
+                border-collapse: collapse;
+                width: 100%;
+            }
+            .workTable tr th{
+                height: 20px;
+                width: 30px;
+                border-top: 1px solid black;
+                border-bottom: 1px solid black;
+                border-right: 1px dotted black;
+                text-align: center;
+                font-weight: unset;
+            }
+            .workTable tr td{
+                height: 19px;
+                width: 15px;
+                border: 1px black;
+                text-align: center;
+                border-style: dotted;
+            }
+            tbody .last-record td{
+                border-bottom: 1px solid black;
+                border-bottom-style: solid;
+            }
+            tbody .worktime-sum{
+                text-align: left;
+                border-top: none;
+                border-right: 1px solid black;
+                border-left: none;
+                border-bottom: none;
+            }
+            tbody .wt-desc-name {
+                text-align: left;
+                border-top: none;
+                border-right: none;
+                border-left: none;
+                border-bottom: 1px solid black;
+            }
+            tbody .last-worktime-sum {
+                border-top: none;
+                border-right: 1px solid black;
+                border-left: none;
+                border-bottom: 1px solid black;
+                text-align: left;
+            }
+            .date {
+                position: relative;
+                margin-left:70%;
+                font-size: xx-small;
+            }
+            .record {
+                padding-bottom: 5px;
+                text-align:justify;
+                font-size: xx-small;
+                position: relative;
+            }
+            .date .page-number:after { 
+                content: counter(page);
+            }
+        </style>
+    </head>
+    <!-- 該当データがない場合 -->
+    @isset($wtLandscapeKey)
+    @if (count($wtLandscapeKey) < 1)
+    <body>
+        <!-- ページ番号表示 -->
+        <script type="text/php">
+            if(isset($pdf)) {
+                $x = 1130;
+                $y = 18;
+                $text = "{PAGE_NUM} / {PAGE_COUNT}";
+                $font = $fontMetrics->get_font("MS Pゴシック, メイリオ", "normal");
+                $size = 6;
+                $color = [0,0,0];
+                $pdf->page_text($x, $y, $text, $font, $size, $color);
+            }
+        </script>
+        <table class="workTable">
+            <thead>
+            <tr>
+                    <td colspan="33" style="border: none; height: 2px; text-align: right; padding-bottom: 10px;">
+                        作成日：
+                    </td>
+                    <td colspan="3" style="border: none; height: 2px; text-align: left; padding-bottom: 10px;">
+                        {{ date('Y/m/d', strtotime($now_date)) }}
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="36" style="border: none; height: 7px; font-size: 25px; text-align: center;">
+                        勤務実績表(社員別月報)
+                    </td>
+                </tr>
+                <tr>
+                    <td style="border: none; height:4px; text-align:right;">対象月度 : &nbsp;</td>
+                    <td colspan="34" style="border: none; height:4px; text-align:left;">
+                        {{ $year }}/{{ substr('00'. $month, -2) }}&nbsp;&nbsp;月度
+                    </td>
+                </tr>
+                <tr>
+                    <td style="border: none; height:4px; text-align:right; padding-bottom: 3px;">部門 : &nbsp;</td>
+                    <td colspan="33" style="border: none; height:4px; text-align:left; padding-bottom: 3px;">
+                    </td>
+                </tr>
+                <tr>
+                    <th style="width:65px; border-left: 1px solid black; text-align: left;">社員</th>
+                    <th></th>
+                    @foreach ($period as $i => $day)
+                    <th>
+                        {{ (int)$day->format('d') }}
+                    </th>
+                    @endforeach
+                    @for ($i; $i < 30; $i++)
+                    <th></th>
+                    @endfor
+                    <th style="border-right: none; width: 70px;"></th>
+                    <th style="border-right: none;"></th>
+                    <th style="border-right: 1px solid black; width: 60px;"></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr class="last-record">
+                    <td style="border-left: 1px solid black; border-top: none;"></td>
+                    @for ($i = 0; $i <= 31; $i++)
+                    <td></td>
+                    @endfor
+                    <td style="border-right: none; border-top: none;"></td>
+                    <td class="wt-desc-name"></td>
+                    <td class="last-worktime-sum"></td>
+                </tr>
+            </tbody>
+        </table>
+    </body>
+    @else
+    <!-- 該当データが有る場合 -->
+    <!-- 部門リスト順で帳票の表示 -->
+    @foreach ($wtLandscapeKey->unique('DEPT_CD') as $reportData)
+    <body>
+        <!-- ページ番号表示 -->
+        <script type="text/php">
+            if(isset($pdf)) {
+                $x = 1130;
+                $y = 18;
+                $text = "{PAGE_NUM} / {PAGE_COUNT}";
+                $font = $fontMetrics->get_font("MS Pゴシック, メイリオ", "normal");
+                $size = 6;
+                $color = [0,0,0];
+                $pdf->page_text($x, $y, $text, $font, $size, $color);
+            }
+        </script>
+        <table class="workTable">
+            <thead>
+                <tr>
+                    <td colspan="33" style="border: none; height: 2px; text-align: right; padding-bottom: 10px;">
+                        作成日：
+                    </td>
+                    <td colspan="3" style="border: none; height: 2px; text-align: left; padding-bottom: 10px;">
+                        {{ date('Y/m/d', strtotime($now_date)) }}
+                    </td>
+                </tr>
+                <tr>
+                    <td colspan="36" style="border: none; height: 7px; font-size: 25px; text-align: center;">
+                        勤務実績表(社員別月報)
+                    </td>
+                </tr>
+                <tr>
+                    <td style="border: none; height:4px; text-align:right;">対象月度 : &nbsp;</td>
+                    <td colspan="34" style="border: none; height:4px; text-align:left;">
+                        {{ $year }}/{{ substr('00'. $month, -2) }}&nbsp;&nbsp;月度
+                    </td>
+                </tr>
+                <tr>
+                    <td style="border: none; height:4px; text-align:right; padding-bottom: 3px;">部門 : &nbsp;</td>
+                    <td colspan="33" style="border: none; height:4px; text-align:left; padding-bottom: 3px;">
+                        {{ $reportData['DEPT_CD'] }}&nbsp;&nbsp;
+                        {{ $reportData['DEPT_NAME'] }}
+                    </td>
+                </tr>
+                <tr>
+                    <th style="width:65px; border-left: 1px solid black; text-align: left;">社員</th>
+                    <th></th>
+                    @foreach ($period as $i => $day)
+                    <th>
+                        {{ (int)$day->format('d') }}
+                    </th>
+                    @endforeach
+                    @for ($i; $i < 30; $i++)
+                    <th></th>
+                    @endfor
+                    <th style="border-right: none; width: 70px;"></th>
+                    <th style="border-right: none;"></th>
+                    <th style="border-right: 1px solid black; width: 60px;"></th>
+                </tr>
+            </thead>
+            <tbody>
+                <!-- 同じ部門の社員詳細データ表示 -->
+                @php
+                $emp_worktime_list = $wtLandscapeKey->where('DEPT_CD', $reportData['DEPT_CD'])->unique('EMP_CD');
+                @endphp
+                @foreach ($emp_worktime_list as $wt_data)
+                <tr>
+                    <td style="border-left: 1px solid black; border-top: none; border-bottom: none; text-align: left;">
+                        {{ $wt_data['EMP_CD'] }}
+                    </td>
+                    <td>出勤</td>
+                    @foreach ($wt_data['time_records'] as $i => $record_data)
+                    <td>{{ $record_data['OFC_TIME'] }}</td>
+                    @endforeach
+                    @for ($i; $i < 30; $i++)
+                    <td></td>
+                    @endfor
+                    <td style="border: none; text-align: left;">
+                        出勤&nbsp; : &nbsp;{{ $record_data['SUM_WORKDAY_CNT'] }}
+                    </td>
+                    <td style="border: none; text-align: left; width: 20px;">
+                        {{ $record_data['WORK_DESC_NAME_100'] }}
+                    </td>
+                    <td class="worktime-sum">
+                        : &nbsp;{{ $record_data['SUM_OVTM1_TIME'] }}
+                    </td>
+                </tr>
+                <tr>
+                    <td style="border-left: 1px solid black; border-top: none; border-bottom: none; text-align: left;">
+                        {{ $wt_data['EMP_NAME'] }}
+                    </td>
+                    <td>退出</td>
+                    @foreach ($wt_data['time_records'] as $i => $record_data)
+                    <td>{{ $record_data['LEV_TIME'] }}</td>
+                    @endforeach
+                    @for ($i; $i < 30; $i++)
+                    <td></td>
+                    @endfor
+                    <td style="border: none; text-align: left;">
+                        有休&nbsp; : &nbsp;{{ $record_data['SUM_PADHOL_CNT'] }}&nbsp;&nbsp;&nbsp;
+                    </td>
+                    <td style="border: none; text-align: left; width: 20px;">
+                        {{ $record_data['WORK_DESC_NAME_101'] }}
+                    </td>
+                    <td class="worktime-sum">
+                        : &nbsp;{{ $record_data['SUM_OVTM2_TIME'] }}
+                    </td>
+                </tr>
+                <tr>
+                    <td style="border-left: 1px solid black; border-top: none; border-bottom: none;"></td>
+                    <td>遅刻</td>
+                    @foreach ($wt_data['time_records'] as $i => $record_data)
+                    <td>{{ $record_data['TARD_TIME'] }}</td>
+                    @endforeach
+                    @for ($i; $i < 30; $i++)
+                    <td></td>
+                    @endfor
+                    <td style="border: none; text-align: left;">
+                        代休&nbsp; : &nbsp;{{ $record_data['SUM_COMPDAY_CNT'] }}&nbsp;&nbsp;&nbsp;
+                    </td>
+                    <td style="border: none; text-align: left; width: 20px;">
+                        {{ $record_data['WORK_DESC_NAME_102'] }}
+                    </td>
+                    <td class="worktime-sum">
+                        : &nbsp;{{ $record_data['SUM_OVTM3_TIME'] }}
+                    </td>
+                </tr>
+                <tr>
+                    <td style="border-left: 1px solid black; border-top: none; border-bottom: none;"></td>
+                    <td>早退</td>
+                    @foreach ($wt_data['time_records'] as $i => $record_data)
+                    <td>{{ $record_data['LEAVE_TIME'] }}</td>
+                    @endforeach
+                    @for ($i; $i < 30; $i++)
+                    <td></td>
+                    @endfor
+                    <td style="border: none; text-align: left;">
+                        特休&nbsp; : &nbsp;{{ $record_data['SUM_SPCHOL_CNT'] }}&nbsp;&nbsp;&nbsp;
+                    </td>
+                    <td style="border: none; text-align: left; width: 20px;">
+                        {{ $record_data['WORK_DESC_NAME_103'] }}
+                    </td>
+                    <td class="worktime-sum">
+                        : &nbsp;{{ $record_data['SUM_OVTM4_TIME'] }}
+                    </td>
+                </tr>
+                <tr class="last-record">
+                    <td style="border-left: 1px solid black; border-top: none;"></td>
+                    <td>残業</td>
+                    @foreach ($wt_data['time_records'] as $i => $record_data)
+                    <td>{{ $record_data['OVTM_TIME'] }}</td>
+                    @endforeach
+                    @for ($i; $i < 30; $i++)
+                    <td></td>
+                    @endfor
+                    <td style="border-right: none; border-top: none;">
+                    </td>
+                    <td class="wt-desc-name">
+                        {{ $record_data['WORK_DESC_NAME_200'] }}
+                    </td>
+                    <td class="last-worktime-sum">
+                        : &nbsp;{{ $record_data['SUM_EXT1_TIME'] }}
+                    </td>
+                </tr>
+                @endforeach
+            </tbody>
+        </table>
+    </body>
+    @endforeach
+    @endif
+    @endisset
+</html>

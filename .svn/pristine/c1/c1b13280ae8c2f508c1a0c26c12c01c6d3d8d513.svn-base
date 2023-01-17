@@ -1,0 +1,54 @@
+<?php
+
+namespace App\Http\Controllers;
+
+use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
+use App\Http\Requests\MT11PasswordEditorRequest;//クラス宣言
+use App\Models\MT11Login;
+use App\Models\MT99Msg;
+use App\Models\MT91ClsDetail;
+
+class MT11PasswordEditorController extends Controller
+{
+    public function index(){
+
+      //1005メッセージ取得（更新しますか？）
+      $msg_1005 = MT99Msg::where('MSG_NO', '1005')->pluck('MSG_CONT')->first();
+      
+
+      // ビューに変数を渡す
+      return view('master.MT11PasswordEditor',['msg_1005' => $msg_1005]);  
+    }
+
+    
+ 
+    public function update(MT11PasswordEditorRequest $request){      
+
+      //入力したデータを受け取る
+      $inputs = $request->all();
+
+      //** SessionでログインIDの取得 */
+      $loginUserId = session('id');
+      //MT11_LOGIN(EMP_CD)を取得
+      $emp_cd = MT11Login::where(['LOGIN_ID' => $loginUserId])->where(['PASSWORD' => $request->txtPassword])->pluck('EMP_CD')->first();
+      //取得したEMP_CDでDB検索
+      $data = MT11Login::find($emp_cd);
+      //Pass変更
+      $data->PASSWORD = $request->txtNewPassword;          
+        
+      date_default_timezone_set('Asia/Tokyo');
+      $data->UPD_DATE = now();        
+         
+ 
+      $data->timestamps = false; 
+      $data->save();
+ 
+         
+     
+      return redirect('/');   
+    }
+
+  
+}
+   

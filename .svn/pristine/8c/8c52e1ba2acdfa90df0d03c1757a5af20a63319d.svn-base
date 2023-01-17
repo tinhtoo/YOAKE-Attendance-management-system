@@ -1,0 +1,27 @@
+@extends('layouts.app')
+
+@section('header')
+    <!-- ヘッダーの共通部分 -->
+    <div id="header" style="text-align: right;">
+        <div id="header-inner">
+            <span>
+                <img src="../images/WorkTmMng-corporate.jpg" alt="Corporate-Logo" />
+            </span>
+            <span>
+                <img src="../images/WorkTmMng-title.gif" alt="勤怠管理システム" width="250" height="50">
+            </span>
+            <span style="float: right!important; padding:10px;">
+                {{--  ようこそ <span>{{ $loginEmpName }}</span> さん  --}}
+                <br>
+                <a href="{{ route('logout') }}" style="text-decoration: none; float: right;" class="" onclick="event.preventDefault();
+                            if(confirm('ログアウトします。よろしいですか？')){document.getElementById('logout-form').submit()}">
+                    {{ __('ログアウト') }}
+                </a>
+                <form id="logout-form" action="{{ route('logout') }}" method="POST" style="display: none">
+                    @csrf
+                </form>
+            </span>
+        </div>
+    </div>
+
+@endsection

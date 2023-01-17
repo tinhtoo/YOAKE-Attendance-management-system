@@ -1,0 +1,367 @@
+<!-- 社員別月別シフト入力画面 -->
+@extends('menu.main')
+@section('title', '社員別月別シフト入力')
+@section('content')
+    <div id="contents-stage">
+        <table class="BaseContainerStyle2">
+            <tbody>
+                <tr>
+                    <td>
+                        <div id="UpdatePanel1">
+                            <form action="" method="post" id="searchForm">
+                            @csrf
+                                <table class="InputFieldStyle1">
+                                    <tbody>
+                                        <tr>
+                                            <th>対象月度</th>
+                                            <td>
+                                                <input type="text" class="yearMonth" name="filter[caldYearMonth]" id="yearMonth" autocomplete="off"
+                                                    onfocus="this.select();" autofocus tabindex="1" style="width: 100px;" 
+                                                    @if(isset($search_results) && !$search_results->isEmpty()) disabled="disabled" @endisset
+                                                    value="{{ old('filter.caldYearMonth', isset($search_data) ? $search_data['caldYearMonth'] : $def_cald_year.'年'.sprintf('%02d', $def_cald_month).'月') }}" />
+                                                @error('filter.caldYearMonth')
+                                                <span class="text-danger">{{ getArrValue($error_messages, $message) }}</span>
+                                                @enderror
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <th>表示区分</th>
+                                            <td>
+                                                <div class="GroupBox1" style="width:220px">
+                                                    <input type="radio" name="filter[searchCondition]" id="searchDept"
+                                                        class="searchCondition" tabindex="2" value="0"
+                                                        @if(isset($search_results) && !$search_results->isEmpty()) disabled="disabled" @endisset
+                                                        {{ old('filter.searchCondition', isset($search_data) && $search_data['searchCondition']) ? '' : 'checked="checked"' ; }} >
+                                                    <label for="searchDept" style="padding: 1.5px;">部門</label>
+                                                    <input type="radio" name="filter[searchCondition]" id="searchEmp"
+                                                        class="searchCondition" tabindex="3" value="1"
+                                                        @if(isset($search_results) && !$search_results->isEmpty()) disabled="disabled" @endisset
+                                                        {{ old('filter.searchCondition', isset($search_data) && $search_data['searchCondition']) ? 'checked="checked"' : '' ; }} >
+                                                    <label for="searchEmp" style="padding: 1.5px;">社員</label>
+                                                </div>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <th>締日</th>
+                                            <td>
+                                                <select name="filter[closingDateCd]" tabindex="4"
+                                                    id="closingDateCd" style="width: 150px;"
+                                                    @if(old('filter.searchCondition', isset($search_data))) disabled="disabled" @endif>
+                                                    @foreach ($closing_dates as $closing_date)
+                                                    <option value="{{ $closing_date->CLOSING_DATE_CD }}"
+                                                        {{ $closing_date->CLOSING_DATE_CD == (old('closingDateCd', isset($search_data) && !$search_data['searchCondition'] ? $search_data['closingDateCd'] : null ) ?? $def_closing_date_cd) ? 'selected' : '' }}>
+                                                        {{ $closing_date->CLOSING_DATE_NAME }}
+                                                    </option>
+                                                    @endforeach
+                                                </select>
+                                                @if(!isset($search_data)) <div style="display:none" id="defClosing">{{ $def_closing_date_cd }}</div> @endif
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <th>部門</th>
+                                            <td>
+                                                <input name="filter[txtDeptCd]" tabindex="5" class="txtDeptCd searchDeptCd"
+                                                    id="txtDeptCd" style="width: 50px;" type="text" maxlength="6"
+                                                    oninput="value=onlyHalfWord(value)" onfocus="this.select();"
+                                                    @if(old('filter.searchCondition', isset($search_data))) disabled="disabled" @endif
+                                                    value="{{ old('filter.txtDeptCd' , (!empty($search_data) && !$search_data['searchCondition'] ? $search_data['txtDeptCd'] : '')) }}">
+                                                <input type="button" name="btnSearchDeptCd" class="SearchButton" id="btnSearchDeptCd"
+                                                    @if(old('filter.searchCondition', isset($search_data))) disabled="disabled" @endif
+                                                    tabindex="6" value="?" onclick="SearchDept(this);return false">
+                                                <input type="text" name="deptName" id="deptName" class="txtDeptName"
+                                                    data-dispclscd=01 data-isdeptauth=true
+                                                    style="width: 200px; display: inline-block;"
+                                                    disabled="disabled">
+                                                @error('filter.txtDeptCd')
+                                                <span class="text-danger" id="DeptCdValidError">{{ getArrValue($error_messages, $message) }}</span>
+                                                @endif
+                                                <span class="text-danger" id="deptNameError"></span>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <th>社員番号</th>
+                                            <td>
+                                                <input type="text" name="filter[txtEmpCd]" tabindex="7" class="txtEmpCd searchEmpCd"
+                                                    id="txtEmpCd" style="width: 80px;" maxlength="10"
+                                                    oninput="value=onlyHalfWord(value)" onfocus="this.select();"
+                                                    @if(!old('filter.searchCondition') || isset($search_data))) disabled="disabled" @endif
+                                                    value="{{ old('filter.txtEmpCd', !empty($search_data) && $search_data['searchCondition'] ? $search_data['txtEmpCd'] : '') }}">
+                                                <input type="button" name="btnSearchEmpCd" tabindex="8" class="SearchButton"
+                                                    id="btnSearchEmpCd" onclick="SearchEmp(this);return false" value="?"
+                                                    @if(!old('filter.searchCondition') || isset($search_data))) disabled="disabled" @endif>
+                                                <input name="empName" id="empName" class="txtEmpName" type="text"
+                                                    data-regclscd=00 data-isdeptauth=true data-calendarclscd=01
+                                                    {{-- ASP.NET版はregclscd=00,01、設計書はregclscd<>02 --}}
+                                                    {{-- ASP.NET版に合わせる --}}
+                                                    style="width: 200px; display: inline-block;"
+                                                    disabled="disabled">　
+                                                @error('filter.txtEmpCd')
+                                                <span class="text-danger" id="EmpCdValidError">{{ getArrValue($error_messages, $message) }}</span>
+                                                @endif
+                                                <span class="text-danger" id="EmpCdError"></span>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </form>
+
+                            <div class="line"></div>
+                            <p>
+                                <input type="button" name="view" class="ButtonStyle1 view" id="view1"
+                                    tabindex="9" value="表示"
+                                    data-url="{{ url('shift/MonthShiftEmpEditor') }}"
+                                    @if(isset($search_results) && !$search_results->isEmpty()) disabled="disabled" @endif>
+                                <input type="button" name="update" class="ButtonStyle1 update" id="update"
+                                    tabindex="10" value="更新"
+                                    data-url="{{ url('shift/MonthShiftEmpUpdate') }}"
+                                    @if(!(isset($search_results) && !$search_results->isEmpty())) disabled="disabled" @endif>
+                                <input type="button" name="cancel2" class="ButtonStyle1" id="cancel2"
+                                    tabindex="11" value="キャンセル"
+                                    onclick="location.href='{{ url('shift/MonthShiftEmpEditor') }}'">
+                                &nbsp;
+                                @if(isset($fix_flg) && $fix_flg)
+                                <span class="font-style2" id="lblFixMsg">{{ config('consts.fix_msg')}}</span>
+                                @endif
+                            </p>
+    
+
+                            <!-- detail -->
+                            <div class="GridViewStyle1" id="gridview-container">
+                                <div class="GridViewPanelStyle1" id="ctl00_cphContentsArea_pnlWorkTime"
+                                    style="width: 1158px;">
+
+                                    <div>
+                                        <table tabindex="12" class="GridViewRowCut GridViewBorder GridViewRowCenter"
+                                            id="ctl00_cphContentsArea_gvMonthShiftEmp" style="border-collapse: collapse;"
+                                            border="1" rules="all" cellspacing="0">
+                                            <tbody>
+                                                
+                                                @isset($search_results)
+                                                @if($search_results->isEmpty())
+                                                <tr style="width:70px;">
+                                                    <td><span>{{ getArrValue($error_messages, 2000) }}</span></td>
+                                                </tr>
+
+                                                @else
+
+                                                <tr>
+                                                    <th>部門名</th>
+                                                    <th>社員名</th>
+                                                    <th></th>
+                                                    @foreach($caldDays as $i => $day)
+                                                    <th>
+                                                        <span
+                                                            style="display: inline-block;{{ $holidays->contains($day->format('md')) || $day->format('w') == 0 || $day->format('w') == 6 ? ' color:red;' : ''; }}">
+                                                            {{ $day->format('m/d') }}({{ config('consts.weeks')[$day->format('w')] }})
+                                                        </span>
+                                                        <input type="hidden" class="caldDate" id="{{ $i }}" value={{ $day->format('Y-m-d') }}>
+                                                    </th>
+                                                    @endforeach
+                                                </tr>
+                                                @foreach ($search_results->unique('EMP_CD')->values()->all() as $emp_index => $emp_record)
+                                                <tr class="calendar_record">
+                                                    <td class="GridViewRowLeft"><span style="width:100px; display:inline-block;">{{ $emp_record->DEPT_NAME }}</span></td>
+                                                    <td class="GridViewRowLeft"><span style="width:120px; display:inline-block;">{{ $emp_record->EMP_NAME }}</span></td>
+                                                    <td>
+                                                        <input type="button" name="shiftPtn" class="shiftPtn" id="shiftPtn" value="パターン" tabindex="13"
+                                                        @if($emp_index === 0) autofocus @endif>
+                                                    </td>
+                                                    @foreach($search_results->where('EMP_CD', $emp_record->EMP_CD)->values()->all() as $i => $work)
+                                                    <td class="GridViewRowLeft">
+                                                        <select name="calendar[{{ $emp_index }}][{{ $i }}][WORKPTN_CD]" id="txtWorkPtnCd{{ $i }}"
+                                                            class="workPtnCd coloredSelect" tabindex="13">
+                                                            @foreach ($workptn_names as $workptn_name)
+                                                            <option
+                                                                value="{{ $workptn_name->WORKPTN_CD }}"
+                                                                {{ $workptn_name->WORK_CLS_CD === '00' ? 'class=text-danger' : 'style=color:black;'}}
+                                                                {{ $workptn_name->WORKPTN_CD ===  $work->WORKPTN_CD ? "selected" : "" }}
+                                                            >
+                                                                {{$workptn_name->WORKPTN_NAME }}
+                                                            </option>
+                                                            @endforeach
+                                                        </select>
+                                                        <br>
+                                                        <span class="text-danger" id="calendarData.{{ $emp_index }}.calendar.{{ $i }}.workPtnCd"></span>
+                                                    </td>
+                                                    @endforeach
+                                                    <td>
+                                                        <input type="hidden" name="empCd" id="empCd{{ $emp_index }}" value="{{ $emp_record->EMP_CD }}">
+                                                        <input type="hidden" name="endShiftptnCd" id="endShiftptnCd" type="hidden">
+                                                        <input type="hidden" name="endDayNo" id="endDayNo" type="hidden">
+                                                    </td>
+                                                </tr>
+                                                @endforeach
+                                                <input type="hidden" id="startDate" value="{{ $caldDays->first()->format('Ymd') }}">
+                                                <input type="hidden" id="endDate" value="{{ $caldDays->last()->format('Ymd') }}">
+                                                @endif
+                                                @endisset
+
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="line"></div>
+                            <p class="ButtonField2">
+                                <input type="button" name="cancel2" class="ButtonStyle1" id="cancel2"
+                                    tabindex="14" value="キャンセル"
+                                    onclick="location.href='{{ url('shift/MonthShiftEmpEditor') }}'">
+                            </p>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+@endsection
+
+@section('script')
+<script>
+    $(function() {
+        // ENTER時に送信されないようにする
+        $('input').not('[type="button"]').keypress(function(e) {
+            if (e.which == 13) {
+                return false;
+            }
+        });
+
+        // 検索条件制御
+        $('.searchCondition').change(function(ele) {
+            if (ele.target.value === '1') {
+                // 社員
+                $('#closingDateCd').val($('#defClosing').text());
+                $('#closingDateCd').attr('disabled', 'disabled');
+                $('#txtDeptCd').attr('disabled', 'disabled');
+                $('#btnSearchDeptCd').attr('disabled', 'disabled');
+                $('#txtDeptCd').val('');
+                $('#deptName').val('');
+                $('#beforeDept').val('');
+                $('#txtEmpCd').attr('disabled', false);
+                $('#btnSearchEmpCd').attr('disabled', false);
+            } else {
+                // 部門
+                $('#closingDateCd').attr('disabled', false);
+                $('#txtDeptCd').attr('disabled', false);
+                $('#btnSearchDeptCd').attr('disabled', false);
+                $('#txtEmpCd').val('');
+                $('#empName').val('');
+                $('#beforeEmp').val('');
+                $('#txtEmpCd').attr('disabled', 'disabled');
+                $('#btnSearchEmpCd').attr('disabled', 'disabled');
+            }
+            $('.text-danger').text('');
+        });
+
+        // 明細表示
+        $(document).on('click', '.view', function() {
+            var url = $(this).data('url');
+            $('#searchForm').attr('action', url);
+            $('#searchForm').submit();
+        });
+
+        // 更新
+        var disableFlg = false;
+        $(document).on('click', '.update', function() {
+            if (disableFlg || !window.confirm("{{ getArrValue($error_messages, 1005) }}")) {
+                return false;
+            }
+            disableFlg = true;
+            var calendarData = [];
+            $('.calendar_record').each(function(record_index, calendarRecord) {
+                var calendarRecordObj = $(calendarRecord);
+                var calendar = [];
+                calendarRecordObj.find('.workPtnCd').each(function(date_index, workPtnSelect) {
+                    calendar[date_index] = {
+                        'caldDate': $('.caldDate#' + date_index).val(),
+                        'workPtnCd': $(workPtnSelect).val(),
+                    };
+                });
+                calendarData[record_index] = {
+                    'empCd':calendarRecordObj.find('#empCd' + record_index).val(),
+                    'endShiftptnCd':calendarRecordObj.find('#endShiftptnCd').val(),
+                    'endDayNo':calendarRecordObj.find('#endDayNo').val(),
+                    'calendar':calendar,
+                };
+            })
+            $.ajaxSetup({
+                headers: {
+                    'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+                }
+            });
+            $.ajax({
+                url:$(this).data('url'),
+                type:'POST',
+                data:{
+                    'caldYM':$("#yearMonth").val(),
+                    'calendarData':calendarData
+                }
+            })
+            .done((data, textStatus, jqXHR) => {
+                // 画面更新無し（使用未確定、暫定）
+                disableFlg = false;
+                // location.href='{{ url('shift/MonthShiftEmpEditor') }}';
+            })
+            .fail ((jqXHR, textStatus, errorThrown) => {
+                // $.each(jqXHR.responseJSON.errors, function(i, value) {
+                //     if (!i.endsWith('.workPtnCd')) {
+                        location.href='{{ url('shift/MonthShiftEmpEditor') }}';
+                //     }
+                //     $('[id="' + i + '"]').text(value[0]);
+                // });
+                // disableFlg = false;
+                // $('#btnUpdate').focus();
+            });
+
+            return false;
+        });
+
+        // 値選択後、エラー文言削除
+        $('.workPtnCd').change(function() {
+            if ($(this).val() && $(this).parent().find('span').text()) {
+                $(this).parent().find('span').text("");
+            }
+        });
+
+        // プルダウンの色設定
+        var changeColor = function() {
+            $(".coloredSelect").each(function(i,e){
+                $(e).css('color', $(e).children("option:selected").css("color"))
+            });
+        };
+        changeColor();
+        $(".coloredSelect").on('change', (ele) => {
+            $(ele.target).css('color', $(ele.target).children("option:selected").css("color"))
+        });
+
+        // カレンダー機能の設定
+        $('.yearMonth').datepicker({
+            format: 'yyyy年mm月',
+            autoclose: true,
+            language: 'ja',
+            minViewMode: 1,
+            startDate: '{{ $def_cald_year - 1 }}年01月',
+            endDate: '{{ $def_cald_year + 1 }}年12月'
+        });
+
+        // 入力可能文字：半角英文字・数字のみ
+        onlyHalfWord = n => n.replace(/[０-９Ａ-Ｚａ-ｚ]/g, s => String.fromCharCode(s.charCodeAt(0) - 65248))
+                            .replace(/[^0-9a-zA-Z]/g, '');
+
+        // パターンダイアログ表示
+        $('.shiftPtn').click(function(element) {
+            // パターン選択　子ウィンドウ表示
+            $(".clickedTableRecord").removeClass('clickedTableRecord');
+            $(element.target).closest('tr').addClass('clickedTableRecord');
+            var paramObject = {};
+            paramObject['startDate'] = $('#startDate').val();
+            paramObject['endDate'] = $('#endDate').val();
+            var searchParam = new URLSearchParams(paramObject).toString();
+            var param = '?' + searchParam;
+            var url = '/shift/ShiftPtnSearch' + param;
+            popupPtn = window.open(url, 'シフトパターン選択', 'height=635,width=500,left=400,top=90,resizable=yes,scrollbars=yes,toolbar=yes,menubar=no,location=no,directories=no, status=yes');
+            window.focus();
+        });
+    });
+</script>
+@endsection

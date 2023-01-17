@@ -1,0 +1,83 @@
+<!-- 端末情報更新処理画面 -->
+@extends('menu.main')
+@section('title', '端末情報更新処理')
+@section('content')
+    <div id="contents-stage">
+        <table class="BaseContainerStyle2">
+            <tbody>
+                <tr>
+                    <td>
+                        <table class="style1" style="width: 100%">
+                            <tbody>
+                                <tr>
+                                    <td style="text-align: center">
+                                        <br>
+                                        <br>
+                                        <br>
+                                        打刻用端末へ社員情報と連絡事項を登録します。<br>
+                                        端末情報更新ボタンを押してください。<br>
+                                        <br>
+                                        <br>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="text-align: center">
+                                        <input class="search" type="submit" style="width: 200px; height: 40px;" value="端末情報更新">
+                                        <form action="{{ url('mng_oprt/WorkTimeConvert') }}" method="post" id="form">
+                                            @csrf
+                                        </form>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td style="text-align: center">
+                                        <br>
+                                        <br>
+                                        @if(isset($result))
+                                            @if(empty($result))
+                                            <span>{{ getArrValue($error_messages, '1006') }}</span>
+                                            @else
+                                            @foreach($result as $fail_term)
+                                            <span>{{ str_repalce('{0}', $fail_term, getArrValue($error_messages, '4026')) }}</span>
+                                            @endforeach
+                                            @endif
+                                        @endif
+                                        <br>
+                                        <br>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <div>
+
+                            <table>
+                                <tbody>
+                                    <tr>
+                                        <td>
+                                            <span class=FieldTitle style="height: 22px; width: 140px; display: inline-block">連絡事項</span>
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <td>
+                                            <textarea style="width: 730px"></textarea>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+@endsection
+@section('script')
+<script>
+$(function() {
+    // 更新submit-form
+    $(document).on('click', '.search', function() {
+        $('#form').submit();
+    });
+});
+</script>
+@endsection

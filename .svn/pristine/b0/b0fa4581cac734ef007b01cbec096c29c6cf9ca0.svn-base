@@ -1,0 +1,47 @@
+<?php
+
+namespace App\Http\Controllers\Master;
+use App\Models\MT99Msg;
+use App\Repositories\Master\MT14AuthRefRepository;
+use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
+use App\Models\MT12Dept;
+use Illuminate\Support\Facades\DB;
+use App\Repositories\MT93PgRepository;
+use Illuminate\Foundation\Http\FormRequest;
+
+class MT12DeptReferenceController extends Controller
+{
+    protected $AuthRef_repository;
+
+    /**
+     * コンストラクタ
+     * リポジトリのインスタンスを生成、格納
+     *
+     * @param  UserRepository  $AuthRef_repository
+     * @return
+     */
+    public function __construct(MT14AuthRefRepository $AuthRef_repository
+                                            ,MT93PgRepository $pg_repository)
+    {
+        parent::__construct($pg_repository);
+        $this->AuthRef_repository = $AuthRef_repository;
+    }
+
+    /**
+     * 画面表示
+     * 引数がない、またはnullの場合は新規登録
+     *
+     * @param [type] $id
+     * @return void
+     */
+
+    public function index()
+    {
+        $DeptAll = DB::table('MT12_DEPT')
+                    ->select('DEPT_CD', 'DEPT_NAME','LEVEL_NO')
+                    ->paginate(20);
+
+        return parent::viewWithMenu('master.MT12DeptReference',compact('DeptAll'));
+    }
+}

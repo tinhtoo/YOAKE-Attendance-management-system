@@ -1,0 +1,48 @@
+﻿/*----------------------------------------*/
+/* header */
+/*----------------------------------------*/
+div#header
+{
+	position:relative;
+	height:65px;
+	padding-bottom:17px;
+	background:#fff url('../images/header-bg.gif') repeat-x 0px bottom;
+}
+
+div#header-inner
+{
+	height:100%;
+	background:url('../images/header-inner-bg.gif') repeat-y right bottom;
+	text-align:left;
+}
+
+div#header-inner td
+{
+}
+div#header img 
+{
+	vertical-align:middle;
+	margin:5px 0px 0px 10px;
+}
+
+/*----------------------------------------*/
+/* contents */
+/*----------------------------------------*/
+div#contents
+{
+	font-size:0.9em;
+	color:#000;
+	position:relative;
+	margin:0px 15px;
+}
+
+
+/*----------------------------------------*/
+/* footer */
+/*----------------------------------------*/
+div#footer
+{
+	position:relative;
+	padding-top:20px;
+	height:0px;
+}

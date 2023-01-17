@@ -1,0 +1,55 @@
+<?php
+
+namespace App\Http\Controllers\Form_Print;
+
+use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
+use App\Repositories\MT93PgRepository;
+use App\Http\Requests\TimeStampPrintRequest;
+use App\Filters\TimeStampPrintFilter;
+use App\Repositories\TR01WorkRepository;
+use Carbon\Carbon;
+use PDF;
+
+use function Symfony\Component\VarDumper\Dumper\esc;
+
+/**
+ * 未打刻／二重打刻一覧表 処理
+ */
+class TimeStampPrintController extends Controller
+{
+    private $tr01_work;
+
+    /**
+     * コントローラインスタンスの生成
+     * @param
+     * @return void
+     */
+    public function __construct(MT93PgRepository $pg_repository,
+                                TR01WorkRepository $tr01_work_rep)
+    {
+        parent::__construct($pg_repository, '020003',
+        $this->tr01_work = $tr01_work_rep);
+    }
+
+    /**
+     * 未打刻／二重打刻一覧表 処理　画面表示
+     * @return view
+     */
+    public function index(Request $request)
+    {
+        return parent::viewWithMenu('form_print.TimeStampPrint');
+    }
+
+    public function print(TimeStampPrintRequest $request, TimeStampPrintFilter $filter)
+    {
+        $input_datas = $request->all();
+        $db_time_stamp = ($input_datas['ReportCategory'] == 'rbDbTimeStamp');
+
+        $date = $this->tr01_work->getNoTimeStampReportData($filter, $db_time_stamp);
+        dd($date);
+
+        return view('form_print.templates.TimeStampPdf',compact('input_datas'));
+
+    }
+}

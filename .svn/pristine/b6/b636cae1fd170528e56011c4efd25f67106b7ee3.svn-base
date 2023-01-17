@@ -1,0 +1,471 @@
+<!-- 社員情報入力  -->
+@extends('menu.main')
+
+@section('title', '社員情報入力')
+
+@section('content')
+    <div id="contents-stage">
+        <table class="BaseContainerStyle1">
+            <form action="" method="post" id="form">
+                @csrf
+                <div id="ctl00_cphContentsArea_UpdatePanel1">
+                    <table class="InputFieldStyle1">
+                        <tbody>
+                            <tr>
+                                <th class="required">社員番号</th>
+                                <td>
+                                    <input type="text" name="EMP_CD" id="EMP_CD"
+                                        value="{{ $emp_data->EMP_CD ?? old('EMP_CD') }}"
+                                        style="width: 80px;" maxlength="10" tabindex="1"
+                                        @if(!empty($emp_data->EMP_CD))
+                                        readonly
+                                        @endif
+                                    >
+                                    @error('EMP_CD')
+                                    {{ $message }}<br>
+                                    @enderror
+                                </td>
+                            </tr>
+                            <tr>
+                                <th class="required">社員名</th>
+                                <td>
+                                    <input type="text" name="EMP_NAME" id="EMP_NAME"
+                                        value="{{ $emp_data->EMP_NAME ?? old('EMP_NAME') }}"
+                                        style="width: 300px;" maxlength="20" tabindex="2"
+                                        @if(!empty($emp_data->EMP_CD))
+                                        onfocus="this.select();"
+                                        @endif
+                                        >
+                                    @error('EMP_NAME')
+                                        {{ $message }}<br>
+                                    @enderror
+                                </td>
+                            </tr>
+                            <tr>
+                                <th class="required">社員カナ名</th>
+                                <td>
+                                    <input name="EMP_KANA" id="EMP_KANA" tabindex="3"
+                                        value="{{ $emp_data->EMP_KANA ?? old('EMP_KANA') }}"
+                                        style="width: 160px;" onfocus="this.select();" type="text" maxlength="20">
+                                    @error('EMP_KANA')
+                                        {{ $message }}<br>
+                                    @enderror
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>部門</th>
+                                <td>
+                                    <input name="DEPT_CD" id="txtDeptCd" style="width: 50px;" 
+                                        type="text" tabindex="4" maxlength="6" oninput="value = onlyHalfWord(value)"
+                                        value="{{ old('txtDeptCd', !empty($search_data['txtDeptCd']) ? $search_data['txtDeptCd'] : $emp_data->DEPT_CD) }}"
+                                    >
+                                    <input name="btnSearchDeptCd" class="SearchButton" id="btnSearchDeptCd" type="button" value="?" onclick="SearchDept();return false">
+                                    <input name="deptName" class="OutlineLabel" type="text" style="width: 200px; height: 23px; display: inline-block;" 
+                                        id="deptName" value="{{ old('deptName', !empty($request_data['deptName']) ? $request_data['deptName']:'') }}"
+                                        readonly="readonly"
+                                    >
+                                    @if ($errors->has('filter.txtDeptCd'))
+                                    <span class="text-danger">{{ $errors->first('filter.txtDeptCd')  }}</span>
+                                    @endif
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>入社年月日</th>
+                                <td>
+                                    <input type="text" name="ENT_YEAR" id="ENT_YEAR" value="{{ $emp_data->ENT_YEAR ?? old('ENT_YEAR') }}"
+                                        onchange="AddDropDownList('ENT_YEAR', 'ENT_MONTH', 'ENT_DAY')"
+                                        tabindex="5" style="width: 40px;" maxlength="4">
+                                    &nbsp;年&nbsp;
+                                    @error('ENT_YEAR')
+                                        {{ $message }}&nbsp;
+                                    @enderror
+                                    <select name="ENT_MONTH" id='ENT_MONTH' tabindex="6"
+                                        style="width: 50px;"
+                                        onchange="AddDropDownList('ENT_YEAR', 'ENT_MONTH', 'ENT_DAY')">
+                                        <option value=""></option>
+                                        @for($i = 1; $i <= 12; $i++)
+                                        <option value="{{ $i }}"
+                                            {{ $i == $emp_data->ENT_MONTH ?? old('ENT_MONTH') ? 'selected' : '' }}>
+                                            {{ $i }}
+                                        </option>
+                                        @endfor
+                                    </select>
+                                    &nbsp;月&nbsp;
+                                    @error('ENT_MONTH')
+                                        {{ $message }}&nbsp;
+                                    @enderror
+                                    <select name="ENT_DAY" id="ENT_DAY" tabindex="7"
+                                        style="width: 50px;">
+                                    &nbsp;日&nbsp;
+                                    @error('ENT_DAY')
+                                        {{ $message }}&nbsp;
+                                    @enderror
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>退職年月日</th>
+                                <td>
+                                    <input type="text" name="RET_YEAR" id="RET_YEAR" value="{{ $emp_data->RET_YEAR ?? old('RET_YEAR') }}"
+                                        onchange="AddDropDownList('RET_YEAR', 'RET_MONTH', 'RET_DAY')"
+                                        tabindex="8" style="width: 40px;" maxlength="4">
+                                    &nbsp;年&nbsp;
+                                    @error('RET_YEAR')
+                                        {{ $message }}&nbsp;
+                                    @enderror
+                                    <select name="RET_MONTH" id='RET_MONTH' tabindex="9"
+                                        style="width: 50px;"
+                                        onchange="AddDropDownList('RET_YEAR', 'RET_MONTH', 'RET_DAY')"> 
+                                        <option value=""></option>
+                                        @for($i = 1; $i <= 12; $i++)
+                                        <option value="{{ $i }}"
+                                            {{ $i == $emp_data->RET_MONTH ?? old('RET_MONTH') ? 'selected' : '' }}>
+                                            {{ $i }}
+                                        </option>
+                                        @endfor
+                                    </select>
+                                    &nbsp;月&nbsp;
+                                    @error('RET_MONTH')
+                                    {{ $message }}&nbsp;
+                                    @enderror
+                                    <select name="RET_DAY" id="RET_DAY" tabindex="10"
+                                        style="width: 50px;">
+                                    &nbsp;日&nbsp;
+                                    @error('RET_DAY')
+                                        {{ $message }}&nbsp;
+                                    @enderror
+                                </td>
+                            </tr>
+                            <tr>
+                                <th class="required">在籍区分</th>
+                                <td>
+                                    <select name="REG_CLS_CD" tabindex="11"
+                                        id="REG_CLS_CD" style="width: 80px;">
+                                        <option value=""></option>
+                                    @foreach ($reg_cls_cd as $regClsCd)
+                                        <option value="{{ $regClsCd->CLS_DETAIL_CD }}"
+                                            {{ $regClsCd->CLS_DETAIL_CD == $emp_data->REG_CLS_CD ?? old('REG_CLS_CD') ? 'selected' : '' }}>
+                                            {{ $regClsCd->CLS_DETAIL_NAME }}
+                                        </option>
+                                    @endforeach
+                                    </select>
+                                    @error('REG_CLS_CD')
+                                        {{ $message }}<br>
+                                    @enderror
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>生年月日</th>
+                                <td>
+                                    <input type="text" name="BIRTH_YEAR" id="BIRTH_YEAR" value="{{ $emp_data->BIRTH_YEAR ?? old('BIRTH_YEAR') }}"
+                                        onchange="AddDropDownList('BIRTH_YEAR', 'BIRTH_MONTH', 'BIRTH_DAY')"
+                                        tabindex="12" style="width: 40px;" maxlength="4">
+                                    &nbsp;年&nbsp;
+                                    @error('BIRTH_YEAR')
+                                    {{ $message }}&nbsp;    
+                                    @enderror
+                                    <select name="BIRTH_MONTH" id='BIRTH_MONTH' tabindex="13" style="width: 50px;"
+                                        onchange="AddDropDownList('BIRTH_YEAR', 'BIRTH_MONTH', 'BIRTH_DAY')"> 
+                                        <option value=""></option>
+                                        @for($i = 1; $i <= 12; $i++)
+                                        <option value="{{ $i }}"
+                                            {{ $i == $emp_data->BIRTH_MONTH ?? old('BIRTH_MONTH') ? 'selected' : '' }}>
+                                            {{ $i }}
+                                        </option>
+                                        @endfor
+                                    </select>
+                                    &nbsp;月&nbsp;
+                                    @error('BIRTH_MONTH')
+                                    {{ $message }}&nbsp;
+                                    @enderror
+                                    <select name="BIRTH_DAY" id="BIRTH_DAY" tabindex="14" style="width: 50px;">
+                                    </select>
+                                    &nbsp;日&nbsp;
+                                    @error('BIRTH_DAY')
+                                    {{ $message }}&nbsp;
+                                    @enderror
+                                </td>
+                            </tr>
+                            <tr>
+                                <th class="required">性別</th>
+                                <td>
+                                    <select name="SEX_CLS_CD" tabindex="15" id="SEX_CLS_CD" style="width:50px;">
+                                        <option value=""></option>
+                                    @foreach ($sex_cls_cd as $sexClsCd)
+                                        <option value="{{ $sexClsCd->CLS_DETAIL_CD }}"
+                                            {{ $sexClsCd->CLS_DETAIL_CD == $emp_data->SEX_CLS_CD ?? old('SEX_CLS_CD') ? 'selected' : '' }}>
+                                            {{ $sexClsCd->CLS_DETAIL_NAME }}
+                                        </option>
+                                    @endforeach
+                                    </select>
+                                    @error('SEX_CLS_CD')
+                                    {{ $message }}<br>
+                                    @enderror
+                                </td>
+                            </tr>
+                            <tr>
+                                <th class="required">社員区分</th>
+                                <td>
+                                    <select name="EMP_CLS1_CD" tabindex="16" id="EMP_CLS1_CD" style="width: 300px;">
+                                        <option value=""></option>
+                                    @foreach ($emp_csl1_cd as $empCls1Cd))
+                                        <option value="{{ $empCls1Cd->DESC_DETAIL_CD }}"
+                                            {{ $empCls1Cd->DESC_DETAIL_CD == $emp_data->EMP_CLS1_CD ?? old('DESC_DETAIL_CD') ? 'selected' : '' }}>
+                                            {{ $empCls1Cd->DESC_DETAIL_NAME }}
+                                        </option>
+                                    @endforeach
+                                    </select>
+                                    @error('EMP_CLS1_CD')
+                                    {{ $message }}<br>
+                                    @enderror
+                                </td>
+                            </tr>
+                            <tr>
+                                <th class="required">使用カレンダー</th>
+                                <td>
+                                    <select name="CALENDAR_CD" tabindex="17" id="CALENDAR_CD" style="width: 300px;">
+                                        <option value=""></option>
+                                    @foreach ($calendar_cd as $calendarCd))
+                                        <option value="{{ $calendarCd->CALENDAR_CD }}"
+                                            {{ $calendarCd->CALENDAR_CD == $emp_data->CALENDAR_CD ?? old('CALENDAR_CD') ? 'selected' : '' }}>
+                                            {{ $calendarCd->CALENDAR_NAME }}
+                                        </option>
+                                    @endforeach
+                                    </select>
+                                    @error('CALENDAR_CD')
+                                    {{ $message }}<br>
+                                    @enderror
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>部門権限</th>
+                                <td>
+                                    <select name="DEPT_AUTH_CD" tabindex="18" id="DEPT_AUTH_CD" style="width: 300px;">
+                                        <option value=""></option>
+                                    @foreach ($dept_auth_cd as $deptAuthCd)
+                                        <option value="{{ $deptAuthCd->DEPT_AUTH_CD }}"
+                                            {{ $deptAuthCd->DEPT_AUTH_CD == $emp_data->DEPT_AUTH_CD ?? old('DEPT_AUTH_CD') ? 'selected' : '' }}>
+                                            {{ $deptAuthCd->DEPT_AUTH_NAME }}
+                                        </option>
+                                    @endforeach
+                                    </select>
+                                    @error('DEPT_AUTH_CD')
+                                    {{ $message }}<br>
+                                    @enderror
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>郵便番号</th>
+                                <td>
+                                    <input name="POST_CD" tabindex="19" id="POST_CD"
+                                        value="{{ $emp_data->POST_CD ?? old('POST_CD') }}"
+                                        style="width:70px;" type="text" maxlength="8">  
+                                    @error('POST_CD')
+                                        {{ $message }}<br>
+                                    @enderror
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>住所１</th>
+                                <td>
+                                    <input name="ADDRESS1" tabindex="20" id="ADDRESS1"
+                                        value="{{ $emp_data->ADDRESS1 ?? old('ADDRESS1') }}"
+                                        style="width: 430px;" type="text" maxlength="30">
+                                    @error('ADDRESS1')
+                                        {{ $message }}<br>
+                                    @enderror
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>住所２</th>
+                                <td>
+                                    <input name="ADDRESS2" tabindex="21" id="ADDRESS2"
+                                        value="{{ $emp_data->ADDRESS2 ?? old('ADDRESS2') }}"
+                                        style="width: 430px;" type="text" maxlength="30">
+                                    @error('ADDRESS2')
+                                    {{ $message }}<br>
+                                    @enderror
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>電話番号</th>
+                                <td>
+                                    <input type="text" name="TEL" id="TEL" abindex="22"
+                                        value="{{ $emp_data->TEL ?? old('TEL') }}" 
+                                        style="width: 120px;" maxlength="15">
+                                    @error('TEL')
+                                    {{ $message }}<br>
+                                    @enderror
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>携帯番号</th>
+                                <td>
+                                    <input type="text" name="CELLULAR" id="CELLULAR" abindex="23"
+                                        value="{{ $emp_data->CELLULAR ?? old('CELLULAR') }}" 
+                                        style="width: 120px;" maxlength="15">
+                                    @error('CELLULAR')
+                                    {{ $message }}<br>
+                                    @enderror
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>Ｅメール</th>
+                                <td>
+                                    <input type="text" name="MAIL" id="MAIL" tabindex="24"
+                                        value="{{ $emp_data->MAIL ?? old('MAIL') }}" 
+                                        style="width: 360px;" maxlength="50">
+                                    @error('MAIL')
+                                    {{ $message }}<br>
+                                    @enderror
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>有休付与算出基準年月</th>
+                                <td>
+                                    <input name="PH_GRANT_YEAR" tabindex="25" id="PH_GRANT_YEAR"
+                                        value="{{ $emp_data->PH_GRANT_YEAR ?? old('PH_GRANT_YEAR') }}" 
+                                        style="width: 40px;" onfocus="this.select();" type="text" maxlength="4">
+                                    @error('PH_GRANT_YEAR')
+                                    {{ $message }}<br>
+                                    @enderror
+                                    &nbsp;年度&nbsp;
+                                    <select name="PH_GRANT_MONTH" id="PH_GRANT_MONTH" tabindex="26" style="width: 50px;">
+                                        <option value=""></option>
+                                        @for($i = 1; $i <= 12; $i++)
+                                        <option value="{{ $i }}"
+                                            {{ $i == $emp_data->PH_GRANT_MONTH ?? old('PH_GRANT_MONTH') ? 'selected' : '' }}>
+                                            {{ $i }}
+                                        </option>
+                                        @endfor
+                                    </select>
+                                    &nbsp;月&nbsp;
+                                    @error('PH_GRANT_MONTH')
+                                    {{ $message }}<br>
+                                    @enderror
+                                </td>
+                            </tr>
+                            <tr>
+                                <th class="required">職種区分</th>
+                                <td>
+                                    <select name="EMP_CLS2_CD" id="EMP_CLS2_CD" tabindex="27" style="width: 300px;">
+                                        <option value=""></option>
+                                    @foreach ($emp_csl2_cd as $empCls2Cd))
+                                        <option value="{{ $empCls2Cd->DESC_DETAIL_CD }}"
+                                            {{ $empCls2Cd->DESC_DETAIL_CD == $emp_data->EMP_CLS2_CD ?? old('EMP_CLS2_CD') ? 'selected' : '' }}>
+                                            {{ $empCls2Cd->DESC_DETAIL_NAME }}
+                                        </option>
+                                    @endforeach
+                                    </select>
+                                    @error('EMP_CLS2_CD')
+                                        {{ $message }}<br>
+                                    @enderror
+                                </td>
+                            </tr>
+                            <tr>
+                                <th class="required">締日</th>
+                                <td>
+                                    <select name="CLOSING_DATE_CD" id="CLOSING_DATE_CD" tabindex="28" style="width: 150px;">
+                                        <option value=""></option>
+                                    @foreach ($closing_date_cd as $closingDateCd))
+                                        <option value="{{ $closingDateCd->CLOSING_DATE_CD }}"
+                                            {{ $closingDateCd->CLOSING_DATE_CD == $emp_data->CLOSING_DATE_CD ?? old('CLOSING_DATE_CD') ? 'selected' : '' }}>
+                                            {{ $closingDateCd->CLOSING_DATE_NAME }}
+                                        </option>
+                                    @endforeach
+                                    </select>
+                                    @error('CLOSING_DATE_CD')
+                                    {{ $message }}<br>
+                                    @enderror
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>所属</th>
+                                <td>
+                                    <select name="COMPANY_CD" id="COMPANY_CD" tabindex="29" style="width: 150px;">
+                                        <option value=""></option>
+                                    @foreach ($company_cd as $companyCd))
+                                        <option value="{{ $companyCd->COMPANY_CD }}"
+                                            {{ $companyCd->COMPANY_CD == $emp_data->COMPANY_CD ?? old('COMPANY_CD') ? 'selected' : '' }}>
+                                            {{ $companyCd->COMPANY_ABR }}
+                                        </option>
+                                    @endforeach
+                                    </select>
+                                    @error('COMPANY_CD')
+                                    {{ $message }}<br>
+                                    @enderror
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>社員番号２</th>
+                                <td>
+                                    <input type="text" name="EMP2_CD" id="EMP2_CD" tabindex="30"
+                                        value="{{ $emp_data->EMP2_CD ?? old('EMP2_CD') }}"
+                                        style="width: 80px;"
+                                    >
+                                    @error('EMP2_CD')
+                                    {{ $message }}<br>
+                                    @enderror
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <div class="line"></div>
+
+                    <p class="ButtonField1">
+                        <input type="button" value="更新" name="btnUpdate" tabindex="31" id="btnUpdate"
+                            class="ButtonStyle1 submit-form" onclick="return checkSubmit(this)"
+                            data-url="{{ url('master/MT10EmpUpdate') }}">
+                        
+                        <input type="button" name="btnCancel" tabindex="32" id="btnCancel"
+                            class="ButtonStyle1 submit-form" value="キャンセル"
+                            onclick="location.reload();"
+                        >
+                        <input type="button" name="btnDelete" tabindex="33" id="btnDelete"
+                            class="ButtonStyle1 submit-form" value="削除"
+                            @if(empty($emp_data->EMP_CD))
+                            disabled="disabled"
+                            @else
+                            data-url="{{ url('master/MT10EmpDelete') }}"
+                            @endif
+                        >
+                    </p>
+                </div>
+            </form>
+        </table>
+    </div>
+
+@endsection
+
+@section('script')
+<script>
+    // ENTER時に送信されないようにする
+    $(function() {
+        $('input').not('[type="button"]').keypress(function(e) {
+            if (e.which == 13) {
+                return false;
+            }
+        });
+    });
+
+    // 確認ダイアル
+    function checkSubmit() {
+        if (window.confirm("{{ $msg_1005 }}")) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+    
+    //キャセンル、削除処理submit-form
+    $(document).on('click', '.submit-form', function() {
+        var url = $(this).data('url');
+        $('#form').attr('action', url);
+        $('#form').submit();
+    });
+
+    // 入力不可能文字：|
+    ngVerticalBar = n => n.replace(/\|/g, '');
+
+</script>
+@endsection

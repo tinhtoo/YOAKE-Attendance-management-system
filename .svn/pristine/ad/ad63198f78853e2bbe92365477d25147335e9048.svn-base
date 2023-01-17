@@ -1,0 +1,66 @@
+/*----------------------------------------*/
+
+
+/* global-overrides */
+
+
+/*----------------------------------------*/
+
+
+/*----------------------------------------*/
+
+
+/* contents-login */
+
+
+/*----------------------------------------*/
+
+div#contents-login {
+    width: 500px;
+    margin: 50px auto;
+    border: 1px solid #999;
+    padding: 1px;
+    background: #fff;
+}
+
+div#contents-login #login-inner {
+    height: 100%;
+}
+
+div#contents-login table {
+    text-align: right;
+    margin: 40px auto;
+}
+
+div#contents-login .title {
+    display: block;
+    padding: 20px 10px;
+    border: 1px solid #666;
+    font-size: 1.1em;
+    color: White;
+    letter-spacing: 0.2em;
+    background: #BBE1E8 url('../images/login-inner-bg.gif') left bottom repeat-x;
+}
+
+div#contents-login input.input-txt {
+    width: 200px!important;
+    margin: 3px;
+    padding: 2px;
+    font-family: "�l�r �S�V�b�N";
+}
+
+div#contents-login label {
+    font-weight: bold;
+}
+
+div#contents-login th {
+    vertical-align: top;
+    padding-top: 8px;
+}
+
+div#contents-login table td {}
+
+div#contents-login div.button {
+    padding: 10px 0px;
+    text-align: right;
+}

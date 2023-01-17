@@ -1,0 +1,35 @@
+<?php
+namespace App\Http\Requests;
+
+use Illuminate\Support\Facades\DB;
+use Illuminate\Foundation\Http\FormRequest;
+use App\Models\MT01Control;
+use App\Models\MT99Msg;
+
+class MT01ControlEditorRequest extends FormRequest
+{
+    public function rules()
+    {
+
+        $rules = [];
+
+        $rules = [
+            'COMPANY_NAME' => ['required'],
+            'COMPANY_KANA' => ['required'],
+            'COMPANY_ABR_NAME' => ['required'],
+            
+        ];
+
+        
+        return $rules;
+    }
+    public function messages()
+    {
+        $msg_2002 = MT99Msg::where('MSG_NO', '2002')->pluck('MSG_CONT')->first();
+        return [
+            'COMPANY_NAME.required' => $msg_2002,
+            'COMPANY_KANA.required' => $msg_2002,
+            'COMPANY_ABR_NAME.required' => $msg_2002
+        ];
+    }
+}

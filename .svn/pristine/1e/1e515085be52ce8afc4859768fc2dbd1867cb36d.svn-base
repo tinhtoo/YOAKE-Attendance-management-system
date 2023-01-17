@@ -1,0 +1,246 @@
+<!-- 勤務状況照会(個人用)  -->
+
+
+<?php $__env->startSection('title', '勤務状況照会(個人用) '); ?>
+<?php $__env->startSection('content'); ?>
+<?php use App\Repositories\Work_Time\WorkTimeReferenceRepository; ?>
+    <div id="contents-stage">
+        <table>
+            <tbody>
+                <tr>
+                    <td>
+                        <div id="UpdatePanel1">
+                            <!-- header -->
+                            <form action="<?php echo e(route('worktimeRef.search')); ?>" method="POST">
+                                <?php echo csrf_field(); ?>
+                                <table class="InputFieldStyle1">
+                                    <tbody>
+                                        <tr>
+                                            <th>対象月度</th>
+                                            <td>
+                                                <select name="ddlTargetYear" tabindex="1" class="imeDisabled"
+                                                    id="ctl00_cphContentsArea_ddlTargetYear" style="width: 70px;"
+                                                    onchange="SetTargetDate()">
+                                                    <option value="2020">2020</option>
+                                                    <option selected="selected" value="2021">2021</option>
+                                                    <option value="2022">2022</option>
+                                                </select>
+                                                &nbsp;年
+
+                                                <input name="hdnTargetYear" id="ctl00_cphContentsArea_hdnTargetYear"
+                                                    type="hidden" value="2021">
+                                                <select name="ddlTargetMonth" tabindex="2" class="imeDisabled"
+                                                    id="ctl00_cphContentsArea_ddlTargetMonth" onchange="SetTargetDate()">
+                                                    <option value="1">1</option>
+                                                    <option value="2">2</option>
+                                                    <option value="3">3</option>
+                                                    <option selected="selected" value="4">4</option>
+                                                    <option value="5">5</option>
+                                                    <option value="6">6</option>
+                                                    <option value="7">7</option>
+                                                    <option value="8">8</option>
+                                                    <option value="9">9</option>
+                                                    <option value="10">10</option>
+                                                    <option value="11">11</option>
+                                                    <option value="12">12</option>
+                                                </select>
+                                                &nbsp;月度
+
+                                                <input name="TargetMonth" id="ctl00_cphContentsArea_hdnTargetMonth"
+                                                    type="hidden" value="5">
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <th>社員番号</th>
+                                            <td>
+                                                <input name="txtEmpCd" tabindex="3" class="imeDisabled"
+                                                    id="ctl00_cphContentsArea_txtEmpCd" style="width: 80px;"
+                                                    onkeypress="if (WebForm_TextBoxKeyHandler(event) == false) return false;"
+                                                    onfocus="this.select();"
+                                                    onchange="javascript:setTimeout('__doPostBack(\'ctl00$cphContentsArea$txtEmpCd\',\'\')', 0)"
+                                                    type="text" maxlength="10">
+                                                <input name="btnSearchEmpCd" tabindex="4" class="SearchButton"
+                                                    id="ctl00_cphContentsArea_btnSearchEmpCd"
+                                                    onclick="SetEmpItem();__doPostBack('ctl00$cphContentsArea$btnSearchEmpCd','')"
+                                                    type="button" value="?">
+                                                <span class="OutlineLabel" id="ctl00_cphContentsArea_lblEmpName"
+                                                    style="width: 200px; height: 17px; display: inline-block;"></span>
+                                                &nbsp;
+                                                <?php if($errors->has('txtEmpCd')): ?>
+                                                    <span class="alert-danger"><?php echo e($errors->first('txtEmpCd')); ?></span>
+                                                <?php endif; ?>
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <th>部門</th>
+                                            <td>
+                                                <span class="OutlineLabel" id="ctl00_cphContentsArea_lblDeptName"
+                                                    style="width: 200px; height: 17px; display: inline-block;"></span>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+
+                                <div class="line"></div>
+
+                                <table>
+                                    <tbody>
+                                        <tr>
+                                            <td style="width: auto;">
+                                                <button type='submit' class="btn btn-secondary"
+                                                    style="padding: 2px 27px; margin-bottom: 3px;" id='btnshow'
+                                                    name="btnDisp">表示</button>
+                                                <input name="btnCancel2" tabindex="8" class="ButtonStyle1" id="btnCancel2"
+                                                    onclick="CloseSubWindow();__doPostBack('btnCancel2','')" type="button"
+                                                    value="キャンセル">
+                                                &nbsp;
+                                                <span id="lblNoStampColor" style="background-color: tomato;">　　　</span>
+                                                <span id="lblNoStamp">未打刻</span>
+                                                &nbsp;
+                                                <span id="lblDbStampColor" style="background-color: lightskyblue;"></span>
+                                                <span id="lblDbStamp">二重打刻</span>
+                                                &nbsp;
+                                                <span class="font-style2" id="lblFixMsg"></span>
+                                            </td>
+                                            <td class="right">
+                                                <span class="font-style1" id="lblDispCaldDate"></span>
+                                                &nbsp;
+                                                <span class="font-style1" id="lblDispOfcTime"></span>
+                                                &nbsp;
+                                                <span class="font-style1" id="lblDispLevTime"></span>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </form>
+
+                            <!-- detail -->
+                            <div class="GridViewStyle1" id="gridview-container">
+                                <div class="GridViewPanelStyle5" id="ctl00_cphContentsArea_pnlWorkTime">
+                                    <div>
+                                        <table class="GridViewBorder GridViewPadding GridViewRowCenter"
+                                            id="ctl00_cphContentsArea_gvWorkTime" style="border-collapse: collapse;"
+                                            border="1" rules="all" cellspacing="0">
+                                            <tbody id="gridview-warp">
+                                                <?php if(isset($empWorkTimeResults)): ?>
+                                                    <?php if(count($empWorkTimeResults) < 1): ?>
+                                                        <tr style="width: 70px;">
+                                                            <td><span><?php echo e($errMsg_4029); ?></span></td>
+                                                        </tr>
+                                                    <?php else: ?>
+                                                        <tr>
+                                                            <th scope="col">日付</th>
+                                                            <th scope="col">曜日</th>
+                                                            <th scope="col">勤務体系</th>
+                                                            <th scope="col">事由</th>
+                                                            <th scope="col">出勤</th>
+                                                            <th scope="col">退出</th>
+                                                            <th scope="col">外出1</th>
+                                                            <th scope="col">再入１</th>
+                                                            <th scope="col">外出２</th>
+                                                            <th scope="col">再入２</th>
+                                                        </tr>
+                                                        <?php $__currentLoopData = $empWorkTimeResults; $__env->addLoop($__currentLoopData); foreach($__currentLoopData as $empWorkTimeResult): $__env->incrementLoopIndices(); $loop = $__env->getLastLoop(); ?>
+                                                                <tr>
+
+                                                                    <?php if(
+                                                                    $weekday[date('w',strtotime($empWorkTimeResult->CALD_DATE))] == '日' ||
+                                                                    $weekday[date('w',strtotime($empWorkTimeResult->CALD_DATE))] == '土'): ?>
+                                                                    <td style="width: 70px;">
+                                                                        <span id=""
+                                                                            style="width: 70px; display: inline-block; color: red;">
+                                                                            <?php echo e(date('Y/m/d', strtotime($empWorkTimeResult->CALD_DATE))); ?>
+
+                                                                        </span>
+                                                                    </td>
+                                                                    <td style="width: 30px;">
+                                                                        <span id=""
+                                                                            style="width: 30px; display: inline-block; color: red;">
+                                                                            <?php echo e($weekday[date('w', strtotime($empWorkTimeResult->CALD_DATE))]); ?>
+
+                                                                        </span>
+                                                                    </td>
+                                                                    <?php else: ?>
+                                                                    <td style="width: 70px;">
+                                                                        <span id="" style="width: 70px; display: inline-block;">
+                                                                            <?php echo e(date('Y/m/d', strtotime($empWorkTimeResult->CALD_DATE))); ?>
+
+                                                                        </span>
+                                                                    </td>
+                                                                    <td style="width: 30px;">
+                                                                        <span id="" style="width: 30px; display: inline-block;">
+                                                                            <?php echo e($weekday[date('w', strtotime($empWorkTimeResult->CALD_DATE))]); ?>
+
+                                                                        </span>
+                                                                    </td>
+                                                                    <?php endif; ?>
+                                                                    
+                                                                    <?php if($empWorkTimeResult->WORKPTN_NAME == '休日勤務' || $empWorkTimeResult->WORKPTN_NAME == '休日夜間勤務'): ?>
+                                                                    <td class="GridViewRowLeft" style="width: 160px;">
+                                                                        <span
+                                                                            id="ctl00_cphContentsArea_gvWorkTime_ctl02_lblWorkptnName"
+                                                                            style="width: 160px; display: inline-block; color: red;"><?php echo e($empWorkTimeResult->WORKPTN_NAME); ?></span>
+                                                                    </td>
+                                                                    <?php else: ?>
+                                                                    <td class="GridViewRowLeft" style="width: 160px;">
+                                                                        <span
+                                                                            id="ctl00_cphContentsArea_gvWorkTime_ctl02_lblWorkptnName"
+                                                                            style="width: 160px; display: inline-block;"><?php echo e($empWorkTimeResult->WORKPTN_NAME); ?></span>
+                                                                    </td>
+                                                                    <?php endif; ?>
+                                                                    <td style="width: 50px;">
+                                                                        <span
+                                                                            id="ctl00_cphContentsArea_gvWorkTime_ctl02_lblReasonName"><?php echo e($empWorkTimeResult->REASON_NAME); ?></span>
+                                                                    </td>
+                                                                    <td style="width: 40px;">
+                                                                        <a
+                                                                            id="ctl00_cphContentsArea_gvWorkTime_ctl02_hlOfcTime"><?php echo e($empWorkTimeResult->OFC_TIME); ?></a>
+                                                                    </td>
+                                                                    <td style="width: 40px;">
+                                                                        <a
+                                                                            id="ctl00_cphContentsArea_gvWorkTime_ctl02_hlLevTime"><?php echo e($empWorkTimeResult->LEV_TIME); ?></a>
+                                                                    </td>
+                                                                    <td style="width: 40px;">
+                                                                        <a
+                                                                            id="ctl00_cphContentsArea_gvWorkTime_ctl02_hlOut1Time"><?php echo e($empWorkTimeResult->OUT1_TIME); ?></a>
+                                                                    </td>
+                                                                    <td style="width: 40px;">
+                                                                        <a
+                                                                            id="ctl00_cphContentsArea_gvWorkTime_ctl02_hlIn1Time"><?php echo e($empWorkTimeResult->IN1_TIME); ?></a>
+                                                                    </td>
+                                                                    <td style="width: 40px;">
+                                                                        <a
+                                                                            id="ctl00_cphContentsArea_gvWorkTime_ctl02_hlOut2Time"><?php echo e($empWorkTimeResult->OUT2_TIME); ?></a>
+                                                                    </td>
+                                                                    <td style="width: 40px;">
+                                                                        <a
+                                                                            id="ctl00_cphContentsArea_gvWorkTime_ctl02_hlIn2Time"><?php echo e($empWorkTimeResult->IN2_TIME); ?></a>
+                                                                    </td>
+                                                                </tr>
+                                                        <?php endforeach; $__env->popLoop(); $loop = $__env->getLastLoop(); ?>
+                                                    <?php endif; ?>
+                                                <?php endif; ?>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- footer -->
+                            <div class="line"></div>
+                            <p class="ButtonField2">
+                                <input name="ctl00$cphContentsArea$btnCancel" tabindex="7"
+                                    id="ctl00_cphContentsArea_btnCancel"
+                                    onclick="CloseSubWindow();__doPostBack('ctl00$cphContentsArea$btnCancel','')"
+                                    type="button" value="キャンセル">
+                            </p>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+<?php $__env->stopSection(); ?>
+
+<?php echo $__env->make('menu.main', \Illuminate\Support\Arr::except(get_defined_vars(), ['__data', '__path']))->render(); ?><?php /**PATH C:\xampp\htdocs\06_SVN\resources\views/work_time/WorkTimeReference.blade.php ENDPATH**/ ?>

@@ -1,0 +1,408 @@
+<?php
+
+namespace App\Http\Controllers\Master;
+
+use App\Http\Controllers\Controller;
+use App\Models\MT05Workptn;
+use App\Repositories\MT93PgRepository;
+use App\Models\MT94WorkDesc;
+use App\Repositories\MT05WorkptnRepository;
+use App\Http\Requests\MT05WorkPtnRequest;
+use App\Http\Requests\MT05WorkPtnDeleteRequest;
+use Illuminate\Support\Facades\DB;
+
+
+/**
+ * 勤務体系情報入力 処理
+ */
+class MT05WorkPtnEditorController extends Controller
+{
+    /**
+     * コントローラインスタンスの生成
+     * @param
+     * @return void
+     */
+    public function __construct(MT05WorkptnRepository $mt05_workptn
+                                            ,MT93PgRepository $pg_repository)
+    {
+        parent::__construct($pg_repository, '000006');
+        $this->mt05_workptn = $mt05_workptn;
+    }
+
+    /**
+     * 勤務体系情報入力 処理 画面表示
+     * @return view
+     */
+    public function index($id = null)
+    {
+        $dataWorkPtn = new MT05Workptn();
+        if ($id != null) {
+            $dataWorkPtn = $this->mt05_workptn->getWorkPtnWithPrimaryKey($id);
+        }
+        // 勤怠項目
+        $dataWorkDescExp02 = $this->mt05_workptn->getWorkDescExcepting02();
+        // 割増
+        $dataExtraPayClsCd = '02';
+        $dataExtraPay = $this->mt05_workptn->getWithWorkDesc($dataExtraPayClsCd);
+        // 職務種別
+        $clsDetailCd = '08';
+        $clsDetails = $this->mt05_workptn->getClsDetail($clsDetailCd);
+
+        return parent::viewWithMenu('master.MT05WorkPtnEditor', compact('dataWorkPtn', 'dataWorkDescExp02'
+                                                                                                            , 'dataExtraPay', 'clsDetails'));
+    }
+
+    public function update(MT05WorkPtnRequest $request)
+    {
+        // 時間帯設定
+        if ($request['dutyClass'] == '00') {
+            // 勤怠項目
+            $pTimes = $request['pTime'];
+            foreach ($pTimes as $pTime){
+                if(!is_nullorwhitespace($pTime['pTimeCds'] .$pTime['StrHH'] .$pTime['StrMI'] .$pTime['EndHH'] .$pTime['EndMI'])) {
+                    $newPTime[] = array(
+                        'pTCd' => $pTime['pTimeCds'],
+                        'pTStrHH' => $pTime['StrHH'],
+                        'pTStrMI' => $pTime['StrMI'],
+                        'pTEndHH' => $pTime['EndHH'],
+                        'pTEndMI' => $pTime['EndMI'],
+                    );
+                }
+            }
+            // 割増対象
+            $extTimes = $request['extTime'];
+            foreach ($extTimes as $extTime) {
+                if(!is_nullorwhitespace($extTime['excCd'] .$extTime['extStrHH'] .$extTime['extStrMI'] .$extTime['extEndHH'] .$extTime['extEndMI'])) {
+                    $newExtTime[] = array(
+                        'extTCd' => $extTime['excCd'],
+                        'extTStrHH' => $extTime['extStrHH'],
+                        'extTStrMI' => $extTime['extStrMI'],
+                        'extTEndHH' => $extTime['extEndHH'],
+                        'extTEndMI' => $extTime['extEndMI'],
+                    );
+                }
+            }
+            // 勤怠項目区分コードが '00'(就業時間) の時分を取得
+            foreach ($newPTime as $pTimeCd) {
+                if (MT94WorkDesc::where('WORK_DESC_CD',$pTimeCd['pTCd'])->pluck('WORK_DESC_CLS_CD')->first() == '00') {
+                    $pTimeStr = substr('0' .$pTimeCd['pTStrHH'], -2).substr('0' .$pTimeCd['pTStrMI'], -2);
+                    break;
+                }
+            }
+            // '00'(就業時間) の時分が17:00～23:00       -> 02(夜勤)
+            // '00'(就業時間) の時分が17:00～23:00以外 -> 01(通常)
+            if ($pTimeStr >= 1700 && $pTimeStr <= 2300) {
+                $NWORK1_CLS_CD = '02';
+            } else {
+                $NWORK1_CLS_CD = '01';
+            }
+            // 時間帯・勤務時間
+            $RSV1_HH = $request['rsvTime'][0];
+            $RSV1_MI = $request['rsvTime'][1];
+            // 時間帯・日替時刻
+            $TIME_DAILY_HH = $request['tmDailyTime'][0];
+            $TIME_DAILY_MI = $request['tmDailyTime'][1];
+        }
+        // 時間数設定
+        if ($request['dutyClass'] == '01') {
+            // 勤怠項目
+            $nTimes = $request['nTime'];
+            for ($i = 1; $i < count($nTimes); $i++){
+                if(!is_nullorwhitespace($nTimes[$i]['nTimeDclsCd'].
+                                                $nTimes[$i]['nTimeCd'].
+                                                $nTimes[$i]['nTimeStrHH'].
+                                                $nTimes[$i]['nTimeStrMI'].
+                                                $nTimes[$i]['nTimeEndHH'].
+                                                $nTimes[$i]['nTimeEndMI'])) {
+                    $newNTime[] = array(
+                        'nTimeDclsCd' => $nTimes[$i]['nTimeDclsCd'],
+                        'nTimeCd' => $nTimes[$i]['nTimeCd'],
+                        'nTimeStrHH' => $nTimes[$i]['nTimeStrHH'],
+                        'nTimeStrMI' => $nTimes[$i]['nTimeStrMI'],
+                        'nTimeEndHH' => $nTimes[$i]['nTimeEndHH'],
+                        'nTimeEndMI' => $nTimes[$i]['nTimeEndMI'],
+                    );
+                }
+            }
+            // 割増対象
+            $extTimes = $request['extHour'];
+            foreach ($extTimes as $extTime) {
+                if(!is_nullorwhitespace($extTime['excCdH'] .$extTime['extHourStrHH'] .$extTime['extHourStrMI'] .$extTime['extHourEndHH'] .$extTime['extHourEndMI'])) {
+                    $newExtTime[] = array(
+                        'extTCd' => $extTime['excCdH'],
+                        'extTStrHH' => $extTime['extHourStrHH'],
+                        'extTStrMI' => $extTime['extHourStrMI'],
+                        'extTEndHH' => $extTime['extHourEndHH'],
+                        'extTEndMI' => $extTime['extHourEndMI'],
+                    );
+                }
+            }
+            // {職務種別}が01:時間数　01(通常)
+            $NWORK1_CLS_CD = '01';
+
+            // 時間数・勤務時間
+            $RSV1_HH = $request['rsvHour'][0];
+            $RSV1_MI = $request['rsvHour'][1];
+
+            // 時間数・日替時刻
+            $TIME_DAILY_HH = $request['tmDailyHour'][0];
+            $TIME_DAILY_MI = $request['tmDailyHour'][1];
+        }
+
+        // 休憩時間設定
+        if (!empty($request['breakTimeData'])) {
+            $breakTimes = $request['breakTimeData'];
+            foreach ($breakTimes as $breakTime) {
+                if (!(in_array(null, $breakTime, true))) {
+                    $newBreakTime[] = array(
+                        'brstrHH' => $breakTime['brstrHH'],
+                        'brstrMI' => $breakTime['brstrMI'],
+                        'brendHH' => $breakTime['brendHH'],
+                        'brendMI' => $breakTime['brendMI'],
+                        'brTime' => $breakTime['brTime'],
+                    );
+                }
+            }
+        }
+
+        // 新規登録する際にNTIME_WK1_DCLS_CDを'01'
+        if (empty($request['hideCdAddNew'])) {
+            $NTIME_WK1_DCLS_CD = '01';
+        }
+
+        // 出勤区分が'01'(通常出勤)の時は空白、'00'(通常出勤)の特は"法定":'00' または "法定外":'01'。
+        if ($request['workClass'] == '01') {
+            $RSV1_CLS_CD = '';
+        } else {
+            $RSV1_CLS_CD = $request['rsv1ClsCd'];
+        }
+
+        $today = date('Y-m-d H:i:s');
+        $param = [
+            'WORKPTN_CD' => $request['workPtnCd'],
+            'WORKPTN_NAME' => $request['workPtnName'],
+            'WORKPTN_ABR_NAME' => $request['workPtnAbrName'],
+            'WORK_CLS_CD' => $request['workClass'],
+            'DUTY_CLS_CD' => $request['dutyClass'],
+            'PTIME_WK1_CD' => $newPTime[0]['pTCd'] ?? NULL,
+            'PTIME_WK1_STR_HH' => $newPTime[0]['pTStrHH'] ?? NULL,
+            'PTIME_WK1_STR_MI' => $newPTime[0]['pTStrMI'] ?? NULL,
+            'PTIME_WK1_END_HH' => $newPTime[0]['pTEndHH'] ?? NULL,
+            'PTIME_WK1_END_MI' => $newPTime[0]['pTEndMI'] ?? NULL,
+            'PTIME_WK2_CD' => $newPTime[1]['pTCd'] ?? NULL,
+            'PTIME_WK2_STR_HH' => $newPTime[1]['pTStrHH'] ?? NULL,
+            'PTIME_WK2_STR_MI' => $newPTime[1]['pTStrMI'] ?? NULL,
+            'PTIME_WK2_END_HH' => $newPTime[1]['pTEndHH'] ?? NULL,
+            'PTIME_WK2_END_MI' => $newPTime[1]['pTEndMI'] ?? NULL,
+            'PTIME_WK3_CD' => $newPTime[2]['pTCd'] ?? NULL,
+            'PTIME_WK3_STR_HH' => $newPTime[2]['pTStrHH'] ?? NULL,
+            'PTIME_WK3_STR_MI' => $newPTime[2]['pTStrMI'] ?? NULL,
+            'PTIME_WK3_END_HH' => $newPTime[2]['pTEndHH'] ?? NULL,
+            'PTIME_WK3_END_MI' => $newPTime[2]['pTEndMI'] ?? NULL,
+            'PTIME_WK4_CD' => $newPTime[3]['pTCd'] ?? NULL,
+            'PTIME_WK4_STR_HH' => $newPTime[3]['pTStrHH'] ?? NULL,
+            'PTIME_WK4_STR_MI' => $newPTime[3]['pTStrMI'] ?? NULL,
+            'PTIME_WK4_END_HH' => $newPTime[3]['pTEndHH'] ?? NULL,
+            'PTIME_WK4_END_MI' => $newPTime[3]['pTEndMI'] ?? NULL,
+            'PTIME_WK5_CD' => $newPTime[4]['pTCd'] ?? NULL,
+            'PTIME_WK5_STR_HH' => $newPTime[4]['pTStrHH'] ?? NULL,
+            'PTIME_WK5_STR_MI' => $newPTime[4]['pTStrMI'] ?? NULL,
+            'PTIME_WK5_END_HH' => $newPTime[4]['pTEndHH'] ?? NULL,
+            'PTIME_WK5_END_MI' => $newPTime[4]['pTEndMI'] ?? NULL,
+            'PTIME_WK6_CD' => $newPTime[5]['pTCd'] ?? NULL,
+            'PTIME_WK6_STR_HH' => $newPTime[5]['pTStrHH'] ?? NULL,
+            'PTIME_WK6_STR_MI' => $newPTime[5]['pTStrMI'] ?? NULL,
+            'PTIME_WK6_END_HH' => $newPTime[5]['pTEndHH'] ?? NULL,
+            'PTIME_WK6_END_MI' => $newPTime[5]['pTEndMI'] ?? NULL,
+            'PTIME_WK7_CD' => $newPTime[6]['pTCd'] ?? NULL,
+            'PTIME_WK7_STR_HH' => $newPTime[6]['pTStrHH'] ?? NULL,
+            'PTIME_WK7_STR_MI' => $newPTime[6]['pTStrMI'] ?? NULL,
+            'PTIME_WK7_END_HH' => $newPTime[6]['pTEndHH'] ?? NULL,
+            'PTIME_WK7_END_MI' => $newPTime[6]['pTEndMI'] ?? NULL,
+            'PTIME_WK8_CD' => NULL,
+            'PTIME_WK8_STR_HH' => NULL,
+            'PTIME_WK8_STR_MI' => NULL,
+            'PTIME_WK8_END_HH' => NULL,
+            'PTIME_WK8_END_MI' => NULL,
+            'PTIME_WK9_CD' => NULL,
+            'PTIME_WK9_STR_HH' => NULL,
+            'PTIME_WK9_STR_MI' => NULL,
+            'PTIME_WK9_END_HH' => NULL,
+            'PTIME_WK9_END_MI' => NULL,
+            'PTIME_WK10_CD' => NULL,
+            'PTIME_WK10_STR_HH' => NULL,
+            'PTIME_WK10_STR_MI' => NULL,
+            'PTIME_WK10_END_HH' => NULL,
+            'PTIME_WK10_END_MI' => NULL,
+            'PTIME_EXT1_CD' => $newExtTime[0]['extTCd'] ?? NULL,
+            'PTIME_EXT1_STR_HH' => $newExtTime[0]['extTStrHH'] ?? NULL,
+            'PTIME_EXT1_STR_MI' => $newExtTime[0]['extTStrMI'] ?? NULL,
+            'PTIME_EXT1_END_HH' => $newExtTime[0]['extTEndHH'] ?? NULL,
+            'PTIME_EXT1_END_MI' => $newExtTime[0]['extTEndMI'] ?? NULL,
+            'PTIME_EXT2_CD' => $newExtTime[1]['extTCd'] ?? NULL,
+            'PTIME_EXT2_STR_HH' => $newExtTime[1]['extTStrHH'] ?? NULL,
+            'PTIME_EXT2_STR_MI' => $newExtTime[1]['extTStrMI'] ?? NULL,
+            'PTIME_EXT2_END_HH' => $newExtTime[1]['extTEndHH'] ?? NULL,
+            'PTIME_EXT2_END_MI' => $newExtTime[1]['extTEndMI'] ?? NULL,
+            'PTIME_EXT3_CD' => $newExtTime[2]['extTCd'] ?? NULL,
+            'PTIME_EXT3_STR_HH' => $newExtTime[2]['extTStrHH'] ?? NULL,
+            'PTIME_EXT3_STR_MI' => $newExtTime[2]['extTStrMI'] ?? NULL,
+            'PTIME_EXT3_END_HH' => $newExtTime[2]['extTEndHH'] ?? NULL,
+            'PTIME_EXT3_END_MI' => $newExtTime[2]['extTEndMI'] ?? NULL,
+            'PTIME_EXT4_CD' => NULL,
+            'PTIME_EXT4_STR_HH' => NULL,
+            'PTIME_EXT4_STR_MI' => NULL,
+            'PTIME_EXT4_END_HH' => NULL,
+            'PTIME_EXT4_END_MI' => NULL,
+            'PTIME_EXT5_CD' => NULL,
+            'PTIME_EXT5_STR_HH' => NULL,
+            'PTIME_EXT5_STR_MI' => NULL,
+            'PTIME_EXT5_END_HH' => NULL,
+            'PTIME_EXT5_END_MI' => NULL,
+            'PTIME_FSTPRD_END_HH' => $request['fstrdTime'][0] ?? NULL,
+            'PTIME_FSTPRD_END_MI' => $request['fstrdTime'][1] ?? NULL,
+            'PTIME_SCDPRD_STR_HH' => $request['scdprdTime'][0] ?? NULL,
+            'PTIME_SCDPRD_STR_MI' => $request['scdprdTime'][1] ?? NULL,
+            'TIME_DAILY_HH' => $TIME_DAILY_HH ?? NULL,
+            'TIME_DAILY_MI' => $TIME_DAILY_MI ?? NULL,
+            'NTIME_WK1_CD' => $request['nTime'][0]['nTimeCd'] ?? NULL,
+            'NTIME_WK1_STR_HH' => $request['nTime'][0]['nTimeStrHH'] ?? NULL,
+            'NTIME_WK1_STR_MI' => $request['nTime'][0]['nTimeStrMI'] ?? NULL,
+            'NTIME_WK1_END_HH' => $request['nTime'][0]['nTimeEndHH'] ?? NULL,
+            'NTIME_WK1_END_MI' => $request['nTime'][0]['nTimeEndMI'] ?? NULL,
+            'NTIME_WK2_CD' => $newNTime[0]['nTimeCd'] ?? NULL,
+            'NTIME_WK2_STR_HH' => $newNTime[0]['nTimeStrHH'] ?? NULL,
+            'NTIME_WK2_STR_MI' => $newNTime[0]['nTimeStrMI'] ?? NULL,
+            'NTIME_WK2_END_HH' => $newNTime[0]['nTimeEndHH'] ?? NULL,
+            'NTIME_WK2_END_MI' => $newNTime[0]['nTimeEndMI'] ?? NULL,
+            'NTIME_WK3_CD' => $newNTime[1]['nTimeCd'] ?? NULL,
+            'NTIME_WK3_STR_HH' => $newNTime[1]['nTimeStrHH'] ?? NULL,
+            'NTIME_WK3_STR_MI' => $newNTime[1]['nTimeStrMI'] ?? NULL,
+            'NTIME_WK3_END_HH' => $newNTime[1]['nTimeEndHH'] ?? NULL,
+            'NTIME_WK3_END_MI' => $newNTime[1]['nTimeEndMI'] ?? NULL,
+            'NTIME_WK4_CD' => $newNTime[2]['nTimeCd'] ?? NULL,
+            'NTIME_WK4_STR_HH' => $newNTime[2]['nTimeStrHH'] ?? NULL,
+            'NTIME_WK4_STR_MI' => $newNTime[2]['nTimeStrMI'] ?? NULL,
+            'NTIME_WK4_END_HH' => $newNTime[2]['nTimeEndHH'] ?? NULL,
+            'NTIME_WK4_END_MI' => $newNTime[2]['nTimeEndMI'] ?? NULL,
+            'NTIME_WK5_CD' => $newNTime[3]['nTimeCd'] ?? NULL,
+            'NTIME_WK5_STR_HH' => $newNTime[3]['nTimeStrHH'] ?? NULL,
+            'NTIME_WK5_STR_MI' => $newNTime[3]['nTimeStrMI'] ?? NULL,
+            'NTIME_WK5_END_HH' => $newNTime[3]['nTimeEndHH'] ?? NULL,
+            'NTIME_WK5_END_MI' => $newNTime[3]['nTimeEndMI'] ?? NULL,
+            'NTIME_WK6_CD' => $newNTime[4]['nTimeCd'] ?? NULL,
+            'NTIME_WK6_STR_HH' => $newNTime[4]['nTimeStrHH'] ?? NULL,
+            'NTIME_WK6_STR_MI' => $newNTime[4]['nTimeStrMI'] ?? NULL,
+            'NTIME_WK6_END_HH' => $newNTime[4]['nTimeEndHH'] ?? NULL,
+            'NTIME_WK6_END_MI' => $newNTime[4]['nTimeEndMI'] ?? NULL,
+            'NTIME_WK7_CD' => $newNTime[5]['nTimeCd'] ?? NULL,
+            'NTIME_WK7_STR_HH' => $newNTime[5]['nTimeStrHH'] ?? NULL,
+            'NTIME_WK7_STR_MI' => $newNTime[5]['nTimeStrMI'] ?? NULL,
+            'NTIME_WK7_END_HH' => $newNTime[5]['nTimeEndHH'] ?? NULL,
+            'NTIME_WK7_END_MI' => $newNTime[5]['nTimeEndMI'] ?? NULL,
+            'NTIME_WK8_CD' => NULL,
+            'NTIME_WK8_STR_HH' => NULL,
+            'NTIME_WK8_STR_MI' => NULL,
+            'NTIME_WK8_END_HH' => NULL,
+            'NTIME_WK8_END_MI' => NULL,
+            'NTIME_WK9_CD' => NULL,
+            'NTIME_WK9_STR_HH' => NULL,
+            'NTIME_WK9_STR_MI' => NULL,
+            'NTIME_WK9_END_HH' => NULL,
+            'NTIME_WK9_END_MI' => NULL,
+            'NTIME_WK10_CD' => NULL,
+            'NTIME_WK10_STR_HH' => NULL,
+            'NTIME_WK10_STR_MI' => NULL,
+            'NTIME_WK10_END_HH' => NULL,
+            'NTIME_WK10_END_MI' => NULL,
+            'NTIME_LEAVE_CLS_CD' => $request['nTimeLeaveClsCd'] ?? NULL,
+            'NTIME_START_HH' => $request['nTimeStr'][0] ?? NULL,
+            'NTIME_START_MI' => $request['nTimeStr'][1] ?? NULL,
+            'NTIME_START_TK_TIME' => $request['nTimeStartTkTime'] ?? NULL,
+            'BREAK_CLS_CD' => $request['BreakClsCd'] ?? NULL,
+            'PBRK1_STR_HH' => $newBreakTime[0]['brstrHH'] ?? NULL,
+            'PBRK1_STR_MI' => $newBreakTime[0]['brstrMI'] ?? NULL,
+            'PBRK1_END_HH' => $newBreakTime[0]['brendHH'] ?? NULL,
+            'PBRK1_END_MI' => $newBreakTime[0]['brendMI'] ?? NULL,
+            'PBRK1_TIME' => $newBreakTime[0]['brTime'] ?? NULL,
+            'PBRK2_STR_HH' => $newBreakTime[1]['brstrHH'] ?? NULL,
+            'PBRK2_STR_MI' => $newBreakTime[1]['brstrMI'] ?? NULL,
+            'PBRK2_END_HH' => $newBreakTime[1]['brendHH'] ?? NULL,
+            'PBRK2_END_MI' => $newBreakTime[1]['brendMI'] ?? NULL,
+            'PBRK2_TIME' => $newBreakTime[1]['brTime'] ?? NULL,
+            'PBRK3_STR_HH' => $newBreakTime[2]['brstrHH'] ?? NULL,
+            'PBRK3_STR_MI' => $newBreakTime[2]['brstrMI'] ?? NULL,
+            'PBRK3_END_HH' => $newBreakTime[2]['brendHH'] ?? NULL,
+            'PBRK3_END_MI' => $newBreakTime[2]['brendMI'] ?? NULL,
+            'PBRK3_TIME' => $newBreakTime[2]['brTime'] ?? NULL,
+            'PBRK4_STR_HH' => $newBreakTime[3]['brstrHH'] ?? NULL,
+            'PBRK4_STR_MI' => $newBreakTime[3]['brstrMI'] ?? NULL,
+            'PBRK4_END_HH' => $newBreakTime[3]['brendHH'] ?? NULL,
+            'PBRK4_END_MI' => $newBreakTime[3]['brendMI'] ?? NULL,
+            'PBRK4_TIME' => $newBreakTime[3]['brTime'] ?? NULL,
+            'PBRK5_STR_HH' => $newBreakTime[4]['brstrHH'] ?? NULL,
+            'PBRK5_STR_MI' => $newBreakTime[4]['brstrMI'] ?? NULL,
+            'PBRK5_END_HH' => $newBreakTime[4]['brendHH'] ?? NULL,
+            'PBRK5_END_MI' => $newBreakTime[4]['brendMI'] ?? NULL,
+            'PBRK5_TIME' => $newBreakTime[4]['brTime'] ?? NULL,
+            'PBRK6_STR_HH' => NULL,
+            'PBRK6_STR_MI' => NULL,
+            'PBRK6_END_HH' => NULL,
+            'PBRK6_END_MI' => NULL,
+            'PBRK6_TIME' => NULL,
+            'PBRK7_STR_HH' => NULL,
+            'PBRK7_STR_MI' => NULL,
+            'PBRK7_END_HH' => NULL,
+            'PBRK7_END_MI' => NULL,
+            'PBRK7_TIME' => NULL,
+            'NBRK_TIME' => $request['breakHour'][0] ?? NULL,
+            'NBRK_MINUTE' => $request['breakHour'][1] ?? NULL,
+            'EBRK_PTIME' => $request['brHourly'][0] ?? NULL,
+            'EBRK_MINUTE' => $request['brHourly'][1] ?? NULL,
+            'COM_CLS_CD' => '01',
+            'RSV1_CLS_CD' => $RSV1_CLS_CD,
+            'RSV2_CLS_CD' => '',
+            'UPD_DATE' => $today,
+            'NWORK1_CLS_CD' => $NWORK1_CLS_CD,
+            'RSV3_CLS_CD' => $request['rsv3ClsCd'] ?? '',
+            'RSV4_CLS_CD' => $request['rsv4ClsCd'] ?? '',
+            'RSV5_CLS_CD' => '',
+            'RSV1_HH' => $RSV1_HH ?? NULL,
+            'RSV1_MI' => $RSV1_MI ?? NULL,
+            'RSV2_HH' => NULL,
+            'RSV2_MI' => NULL,
+            'RSV3_HH' => NULL,
+            'RSV3_MI' => NULL,
+            'NTIME_WK1_DCLS_CD' => $NTIME_WK1_DCLS_CD ?? NULL,
+            'NTIME_WK2_DCLS_CD' => $newNTime[0]['nTimeDclsCd'] ?? NULL,
+            'NTIME_WK3_DCLS_CD' => $newNTime[1]['nTimeDclsCd'] ?? NULL,
+            'NTIME_WK4_DCLS_CD' => $newNTime[2]['nTimeDclsCd'] ?? NULL,
+            'NTIME_WK5_DCLS_CD' => $newNTime[3]['nTimeDclsCd'] ?? NULL,
+            'NTIME_WK6_DCLS_CD' => $newNTime[4]['nTimeDclsCd'] ?? NULL,
+            'NTIME_WK7_DCLS_CD' => $newNTime[5]['nTimeDclsCd'] ?? NULL,
+            'NTIME_WK8_DCLS_CD' => NULL,
+            'NTIME_WK9_DCLS_CD' => NULL,
+            'NTIME_WK10_DCLS_CD' => NULL,
+        ];
+        DB::beginTransaction();
+        try {
+            $this->mt05_workptn->UpsertWorkPtn($param);
+            DB::commit();
+        } catch (\Exception $e) {
+            DB::rollback();
+        }
+        return;
+    }
+
+    public function delete(MT05WorkPtnDeleteRequest $request){
+        $workptn_cd = $request['WORKPTN_CD'];
+        DB::beginTransaction();
+        try {
+            $this->mt05_workptn->deleteWorkPtn($workptn_cd);
+            DB::commit();
+        } catch (\Exception $e) {
+            DB::rollback();
+        }
+        return redirect('master/MT05WorkPtnReference');
+    }
+}

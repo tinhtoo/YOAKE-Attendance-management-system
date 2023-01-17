@@ -1,0 +1,50 @@
+<?php
+
+namespace App\Repositories;
+
+use App\Models\MT17PdHoliday;
+
+use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Illuminate\Support\Facades\DB;
+
+
+class MT17PdHolidayRepository extends MT17PdHoliday
+{
+    public function existWithEmpAndPdYear($emp_cd, $year)
+    {
+        return MT17PdHoliday::where('EMP_CD', $emp_cd)
+                    ->where('PD_YEAR', $year)
+                    ->exists();
+    }
+
+    public function insertDefault($emp_cd, $year)
+    {
+        $this->insertPdHoliday(
+            $this->createDefaultRecords($emp_cd, $year)
+        );
+        return ;
+    }
+
+    public function insertPdHoliday($record)
+    {
+        MT17PdHoliday::insert($record);
+        return ;
+    }
+
+    private function createDefaultRecords($emp_cd, $year)
+    {
+        $pd_holiday_records = [];
+        foreach ([6,7,8,9,10,11,12,1,2,3,4,5] as $no=>$month ){
+            $pd_holiday_records[] = [
+                'EMP_CD' => $emp_cd,
+                'PD_YEAR' => $year,
+                'NUM_CARRYOVER' => 0,
+                'MONTH_NO' => $no + 1,
+                'PD_MONTH' => $month,
+                'PD_OFFSET' => 0,
+                'PD_USED' => 0,                
+            ];
+        }
+        return $pd_holiday_records;
+    }
+}

@@ -1,0 +1,20 @@
+<?php
+
+namespace App\Repositories;
+
+use Illuminate\Http\Request;
+use App\Models\MT23Company;
+
+class MT23CompanyRepository
+{    
+    
+    /**
+     * 所属情報取得
+     * A派遣、B派遣、C派遣など
+     * @return WorkTimeDeptEditorController
+     */
+    public function companyName()
+    {
+        return MT23Company::get();
+    }
+}

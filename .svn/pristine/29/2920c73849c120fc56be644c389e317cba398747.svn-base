@@ -1,0 +1,61 @@
+<!-- 組織変更入力  -->
+@extends('menu.main')
+
+@section('title','組織変更入力 ')
+
+@section('content')
+<div id="contents-stage">
+    <table class="BaseContainerStyle2">
+        <tbody>
+            <tr>
+                <td>
+                    <div id="ctl00_cphContentsArea_UpdatePanel1">
+
+
+                        <table class="InputFieldStyle1">
+                            <tbody>
+                                <tr>
+                                    <th>部門コード</th>
+                                    <td>
+                                        <span class="OutlineLabel" id="ctl00_cphContentsArea_lblDeptCd" style="width: 80px; display: inline-block;">000000</span>
+                                        <span class="OutlineLabel" id="ctl00_cphContentsArea_lblDeptName" style="width: 280px; display: inline-block;">アイティーエス</span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td></td>
+                                    <td>
+                                        <span id="ctl00_cphContentsArea_cvDeptCd" style="color: red; display: none;">ErrorMessage</span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <th>親部門コード</th>
+                                    <td>
+                                        <span class="OutlineLabel" id="ctl00_cphContentsArea_lblUpDeptCd" style="width: 80px; display: inline-block;"></span>
+                                        <span class="OutlineLabel" id="ctl00_cphContentsArea_lblUpDeptName" style="width: 280px; display: inline-block;"></span>
+                                        <input name="ctl00$cphContentsArea$hidUpDeptCd" id="ctl00_cphContentsArea_hidUpDeptCd" type="hidden">
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td></td>
+                                    <td>
+                                        <span id="ctl00_cphContentsArea_cvUpDeptCd" style="color: red; display: none;">ErrorMessage</span>
+                                    </td>
+                                </tr>
+                            </tbody>
+                        </table>
+
+                        <div class="line"></div>
+                        <p class="ButtonField1">
+                            <input name="ctl00$cphContentsArea$btnSelect" tabindex="1" id="ctl00_cphContentsArea_btnSelect" onclick="SetUpDeptItem()" type="button" value="親部門選択">
+                            <input name="ctl00$cphContentsArea$btnUpdate" tabindex="2" id="ctl00_cphContentsArea_btnUpdate" onclick="if(confirm('更新します。よろしいですか?') ==  false){ return false;};WebForm_DoPostBackWithOptions(new WebForm_PostBackOptions(&quot;ctl00$cphContentsArea$btnUpdate&quot;, &quot;&quot;, true, &quot;Update&quot;, &quot;&quot;, false, true))" type="button" value="更新">
+                            <input name="ctl00$cphContentsArea$btnCancel" tabindex="3" id="ctl00_cphContentsArea_btnCancel" onclick="javascript:__doPostBack('ctl00$cphContentsArea$btnCancel','')" type="button" value="キャンセル">
+                        </p>
+
+
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+@endsection

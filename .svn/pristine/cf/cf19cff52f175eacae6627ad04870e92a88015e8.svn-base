@@ -1,0 +1,19 @@
+<?php
+
+namespace App\Repositories;
+
+use App\Models\MT04ShiftPtn;
+use Illuminate\Support\Facades\DB;
+
+
+class MT04ShiftPtnRepository extends MT04ShiftPtn
+{
+    public function getWithShiftPtnCd($shift_ptn_cd)
+    {
+        return MT04ShiftPtn::where('SHIFTPTN_CD', $shift_ptn_cd)
+                    ->orderBy('SHIFTPTN_CD')
+                    ->orderBy('DAY_NO')
+                    ->get();
+    }
+
+}

@@ -1,0 +1,374 @@
+<?php use Carbon\CarbonPeriod; ?>
+<html lang="ja">
+    <head>
+        <title>印刷</title>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+        <style>
+            @font-face{
+                font-family: "MS Pゴシック";
+                font-style: normal;
+                font-weight: normal;
+                src: url("{{ public_path('fonts/migmix-2p-regular.ttf')}}") format('truetype');
+            }
+            @page { margin-top: 23px;
+            }
+            body {
+                font-family: "MS Pゴシック";
+                line-height: 80%;
+                text-align: center;
+                font-size: 9px;
+            }
+            .workTable {
+                border-collapse: collapse;
+                width: 100%;
+            }
+            .workTable tr th{
+                height:30px;
+                border-bottom: 2px solid black;
+                border-top: 2px solid black;
+                border-left: none;
+                border-right: none;
+                text-align: right;
+                font-weight: unset;
+            }
+            .workTable tr td{
+                height:27px;
+                border-bottom: 1px black;
+                border-top: 1px black;
+                border-left: none;
+                border-right: none;
+                text-align: right;
+                border-bottom-style: dotted;
+            }
+            .date{
+                position: relative;
+                margin-left:70%;
+                font-size: xx-small;
+            }
+            .record{
+                padding-bottom: 10px;
+                text-align:justify;
+                font-size: xx-small;
+                position: relative;
+            }
+            .date .page-number:after { 
+                content: counter(page);
+            }
+            footer {
+                position: fixed;
+                bottom: -40px;
+                left: 0px;
+                right: 0px;
+                border: none;
+            }
+        </style>
+    </head>
+    @isset($dailyReportDatas)
+    <!-- 該当データがない場合 -->
+    @if (count($dailyReportDatas) < 1)
+    <body>
+        <div class="date">
+            <span style="margin-left:80px;">作成日：</span>
+            <span style="margin-right:50px;">{{ date('Y/m/d', strtotime($now_date)) }}</span>&nbsp;&nbsp;
+            <span class="page-number"></span>
+            <span>/</span>
+            <span class="page-number"></span>
+        </div>
+        <div style="font-size:large;">
+            <span>勤務実績表(日報)</span>
+        </div>
+        <div class="record">
+            <span style="margin-left:10px;">対象日</span>
+            <span>:</span>    
+        </div>
+        <div class="record">
+            <span style="margin-left:20px;">部門</span>
+            <span>:</span>
+        </div>
+        <table class="workTable" style="width: 100%;">
+            <thead>
+                <tr style="width: 100%;">
+                    <th style="padding-left: 5px; text-align: left;">社員<br>&nbsp;&nbsp;</th>
+                    <th style="width:140px; text-align: left;"></th>
+                    <th style="width:140px; text-align: left;">勤務体系<br>事由</th>
+                    <th style="width:40px;">出勤<br>退出</th>
+                    <th style="width:40px;">外出１<br>再入１</th>
+                    <th style="width:40px;">外出２<br>再入２</th>
+                    <th style="width:60px;">出勤時間<br>遅刻時間</th>
+                    <th style="width:60px;">早退時間<br>外出時間</th>
+                    <th style="width:110px;"></th>
+                    <th style="width:110px;"></th>
+                    <th style="width:110px;"></th>
+                    <th style="width:110px;"></th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    @for ($i = 0; $i <= 11; $i++)
+                    <td></td>
+                    @endfor
+                    <td style="height:30px;"></td>
+                </tr>
+                <tr>
+                    @for ($i = 0; $i <= 4; $i++)
+                    <td style="border-bottom: none;"></td>
+                    @endfor
+                    <td style="border-bottom: none;">部門計</td>
+                    @for ($i = 0; $i <= 4; $i++)
+                    <td style="border-bottom: none;"></td>
+                    @endfor
+                    <td style="border-bottom: none; height:30px;"></td>
+                </tr>
+            </tbody>
+        </table>
+        <footer>
+            <hr>
+        </footer>
+    </body>
+    @else
+    <!-- 該当データ有 -->
+    <!-- ページ数計算 -->
+    @php
+        $num_page = 0;
+
+        $dept_list = $dailyReportDatas->unique('DEPT_CD');
+        foreach($dept_list as $dept) {
+                $num_page += $dailyReportDatas->where('DEPT_CD', $dept['DEPT_CD'])
+                             ->groupBy('CALD_DATE_FOR_GROUP')->count();
+        }
+    @endphp
+
+    <!-- 日付ごとでグループ化 -->
+    @foreach ($dailyReportDatas->groupBy('CALD_DATE_FOR_GROUP') as $report_date)
+    
+        <!-- 同じ日付の部門ごとで表示 -->
+        @php
+            $same_date_dept_list = $report_date->unique('DEPT_CD');
+        @endphp
+        @foreach ($same_date_dept_list as $dept)
+        <body>
+            <div id="pageCounter">
+                <span></span>
+            </div>
+            <div id="pageNumbers">
+                <div class="page-number"></div>
+            </div>
+            <div class="date">
+                <span></span>
+                <span style="margin-left:80px">作成日：</span>
+                <span style="margin-right:50px;">{{ date('Y/m/d', strtotime($now_date)) }}</span>
+            <span class="page-number"></span>
+            <span>/</span>
+            <span class="page-number-total">{{ $num_page }}</span>
+            </div>
+            <div style="font-size:large;">
+                <span>勤務実績表(日報)</span>
+            </div>
+            <div class="record">
+                <span style="margin-left:10px;">対象日</span>
+                <span>:</span>
+                <span>
+                    {{ date('Y/m/d', strtotime($dept->CALD_DATE)) }}
+                    ({{ config('consts.weeks')[date('w', strtotime($dept->CALD_DATE))] }})
+                </span>
+            </div>
+            <div class="record">
+                <span style="margin-left:20px;">部門</span>
+                <span>:</span>
+                <span>{{ $dept->DEPT_CD }}</span>
+                <span>{{ $dept->DEPT_NAME }}</span>
+            </div>
+            <table class="workTable" style="width: 100%;">
+                <thead>
+                    <tr style="width: 100%;">
+                        <th style="padding-left: 5px; text-align: left;">社員<br>&nbsp;&nbsp;</th>
+                        <th style="width:120px; text-align: left;"></th>
+                        <th style="width:120px; text-align: left;">勤務体系<br>事由</th>
+                        <th style="width:50px;">出勤<br>退出</th>
+                        <th style="width:50px;">外出１<br>再入１</th>
+                        <th style="width:50px;">外出２<br>再入２</th>
+                        <th style="width:60px;">出勤時間<br>遅刻時間</th>
+                        <th style="width:60px;">早退時間<br>外出時間</th>
+                        <th>
+                            {{ $dept->WORK_DESC_NAME_100 }}<br>
+                            {{ $dept->WORK_DESC_NAME_101 }}
+                        </th>
+                        <th>
+                            {{ $dept->WORK_DESC_NAME_102 }}<br>
+                            {{ $dept->WORK_DESC_NAME_103 }}
+                        </th>
+                        <th>
+                            {{ $dept->WORK_DESC_NAME_104 }}<br>&nbsp;&nbsp;
+                            {{ $dept->WORK_DESC_NAME_105 }}
+                        </th>
+                        <th>
+                            {{ $dept->WORK_DESC_NAME_200 }}<br>&nbsp;&nbsp;
+                            {{ $dept->WORK_DESC_NAME_201 }}
+                        </th>
+                        <th style="padding-right: 5px;">
+                            {{ $dept->WORK_DESC_NAME_202 }}<br>&nbsp;&nbsp;
+                        </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <!-- 社員詳細データ -->
+                    @php
+                        $emp_worktime_list = $dailyReportDatas->where('DEPT_CD', $dept->DEPT_CD)
+                                                            ->where('CALD_DATE', $dept->CALD_DATE);
+                    @endphp
+                    @foreach ($emp_worktime_list as $key => $emp_wt_data)
+                    <tr style="width: 100%;">
+                        <td style="padding-left: 5px; text-align: left;">
+                            {{ $emp_wt_data->EMP_CD }}<br>&nbsp;&nbsp;
+                        </td>
+                        <td style="text-align: left;">
+                            {{ $emp_wt_data->EMP_NAME }}<br>&nbsp;&nbsp;
+                        </td>
+                        <td style="text-align: left;">
+                            {{ $emp_wt_data->WORKPTN_NAME }}<br>{{ $emp_wt_data->REASON_NAME }}
+                        </td>
+                        <td>
+                            {{ $emp_wt_data->OFC_TIME }}<br>&nbsp;&nbsp;{{ $emp_wt_data->LEV_TIME }}
+                        </td>
+                        <td>
+                            {{ $emp_wt_data->OUT1_TIME }}<br>&nbsp;&nbsp;{{ $emp_wt_data->IN1_TIME }}
+                        </td>
+                        <td>
+                            {{ $emp_wt_data->OUT2_TIME }}<br>&nbsp;&nbsp;{{ $emp_wt_data->IN2_TIME }}
+                        </td>
+                        <td>
+                            {{ $emp_wt_data->WORK_TIME_HH . ' : ' . substr('00' . $emp_wt_data->WORK_TIME_MI, -2) }}
+                        <br>
+                            {{ $emp_wt_data->TARD_TIME_HH . ' : ' . substr('00' . $emp_wt_data->TARD_TIME_MI, -2) }}
+                        </td>
+                        <td>
+                            {{ $emp_wt_data->LEAVE_TIME_HH . ' : ' . substr('00' . $emp_wt_data->LEAVE_TIME_MI, -2) }}
+                        <br>
+                            {{ $emp_wt_data->OUT_TIME_HH . ' : ' . substr('00' . $emp_wt_data->OUT_TIME_MI, -2) }}
+                        </td>
+                        <td>
+                            {{ $emp_wt_data->OVTM1_TIME_HH . ' : ' . substr('00' . $emp_wt_data->OVTM1_TIME_MI, -2) }}
+                        <br>
+                            {{ $emp_wt_data->OVTM2_TIME_HH . ' : ' . substr('00' . $emp_wt_data->OVTM2_TIME_MI, -2) }}
+                        </td>
+                        <td>
+                            {{ $emp_wt_data->OVTM3_TIME_HH . ' : ' . substr('00' . $emp_wt_data->OVTM3_TIME_MI, -2) }}
+                        <br>
+                            {{ $emp_wt_data->OVTM4_TIME_HH . ' : ' . substr('00' . $emp_wt_data->OVTM4_TIME_MI, -2) }}
+                        </td>
+                        <td>
+                            {{ $emp_wt_data->OVTM5_TIME_HH . ' : ' . substr('00' . $emp_wt_data->OVTM5_TIME_MI, -2) }}
+                        <br>
+                            {{ $emp_wt_data->OVTM6_TIME_HH . ' : ' . substr('00' . $emp_wt_data->OVTM6_TIME_MI, -2) }}
+                        </td>
+                        <td>
+                            {{ $emp_wt_data->EXT1_TIME_HH . ' : ' . substr('00' . $emp_wt_data->EXT1_TIME_MI, -2) }}
+                        <br>
+                            {{ $emp_wt_data->EXT2_TIME_HH . ' : ' . substr('00' . $emp_wt_data->EXT2_TIME_MI, -2) }}
+                        </td>
+                        <td style="padding-right: 5px;">
+                            {{ $emp_wt_data->EXT3_TIME_HH . ' : ' . substr('00' . $emp_wt_data->EXT3_TIME_MI, -2) }}
+                        <br>&nbsp;&nbsp;
+                        </td>
+                    </tr>
+                    
+                    @endforeach
+                    <!-- 社員詳細データの集計 -->
+                    @php
+                    $wk_hh = $emp_worktime_list->sum('WORK_TIME_HH') + 
+                            floor($emp_worktime_list->sum('WORK_TIME_MI') / 60);
+                    $wk_mi = substr('00'. $emp_worktime_list->sum('WORK_TIME_MI') % 60, -2);
+
+                    $tard_hh = $emp_worktime_list->sum('TARD_TIME_HH') + 
+                               floor($emp_worktime_list->sum('TARD_TIME_MI') / 60);
+                    $tard_mi = substr('00'. $emp_worktime_list->sum('TARD_TIME_MI') % 60, -2);
+                    
+                    $leave_hh = $emp_worktime_list->sum('LEAVE_TIME_HH') + 
+                                floor($emp_worktime_list->sum('LEAVE_TIME_MI') / 60);
+                    $leave_mi = substr('00'. $emp_worktime_list->sum('LEAVE_TIME_MI') % 60, -2);
+
+                    $out_hh = $emp_worktime_list->sum('OUT_TIME_HH') + 
+                                floor($emp_worktime_list->sum('OUT_TIME_MI') / 60);
+                    $out_mi = substr('00'. $emp_worktime_list->sum('OUT_TIME_MI') % 60, -2);
+
+                    $ovtm1_hh = $emp_worktime_list->sum('OVTM1_TIME_HH') + 
+                                floor($emp_worktime_list->sum('OVTM1_TIME_MI') / 60);
+                    $ovtm1_mi = substr('00'. $emp_worktime_list->sum('OVTM1_TIME_MI') % 60, -2);
+
+                    $ovtm2_hh = $emp_worktime_list->sum('OVTM2_TIME_HH') + 
+                                    floor($emp_worktime_list->sum('OVTM2_TIME_MI') / 60);
+                    $ovtm2_mi = substr('00'. $emp_worktime_list->sum('OVTM2_TIME_MI') % 60, -2);
+
+                    $ovtm3_hh = $emp_worktime_list->sum('OVTM3_TIME_HH') + 
+                                floor($emp_worktime_list->sum('OVTM3_TIME_MI') / 60);
+                    $ovtm3_mi = substr('00'. $emp_worktime_list->sum('OVTM3_TIME_MI') % 60, -2);
+
+                    $ovtm4_hh = $emp_worktime_list->sum('OVTM4_TIME_HH') + 
+                                floor($emp_worktime_list->sum('OVTM4_TIME_MI') / 60);
+                    $ovtm4_mi = substr('00'. $emp_worktime_list->sum('OVTM4_TIME_MI') % 60, -2);
+
+                    $ovtm5_hh = $emp_worktime_list->sum('OVTM5_TIME_HH') + 
+                                floor($emp_worktime_list->sum('OVTM5_TIME_MI') / 60);
+                    $ovtm5_mi = substr('00'. $emp_worktime_list->sum('OVTM5_TIME_MI') % 60, -2);
+
+                    $ovtm6_hh = $emp_worktime_list->sum('OVTM6_TIME_HH') + 
+                                    floor($emp_worktime_list->sum('OVTM6_TIME_MI') / 60);
+                    $ovtm6_mi = substr('00'. $emp_worktime_list->sum('OVTM6_TIME_MI') % 60, -2);
+
+
+                    $ext1_hh = $emp_worktime_list->sum('EXT1_TIME_HH') + 
+                                floor($emp_worktime_list->sum('EXT1_TIME_MI') / 60);
+                    $ext1_mi = substr('00'. $emp_worktime_list->sum('EXT1_TIME_MI') % 60, -2);
+
+                    $ext2_hh = $emp_worktime_list->sum('EXT2_TIME_HH') + 
+                                floor($emp_worktime_list->sum('EXT2_TIME_MI') / 60);
+                    $ext2_mi = substr('00'. $emp_worktime_list->sum('EXT2_TIME_MI') % 60, -2);
+
+                    $ext3_hh = $emp_worktime_list->sum('EXT3_TIME_HH') + 
+                                floor($emp_worktime_list->sum('EXT3_TIME_MI') / 60);
+                    $ext3_mi = substr('00'. $emp_worktime_list->sum('EXT3_TIME_MI') % 60, -2);
+
+                    $sum_work_time = $wk_hh . ' : ' . $wk_mi;
+                    $sum_tard_time = $tard_hh . ' : ' . $tard_mi;
+                    $sum_leave_time = $leave_hh . ' : ' . $leave_mi;
+                    $sum_out_time = $out_hh . ' : ' . $out_mi;
+                    $sum_ovtm1_time = $ovtm1_hh . ' : ' . $ovtm1_mi;
+                    $sum_ovtm2_time = $ovtm2_hh . ' : ' . $ovtm2_mi;
+                    $sum_ovtm3_time = $ovtm3_hh . ' : ' . $ovtm3_mi;
+                    $sum_ovtm4_time = $ovtm4_hh . ' : ' . $ovtm4_mi;
+                    $sum_ovtm5_time = $ovtm5_hh . ' : ' . $ovtm5_mi;
+                    $sum_ovtm6_time = $ovtm6_hh . ' : ' . $ovtm6_mi;
+                    $sum_ext1_time = $ext1_hh . ' : ' . $ext1_mi;
+                    $sum_ext2_time = $ext1_hh . ' : ' . $ext1_mi;
+                    $sum_ext3_time = $ext1_hh . ' : ' . $ext1_mi;
+                        
+                    @endphp
+                    <tr>
+                        <td style="border-bottom: none;"></td>
+                        <td style="border-bottom: none;"></td>
+                        <td style="border-bottom: none;"></td>
+                        <td style="border-bottom: none;"></td>
+                        <td style="border-bottom: none;"></td>
+                        <td style="border-bottom: none;">部門計</td>
+                        <td style="border-bottom: none;">{{ $sum_work_time }}<br>&nbsp;{{ $sum_tard_time }}</td>
+                        <td style="border-bottom: none;">{{ $sum_leave_time }}<br>&nbsp;{{ $sum_out_time }}</td>
+                        <td style="border-bottom: none;">{{ $sum_ovtm1_time }}<br>&nbsp;{{ $sum_ovtm2_time }}</td>
+                        <td style="border-bottom: none;">{{ $sum_ovtm3_time }}<br>&nbsp;{{ $sum_ovtm4_time }}</td>
+                        <td style="border-bottom: none;">{{ $sum_ovtm5_time }}<br>&nbsp;{{ $sum_ovtm6_time }}</td>
+                        <td style="border-bottom: none;">{{ $sum_ext1_time }}<br>&nbsp;{{ $sum_ext2_time }}</td>
+                        <td style="border-bottom: none; padding-right: 5px;">{{ $sum_ext3_time }}<br>&nbsp;</td>
+                    </tr>
+                    
+                </tbody>
+            </table>
+            <!-- フッター -->
+            <footer>
+                <hr>
+            </footer>
+        </body>
+        @endforeach
+
+    @endforeach
+    @endif
+    @endisset
+</html>

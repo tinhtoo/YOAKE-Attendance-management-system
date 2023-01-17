@@ -1,0 +1,156 @@
+<?php
+
+namespace App\Http\Requests;
+
+use App\Models\MT99Msg;
+use App\Models\MT10Emp;
+use App\Models\MT11Login;
+use App\Models\MT12Dept;
+use App\Models\MT13DeptAuth;
+use Illuminate\Foundation\Http\FormRequest;
+
+class MT10EmpEditRequest extends FormRequest
+{
+
+    public function rules()
+    {
+        $ymdCheck = function($yearName = '', $monthName = '', $dayName = '') {
+            return function($attribute, $value, $fail) use ($yearName, $monthName, $dayName) {
+                $input_data = $this->all();
+                $year = $input_data[$yearName];
+                $month = $input_data[$monthName];
+                $day = $input_data[$dayName];
+
+                if ($year == null && $month == null && $day == null) {
+                    // 全項目未入力 -> エラーなし
+
+                } else if ($year == null || $month == null || $day == null) {
+                    // 年月日いずれか未入力 -> 必須エラー
+                    $msg_2002 = MT99Msg::where('MSG_NO', '2002')->pluck('MSG_CONT')->first();
+                    $fail($msg_2002);
+
+                } else if (!checkDate($month, $day, $year)) {
+                    // 不正な日付
+                    $msg_2004 = MT99Msg::where('MSG_NO', '2004')->pluck('MSG_CONT')->first();
+                    $fail($msg_2004);
+
+                } else if ((int)$year < 1900 || 2100 < (int)$year) {
+                    // 年が1900～2100の範囲外
+                    $msg_2026 = MT99Msg::where('MSG_NO', '2026')->pluck('MSG_CONT')->first();
+                    $fail($msg_2026);
+                }
+            };
+        };
+        $ymCheck = function($yearName = '', $monthName = '') {
+            return function($attribute, $value, $fail) use($yearName, $monthName) {
+                $input_data = $this->all();
+                $year = $input_data[$yearName];
+                $month = $input_data[$monthName];
+
+                if ($year == null && $month == null) {
+                    // 全項目未入力 -> エラーなし
+
+                } else if ($year == null || $month == null) {
+                    // 年月日いずれか未入力 -> 必須エラー
+                    $msg_2002 = MT99Msg::where('MSG_NO', '2002')->pluck('MSG_CONT')->first();
+                    $fail($msg_2002);
+
+                } else if (!checkDate($month, 1, $year)) {
+                    // 不正な日付
+                    $msg_2004 = MT99Msg::where('MSG_NO', '2004')->pluck('MSG_CONT')->first();
+                    $fail($msg_2004);
+
+                } else if ((int)$year < 1900 || 2100 < (int)$year) {
+                    // 年が1900～2100の範囲外
+                    $msg_2027 = MT99Msg::where('MSG_NO', '2027')->pluck('MSG_CONT')->first();
+                    $fail($msg_2027);
+                }
+            };
+        };
+        return $rules = [
+            'EMP_CD' => [
+                'required',
+                'regex:/^[a-zA-Z0-9]+$/',
+                function($attribute, $value, $fail) {
+                    $input_data = $this->all();
+                    $changeEmpCd = $input_data['change'];
+                    $check = MT10Emp::where('EMP_CD', $value)->exists();
+                    if ($changeEmpCd == null && $check) {
+                        // 2001メッセージ取得（該当データが存在します。)
+                        $msg_2001 = MT99Msg::where('MSG_NO', '2001')->pluck('MSG_CONT')->first();          
+                        $fail($msg_2001);
+                    } else if ($changeEmpCd != null && !$check) {
+                        // 更新時、更新前データなし
+                        // 2000メッセージ取得（該当データが存在しません。)
+                        $msg_2000 = MT99Msg::where('MSG_NO', '2000')->pluck('MSG_CONT')->first();          
+                        $fail($msg_2000);
+                    }
+                }
+            ], 
+            'EMP_NAME' => [
+                'required',
+                'regex:/^[^|]+$/',
+            ],
+            'EMP_KANA' => ['required',],
+            'DEPT_CD' => [
+                'required',
+                function($attribute, $value, $fail) {
+                    $emp_cd = MT11Login::where(['LOGIN_ID' => session('id')])->pluck('EMP_CD')->first();
+                    $dept_auth_cd = MT10Emp::where('EMP_CD', $emp_cd)->pluck('DEPT_AUTH_CD')->first();
+                    $dept_cd = MT13DeptAuth::where('DEPT_AUTH_CD', $dept_auth_cd)->pluck('DEPT_CD')->all();
+                    $existDeptCd = MT12Dept::whereIn('DEPT_CD', $dept_cd)
+                            ->where('DISP_CLS_CD', '=', '01')
+                            ->where('DEPT_CD', '=', $value)
+                            ->exists();
+                    if (!$existDeptCd) {
+                        // 2000メッセージ取得（該当データが存在しません。)
+                        $msg_2000 = MT99Msg::where('MSG_NO', '2000')->pluck('MSG_CONT')->first();          
+                        $fail($msg_2000);
+                    }
+                }
+            ],
+            'ENT_YEAR' => [$ymdCheck('ENT_YEAR', 'ENT_MONTH', 'ENT_DAY'),],
+            'RET_YEAR' => $ymdCheck('RET_YEAR', 'RET_MONTH', 'RET_DAY'),
+            'REG_CLS_CD' => ['required',],
+            'BIRTH_YEAR' => $ymdCheck('BIRTH_YEAR', 'BIRTH_MONTH', 'BIRTH_DAY'),
+            'SEX_CLS_CD' => ['required',],
+            'EMP_CLS1_CD' => ['required',],
+            'EMP_CLS2_CD' => ['required',],
+            'CALENDAR_CD' => ['required',],
+            'POST_CD' => [], // 形式
+            'ADDRESS1' => [], // 形式
+            'ADDRESS2' => [], // 形式
+            'TEL' => [], // 形式
+            'CELLULAR' => [], // 形式
+            'MAIL' => [], // 形式
+            'PH_GRANT_YEAR' => $ymCheck('PH_GRANT_YEAR', 'PH_GRANT_MONTH'),
+            'CLOSING_DATE_CD' => ['required',],
+        ];
+    }
+
+
+    public function messages()
+    {
+        // 2002メッセージ取得（必須入力項目です)
+        $msg_2002 = MT99Msg::where('MSG_NO', '2002')->pluck('MSG_CONT')->first();
+        // 2025メッセージ取得（英数字以外の文字が含まれています。)
+        $msg_2025 = MT99Msg::where('MSG_NO', '2025')->pluck('MSG_CONT')->first();
+        // 4001メッセージ取得(禁則文字([|])が含まれています。)
+        $msg_4001 = MT99Msg::where('MSG_NO', '4001')->pluck('MSG_CONT')->first();
+
+        return [
+            'EMP_CD.required' => $msg_2002,
+            'EMP_CD.regex' => $msg_2025,
+            'EMP_NAME.required' => $msg_2002,
+            'EMP_NAME.regex' => $msg_4001,
+            'EMP_KANA.required' => $msg_2002,
+            'DEPT_CD.required' => $msg_2002,
+            'REG_CLS_CD.required' => $msg_2002,
+            'SEX_CLS_CD.required' => $msg_2002,
+            'EMP_CLS1_CD.required' => $msg_2002,
+            'EMP_CLS2_CD.required' => $msg_2002,
+            'CALENDAR_CD.required' => $msg_2002,
+            'CLOSING_DATE_CD.required' => $msg_2002,
+        ];
+    }
+}

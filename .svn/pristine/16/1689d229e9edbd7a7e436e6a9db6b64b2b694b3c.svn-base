@@ -1,0 +1,57 @@
+<?php
+
+namespace App\Http\Requests;
+
+use Illuminate\Foundation\Http\FormRequest;
+use App\Models\MT99Msg;
+
+class MT02CalendarPtnUpdRequest extends FormRequest
+{
+    public function rules()
+    {
+        $rules = [];
+
+        $input_data = $this->request->all();
+        $workptn = $input_data['WorkPtn'];
+
+        if (empty($input_data['CalendarPtnName'])){
+            $rules = ['CalendarPtnName' => ['required']];
+            return $rules;
+        }
+
+        if($workptn = 'rbUsuallyWork' && $workptn != 'rbShiftWork'){
+            if (($input_data = 'CalendarPtnName')) {
+                    $rules = [
+                        'ddlMonWorkPtn' => ['required'],
+                        'ddlTueWorkPtn' => ['required'],
+                        'ddlWedWorkPtn' => ['required'],
+                        'ddlThuWorkPtn' => ['required'],
+                        'ddlFriWorkPtn' => ['required'],
+                        'ddlSatWorkPtn' => ['required'],
+                        'ddlSunWorkPtn' => ['required'],
+                        'ddlHldWorkPtn' => ['required'],
+                    ];
+                    return $rules;
+                }
+        }
+        return $rules;
+    }
+    
+    public function messages()
+    {
+        //（CD-2002）'必須入力項目です。'
+        $msg_2002 = MT99Msg::where('MSG_NO', '2002')->pluck('MSG_CONT')->first();
+        return [
+            'CalendarCd.required' => $msg_2002,
+            'CalendarPtnName.required' => $msg_2002,
+            'ddlMonWorkPtn.required' => $msg_2002,
+            'ddlTueWorkPtn.required' => $msg_2002,
+            'ddlWedWorkPtn.required' => $msg_2002,
+            'ddlThuWorkPtn.required' => $msg_2002,
+            'ddlFriWorkPtn.required' => $msg_2002,
+            'ddlSatWorkPtn.required' => $msg_2002,
+            'ddlSunWorkPtn.required' => $msg_2002,
+            'ddlHldWorkPtn.required' => $msg_2002,
+        ];
+    }
+}

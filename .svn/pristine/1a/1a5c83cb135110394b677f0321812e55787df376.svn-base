@@ -1,0 +1,142 @@
+<?php
+
+namespace App\Http\Controllers\Mng_Oprt;
+
+use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
+
+use App\Http\Requests\ShiftCalendarCarryOverUpdateRequest;
+use App\Repositories\MT01ControlRepository;
+use App\Repositories\Search\MT12DeptSearchRepository;
+use App\Repositories\MT13DeptAuthRepository;
+use App\Repositories\MT17PdHolidayRepository;
+use App\Repositories\MT22ClosingDateRepository;
+use App\Repositories\MT93PgRepository;
+use App\Repositories\TR01WorkRepository;
+use Carbon\Carbon;
+
+/**
+ * シフト月次更新処理画面
+ */
+class ShiftCalendarCarryOverController extends Controller
+{
+    private $mt01_control;
+    private $mt12_dept_search;
+    private $mt13_dept_auth;
+    private $mt17_pd_holiday;
+    private $mt22_closing_date;
+    /**
+     * コントローラインスタンスの生成
+     * @param
+     * @return void
+     */
+    public function __construct(MT93PgRepository $pg_repository,
+                                MT01ControlRepository $mt01_control_rep,
+                                MT12DeptSearchRepository $mt12_dept_search_rep,
+                                MT13DeptAuthRepository $mt13_dept_auth_rep,
+                                MT17PdHolidayRepository $mt17_pd_holiday_rep,
+                                MT22ClosingDateRepository $mt22_closing_date_rep,
+                                MT93PgRepository $mt93_pg_rep,
+                                TR01WorkRepository $tr01_work_rep
+                                )
+    {
+        parent::__construct($pg_repository, '040002');
+        $this->mt01_control = $mt01_control_rep;
+        $this->mt17_pd_holiday = $mt17_pd_holiday_rep;
+        $this->mt12_dept_search = $mt12_dept_search_rep;
+        $this->mt13_dept_auth = $mt13_dept_auth_rep;
+        $this->mt22_closing_date = $mt22_closing_date_rep;
+        $this->mt93_pg = $mt93_pg_rep;
+        $this->tr01_work = $tr01_work_rep;
+    }
+
+    /**
+     * シフト月次更新処理画面表示
+     * @return view
+     */
+    public function index(Request $request)
+    {
+        return parent::viewWithMenu('mng_oprt.ShiftCalendarCarryOver', $this->createViewData());
+    }
+
+    public function update(ShiftCalendarCarryOverUpdateRequest $request)
+    {
+        \Log::debug($request->only(['year', 'month', 'closingDateCd', 'dept_cd']));
+        // $today = date('Y-m-d H:i:s');
+        // $year = $request['Year'];
+        // $month = $request['Month'];
+        // $closing_date_cd = $request['closingDateCd'];
+        // $calendar_data = $request['calendarData'];
+        // $mt03_records = [];
+        // foreach ($calendar_data as $calendar) {
+        //     $mt03_record = [
+        //         'CALD_YEAR' => $year,
+        //         'CALD_MONTH' => $month,
+        //         'CALD_DATE' => new Carbon($calendar['calDate']),
+        //         'WORKPTN_CD' => $calendar['workPtnCd'],
+        //         'RSV1_CLS_CD' => '',
+        //         'RSV2_CLS_CD' => '',
+        //         'UPD_DATE' => $today,
+        //         'CLOSING_DATE_CD' => $closing_date_cd,
+        //     ];
+        //     $mt03_records[] = $mt03_record;
+        // }
+
+        // try {
+        //     \DB::beginTransaction();
+
+        //     // TR01_WORK
+        //     $emp_cd_list = $this->mt10_emp_ref->getWithCalendarCdAndClosingDateCdWithoutTaishoku($closing_date_cd)->pluck('EMP_CD');
+        //     foreach ($emp_cd_list as $emp_cd) {
+        //         $work_records = $this->tr01_work->getWithEmpAndCaldYearMonth($emp_cd, $year, $month);
+        //         if ($work_records->isEmpty()) {
+        //             $this->insertWork($emp_cd, $request, $today);
+        //         } else {
+        //             foreach ($work_records as $work_record){
+        //             }
+        //         }
+
+        //         // MT17_PDHOLIDAY
+        //         $search_year = (int)$month > 5 ? $year : $year - 1;
+        //         if ($this->mt17_pd_holiday->notExistWithEmpAndPdYear($emp_cd, $search_year)) {
+        //             $this->mt17_pd_holiday->insertDefault($emp_cd, $search_year);
+        //         }
+        //     }
+
+        //     \DB::commit();
+        // } catch (\Throwable $e) {
+        //     \DB::rollBack();
+        //     \Log::debug($e);
+        // }
+        return redirect('mng_oprt/ShiftCalendarCarryOver');
+    }
+
+
+    private function createViewData()
+    {
+        $control = $this->mt01_control->getMt01();
+        $today = date('Y-m-d');
+        // 月の初期値設定
+        // 今月を取得
+        $year_and_month = getYearAndMonthWithControl($today, $control->MONTH_CLS_CD, $control->CLOSING_DATE);
+        $def_year = $year_and_month['year'];
+        // 翌月にする
+        $def_month = $year_and_month['month'] + 1;
+        if ($def_month === 0) {
+            $def_year--;
+            $def_month = 12;
+        } else if ($def_month === 13) {
+            $def_year++;
+            $def_month = 1;
+        }
+
+        $dept_list = $this->mt12_dept_search->getSorted();
+        $changeable_dept_cd_list = $this->mt13_dept_auth->getChangeableDept(session('id'))->pluck('DEPT_CD')->toArray();
+        $closing_dates = $this->mt22_closing_date->getMt22();
+        $def_closing_date_cd = $closing_dates->firstWhere('RSV1_CLS_CD', '01')->CLOSING_DATE_CD;
+
+        return compact('def_year', 'def_month', 'dept_list', 
+                'changeable_dept_cd_list', 'closing_dates', 'def_closing_date_cd');
+    }
+
+}

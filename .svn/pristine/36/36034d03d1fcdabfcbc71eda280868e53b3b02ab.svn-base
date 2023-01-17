@@ -1,0 +1,35 @@
+<?php
+
+namespace App\Http\Controllers\Mng_Oprt;
+
+use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
+use App\Repositories\MT93PgRepository;
+
+use function Symfony\Component\VarDumper\Dumper\esc;
+
+/**
+ * 月次確定状況照会画面
+ */
+
+class WorkTimeFixReferenceController extends Controller
+{
+    /**
+     * コントローラインスタンスの生成
+     * @param
+     * @return void
+     */
+    public function __construct(MT93PgRepository $pg_repository)
+    {
+        parent::__construct($pg_repository);
+    }
+
+    /**
+     * 出退勤照会 画面表示
+     * @return view
+     */
+    public function index(Request $request)
+    {
+        return parent::viewWithMenu('mng_oprt.WorkTimeFixReference');
+    }
+}

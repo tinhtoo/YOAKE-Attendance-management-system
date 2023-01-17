@@ -1,0 +1,148 @@
+<?php
+
+namespace App\Http\Controllers\master;
+
+use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
+use App\Http\Requests\MT23CompanyEditorRequest;
+use App\Repositories\Master\Mt23CompanyRepository;
+use App\Models\MT99Msg;
+use App\Models\MT23Company;
+use App\Models\MT94WorkDesc;
+use App\Models\MT91ClsDetail;
+use App\Supplier;
+use Illuminate\Contracts\Session\Session;
+
+/**所属情報入力、所属情報照会
+ *[history date="2022/02/09" editor="カウン" ]
+ */
+class MT23CompanyController extends Controller
+{
+    //** $Mt23Company_Repositoryリポジトリの実装 */
+    /**
+     * @var Mt23CompanyRepository
+     */
+    protected $Mt23Company_Repository;
+
+    //** コントローラインスタンスの生成 */
+    /**
+     * @param  Mt23CompanyRepository $Mt23Company_Repository
+     * @return void
+     */
+    public function __construct(Mt23CompanyRepository $Mt23Company_Repository)
+    {
+        $this->Mt23Company_Repository = $Mt23Company_Repository;
+    }
+
+    //*** 所属情報照会 画面表示 ***//
+    /**
+     * MT23 Comany会社名表示
+     * @return view (MT23CompanyReference.blade)
+     */
+    public function MT23CompanyReferenceIndex(Request $request)
+    {
+        $haken_company = $this->Mt23Company_Repository->companyName();
+        // dd($companyName);
+        return view('master.MT23CompanyReference', compact('haken_company'));
+    }
+
+    //***所属情報入力 ***//
+    /*詳細画面の表示
+     *修正モード
+     * @return view (MT23CompanyEditor.blade)
+     */
+    public function edit($id)
+    {
+        // dd($id);
+        $company_Cd = MT23Company::find($id);
+        // dd($company_Cd);
+        if (is_null($company_Cd)) {
+            \Session::flash('err_msg', 'データがありません！');
+            return redirect(route('MT23.index'));
+        }
+
+        $query_data = MT23Company::where('COMPANY_CD', $id)->get();
+        // dd($query_data);
+        // $query_id = MT23Company::where('COMPANY_CD', $id)->first('COMPANY_CD');
+        // dd($query_id);
+        $dispcls_cd = MT91ClsDetail::where('CLS_CD', '01')->orderBy('CLS_DETAIL_CD', 'ASC')->get();
+        // dd($dispcls_cd);
+        $msg_1005 = MT99Msg::where('MSG_NO', '1005')->pluck('MSG_CONT')->first();
+
+        return view('master.MT23CompanyEditor', ['query_data' => $query_data, 'dispcls_cd' => $dispcls_cd, 'msg_1005' => $msg_1005]);
+    }
+
+    //***所属情報入力 ***//
+    /*MT23Company更新処理
+     *修正モード
+     * @return view (MT23CompanyEditor.blade)
+     */
+    public function update(Request $request)
+    {
+        //入力データを取得
+        $inputData = $request->all();
+        try {
+            // 更新処理(require)
+            $mt23CompanyData = MT23Company::find($inputData['COMPANY_CD']);
+            $mt23CompanyData->COMPANY_NAME = $request->txtCompanyName;
+            $mt23CompanyData->COMPANY_KANA = $request->txtCompanyKana;
+            $mt23CompanyData->COMPANY_ABR = $request->txtCompanyAbr;
+            $mt23CompanyData->DISP_CLS_CD = $request->ddlDispCls;
+            //未入力時空文字で更新
+            if ($request->txtPostCd == null) {
+                $request->txtPostCd = "";
+                $mt23CompanyData->POST_CD = $request->txtPostCd;
+            } else {
+                $mt23CompanyData->POST_CD = $request->txtPostCd;
+            }
+            if ($request->txtAddress1 == null) {
+                $request->txtAddress1 = "";
+                $mt23CompanyData->ADDRESS1 = $request->txtAddress1;
+            } else {
+                $mt23CompanyData->ADDRESS1 = $request->txtAddress1;
+            }
+            if ($request->txtAddress2 == null) {
+                $request->txtAddress2 = "";
+                $mt23CompanyData->ADDRESS2 = $request->txtAddress2;
+            } else {
+                $mt23CompanyData->ADDRESS2 = $request->txtAddress2;
+            }
+            if ($request->txtAddress3 == null) {
+                $request->txtAddress3 = "";
+                $mt23CompanyData->ADDRESS3 = $request->txtAddress3;
+            } else {
+                $mt23CompanyData->ADDRESS3 = $request->txtAddress3;
+            }
+            if ($request->txtTel == null) {
+                $request->txtTel = "";
+                $mt23CompanyData->TEL = $request->txtTel;
+            } else {
+                $mt23CompanyData->TEL = $request->txtTel;
+            }
+            if ($request->txtFax == null) {
+                $request->txtFax = "";
+                $mt23CompanyData->FAX = $request->txtFax;
+            } else {
+                $mt23CompanyData->FAX = $request->txtFax;
+            }
+            //更新日付（TimeZone->Asia/Tokyo)
+            date_default_timezone_set('Asia/Tokyo');
+            $mt23CompanyData->UPD_DATE = now();
+            $mt23CompanyData->timestamps = false;
+            $mt23CompanyData->save();
+        } catch (\Throwable $e) {
+            \DB::rollback();
+            abort(500);
+        }
+        return redirect(route('MT23.index'));
+    }
+
+    //** 所属情報入力 キャセンル処理 */
+    /**
+     * @return view (MT23CompanyReference.blade)
+     */
+    public function cancelBtn(Request $request)
+    {
+        return redirect()->route('MT23.edit')->withInput($request->only(['ddlTargetYear', 'ddlTargetMonth', 'ddlTargetDay']));
+    }
+}

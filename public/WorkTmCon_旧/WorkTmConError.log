@@ -1,0 +1,36 @@
+2022/04/27 17:50:14
+System.ArgumentOutOfRangeException: インデックスが範囲を超えています。負でない値で、コレクションのサイズよりも小さくなければなりません。
+パラメーター名:index
+   場所 System.ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument argument, ExceptionResource resource)
+   場所 WorkTmCon.WorkTmConRepository.CalculateWorkTime_CreateTR01WorkRow(List`1 commandParameters)
+   場所 WorkTmCon.WorkTmCon.CaluclateWorkTime(List`1 commandParameters)
+   場所 WorkTmCon.WorkTmCon.WorkTmSvcRouting(String[] args)
+   場所 WorkTmCon.Program.Main(String[] args)
+
+2022/04/27 17:52:55
+System.ArgumentOutOfRangeException: インデックスが範囲を超えています。負でない値で、コレクションのサイズよりも小さくなければなりません。
+パラメーター名:index
+   場所 System.ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument argument, ExceptionResource resource)
+   場所 WorkTmCon.WorkTmConRepository.CalculateWorkTime_CreateTR01WorkRow(List`1 commandParameters)
+   場所 WorkTmCon.WorkTmCon.CaluclateWorkTime(List`1 commandParameters)
+   場所 WorkTmCon.WorkTmCon.WorkTmSvcRouting(String[] args)
+   場所 WorkTmCon.Program.Main(String[] args)
+
+2022/04/27 17:54:49
+System.ArgumentOutOfRangeException: インデックスが範囲を超えています。負でない値で、コレクションのサイズよりも小さくなければなりません。
+パラメーター名:index
+   場所 System.ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument argument, ExceptionResource resource)
+   場所 WorkTmCon.WorkTmConRepository.CalculateWorkTime_CreateTR01WorkRow(List`1 commandParameters)
+   場所 WorkTmCon.WorkTmCon.CaluclateWorkTime(List`1 commandParameters)
+   場所 WorkTmCon.WorkTmCon.WorkTmSvcRouting(String[] args)
+   場所 WorkTmCon.Program.Main(String[] args)
+
+2022/04/27 17:58:41
+System.ArgumentOutOfRangeException: インデックスが範囲を超えています。負でない値で、コレクションのサイズよりも小さくなければなりません。
+パラメーター名:index
+   場所 System.ThrowHelper.ThrowArgumentOutOfRangeException(ExceptionArgument argument, ExceptionResource resource)
+   場所 WorkTmCon.WorkTmConRepository.CalculateWorkTime_CreateTR01WorkRow(List`1 commandParameters)
+   場所 WorkTmCon.WorkTmCon.CaluclateWorkTime(List`1 commandParameters)
+   場所 WorkTmCon.WorkTmCon.WorkTmSvcRouting(String[] args)
+   場所 WorkTmCon.Program.Main(String[] args)
+

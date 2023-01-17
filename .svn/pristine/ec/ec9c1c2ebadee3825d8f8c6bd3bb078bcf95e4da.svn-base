@@ -1,0 +1,35 @@
+<?php
+
+namespace App\Repositories;
+
+use App\Models\MT03Calendar;
+
+use App\Filters\MT03CalendarEditorFilter;
+use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Illuminate\Support\Facades\DB;
+
+
+class MT03CalendarRepository extends MT03Calendar
+{
+    public function search(MT03CalendarEditorFilter $filter)
+    {
+        return MT03Calendar::filter($filter)
+                    ->orderBy('CALD_YEAR')
+                    ->orderBy('CALD_MONTH')
+                    ->orderBy('CALD_DATE')
+                    ->get();
+    }
+
+    public function upsertCalendar($record)
+    {
+        return DB::table($this->table)
+                ->upsert($record, $this->primaryKey, $this->fillable);
+    }
+
+    public function deleteCalendar($id)
+    {
+        return DB::table($this->table)
+                ->where('EMP_CD', $id)
+                ->delete();
+    }
+}

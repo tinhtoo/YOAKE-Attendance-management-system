@@ -1,0 +1,96 @@
+<!-- 機能権限情報照会  -->
+@extends('menu.main')
+
+@section('title', '機能権限情報照会')
+
+@section('content')
+<div id="contents-stage">
+    <table class="BaseContainerStyle1">
+        <tbody>
+            <tr>
+                <td>
+                    <div id="ctl00_cphContentsArea_UpdatePanel1">
+
+                        <p class="FunctionMenu1"><a id="ctl00_cphContentsArea_hlAddPgAuth" href="MT14PGAuthEditor?Id=Add">新規機能権限登録</a></p>
+
+                        <div class="line"></div>
+                        <div class="GridViewStyle1">
+                                <table style="border-collapse: separate;">
+                                    <tbody>
+                                        <tr>
+                                            <th>
+                                                機能権限
+                                            </th>
+                                            <th>
+                                                機能権限
+                                            </th>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                        
+                        <div class="GridViewStyle1">
+                            <div class="two-col" style="column-count:2;"> 
+                                <table class="GridViewSpace" id="ctl00_cphContentsArea_gvPgAuth" style="border-collapse: collapse;" border="1" rules="all" cellspacing="0">
+                                    <tbody>
+                                        @foreach ($all as $item)
+                                            <tr style="background-color: white;">
+                                            <td style="width: 350px;">
+                                                     <a href="{{ url('master/MT14PGAuthEditor?Id='. $item->PG_AUTH_CD )}}">
+                                                        {{ $item->PG_AUTH_CD }}:{{ $item->PG_AUTH_NAME }}
+                                                     </a>
+                                            </td>
+                                            </tr>
+                                         @endforeach
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div>
+                        <div class="line"></div>
+                            <div class="d-flex justify-content-center" id="pegination">
+                             
+                            @if ($all->hasPages())
+                                <ul class="pagination" role="navigation">
+                                    <!-- 最初のページへのリンク -->
+                                    {{-- First Page View --}} 
+                                        <li class="page-item {{ $all->onFirstPage() ? ' disabled' : '' }}">
+                                        <a class="page-link" href="{{ $all->url(1) }}">最初へ</a>
+                                        </li>&nbsp;
+
+                                    <!-- 前のページへのリンク -->
+                                    {{-- Previous Page Link --}} 
+                                    <li class="page-item {{ $all->onFirstPage() ? ' disabled' : '' }}">
+                                        <a class="page-link" href="{{ $all->previousPageUrl() }}">前へ</a>
+                                    </li>                                        
+                                                    <!--現在のページ-->
+                                                    <li class="d-flex justify-content-center" aria-current="page" ><span>&nbsp;(&nbsp;{{ $all->currentPage() }}</span></li>
+                                                    <!--現在のページと最後の総ページの間の「/」-->
+                                                     &nbsp;/&nbsp;
+                                                    <!-- 総ページ数（＝最後のページ）-->
+                                                    <li class="d-flex justify-content-center" aria-current="page" ><span>{{ $all->lastPage() }}&nbsp;)&nbsp;</span></li>
+                                               
+                                    <!-- 次のページへのリンク -->
+                                    {{-- Next Page Link --}}
+                                    <li class="page-item {{ $all->currentPage() == $all->lastPage() ? ' disabled' : '' }}">
+                                        <a class="page-link" href="{{ $all->nextPageUrl() }}">次へ</a>
+                                    </li>&nbsp;
+
+                                    <!-- 最後のページへのリンク -->
+                                    {{-- Last Page Link --}}
+                                    <li class="page-item {{ $all->currentPage() == $all->lastPage() ? ' disabled' : '' }}">
+                                    <a class="page-link" href="{{ $all->url($all->lastPage()) }}">最後へ</a>
+                                    </li>
+                                </ul>
+                            @endif
+                            </div>
+                        <div class="line"></div>
+                        <p class="ButtonField1">
+                            <input name="btnCancel" class="SearchButton" id="btnCancel" type="button" onclick="Cancel();" value="キャンセル">
+                        </p>
+                    </div>
+                </td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+@endsection

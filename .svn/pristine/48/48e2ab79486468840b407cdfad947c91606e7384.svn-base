@@ -1,0 +1,84 @@
+<?php
+
+namespace App\Http\Controllers\Work_Time;
+
+use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
+use App\Http\Requests\EmpWorkStatusReferenceRequest;
+use App\Repositories\Work_Time\EmpWorkStatusReferenceRepository;
+use App\Filters\EmpWorkStatusRefFilter;
+
+use function Symfony\Component\VarDumper\Dumper\esc;
+
+/**出退勤照会
+*[history date="2022/01/05" editor="カウン" ]
+ */
+
+ class EmpWorkStatusReferenceController extends Controller
+{
+    //** $empWtStatusRef_Repositoryリポジトリの実装 */
+    /**
+     * @var EmpWorkStatusReferenceRepository
+     */
+    protected $empWtStatusRef_Repository;
+
+    //** コントローラインスタンスの生成 */
+    /**
+     * @param  EmpWorkStatusReferenceRepository $empWtStatusRef_Repository
+     * @return void
+     */
+    public function __construct(EmpWorkStatusReferenceRepository $empWtStatusRef_Repository)
+    {
+        $this->empWtStatusRef_Repository = $empWtStatusRef_Repository;
+    }
+
+    //**出退勤照会 画面表示 **//
+    /**
+     * @return view
+     */
+    public function EmpWorkStatusReference(Request $request)
+    {
+        $haken_company = $this->empWtStatusRef_Repository->companyName();
+        // dd($companyName);
+        return view('work_time.EmpWorkStatusReference', compact('haken_company'));
+    }
+
+    //** 出退勤照会 画面各機能(データ渡し)処理 */
+    /**
+     * @return view(EmpWorkStatusReference.blade)
+     */
+    public function searchBtn(EmpWorkStatusReferenceRequest $request, EmpWorkStatusRefFilter $filter)
+    {
+        $FIX_MSG = '出勤人数';
+        $data = $request->only('filter');
+        $searchData = $data['filter'];
+        $inputSearchData = $request->all();
+        $request->session()->put('date', $inputSearchData['ddlDate']);
+        $empWorkTimeResults = $this->empWtStatusRef_Repository->empInput($request, $filter);
+        $errMsg_4029 = $this->empWtStatusRef_Repository->messages1();
+        // $checkMessage = $this->empWtStatusRef_Repository->checkMessage($request, $filter);
+        $haken_company = $this->empWtStatusRef_Repository->companyName();
+        // $termNames = $this->empWtStatusRef_Repository->getTermName();
+
+        return view('work_time.EmpWorkStatusReference', compact(
+            'searchData',
+            'empWorkTimeResults',
+            'errMsg_4029',
+            // 'errMsg_4005',
+            'FIX_MSG',
+            'inputSearchData',
+            'haken_company',
+            // 'termNames'
+            // 'checkMessage'
+        ));
+    }
+
+    //** 出退勤照会 画面機能キャセンル処理 */
+    /**
+     * @return view(EmpWorkStatusReference.blade)
+     */
+    public function cancelBtn(Request $request)
+    {
+        return redirect()->route('empworkstatusRef')->withInput($request->only(['ddlTargetYear', 'ddlTargetMonth', 'ddlTargetDay']));
+    }
+}

@@ -1,0 +1,362 @@
+$(function() {
+    // 入力可能文字：半角英数
+    onlyHalfWord = n => n.replace(/[０-９：]/g, s => String.fromCharCode(s.charCodeAt(0) - 65248))
+        .replace(/[^0-9:]/g, '');
+
+    // 入力可能文字：半角英数字・文字
+    onlyHalfNumWord = n => n.replace(/[０-９Ａ-Ｚａ-ｚ]/g, s => String.fromCharCode(s.charCodeAt(0) - 65248))
+        .replace(/[^0-9a-zA-Z]/g, '');
+
+    // 時間書式チェック
+    var timeFormatCheck = function(e) {
+        var targetTd = $(e.target).closest('td');
+
+        var ofcTime = targetTd.find('.ofcTime').val(); // 出勤
+        var levTime = targetTd.find('.levTime').val(); // 退出
+        var out1Time = targetTd.find('.out1Time').val(); // 外出１
+        var in1Time = targetTd.find('.in1Time').val(); // 再入１
+        var out2Time = targetTd.find('.out2Time').val(); // 外出２
+        var in2Time = targetTd.find('.in2Time').val(); // 再入２
+        var workTime = targetTd.find('.workTime').val(); // 出勤時間
+        var tardTime = targetTd.find('.tardTime').val(); // 遅刻時間
+        var leaveTime = targetTd.find('.leaveTime').val(); // 早退時間
+        var outTime = targetTd.find('.outTime').val(); // 外出時間
+        var ovtm1Time = targetTd.find('.ovtm1Time').val(); // 残業項目１時間
+        var ovtm2Time = targetTd.find('.ovtm2Time').val(); // 残業項目２時間
+        var ovtm3Time = targetTd.find('.ovtm3Time').val(); // 残業項目３時間
+        var ovtm4Time = targetTd.find('.ovtm4Time').val(); // 残業項目４時間
+        var ovtm5Time = targetTd.find('.ovtm5Time').val(); // 残業項目５時間
+        var ovtm6Time = targetTd.find('.ovtm6Time').val(); // 残業項目６時間
+        var ext1Time = targetTd.find('.ext1Time').val(); // 割増対象１時間
+        var ext2Time = targetTd.find('.ext2Time').val(); // 割増対象２時間
+        var ext3Time = targetTd.find('.ext3Time').val(); // 割増対象３時間
+
+        var validTime = /^([0-9]|[0-2][0-9]|3[0-5]):([0-5][0-9])$/;
+
+        // 時間書式チェック
+        if ((ofcTime && !ofcTime.match(validTime)) || (levTime && !levTime.match(validTime)) ||
+            (out1Time && !out1Time.match(validTime)) || (in1Time && !in1Time.match(validTime)) ||
+            (out2Time && !out2Time.match(validTime)) || (in2Time && !in2Time.match(validTime)) ||
+            (workTime && !workTime.match(validTime)) || (tardTime && !tardTime.match(validTime)) ||
+            (leaveTime && !leaveTime.match(validTime)) || (outTime && !outTime.match(validTime)) ||
+            (ovtm1Time && !ovtm1Time.match(validTime)) || (ovtm2Time && !ovtm2Time.match(validTime)) ||
+            (ovtm3Time && !ovtm3Time.match(validTime)) || (ovtm4Time && !ovtm4Time.match(validTime)) ||
+            (ovtm5Time && !ovtm5Time.match(validTime)) || (ovtm6Time && !ovtm6Time.match(validTime)) ||
+            (ext1Time && !ext1Time.match(validTime)) || (ext2Time && !ext2Time.match(validTime)) ||
+            (ext3Time && !ext3Time.match(validTime))) {
+            targetTd.find('.timeError').text('*3');
+            var formatError = $('#formatError').val();
+            $('#timeFormatError').text('*3 ' + formatError);
+            return false;
+        } else {
+            targetTd.find('.timeError').empty();
+            var exist = false;
+            $('.timeError').each(function(i, element) {
+                if ($(element).text() == '*3') {
+                    exist = true;
+                }
+            });
+            if (!exist) {
+                $('#timeFormatError').empty();
+            }
+        }
+        return true;
+    };
+    $('.tardTime, .leaveTime, .outTime, .ext1Time, .ext2Time, .ext3Time').focusout(timeFormatCheck);
+
+    var CWTimeCalculate = function(e) {
+
+        var noError = timeFormatCheck(e);
+        if (!noError) {
+            return false;
+        }
+
+        $(e.target).closest('tr').find("span.timeError").each(function(i, element) {
+            if ($(element).text()) {
+                noError = false;
+            }
+        });
+        if (!noError) {
+            return false;
+        }
+
+        var parent = $(e.target).closest('tr');
+        var targetTd = $(e.target).closest('td');
+
+        if ($('#txtEmpCd').val()) {
+            var empCd = $('#txtEmpCd').val(); // 社員番号
+            var ddlDate = $('#ddlDate').val(); // 対象年月度
+            var year = ddlDate.substring(0, 4); // 対象年度
+            var month = (Math.abs(ddlDate.substring(5, 7))).toString(); // 対象月度
+            var code = empCd;
+        }
+        if (parent.find('.txtEmpCd').text()) {
+            var empCdFromDept = parent.find('.txtEmpCd').text();
+            var code = empCdFromDept;
+        }
+
+
+        var ofcTime = parent.find('.ofcTime').val(); // 出勤
+        var levTime = parent.find('.levTime').val(); // 退出
+        var out1Time = parent.find('.out1Time').val(); // 外出１
+        var in1Time = parent.find('.in1Time').val(); // 再入１
+        var out2Time = parent.find('.out2Time').val(); // 外出２
+        var in2Time = parent.find('.in2Time').val(); // 再入２
+
+        // 大小関係チェック
+        var ofcTimeTd = targetTd.find('.ofcTime').val(); // 出勤
+        var levTimeTd = targetTd.find('.levTime').val(); // 退出
+        var out1TimeTd = targetTd.find('.out1Time').val(); // 外出１
+        var in1TimeTd = targetTd.find('.in1Time').val(); // 再入１
+        var out2TimeTd = targetTd.find('.out2Time').val(); // 外出２
+        var in2TimeTd = targetTd.find('.in2Time').val(); // 再入２
+
+        var validTime = /^([0-9]|[0-2][0-9]|3[0-5]):([0-5][0-9])$/;
+
+        // 大小関係チェック「出勤・退出」
+        if (ofcTime.match(validTime) && levTime.match(validTime)) {
+            if ((ofcTimeTd && ofcTimeTd.match(validTime)) || (levTimeTd && levTimeTd.match(validTime))) {
+                if (parseInt(ofcTime) > parseInt(levTime)) {
+                    targetTd.find('.timeError').text('*4');
+                    var dataSizeError = $('#dataSizeError').val();
+                    $('#sizeError').text('*4 ' + dataSizeError);
+                    return false;
+                } else {
+                    targetTd.find('.timeError').empty();
+                    var exist = false;
+                    $('.timeError').each(function(i, element) {
+                        if ($(element).text() == '*4') {
+                            exist = true;
+                        }
+                    });
+                    if (!exist) {
+                        $('#sizeError').empty();
+                    }
+                }
+            }
+        }
+
+        // 大小関係チェック「外出１・再入１」
+        if (out1Time.match(validTime) && in1Time.match(validTime)) {
+            if ((out1TimeTd && out1TimeTd.match(validTime)) || (in1TimeTd && in1TimeTd.match(validTime))) {
+                if (parseInt(out1Time) > parseInt(in1Time)) {
+                    targetTd.find('.timeError').text('*4');
+                    $('#sizeError').text('*4 ' + '{{ getArrValue($error_messages, 2009) }}');
+                    return false;
+                } else {
+                    targetTd.find('.timeError').empty();
+                    var exist = false;
+                    $('.timeError').each(function(i, element) {
+                        if ($(element).text() == '*4') {
+                            exist = true;
+                        }
+                    });
+                    if (!exist) {
+                        $('#sizeError').empty();
+                    }
+                }
+            }
+        }
+
+        // 大小関係チェック「外出２・再入２」
+        if ((out2TimeTd && out2TimeTd.match(validTime)) || (in2TimeTd && in2TimeTd.match(validTime))) {
+            if (parseInt(out2Time) > parseInt(in2Time)) {
+                targetTd.find('.timeError').text('*4');
+                $('#sizeError').text('*4 ' + '{{ getArrValue($error_messages, 2009) }}');
+                return false;
+            } else {
+                targetTd.find('.timeError').empty();
+                var exist = false;
+                $('.timeError').each(function(i, element) {
+                    if ($(element).text() == '*4') {
+                        exist = true;
+                    }
+                });
+                if (!exist) {
+                    $('#sizeError').empty();
+                }
+            }
+        }
+
+        ajaxWithLoading({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            },
+            url: $("#timeCalUrl").val() + '/' + code,
+            type: 'POST',
+            context: parent,
+            data: {
+                'txtEmpCd': empCd,
+                'empCdFromDept': empCdFromDept,
+                'year': year,
+                'month': month,
+                'calDate': parent.find('.calDate').val(),
+                'workPtnCd': parent.find('.workPtnCd').val(),
+                'reasonCd': parent.find('.reasonCd').val(),
+                'ofcTime': parent.find('.ofcTime').val(),
+                'levTime': parent.find('.levTime').val(),
+                'out1Time': parent.find('.out1Time').val(),
+                'in1Time': parent.find('.in1Time').val(),
+                'out2Time': parent.find('.out2Time').val(),
+                'in2Time': parent.find('.in2Time').val(),
+            }
+        }).done(function(data) {
+            this.find($('.workPtnCd')).val(data[0].WORKPTN_CD);
+            this.find($('.reasonCd')).val(data[0].REASON_CD);
+            this.find($('.ofcTime')).val(data[0].OFC_TIME);
+            this.find($('.levTime')).val(data[0].LEV_TIME);
+            this.find($('.out1Time')).val(data[0].OUT1_TIME);
+            this.find($('.in1Time')).val(data[0].IN1_TIME);
+            this.find($('.out2Time')).val(data[0].OUT2_TIME);
+            this.find($('.in2Time')).val(data[0].IN2_TIME);
+            this.find($('.workTime')).val(data[0].WORK_TIME);
+            this.find($('.tardTime')).val(data[0].TARD_TIME);
+            this.find($('.leaveTime')).val(data[0].LEAVE_TIME);
+            this.find($('.outTime')).val(data[0].OUT_TIME);
+            this.find($('.ovtm1Time')).val(data[0].OVTM1_TIME);
+            this.find($('.ovtm2Time')).val(data[0].OVTM2_TIME);
+            this.find($('.ovtm3Time')).val(data[0].OVTM3_TIME);
+            this.find($('.ovtm4Time')).val(data[0].OVTM4_TIME);
+            this.find($('.ovtm5Time')).val(data[0].OVTM5_TIME);
+            this.find($('.ovtm6Time')).val(data[0].OVTM6_TIME);
+            this.find($('.ext1Time')).val(data[0].EXT1_TIME);
+            this.find($('.ext2Time')).val(data[0].EXT2_TIME);
+            this.find($('.ext3Time')).val(data[0].EXT3_TIME);
+
+            // 出勤色付け「未打刻・二重打刻」
+            if (data[0].OFC_CNT >= 2 && !ofcTime) {
+                this.find($('.ofcTime')).css('background-color', 'lightskyblue');
+            } else if (!ofcTime && levTime) {
+                this.find($('.ofcTime')).css('background-color', 'tomato');
+            } else {
+                this.find($('.ofcTime')).css('background-color', '');
+            }
+
+            // 退出色付け「未打刻・二重打刻」
+            if (data[0].LEV_CNT >= 2 && !levTime) {
+                this.find($('.levTime')).css('background-color', 'lightskyblue');
+            } else if (ofcTime && !levTime) {
+                this.find($('.levTime')).css('background-color', 'tomato');
+            } else {
+                this.find($('.levTime')).css('background-color', '');
+            }
+
+            // 外出１色付け「未打刻・二重打刻」
+            if (data[0].OUT1_CNT >= 2 && !out1Time) {
+                this.find($('.out1Time')).css('background-color', 'lightskyblue');
+            } else if (!out1Time && in1Time) {
+                this.find($('.out1Time')).css('background-color', 'tomato');
+            } else {
+                this.find($('.out1Time')).css('background-color', '');
+            }
+
+            // 再入１色付け「未打刻・二重打刻」
+            if (data[0].IN1_CNT >= 2 && !in1Time) {
+                this.find($('.in1Time')).css('background-color', 'lightskyblue');
+            } else if (out1Time && !in1Time) {
+                this.find($('.in1Time')).css('background-color', 'tomato');
+            } else {
+                this.find($('.in1Time')).css('background-color', '');
+            }
+
+            // 外出２色付け「未打刻・二重打刻」
+            if (data[0].OUT2_CNT >= 2 && !out2Time) {
+                this.find($('.out2Time')).css('background-color', 'lightskyblue');
+            } else if (!out2Time && in2Time) {
+                this.find($('.out2Time')).css('background-color', 'tomato');
+            } else {
+                this.find($('.out2Time')).css('background-color', '');
+            }
+
+            // 再入２色付け「未打刻・二重打刻」
+            if (data[0].IN2_CNT >= 2 && !in2Time) {
+                this.find($('.in2Time')).css('background-color', 'lightskyblue');
+            } else if (out2Time && !in2Time) {
+                this.find($('.in2Time')).css('background-color', 'tomato');
+            } else {
+                this.find($('.in2Time')).css('background-color', '');
+            }
+
+            var exist1 = false;
+            var exist2 = false;
+            $('.timeError').each(function(i, element) {
+                if ($(element).text() == '*3') {
+                    exist1 = true;
+                }
+                if ($(element).text() == '*4') {
+                    exist2 = true;
+                }
+            });
+            if (!exist1) {
+                $('#timeFormatError').empty();
+            }
+            if (!exist2) {
+                $('#sizeError').empty();
+            }
+        }).fail(function(data) {
+            console.log(data);
+        });
+    };
+    $('.workPtnCd, .reasonCd, .ofcTime, .levTime, .out1Time, .in1Time, .out2Time, .in2Time').focusout(CWTimeCalculate);
+
+    // 日数計算
+    var CDDayCalculate = function(e) {
+
+        var formatCheckResult = timeFormatCheck(e);
+        if (!formatCheckResult) {
+            return false;
+        }
+
+        var parent = $(e.target).closest('tr');
+
+        if ($('#txtEmpCd').val()) {
+            var empCd = $('#txtEmpCd').val(); // 社員番号
+            var ddlDate = $('#ddlDate').val(); // 対象年月度
+            var year = ddlDate.substring(0, 4); // 対象年度
+            var month = (Math.abs(ddlDate.substring(5, 7))).toString(); // 対象月度
+            var code = empCd;
+        }
+        if (parent.find('.txtEmpCd').text()) {
+            var empCdFromDept = parent.find('.txtEmpCd').text();
+            var code = empCdFromDept;
+        }
+
+        ajaxWithLoading({
+            headers: {
+                'X-CSRF-TOKEN': $('meta[name="csrf-token"]').attr('content')
+            },
+            url: $("#dayCalUrl").val() + '/' + code,
+            type: 'POST',
+            context: parent,
+            data: {
+                'txtEmpCd': empCd,
+                'empCdFromDept': empCdFromDept,
+                'year': year,
+                'month': month,
+                'calDate': parent.find('.calDate').val(),
+                'workPtnCd': parent.find('.workPtnCd').val(),
+                'reasonCd': parent.find('.reasonCd').val(),
+                'workTime': parent.find('.workTime').val(),
+                'ovtm1Time': parent.find('.ovtm1Time').val(),
+                'ovtm2Time': parent.find('.ovtm2Time').val(),
+                'ovtm3Time': parent.find('.ovtm3Time').val(),
+                'ovtm4Time': parent.find('.ovtm4Time').val(),
+                'ovtm5Time': parent.find('.ovtm5Time').val(),
+                'ovtm6Time': parent.find('.ovtm6Time').val(),
+            }
+        }).done(function(data) {
+            this.find($('.workPtnCd')).val(data[0].WORKPTN_CD);
+            this.find($('.reasonCd')).val(data[0].REASON_CD);
+            this.find($('.ofcTime')).val(data[0].OFC_TIME);
+            this.find($('.levTime')).val(data[0].LEV_TIME);
+            this.find($('.out1Time')).val(data[0].OUT1_TIME);
+            this.find($('.in1Time')).val(data[0].IN1_TIME);
+            this.find($('.out2Time')).val(data[0].OUT2_TIME);
+            this.find($('.in2Time')).val(data[0].IN2_TIME);
+
+        }).fail(function(data) {
+            console.log(data);
+        });
+    };
+    $('.workTime, .ovtm1Time, .ovtm2Time, .ovtm3Time, .ovtm4Time, .ovtm5Time, .ovtm6Time').focusout(CDDayCalculate);
+})

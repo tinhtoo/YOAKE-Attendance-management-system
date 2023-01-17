@@ -1,0 +1,107 @@
+//***** table header add *****//
+function hh() {
+    var header = '<tr class="d_head" ><th scope="col">部門コード</th><th scope="col">部門名</th><th scope="col">行削除</th></tr>';
+    $(".gvDept").append(header);
+}
+
+var count = 0;
+//***** table row add *****//
+function hh_2() {
+    count++;
+    var html_input = '<tr class="data"><td ><input tabindex="4" class="dep_id" name="record_' + (count) + ' " style="width: 55px;" type="text" maxlength="6" value=""></td><td><input tabindex="4" style="width: 270px;" type="text" maxlength="20" value=""></td><td><input tabindex="4" class="DeleteRow" name="del-col" type="button" value="削除"></td></tr>';
+
+    $(".gvDept").append(html_input);
+
+}
+
+//***** テーブル行追加ボタン処理 *****//
+let lineNo = 0;
+$(document).on('click', '#AddNewRow', function() {
+    if ($(".d_head")[0]) {
+        hh_2()
+    } else {
+        hh()
+        hh_2()
+    }
+
+})
+lineNo++;
+
+
+//***** 行削除ボタン処理 *****//
+$(".gvDept").on("click", ".DeleteRow", function() {
+
+    if ($(".data")[1]) {
+        $(this).closest('.data').remove();
+    } else {
+        $(this).closest('.data').remove();
+        $(".d_head").remove();
+    }
+
+});
+
+//***** 全行削除ボタン処理 *****//
+$(".ButtonField1").on("click", '#btnDelete', function() {
+    if (confirm('削除します。よろしいですか?')) {
+
+        $(".gvDept").find('input[name *="record"]').each(function() {
+
+            // $(this).parents("tr").find(".d_head").remove();
+
+            $(this).parents(".data").remove();
+
+        });
+        $(this).parents("tr").find(".d_head").remove();
+    }
+});
+
+/**
+ * sub-window処理
+ */
+// 削除*********start2022/01/26*********
+// //新部門選択サブ画面
+// function SetUpDeptItem() {
+
+//     window.open('UpDeptSearch', '', 'width=600,height=750');
+
+// };
+
+// 削除*********end2022/01/26*********
+
+// 削除*********2022/2/1 S「ティン」*********
+//部門情報検索サブ画面
+// $(function () {
+//     $("#btnSearchDeptCd").on('click', function () {
+//         window.open('/search/MT12DeptSearch', '', 'width=400, height=550, top=90, left=400');
+//     });
+// });
+
+//社員情報検索サブ画面
+// $(function () {
+//     $("#btnSearchEmpCd").on('click', function () {
+//         window.open('/search/MT10EmpSearch', '', 'width=500, height=650, top=90, left=350');
+//     });
+// });
+// 削除*********2022/2/1 E 「ティン」*********
+
+// 追加*********2022/2/1 S 「ティン」*********
+//部門情報検索サブ画面
+function SearchDept() {
+    popupWindow = window.open('/search/MT12DeptSearch','部門情報検索','height=550,width=400,left=400,top=90,resizable=yes,scrollbars=yes,toolbar=yes,menubar=no,location=no,directories=no, status=yes');
+        }
+
+//社員情報検索サブ画面
+function SearchEmp() {
+    popupWindow = window.open('/search/MT10EmpSearch','社員情報検索','height=650,width=500,left=350,top=90,resizable=yes,scrollbars=yes,toolbar=yes,menubar=no,location=no,directories=no, status=yes');
+        }
+// 追加*********2022/2/1 E 「ティン」*********
+
+/**
+ * 出退勤入力画面詳細枠の表示
+ **/
+
+$('#btnDisp').on('click', function() {
+    //var table = document.getElementById('#gridview-warp');
+    $('#gridview-warp').show('slow');
+    $(this).attr('disabled', 'disabled');
+});

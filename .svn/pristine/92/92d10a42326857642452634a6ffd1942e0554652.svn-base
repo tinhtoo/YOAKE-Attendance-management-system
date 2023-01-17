@@ -1,0 +1,279 @@
+<?php
+
+namespace App\Http\Controllers\Master;
+
+use App\Http\Controllers\Controller;
+use App\Http\Requests\MT06OverTmLmtEditorRequest;//クラス宣言
+use Illuminate\Http\Request;
+use App\Models\MT06OvertmLmt;
+use App\Models\MT99Msg;
+use App\Models\MT02CalendarPtn;
+use App\Models\MT94WorkDesc;
+use App\Models\MT91ClsDetail;
+
+use App\Repositories\MT93PgRepository;
+
+class MT06OverTmLmtEditorController extends Controller
+{
+    public function __construct(MT93PgRepository $pg_repository)
+    {
+        parent::__construct($pg_repository);
+    }
+
+    public function index(Request $request)
+    {            
+        //カレンダーリストボックスを取得
+        $items = MT02CalendarPtn::orderBy('CALENDAR_CD','ASC')->get();
+        
+        //{残業項目}リストボックスを取得
+        $works = MT94WorkDesc::where('WORK_DESC_CLS_CD','01')->orderBy('WORK_DESC_CD','ASC')->get();
+
+        //セレクトボックスのデータを取得したい
+        $CalendarCdKey = $request->CalendarCd; 
+
+        //セレクトボックスの値が決められた場合のそれぞれの残業項目ボックス
+        $OVTM1key = MT06OvertmLmt::where('CALENDAR_CD', $CalendarCdKey)->pluck('OVTM1_CD')->first(); 
+        $OVTM2key = MT06OvertmLmt::where('CALENDAR_CD', $CalendarCdKey)->pluck('OVTM2_CD')->first();         
+        $OVTM3key = MT06OvertmLmt::where('CALENDAR_CD', $CalendarCdKey)->pluck('OVTM3_CD')->first();       
+        $OVTM4key = MT06OvertmLmt::where('CALENDAR_CD', $CalendarCdKey)->pluck('OVTM4_CD')->first();         
+        $OVTM5key = MT06OvertmLmt::where('CALENDAR_CD', $CalendarCdKey)->pluck('OVTM5_CD')->first();         
+        $OVTM6key = MT06OvertmLmt::where('CALENDAR_CD', $CalendarCdKey)->pluck('OVTM6_CD')->first(); 
+
+        //セレクトボックスの値が決められた場合のそれぞれの残業項目(時間/月)
+        $OVTM1HRkey = MT06OvertmLmt::where('CALENDAR_CD', $CalendarCdKey)->pluck('OVTM1_HR')->first(); 
+        $OVTM2HRkey = MT06OvertmLmt::where('CALENDAR_CD', $CalendarCdKey)->pluck('OVTM2_HR')->first(); 
+        $OVTM3HRkey = MT06OvertmLmt::where('CALENDAR_CD', $CalendarCdKey)->pluck('OVTM3_HR')->first(); 
+        $OVTM4HRkey = MT06OvertmLmt::where('CALENDAR_CD', $CalendarCdKey)->pluck('OVTM4_HR')->first();
+        $OVTM5HRkey = MT06OvertmLmt::where('CALENDAR_CD', $CalendarCdKey)->pluck('OVTM5_HR')->first(); 
+        $OVTM6HRkey = MT06OvertmLmt::where('CALENDAR_CD', $CalendarCdKey)->pluck('OVTM6_HR')->first(); 
+
+        $TtlOvtm1Hr = MT06OvertmLmt::where('CALENDAR_CD', $CalendarCdKey)->pluck('TTL_OVTM1_HR')->first(); 
+        $TtlOvtm2Hr = MT06OvertmLmt::where('CALENDAR_CD', $CalendarCdKey)->pluck('TTL_OVTM2_HR')->first(); 
+        $TtlOvtm3Hr = MT06OvertmLmt::where('CALENDAR_CD', $CalendarCdKey)->pluck('TTL_OVTM3_HR')->first(); 
+         
+        //セレクトボックスで取得した値の行のMT_02のCALENDAR_CLS_CDを検索したい       
+        $enabled02 =  MT02CalendarPtn::where('CALENDAR_CD', $CalendarCdKey)->pluck('CALENDAR_CLS_CD')->first();
+        
+        //分未満リストボックス
+        $NoOvertmMis = MT91ClsDetail::where('CLS_CD','05')->orderBy('CLS_DETAIL_CD','ASC')->get();
+             
+        $NoOvertmMisOld  = MT06OvertmLmt::where('CALENDAR_CD', $CalendarCdKey)->pluck('NO_OVERTM_MI')->first(); 
+        
+        //1005メッセージ取得（更新しますか？）
+        $msg_1005 = MT99Msg::where('MSG_NO', '1005')->pluck('MSG_CONT')->first();
+        //1004メッセージ取得（削除しますか？）
+        $msg_1004 = MT99Msg::where('MSG_NO', '1004')->pluck('MSG_CONT')->first();
+
+       
+
+        // ビューに変数を渡す
+        return parent::viewWithMenu('master.MT06OverTmLmtEditor',['items' => $items, 'works' => $works, 'msg_1005' => $msg_1005, 'msg_1004' => $msg_1004, 'CalendarCdKey' =>$CalendarCdKey,'enabled02' =>$enabled02 ,
+         'OVTM1key' => $OVTM1key,  'OVTM2key' => $OVTM2key, 'OVTM3key' => $OVTM3key,  'OVTM4key' => $OVTM4key, 'OVTM5key' => $OVTM5key,  'OVTM6key' => $OVTM6key,
+         'OVTM1HRkey' => $OVTM1HRkey,  'OVTM2HRkey' => $OVTM2HRkey, 'OVTM3HRkey' => $OVTM3HRkey,  'OVTM4HRkey' => $OVTM4HRkey, 'OVTM5HRkey' => $OVTM5HRkey,  'OVTM6HRkey' => $OVTM6HRkey,
+         'TtlOvtm1Hr' => $TtlOvtm1Hr,   'TtlOvtm2Hr' => $TtlOvtm2Hr,  'TtlOvtm3Hr' => $TtlOvtm3Hr,
+         'NoOvertmMis' =>$NoOvertmMis , 'NoOvertmMisOld' =>$NoOvertmMisOld
+        ]);  
+    }
+
+    
+    
+    public function update(MT06OverTmLmtEditorRequest $request){
+
+     //更新ボタンが押されたとき
+        if ($request->has('btnUpdate')){
+            //選択されたデータ
+            $inputs = $request->all();
+            //リストボックスで選択されている項目のカレンダーコードから列を取得 
+            $data = MT06OvertmLmt::find($request->CalendarCdData); 
+
+            //新規登録
+            if($data == null){
+                $data = new MT06OvertmLmt;
+        
+                $data->CALENDAR_CD  = $request->CalendarCdData;
+            
+                $data->OVTM7_CD = NULL;
+                $data->OVTM8_CD = NULL;
+                $data->OVTM9_CD = NULL;
+                $data->OVTM10_CD = NULL;
+
+                $data->OVTM7_HR = NULL;
+                $data->OVTM8_HR = NULL;
+                $data->OVTM9_HR = NULL;
+                $data->OVTM10_HR = NULL;            
+
+                $data->RSV1_CLS_CD  = "";
+                $data->RSV2_CLS_CD  = "";
+            }
+            
+            //未選択時はNULL,残業項目(1)                
+            if($request->Ovtm1Cd == "null"){
+                $request->Ovtm1Cd=NULL;
+                $data->OVTM1_CD = $request->Ovtm1Cd;
+            }else{
+                //選択時更新
+                $data->OVTM1_CD = $request->Ovtm1Cd;
+            }
+        
+            //未選択時はNULL,残業項目(2)
+            if($request->Ovtm2Cd == "null"){
+                $request->Ovtm2Cd=NULL;
+                $data->OVTM2_CD = $request->Ovtm2Cd;
+            }else{
+                //選択時更新
+                $data->OVTM2_CD = $request->Ovtm2Cd;
+            }
+        
+            //未選択時はNULL,残業項目(3)
+            if($request->Ovtm3Cd == "null"){
+                $request->Ovtm3Cd=NULL;
+                $data->OVTM3_CD = $request->Ovtm3Cd;
+            }else{
+                //選択時更新
+                $data->OVTM3_CD = $request->Ovtm3Cd;
+            }
+        
+            //未選択時はNULL,残業項目(4)
+            if($request->Ovtm4Cd == "null"){
+                $request->Ovtm4Cd=NULL;
+                $data->OVTM4_CD = $request->Ovtm4Cd;
+            }else{
+                //選択時更新
+                $data->OVTM4_CD = $request->Ovtm4Cd;
+            }
+        
+            //未選択時はNULL,残業項目(5)
+            if($request->Ovtm5Cd == "null"){
+                $request->Ovtm5Cd=NULL;
+                $data->OVTM5_CD = $request->Ovtm5Cd;
+            }else{
+                //選択時更新
+                $data->OVTM5_CD = $request->Ovtm5Cd;
+            }
+        
+        
+            //未選択時はNULL,残業項目(6)
+            if($request->Ovtm6Cd == "null"){
+                $request->Ovtm6Cd=NULL;
+                $data->OVTM6_CD = $request->Ovtm6Cd;
+            }else{
+                //選択時更新
+                $data->OVTM6_CD = $request->Ovtm6Cd;
+            }
+        
+        
+        //残業項目（n）時間/月の入力値
+            //空白時はNULL,残業項目（1）時間/月
+            if($request->Ovtm1Hr == ""){
+                $request->Ovtm1Hr=NULL;
+                $data->OVTM1_HR = $request->Ovtm1Hr;
+            }else{
+                //選択時更新
+                $data->OVTM1_HR = $request->Ovtm1Hr;
+            }
+        
+            //空白時はNULL,残業項目（2）時間/月
+            if($request->Ovtm2Hr == ""){
+                $request->Ovtm2Hr=NULL;
+                $data->OVTM2_HR = $request->Ovtm2Hr;
+            }else{
+                //選択時更新
+                $data->OVTM2_HR = $request->Ovtm2Hr;
+            }
+        
+            //空白時はNULL,残業項目（3）時間/月
+            if($request->Ovtm3Hr == ""){
+                $request->Ovtm3Hr=NULL;
+                $data->OVTM3_HR = $request->Ovtm3Hr;
+            }else{
+                //選択時更新
+                $data->OVTM3_HR = $request->Ovtm3Hr;
+            }
+        
+            //空白時はNULL,残業項目（4）時間/月
+            if($request->Ovtm4Hr == ""){
+                $request->Ovtm4Hr=NULL;
+                $data->OVTM4_HR = $request->Ovtm4Hr;
+            }else{
+                //選択時更新
+                $data->OVTM4_HR = $request->Ovtm4Hr;
+            }
+        
+            //空白時はNULL,残業項目（5）時間/月
+            if($request->Ovtm5Hr == ""){
+                $request->Ovtm5Hr=NULL;
+                $data->OVTM5_HR = $request->Ovtm5Hr;
+            }else{
+                //選択時更新
+                $data->OVTM5_HR = $request->Ovtm5Hr;
+            }
+        
+            //空白時はNULL,残業項目（6）時間/月
+            if($request->Ovtm6Hr == ""){
+                $request->Ovtm6Hr=NULL;
+                $data->OVTM6_HR = $request->Ovtm6Hr;
+            }else{
+                //選択時更新
+                $data->OVTM6_HR = $request->Ovtm6Hr;
+            }
+            
+            //残業未対応時間
+            $data->NO_OVERTM_MI = $request->NoOvertmMi;
+            //日付
+            date_default_timezone_set('Asia/Tokyo');
+            $data->UPD_DATE = now(); 
+        
+            //総残業時間上限1       
+            if($request->TtlOvtm1Hr == ""){
+                $request->TtlOvtm1Hr=0;
+                $data->TTL_OVTM1_HR = $request->TtlOvtm1Hr;
+            }else{
+                //選択時更新
+                $data->TTL_OVTM1_HR  = $request->TtlOvtm1Hr;
+            } 
+            //総残業時間上限2       
+            if($request->TtlOvtm2Hr == ""){
+                $request->TtlOvtm2Hr=0;
+                $data->TTL_OVTM2_HR = $request->TtlOvtm2Hr;
+            }else{
+                //選択時更新
+                $data->TTL_OVTM2_HR  = $request->TtlOvtm2Hr;
+            } 
+        
+            //総残業時間上限3       
+            if($request->TtlOvtm3Hr == ""){
+                $request->TtlOvtm3Hr=0;
+                $data->TTL_OVTM3_HR = $request->TtlOvtm3Hr;
+            }else{
+                //選択時更新
+                $data->TTL_OVTM3_HR  = $request->TtlOvtm3Hr;
+            } 
+            $data->timestamps = false; 
+            $data->save(); 
+
+
+     //削除ボタンが押されたとき  
+        }elseif($request->has('btnDelete1')){
+            //カレンダーリストボックスで選択されている項目のカレンダーコード
+            $deleteCalenderCode = $request->CalendarCdData;
+            $deletedata = MT06OvertmLmt::find($deleteCalenderCode); 
+            //dd( $deletedata);
+            //削除
+            if( $deletedata != null){
+                $deletedata->delete();  
+            }
+                 
+        }
+
+        return redirect('master/MT06OverTmLmtEditor');
+    } 
+    
+    
+
+   
+
+}
+         
+    
+    
+

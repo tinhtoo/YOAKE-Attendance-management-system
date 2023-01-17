@@ -1,0 +1,16 @@
+<?php
+
+namespace App\Repositories;
+
+use Illuminate\Http\Request;
+use App\Models\MT09Reason;
+
+class MT09ReasonRepository
+{
+
+    // 事由を取得
+    public function reasons()
+    {
+        return MT09Reason::get();
+    }
+}

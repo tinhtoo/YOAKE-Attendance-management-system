@@ -1,0 +1,34 @@
+<?php
+
+namespace App\Repositories;
+
+use App\Models\LG01Worktimeconv;
+
+class LG01WorktimeconvRepository
+{
+    /**
+     * 最新の端末打刻取得履歴情報を取得
+     *
+     * @return
+     */
+    public function getList()
+    {
+        return LG01Worktimeconv::select(
+            'LG01.TERM_NO',
+            'MT95.TERM_NAME',
+            'LG01.GET_FLG',
+            'LG01.STR_DATE',
+            'LG01.END_DATE',
+            'LG01.ERR_CONT'
+        )
+            ->from('LG01_WORKTIMECONV as LG01')
+            ->leftJoin('MT95_TERM as MT95', 'LG01.TERM_NO', '=', 'MT95.TERM_NO')
+            ->where('LG01.STR_DATE', '=', function ($q) {
+                $q->from('LG01_WORKTIMECONV as LG01_2')
+                    ->whereColumn('LG01.TERM_NO', 'LG01_2.TERM_NO')
+                    ->selectRaw('max (LG01_2.STR_DATE)');
+            })
+            ->orderBy('LG01.TERM_NO')
+            ->get();
+    }
+}

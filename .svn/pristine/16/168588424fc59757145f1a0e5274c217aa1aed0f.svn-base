@@ -1,0 +1,218 @@
+<?php use Carbon\CarbonPeriod; ?>
+<html lang="ja">
+    <head>
+        <title>印刷</title>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+        <style>
+            @font-face{
+                font-family: "MS Pゴシック";
+                font-style: normal;
+                font-weight: normal;
+                src: url("{{ public_path('fonts/migmix-2p-regular.ttf')}}") format('truetype');
+            }
+            body {
+                font-family: "MS Pゴシック";
+                line-height: 80%;
+                text-align: center;
+                font-size: 10px;
+            }
+            .workTable {
+                border-collapse: collapse;
+                width: 100%;
+            }
+            .workTable tr th{
+                height: 20px;
+                border-bottom: 2px solid black;
+                border-top: 2px solid black;
+                border-left: none;
+                border-right: none;
+                text-align: left;
+            }
+            .workTable tr td{
+                height: 20px;
+                border-bottom: 1px black;
+                border-top: 1px black;
+                border-left: none;
+                border-right: none;
+                text-align: left;
+                border-bottom-style: dotted;
+            }
+            .date{
+                position: relative;
+                margin-left:70%;
+                font-size: xx-small;
+            }
+            .record{
+                padding-bottom: 8px;
+                text-align:justify;
+                position: relative;
+            }
+            .date .page-number:after { 
+                content: counter(page);
+            }
+        </style>
+    </head>
+    @isset($work_plan_reports)
+    {{-- 対象データがない場合 --}}
+    @if (count($work_plan_reports) < 1)
+    <body>
+        <div class="date">
+            <span style="padding-left: 50px;">作成日：</span>
+            <span style="padding-right: 60px;">{{ date('Y/m/d', strtotime($now_date)) }}</span>
+            <span class="page-number"></span>
+            <span>/</span>
+            <span class="page-number"></span>
+        </div>
+        <div style="font-size:large;">
+            <span>勤務予定表</span>
+            @if ($input_data['ReportCategory'] == 'rbWeek')
+            <span>(週間)</span>
+            @else
+            <span>(月間)</span>
+            @endif
+        </div>
+        <div class="record">
+            @if ($input_data['ReportCategory'] == 'rbWeek')
+            <span style="margin-left:10px;">対象日</span>
+            @else
+            <span>対象月度</span>
+            @endif
+            <span>:</span>
+            <span>
+                {{ date('Y/m/d', strtotime($str_date)) }}({{ config('consts.weeks')[date('w', strtotime($str_date))] }})
+            </span>
+            <span>～</span>
+            <span>
+                {{ date('Y/m/d', strtotime($end_date)) }}({{ config('consts.weeks')[date('w', strtotime($end_date))] }})
+            </span><br>
+        </div>
+        <div class="record">
+            <span style="margin-left:20px;">部門</span>
+            <span>:</span>
+        </div>
+        <table class="workTable" style="width: 100%;">
+            <thead>
+                <tr style="width: 100%;">
+                    <th>社員</th>
+                    <th style="width:60px"></th>
+                    @if ($input_data['ReportCategory'] == 'rbWeek')
+                        {{-- 週間 --}}
+                        @foreach (CarbonPeriod::start($str_date)->days(1)->end($end_date, true) as $day)
+                            <th>{{ $day->format('m/d') }}({{ config('consts.weeks')[date('w', strtotime($day))] }})</th>
+                        @endforeach
+                    @else
+                        {{-- 月間 --}}
+                        @foreach (CarbonPeriod::start($str_date)->days(1)->end($end_date, true) as $i => $day)
+                            <th>
+                                @if ($i == 0)
+                                {{ (int)$day->format('m') }}月<br>
+                                @elseif ($day->format('d') === "01")
+                                {{ (int)$day->format('m') }}月<br>
+                                @else
+                                <br>
+                                @endif
+                                {{ (int)$day->format('d') }}({{ config('consts.weeks')[date('w', strtotime($day))] }})
+                            </th>
+                        @endforeach
+                    @endif
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td></td>
+                    <td></td>
+                @for ($i = 0; $i < ($input_data['ReportCategory'] == 'rbWeek' ? 8 : 31); $i++)
+                    <td>{{ $i++ > 0 ? '' : ''; }}</td>
+                    <td></td>
+                @endfor
+                </tr>
+            </tbody>
+        </table>
+    </body>
+    @else
+    @foreach ($work_plan_reports->unique('DEPT_CD') as $dept_work_plan)
+    <body>
+        <div class="date">
+            <span>作成日：</span>
+            <span>{{ date('Y/m/d', strtotime($now_date)) }}</span>
+            <span style="margin-left:10%;">{{ $loop->iteration }} / {{ $loop->count }}</span>
+        </div>
+        <div style="font-size:large;">
+            <span>勤務予定表</span>
+            @if ($input_data['ReportCategory'] == 'rbWeek')
+            <span>(週間)</span>
+            @else
+            <span>(月間)</span>
+            @endif
+        </div>
+        <div class="record">
+            @if ($input_data['ReportCategory'] == 'rbWeek')
+            <span style="margin-left:10px;">対象日</span>
+            @else
+            <span>対象月度</span>
+            @endif
+            <span>:</span>
+            <span>
+                {{ date('Y/m/d', strtotime($str_date)) }}({{ config('consts.weeks')[date('w', strtotime($str_date))] }})
+            </span>
+            <span>～</span>
+            <span>
+                {{ date('Y/m/d', strtotime($end_date)) }}({{ config('consts.weeks')[date('w', strtotime($end_date))] }})
+            </span><br>
+        </div>
+        <div class="record">
+            <span style="margin-left:20px;">部門</span>
+            <span>:</span>
+            <span>{{ $dept_work_plan['DEPT_CD'] }}</span>
+            <span>{{ $dept_work_plan['DEPT_NAME'] }}</span>
+        </div>
+        <table class="workTable" style="width: 100%;">
+            <thead>
+                <tr style="width: 100%;">
+                    <th style="width:50px">社員</th>
+                    <th style="width:100px"></th>
+                    @if ($input_data['ReportCategory'] == 'rbWeek')
+                        {{-- 週間 --}}
+                        @foreach (CarbonPeriod::start($str_date)->days(1)->end($end_date, true) as $day)
+                            <th>{{ $day->format('m/d') }}({{ config('consts.weeks')[date('w', strtotime($day))] }})</th>
+                        @endforeach
+                    @else
+                        {{-- 月間 --}}
+                        @foreach (CarbonPeriod::start($str_date)->days(1)->end($end_date, true) as $i => $day)
+                            <th style="width:37px;">
+                                @if ($i == 0)
+                                {{ (int)$day->format('m') }}月<br>
+                                @elseif ($day->format('d') === "01")
+                                {{ (int)$day->format('m') }}月<br>
+                                @else
+                                <br>
+                                @endif
+                                {{ (int)$day->format('d') }}({{ config('consts.weeks')[date('w', strtotime($day))] }})
+                            </th>
+                        @endforeach
+                    @endif
+                </tr>
+            </thead>
+            <tbody>
+                {{-- 勤務予定表のデータ表示 --}}
+                @php
+                    $report_data = $work_plan_reports->where('DEPT_CD', $dept_work_plan['DEPT_CD'])->unique('EMP_CD');
+                @endphp
+                @foreach ($report_data as $emp)
+                <tr style="width: 100%;">
+                    <td>{{ $emp['EMP_CD'] }}</td>
+                    <td>{{ $emp['EMP_NAME'] }}</td>
+                    @foreach (CarbonPeriod::start($str_date)->days(1)->end($end_date, true) as $day)
+                        <td>
+                            {{ getWorkPlanData($work_plan_reports, $emp['EMP_CD'], $day->format('Y-m-d H:i:s')) }}   
+                        </td>
+                    @endforeach
+                </tr>
+                @endforeach
+            </tbody>
+        </table>
+    </body>
+    @endforeach
+    @endif
+    @endisset
+</html>

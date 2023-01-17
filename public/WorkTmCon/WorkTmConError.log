@@ -1,0 +1,22 @@
+2022/06/02 13:26:03
+System.Data.StrongTypingException: テーブル 'TR01_WORK' にある列 'IN2_TIME_HH' の値は DBNull です。 ---> System.InvalidCastException: 型 'DBNull' から型 'Short' への変換は無効です。
+   場所 Microsoft.VisualBasic.CompilerServices.Conversions.ToShort(Object Value)
+   場所 WorkTmSvcClsLib.WorkTmSvcDs.TR01_WORKRow.get_IN2_TIME_HH()
+   --- 内部例外スタック トレースの終わり ---
+   場所 WorkTmSvcClsLib.WorkTmSvcDs.TR01_WORKRow.get_IN2_TIME_HH()
+   場所 WorkTmCon.WorkTmConRepository.CalculateWorkTime_UpdateWK01Work(String loginEmpCd, TR01_WORKRow work)
+   場所 WorkTmCon.WorkTmCon.CaluclateWorkTime(List`1 commandParameters)
+   場所 WorkTmCon.WorkTmCon.WorkTmSvcRouting(String[] args)
+   場所 WorkTmCon.Program.Main(String[] args)
+
+2022/06/02 13:29:03
+System.Data.StrongTypingException: テーブル 'TR01_WORK' にある列 'IN2_TIME_HH' の値は DBNull です。 ---> System.InvalidCastException: 型 'DBNull' から型 'Short' への変換は無効です。
+   場所 Microsoft.VisualBasic.CompilerServices.Conversions.ToShort(Object Value)
+   場所 WorkTmSvcClsLib.WorkTmSvcDs.TR01_WORKRow.get_IN2_TIME_HH()
+   --- 内部例外スタック トレースの終わり ---
+   場所 WorkTmSvcClsLib.WorkTmSvcDs.TR01_WORKRow.get_IN2_TIME_HH()
+   場所 WorkTmCon.WorkTmConRepository.CalculateWorkTime_UpdateWK01Work(String loginEmpCd, TR01_WORKRow work)
+   場所 WorkTmCon.WorkTmCon.CaluclateWorkTime(List`1 commandParameters)
+   場所 WorkTmCon.WorkTmCon.WorkTmSvcRouting(String[] args)
+   場所 WorkTmCon.Program.Main(String[] args)
+

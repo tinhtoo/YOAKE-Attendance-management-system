@@ -1,0 +1,170 @@
+<!-- ログイン情報入力  -->
+@extends('menu.main')
+
+@section('title', 'ログイン情報入力 ')
+
+@section('content')
+    <div id="contents-stage">
+        <form action="" method="get" id="form">
+            @csrf
+            <table class="BaseContainerStyle1">
+                <tbody>
+                    <tr>
+                        <td>
+                            <div id="UpdatePanel1">
+                                <table class="InputFieldStyle1">
+                                    <tbody>
+                                        <tr>
+                                            <th>社員番号</th>
+                                            <td>
+                                                <input name="filter[txtEmpCd]" class="OutlineLabel" id="txtEmpCd"
+                                                    style="width: 80px;" type="search" style="ime-inactive;" maxlength="10"
+                                                    value="{{ old('filter[txtEmpCd]', !empty($search_data['txtEmpCd']) ? $search_data['txtEmpCd'] : '') }}"
+                                                    oninput="value = onlyHalfWord(value)">
+                                                @if ($errors->has('txtEmpCd'))
+                                                    <span class="alert-danger">{{ $errors->first('txtEmpCd') }}</span>
+                                                @endif
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <th>社員カナ名</th>
+                                            <td>
+                                                <input name="filter[txtEmpKana]" class="imeOn" id="txtEmpKana"
+                                                    style="width: 160px;" type="search" maxlength="20"
+                                                    value="{{ old('filter[txtEmpKana]', !empty($search_data['txtEmpKana']) ? $search_data['txtEmpKana'] : '') }}">
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <th>部門</th>
+                                            <td>
+                                                <input name="filter[txtDeptCd]" class="OutlineLabel" id="txtDeptCd"
+                                                    style="width: 50px;" type="text" maxlength="6" style="ime-inactive;"
+                                                    value="{{ old('filter[txtDeptCd]', !empty($search_data['txtDeptCd']) ? $search_data['txtDeptCd'] : '') }}"
+                                                    oninput="value = onlyHalfWord(value)">
+                                                <input name="btnSearchDeptCd" class="SearchButton" id="btnSearchDeptCd"
+                                                    type="button" value="?" onclick="SearchDept();return false">
+                                                <input name="deptName" class="OutlineLabel" type="text"
+                                                    style="width: 200px; height: 23px; display: inline-block;" id="deptName"
+                                                    value="{{ old('deptName', !empty($request_data['deptName']) ? $request_data['deptName'] : '') }}"
+                                                    readonly="readonly">
+
+                                                @if ($errors->has('filter.txtDeptCd'))
+                                                    <span
+                                                        class="text-danger d-block">{{ $errors->first('filter.txtDeptCd') }}</span>
+                                                @endif
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+
+                                <p class="FunctionMenu1">
+                                    <input name="btnSearch" id="btnSearch" class="SearchButton submit-form" type="button"
+                                        value="検索" data-url="{{ route('MT11LoginRef.search') }}">
+                                    <input name="btnCancel" class="SearchButton" id="btnCancel" type="button"
+                                        onclick="Cancel()" value="キャンセル">
+                                </p>
+
+                                <div class="clearBoth"></div>
+
+                                <div class="line"></div>
+
+                                <ul class="HolizonListMenu1">
+                                    <li><input name="btnAll" id="btnAll" class="SearchButton submit-form" type="button"
+                                            value="全件" data-url="{{ route('MT11LoginRef.search') }}"></li>
+                                    <li><input type="submit" name="button_A" value="あ"></li>
+                                    <li><input type="submit" name="button_KA" value="か"></li>
+                                    <li><input type="submit" name="button_SA" value="さ"></li>
+                                    <li><input type="submit" name="button_TA" value="た"></li>
+                                    <li><input type="submit" name="button_NA" value="な"></li>
+                                    <li><input type="submit" name="button_HA" value="は"></li>
+                                    <li><input type="submit" name="button_MA" value="ま"></li>
+                                    <li><input type="submit" name="button_YA" value="や"></li>
+                                    <li><input type="submit" name="button_RA" value="ら"></li>
+                                    <li><input type="submit" name="button_WA" value="わ"></li>
+                                    <li><input type="submit" name="button_EN" value="英字"></li>
+                                </ul>
+                                <div class="line"></div>
+                                <div class="GridViewStyle1">
+                                    <table style="border-collapse: separate;">
+                                        <tbody>
+                                            <tr>
+                                                <th>
+                                                    社員
+                                                </th>
+                                                <th>
+                                                    社員
+                                                </th>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                                @isset($search_results)
+                                    <div class="GridViewStyle1">
+                                        <div class="two-col" style="column-count:2;">
+                                            <table class="GridViewSpace" id="gvEmp" style="border-collapse: collapse;"
+                                                border="1" cellspacing="0">
+                                                <tbody>
+                                                    @if (count($search_results) < 1)
+                                                        <tr style="width:70px; text-align:center;">
+                                                            <td><span>{{ $messages }}</span></td>
+                                                        </tr>
+                                                    @else
+                                                        @foreach ($search_results as $item)
+                                                            <tr>
+                                                                <td class="col-sm-4">
+                                                                    <a
+                                                                        href="{{ url('master/MT11LoginEditor/' . $item->EMP_CD) }}">{{ $item->EMP_CD }}
+                                                                        :
+                                                                        {{ $item->EMP_NAME }}</a>
+                                                                </td>
+                                                            </tr>
+                                                        @endforeach
+                                                    @endif
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </div>
+                                @endisset
+
+                                <div class="line"></div>
+                                <div class="d-flex justify-content-center" id="pegination">
+                                    @isset($search_results)
+                                        {{ $search_results->links() }}
+                                    @endisset
+                                </div>
+                                <div class="line"></div>
+                                <p class="ButtonField1">
+                                    <input name="btnCancel" class="SearchButton" id="btnCancel" type="button"
+                                        onclick="Cancel();" value="キャンセル">
+                                </p>
+
+                            </div>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </form>
+    </div>
+@endsection
+@section('script')
+    <script>
+        //formボタンクリック
+        $(document).on('click', '.submit-form', function() {
+            var url = $(this).data('url');
+            $('#form').attr('action', url);
+            $('#form').submit();
+        });
+
+        //キャンセルボタン
+        function Cancel() {
+            $("#txtEmpCd, #txtEmpKana, #txtDeptCd, #deptName").val('');
+            window.location.replace("MT11LoginReference");
+        }
+
+        $(function() {
+            // 入力可能文字：半角英数
+            onlyHalfWord = n => n.replace(/[０-９Ａ-Ｚａ-ｚ]/g, s => String.fromCharCode(s.charCodeAt(0) - 65248))
+                .replace(/[^0-9a-zA-Z]/g, '');
+        });
+    </script>
+@endsection

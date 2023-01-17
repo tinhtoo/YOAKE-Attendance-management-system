@@ -1,0 +1,19 @@
+<?php
+
+namespace App\Repositories;
+
+use App\Models\TR50WorkTime;
+
+use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Illuminate\Support\Facades\DB;
+
+
+class TR50WorkTimeRepository extends TR50WorkTime
+{
+    public function update50WorkWithEmpCdCaldDate($emp_cd, $cald_date, $udpate_data)
+    {
+        return TR50WorkTime::where('EMP_CD', $emp_cd)
+                        ->where('CALD_DATE', $cald_date)
+                        ->update($udpate_data);
+    }
+}

@@ -1,0 +1,26 @@
+<?php
+use Illuminate\Support\Str;
+if (!function_exists("getTimeToHhMm")){
+    function getTimeToHhMm($arr, $key) {
+        $arr[$key.'_HH'] = "";
+        $arr[$key.'_MI'] = "";
+        if (!empty( $arr[$key])) {
+            $tmp = explode(":", $arr[$key]);
+            $arr[$key.'_HH'] = $tmp[0];
+            $arr[$key.'_MI'] = $tmp[1];
+            
+        }
+        unset($arr[$key]);
+        return $arr;
+    }
+}
+
+if (!function_exists('getArrValue')) {
+    function getArrValue($array, $key, $default = '')
+    {
+        if (isset($array[$key])) {
+            return $array[$key];
+        }
+        return $default;
+    }
+}

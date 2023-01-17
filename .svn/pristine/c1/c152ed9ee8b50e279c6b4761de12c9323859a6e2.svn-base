@@ -1,0 +1,90 @@
+<?php
+
+namespace App\Http\Controllers\Master;
+
+use App\Http\Controllers\Controller;
+use App\Http\Requests\MT10EmpCnvertRequest;
+use App\Models\MT10Emp;
+use App\Models\MT11Login;
+use App\Models\TR01Work;
+use App\Models\TR02EmpCalendar;
+use App\Models\TR50WorkTime;
+use Illuminate\Support\Facades\DB;
+use mysqli;
+use App\Repositories\MT93PgRepository;
+
+/**
+ * 社員番号一括変換
+ */
+class MT10EmpCnvertController extends Controller
+{
+
+    public function __construct(MT93PgRepository $pg_repository)
+    {
+        parent::__construct($pg_repository, '000019');
+    }
+
+    /**
+     * 社員番号一括変換 画面表示
+     * @return view (MT10EmpCnvert.Blade)
+     */
+    public function index()
+    {
+        return parent::viewWithMenu('master.MT10EmpCnvert');
+    }
+
+    /**
+     * 社員番号一括変換更新処理
+     * [MT10_EMP],[MT11_LOGIN],[TR01_WORK],[TR02_EMPCALENDAR],[TR50_WORKTIME]更新処理
+     * キー：EMP_CDの修正
+     * @return view (MT10EmpCnvert.Blade)
+     */
+    public function update(MT10EmpCnvertRequest $request)
+    {
+        // 画面から入力フォームデータ取得
+        $old_emp_cd = $request->txtEmpCd;
+        $new_emp_cd = $request->txtNewEmpCd;
+
+        try {
+            DB::beginTransaction();
+
+            // 更新対象を取得
+            $mt10EmpUpdate = MT10Emp::find($old_emp_cd);
+            $mt11LoginUpdate = MT11Login::find($old_emp_cd);
+            $tr01WorkUpdate = TR01Work::find($old_emp_cd);
+            $tr02EmpCalUpdate = TR02EmpCalendar::find($old_emp_cd);
+            $tr50WorktimeUpdate = TR50WorkTime::find($old_emp_cd);
+
+            if ($mt10EmpUpdate !== null) {
+                $mt10EmpUpdate->EMP_CD = $new_emp_cd;
+                $mt10EmpUpdate->timestamps = false;
+                $mt10EmpUpdate->save();
+            }
+            if ($mt11LoginUpdate !== null) {
+                $mt11LoginUpdate->EMP_CD = $new_emp_cd;
+                $mt11LoginUpdate->timestamps = false;
+                $mt11LoginUpdate->save();
+            }
+            if ($tr01WorkUpdate !== null) {
+                $tr01WorkUpdate->EMP_CD = $new_emp_cd;
+                $tr01WorkUpdate->timestamps = false;
+                $tr01WorkUpdate->save();
+            }
+            if ($tr02EmpCalUpdate !== null) {
+                $tr02EmpCalUpdate->EMP_CD = $new_emp_cd;
+                $tr02EmpCalUpdate->timestamps = false;
+                $tr02EmpCalUpdate->save();
+            }
+            if ($tr50WorktimeUpdate !== null) {
+                $tr50WorktimeUpdate->EMP_CD = $new_emp_cd;
+                $tr50WorktimeUpdate->timestamps = false;
+                $tr50WorktimeUpdate->save();
+            }
+            DB::commit();
+        } catch (\Throwable $e) {
+            \Log::debug($e);
+            DB::rollBack();
+        }
+        return redirect()->route('MT10EmpCnvert.index');
+    }
+}

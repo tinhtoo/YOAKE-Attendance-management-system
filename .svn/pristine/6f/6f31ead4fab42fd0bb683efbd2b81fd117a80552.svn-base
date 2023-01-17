@@ -1,0 +1,208 @@
+<!-- 社員情報検索  -->
+@extends('common.home')
+
+@section('title', '社員情報検索')
+
+@section('content_search')
+    <div id="search-container">
+        <div id="contents-stage">
+            <form action="" method="get" id="form">
+                {{ csrf_field() }}
+                <input name="btnBack" id="btnBack" style="width: 80px;" type="button" onclick="window.close();" value="戻る">
+                <div id="UpdatePanel1">
+
+                    <table class="InputFieldStyle1">
+                        <tbody>
+                            <tr>
+                                <th>社員カナ名</th>
+                                <td>
+                                    <input name="filter[txtEmpKana]" class="imeOn" id="txtEmpKana"
+                                        style="width: 160px;" type="text" maxlength="20"
+                                        value="{{ old('filter[txtEmpKana]', !empty($search_data['txtEmpKana']) ? $search_data['txtEmpKana'] : '') }}">
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>部門</th>
+                                <td>
+                                    <input name="filter[txtDeptCd]" class="OutlineLabel" id="txtDeptCd"
+                                        style="width: 50px;" type="text" maxlength="6"
+                                        value="{{ old('filter[txtDeptCd]', !empty($search_data['txtDeptCd']) ? $search_data['txtDeptCd'] : '') }}">
+                                    <input name="btnSearchDeptCd" class="SearchButton" id="btnSearchDeptCd" type="button"
+                                        value="?" onclick="SearchDept();return false">
+                                    <input name="deptName" class="OutlineLabel" type="text"
+                                        style="width: 200px; height: 17px; display: inline-block;" id="deptName"
+                                        value="{{ old('deptName', !empty($request_data['deptName']) ? $request_data['deptName'] : '') }}"
+                                        readonly="readonly">
+                                    @if ($errors->has('filter.txtDeptCd'))
+                                        <span class="text-danger">{{ $errors->first('filter.txtDeptCd') }}</span>
+                                    @endif
+                                </td>
+                            </tr>
+                            <tr>
+                                <td></td>
+                                <td>
+
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <p class="FunctionMenu1">
+                        <input name="btnSearch" id="btnSearch" 　 class="SearchButton submit-form" type="button" value="検索"
+                            data-url="{{ route('emp.search') }}">
+                        <input name="btnCancel" class="SearchButton" id="btnCancel" type="button" onclick="Cancel();"
+                            value="キャンセル">
+                    </p>
+
+                    <div class="clearBoth"></div>
+
+                    <div class="line"></div>
+
+                    <ul class="HolizonListMenu1">
+                        <li><input name="btnAll" id="btnAll" class="SearchButton submit-form" type="button" value="全件"
+                                data-url="{{ route('emp.search') }}"></li>
+                        <li><input type="submit" name="button_A" value="あ"></li>
+                        <li><input type="submit" name="button_KA" value="か"></li>
+                        <li><input type="submit" name="button_SA" value="さ"></li>
+                        <li><input type="submit" name="button_TA" value="た"></li>
+                        <li><input type="submit" name="button_NA" value="な"></li>
+                        <li><input type="submit" name="button_HA" value="は"></li>
+                        <li><input type="submit" name="button_MA" value="ま"></li>
+                        <li><input type="submit" name="button_YA" value="や"></li>
+                        <li><input type="submit" name="button_RA" value="ら"></li>
+                        <li><input type="submit" name="button_WA" value="わ"></li>
+                        <li><input type="submit" name="button_EN" value="英字"></li>
+                    </ul>
+
+                    <div class="line"></div>
+
+                    <div class="GridViewStyle1 mg10" id="search-gridview-container">
+                        <div class="GridViewPanelStyle6" id="pnlEmp">
+
+                            <div>
+                                @if (!empty($request_data))
+                                    @isset($search_result)
+                                        <table class="GridViewPadding" id="gvEmp" style="border-collapse: collapse;" border="1"
+                                            cellspacing="0">
+                                            <tbody>
+
+                                                @if (count($search_result) < 1)
+                                                    <tr style="width:70px; text-align:center;">
+                                                        <td><span>{{ getArrValue($error_messages, '2000') }}</span></td>
+                                                    </tr>
+                                                @else
+                                                    <tr>
+                                                        <th scope="col">
+                                                            選択
+                                                        </th>
+                                                        <th scope="col">
+                                                            コード
+                                                        </th>
+                                                        <th scope="col">
+                                                            社員名
+                                                        </th>
+                                                        <th scope="col">
+                                                            部門名
+                                                        </th>
+                                                    </tr>
+                                                    @foreach ($search_result as $item)
+                                                        <tr style="cursor: pointer; " background-color: transparent;>
+                                                            <td style="width: 30px; white-space: nowrap; cursor: pointer;">
+                                                                <input name="rbSelectRow" id="{{ $item->EMP_CD }}"
+                                                                    type="radio" class="check-row">
+                                                            </td>
+                                                            <td style="width: 50px; white-space: nowrap; cursor: pointer;">
+                                                                <label for="{{ $item->EMP_CD }}" style="width: 100%;">
+                                                                    <span class="lblEmpCd" style="cursor: pointer;"
+                                                                        data-code="{{ $item->EMP_CD }}">{{ $item->EMP_CD }}</span>
+                                                                </label>
+                                                            </td>
+                                                            <td style="width: 200px; white-space: nowrap; cursor: pointer;">
+                                                                <label for="{{ $item->EMP_CD }}" style="width: 100%;">
+                                                                    <span class="lblEmpName" style="cursor: pointer;"
+                                                                        data-name="{{ $item->EMP_NAME }}">{{ $item->EMP_NAME }}</span>
+                                                                </label>
+                                                            </td>
+                                                            <td style="width: 200px; white-space: nowrap; cursor: pointer;">
+                                                                <label for="{{ $item->EMP_CD }}" style="width: 100%;">
+                                                                    <span class="lblDeptName" style="cursor: pointer;"
+                                                                        data-dept="{{ $item->DEPT_NAME }}">{{ $item->DEPT_NAME }}</span>
+                                                                </label>
+                                                            </td>
+                                                        </tr>
+                                                    @endforeach
+                                                @endif
+                                            </tbody>
+                                        </table>
+                                    @endisset
+                                @endif
+                            </div>
+
+                        </div>
+                    </div>
+                    @if (!empty($request_data))
+                        <div class="line"></div>
+                        <div class="d-flex justify-content-center" id="pegination">
+                            @isset($search_result)
+                                {{ $search_result->links() }}
+                            @endisset
+                        </div>
+                    @endif
+                    <div class="line"></div>
+                    <p class="ButtonField1">
+                        <input name="btnCancel" class="SearchButton" id="btnCancel" type="button" onclick="Cancel();"
+                            value="キャンセル">
+                    </p>
+
+                </div>
+            </form>
+
+        </div>
+    </div>
+
+@endsection
+@section('script')
+    <script>
+        //formボタンクリック
+        $(document).on('click', '.submit-form', function() {
+            var url = $(this).data('url');
+            $('#form').attr('action', url);
+            $('#form').submit();
+        });
+
+        //選択された値を渡す
+        $(document).on('click', '.check-row', function() {
+            if (!window.opener || window.opener.closed) {
+                alert("呼び出し元が既に閉じられています。");
+                return false;
+            }
+            var ele = $(this);
+            var MT10sendCD = window.opener.document.getElementById('txtEmpCd');
+            var MT10sendName = window.opener.document.getElementById('empName');
+            var MT10DeptName = window.opener.document.getElementById('lblDeptName');
+            if (ele.is(':checked')) {
+                var tr = ele.closest('tr');
+                if (MT10sendCD != null) {
+                    MT10sendCD.value = tr.find('.lblEmpCd').data('code');
+                }
+
+                if (MT10sendName != null) {
+                    MT10sendName.value = tr.find('.lblEmpName').data('name');
+                }
+
+                if (MT10DeptName != null) {
+                    MT10DeptName.value = tr.find('.lblDeptName').data('dept');
+                }
+            }
+            window.close();
+        });
+
+        function Cancel() {
+            $("#txtEmpKana, #txtDeptCd, #deptName").val('');
+            var tbl = document.getElementById('gvEmp');
+            tbl.remove();
+            var ftr = document.getElementById('pegination');
+            ftr.remove();
+        }
+    </script>
+@endsection

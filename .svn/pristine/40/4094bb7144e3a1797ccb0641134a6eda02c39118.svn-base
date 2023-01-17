@@ -1,0 +1,35 @@
+<?php
+
+namespace App\Http\Controllers\Search;
+
+use App\Http\Controllers\Controller;
+use App\Repositories\Search\MT10EmpSearchRepository;
+use App\Filters\MT10EmpSearchFilter;
+use App\Http\Requests\MT10EmpSearchRequest;
+use Illuminate\Http\Request;
+
+class MT10EmpSearchController extends Controller
+{
+    private $emp_repository;
+    public function __construct(MT10EmpSearchRepository $emp_Repository)
+    {
+        $this->emp_repository = $emp_Repository;
+    }
+    
+    /**
+     * 指定ユーザーのプロファイル表示
+     *
+     * @param  $request
+     * @return Response
+     */
+    public function search(MT10EmpSearchRequest $request, MT10EmpSearchFilter $filter)
+    {
+        $request_data = $request->all();
+        $search_data = $request->input(['filter']);
+        $dept_name=$request->input('deptName');
+        $search_result = $this->emp_repository->search($request, $filter);
+        
+        return view('search.MT10EmpSearch', compact('request_data','search_data', 'search_result'));
+
+    }
+}

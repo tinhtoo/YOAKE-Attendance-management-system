@@ -1,0 +1,151 @@
+<!-- 所属情報入力 -->
+@extends('menu.main')
+
+@section('title', '所属情報入力')
+
+@section('content')
+    <div id="contents-stage">
+        <table class="BaseContainerStyle1">
+            <tbody>
+                <tr>
+                    <td>
+                        <div id="UpdatePanel1">
+                            <table class="InputFieldStyle1">
+                                <tbody>
+                                    <tr>
+                                        <th>所属番号</th>
+                                        <td>
+                                            <input name="txtCompanyCd" tabindex="1" class="imeDisabled" id="txtCompanyCd"
+                                                style="width: 80px;" onfocus="this.select();" type="text" maxlength="6">
+                                            @if ($errors->has('txtCompanyCd'))
+                                                <span class="alert-danger">
+                                                    {{ $errors->first('txtCompanyCd') }}
+                                                </span>
+                                            @endif
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th>所属先名</th>
+                                        <td>
+                                            <input name="txtCompanyName" tabindex="2" class="imeOn"
+                                                id="txtCompanyName" style="width: 370px;" onfocus="this.select();"
+                                                type="text" maxlength="20">
+                                            @if ($errors->has('txtCompanyName'))
+                                                <span class="alert-danger">
+                                                    {{ $errors->first('txtCompanyName') }}
+                                                </span>
+                                            @endif
+
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th>所属先カナ名</th>
+                                        <td>
+                                            <input name="txtCompanyKana" tabindex="3" class="imeOn"
+                                                id="txtCompanyKana" style="width: 370px;" onfocus="this.select();"
+                                                type="text" maxlength="20">
+                                            @if ($errors->has('txtCompanyKana'))
+                                                <span class="alert-danger">
+                                                    {{ $errors->first('txtCompanyKana') }}
+                                                </span>
+                                            @endif
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th>所属先略名</th>
+                                        <td>
+                                            <input name="txtCompanyAbr" tabindex="4" class="imeOn"
+                                                id="txtCompanyAbr" style="width: 180px;" onfocus="this.select();"
+                                                type="text" maxlength="10">
+                                            @if ($errors->has('txtCompanyAbr'))
+                                                <span class="alert-danger">
+                                                    {{ $errors->first('txtCompanyAbr') }}
+                                                </span>
+                                            @endif
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th>郵便番号</th>
+                                        <td>
+                                            <input name="txtPostCd" tabindex="5" class="imeDisabled" id="txtPostCd"
+                                                style="width: 70px;" onfocus="this.select();" type="text" maxlength="8">
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th>住所１</th>
+                                        <td>
+                                            <input name="txtAddress1" tabindex="6" class="imeOn" id="txtAddress1"
+                                                style="width: 430px;" onfocus="this.select();" type="text" maxlength="30">
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th>住所２</th>
+                                        <td>
+                                            <input name="txtAddress2" tabindex="7" class="imeOn" id="txtAddress2"
+                                                style="width: 430px;" onfocus="this.select();" type="text" maxlength="30">
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th>住所３</th>
+                                        <td>
+                                            <input name="txtAddress3" tabindex="8" class="imeOn" id="txtAddress3"
+                                                style="width: 430px;" onfocus="this.select();" type="text" maxlength="30">
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th>電話番号</th>
+                                        <td>
+                                            <input name="txtTel" tabindex="9" class="imeDisabled" id="txtTel"
+                                                style="width: 120px;" onfocus="this.select();" type="text" maxlength="15">
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th>ＦＡＸ番号</th>
+                                        <td>
+                                            <input name="txtFax" tabindex="10" class="imeDisabled" id="txtFax"
+                                                style="width: 120px;" onfocus="this.select();" type="text" maxlength="15">
+                                        </td>
+                                    </tr>
+                                    <tr>
+                                        <th>表示区分</th>
+                                        <td>
+                                            <select name="ddlDispCls" tabindex="11" id="ddlDispCls" style="width: 100px;">
+                                                <option value="00">非表示</option>
+                                                <option selected="selected" value="01">表示</option>
+                                            </select>
+                                            <span id="cvDispCls" style="color: red; display: none;">
+                                                ErrorMessage
+                                            </span>
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+
+                            <div class="line"></div>
+                            <p class="ButtonField1">
+                                <input name="btnUpdate" tabindex="12" id="btnUpdate" onclick="return checkSubmit(this)" type="button" value="更新">
+                                <input name="btnCancel" tabindex="13" id="btnCancel" onclick="" type="button" value="キャンセル">
+                                <input name="btnDelete" tabindex="14" disabled="disabled" id="btnDelete" type="button"
+                                    value="削除">
+                            </p>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+@endsection
+@section('script')
+
+    <script>
+        $(document).on('click', '.submit-form', function() {
+            var url = $(this).data('url');
+            $('#form').attr('action', url);
+            $('#form').submit();
+        });
+
+
+
+    </script>
+
+@endsection

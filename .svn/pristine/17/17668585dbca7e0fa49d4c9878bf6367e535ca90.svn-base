@@ -1,0 +1,44 @@
+<?php
+
+namespace App\Repositories\Search;
+
+use Illuminate\Http\Request;
+use App\Models\MT11Login;
+use App\Models\MT10Emp;
+use App\Models\MT12Dept;
+use App\Models\MT13DeptAuth;
+
+class MT12DeptSearchRepository
+{
+    public function data_search()
+    {
+        //** SessionでログインIDの取得 */
+        $loginUser = session('id');
+        // dd($loginUser);
+
+        //** ログインIDより社員CD取得 1 */
+        $emp_cd = MT11Login::where(['LOGIN_ID' => $loginUser])->pluck('EMP_CD')->first();
+        // dd($emp_cd);
+
+        //** ログイン社員の部門権限取得 2 */
+        $dept_auth_cd = MT10Emp::where('EMP_CD', $emp_cd)->pluck('DEPT_AUTH_CD')->first();
+        // dd($dept_auth_cd);
+
+        //** ログイン社員の権限がある部門の取得 3 */
+        $dept_cd = MT13DeptAuth::where('DEPT_AUTH_CD', $dept_auth_cd)->pluck('DEPT_CD')->all();
+        // dd($dept_cd);
+
+        //** ログイン社員の部門権限に含まれる部門の取得 4 */
+        $query = MT12Dept::whereIn('DEPT_CD',$dept_cd)
+        ->where('DISP_CLS_CD', '=', '01')
+        ->orderByRaw('DEPT_CD', 'ASC')->paginate(20);
+        // dd($query);
+        return $query;
+    }
+
+    public function allData()
+    {
+        $query = MT12Dept::orderByRaw('DEPT_CD', 'ASC')->paginate(20);
+        return $query;
+    }
+}

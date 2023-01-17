@@ -1,0 +1,98 @@
+.WorkTmMngMenu
+{
+	width:100%;
+}
+.WorkTmMngMenu a
+{
+}
+
+.WorkTmMngMenuRoot
+{
+}
+
+.WorkTmMngMenuParent
+{
+	color:#336699;
+}
+
+
+.WorkTmMngMenuNode
+{
+	font-weight:bold;
+}
+
+.WorkTmMngMenuStaticMenuStyle
+{
+}
+
+.WorkTmMngMenuStaticMenuItemStyle
+{
+}
+
+a.WorkTmMngMenuStaticMenuItemStyle
+{
+	display:block;
+	width:100%;
+	cursor:pointer;
+}
+
+.WorkTmMngMenuDynamicMenuStyle
+{
+}
+
+.WorkTmMngMenuDynamicMenuItemStyle
+{
+}
+
+.WorkTmMngMenuStaticSelectedStyle
+{
+	color:#039;
+	font-weight:bold;
+	background:#FEF1DB url('../images/arrow2.gif') 5px center no-repeat!important;
+}
+
+table.WorkTmMngMenuFirst
+{
+	text-align:center;
+	background:url('../images/WorkTmMngMenuFirst-bg.gif') !important;
+	border-bottom:1px solid #369;
+}
+
+table.WorkTmMngMenuSecond
+{
+	text-indent:0.6em;
+	background:url('../images/WorkTmMngMenuSecond-bg.gif') bottom !important;
+	border-top:1px solid #fff;
+	border-bottom:1px solid #369;
+	color:#039;
+	font-weight:bold;
+}
+.WorkTmMngMenuFirst
+{
+	padding:8px 0px;
+}
+.WorkTmMngMenuSecond,
+.WorkTmMngMenuThird
+{
+	padding:4px 0px;
+}
+
+table.WorkTmMngMenuSecond a:hover
+{
+	background:url('../images/WorkTmMngMenuSecondOn-bg.gif') bottom;
+	color:#369;
+	cursor:pointer;
+}
+
+
+table.WorkTmMngMenuThird
+{
+	text-indent:1.5em;
+	background:url('../images/arrow1.gif') 5px center no-repeat;
+}
+
+table.WorkTmMngMenuThird a:hover
+{
+	background:#FEF1DB url('../images/arrow1.gif') 5px center no-repeat;
+	cursor:pointer;
+}

@@ -1,0 +1,54 @@
+<?php
+
+namespace App\Http\Controllers\Search;
+
+use App\Http\Controllers\Controller;
+use App\Repositories\Search\MT12DeptSearchRepository;
+use PhpParser\Node\Expr\Cast\String_;
+use App\Models\MT99Msg;
+
+class MT12DeptSearchController extends Controller
+{
+    /**
+     * Work_Timeリポジトリの実装
+     *
+     * @var MT12DeptSearchRepository
+     */
+
+    protected $dep_repository;
+
+    /**
+     * 新しいコントローラインスタンスの生成
+     *
+     * @param  UserRepository  $dep_Repository
+     * @return void
+     */
+    public function __construct(MT12DeptSearchRepository $dep_Repository)
+    {
+        $this->dep_repository = $dep_Repository;
+    }
+
+    /**
+     * 部門の一覧選択画面を表示する
+     * @return 部門選択画面
+     */
+    public function search()
+    {
+        $dept_search = $this->dep_repository->dataSearch();
+        return view('search.MT12DeptSearch', compact('dept_search'));
+    }
+    
+    /**
+     * 部門名を検索して返す
+     * @return 部門名
+     */
+    public function getName($dept_cd)
+    {
+        $dept_name = $this->dep_repository->getName($dept_cd);
+        $msg_2000 = "";
+        if ($dept_name == null) {
+            $msg_2000 = MT99Msg::where('MSG_NO', '2000')->pluck('MSG_CONT')->first();
+        }
+        return ['deptName' => $dept_name, 'errorMessage' => $msg_2000];
+    }
+}

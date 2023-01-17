@@ -1,0 +1,132 @@
+<?php
+
+namespace App\Repositories\Search;
+
+use Illuminate\Http\Request;
+use App\Models\MT11Login;
+use App\Models\MT10Emp;
+use App\Models\MT12Dept;
+use App\Models\MT13DeptAuth;
+use Illuminate\Database\Eloquent\Collection;
+use Illuminate\Pagination\LengthAwarePaginator;
+
+class MT12DeptSearchRepository
+{
+    public function dataSearch()
+    {
+        /* SessionでログインIDの取得 */
+        $loginUser = session('id');
+        /* ログインIDより社員CD取得 1 */
+        $emp_cd = MT11Login::where(['LOGIN_ID' => $loginUser])->pluck('EMP_CD')->first();
+        /* ログイン社員の部門権限取得 2 */
+        $dept_auth_cd = MT10Emp::where('EMP_CD', $emp_cd)->pluck('DEPT_AUTH_CD')->first();
+        /* ログイン社員の権限がある部門の取得 3 */
+        $dept_cd = MT13DeptAuth::where('DEPT_AUTH_CD', $dept_auth_cd)->pluck('DEPT_CD')->all();
+        /* ログイン社員の部門権限に含まれる部門の取得 4 */
+        $query = MT12Dept::whereIn('DEPT_CD',$dept_cd)
+        ->where('DISP_CLS_CD', '=', '01')
+        ->orderByRaw('DEPT_CD', 'ASC')->paginate(20);
+        if ($query->count() <= 0)
+        {
+            $query = MT12Dept::join('MT10_EMP','MT10_EMP.DEPT_CD','MT12_DEPT.DEPT_CD')
+            ->where('MT10_EMP.EMP_CD', $emp_cd)
+            ->orderByRaw('MT12_DEPT.DEPT_CD', 'ASC')->paginate(20);
+        }
+        return $query;
+    }
+    
+    public function getName($input_dept_cd)
+    {
+        /* SessionでログインIDの取得 */
+        $loginUser = session('id');
+        /* ログインIDより社員CD取得 1 */
+        $emp_cd = MT11Login::where(['LOGIN_ID' => $loginUser])->pluck('EMP_CD')->first();
+        /* ログイン社員の部門権限取得 2 */
+        $dept_auth_cd = MT10Emp::where('EMP_CD', $emp_cd)->pluck('DEPT_AUTH_CD')->first();
+        /* ログイン社員の権限がある部門の取得 3 */
+        $dept_cd = MT13DeptAuth::where('DEPT_AUTH_CD', $dept_auth_cd)->pluck('DEPT_CD')->all();
+        /* ログイン社員の部門権限に含まれる部門の取得 4 */
+        $result = MT12Dept::whereIn('DEPT_CD',$dept_cd)
+            ->where('DISP_CLS_CD', '=', '01')
+            ->where('DEPT_CD', '=', $input_dept_cd)
+            ->pluck('DEPT_NAME')->first();
+        return $result;
+    }
+
+    public function getDeptList()
+    {
+        $DeptAllRecord = MT12Dept::select('DEPT_CD', 'DEPT_NAME','LEVEL_NO', 'UP_DEPT_CD')
+                        ->orderBy('LEVEL_NO')
+                        ->orderBy('DEPT_CD')
+                        ->get();
+
+        return $DeptAllRecord;
+    }
+    
+    /**
+     * ツリー構造のデータを並び変える
+     * 親1,親2,親3,子1,子2　→　親1,子1,親2,子2,親3
+     * リファクタリングを検討中（二重ループ＋配列の途中への追加をしており、おそらく遅いため）
+     *
+     * @param 
+     * @return
+     */
+    public function getSorted()
+    {
+        $dept_all = $this->getDeptList();
+
+        // クエリ結果チェック
+        if ($dept_all === null) {
+            return new Collection();
+        }
+        $dept_count = $dept_all->count();
+        if ($dept_count < 2) {
+            return $dept_all;
+        }
+
+        $temp_array = array();
+        foreach ($dept_all as $dept) {
+            
+            if (empty($dept->UP_DEPT_CD)) {
+                // 最上位の親は配列に追加
+                $temp_array[] = $dept;
+
+            } else {
+                // 親ありの場合
+                $i = 0;
+                $array_count = count($temp_array);
+                // 親まで移動
+                for (; $i < $array_count && $temp_array[$i]->DEPT_CD !== $dept->UP_DEPT_CD; $i++) {}
+                // 親の次に移動
+                $i++;
+                // 同じ親を持つ子の末尾まで移動
+                for (; $i < $array_count && $temp_array[$i]->UP_DEPT_CD === $dept->UP_DEPT_CD; $i++) {}
+
+                // 同じ親を持つ子の末尾に追加
+                // array_spliceでオブジェクトを追加すると、「予期せぬ動きをする」ため、一度「1」を設定
+                array_splice($temp_array, $i, 0, 1);
+                $temp_array[$i] = $dept;
+            }
+        }
+        return collect($temp_array);
+    }
+
+    /**
+     * 特殊なソートを行うため、ページネーターを手動生成して、該当ページを返す。
+     *
+     * @param [type] $page
+     * @param [type] $url
+     * @return Object
+     */
+    public function getPage($page, $url) : Object
+    {
+        $sorted_dept = $this->getSorted();
+        return new LengthAwarePaginator(
+            $sorted_dept->forPage($page, 20), 
+            count($sorted_dept), 
+            20, 
+            $page,
+            ['path' => $url]
+        );
+    }
+}

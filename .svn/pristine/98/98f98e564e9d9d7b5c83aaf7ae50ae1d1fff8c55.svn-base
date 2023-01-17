@@ -1,0 +1,55 @@
+<?php
+
+namespace App\Repositories;
+
+use App\Models\TR03DeptCalendar;
+use Illuminate\Support\Facades\DB;
+
+
+class TR03DeptCalendarRepository extends TR03DeptCalendar
+{
+    /**
+     * 部門別カレンダー情報を検索し、該当レコードを取得する
+     * 引数$dept_cd_listがNULLの場合、NULLを返す。
+     * 引数$dept_cd_listが空配列の場合、該当なしになる。
+     *
+     * @param [type] $year
+     * @param [type] $month
+     * @param [type] $closing_date_cd[]
+     * @param [type] $dept_cd_list
+     * @return object
+     */
+    public function getDeptCalendarDate($year, $month, $closing_date_cd, $dept_cd_list): object
+    {
+        if ($dept_cd_list == null) {
+            return null;
+        }
+
+        return TR03DeptCalendar::select('DEPT_CD', 'LAST_PTN_CD', 'LAST_DAY_NO')
+                    ->where('CALD_YEAR', $year)
+                    ->where('CALD_MONTH', $month)
+                    ->where('CLOSING_DATE_CD', $closing_date_cd)
+                    ->whereIn('DEPT_CD', $dept_cd_list)
+                    ->whereExists(function($query) {
+                        $query->select(\DB::raw(1))
+                            ->from('MT04_SHIFTPTN as MT04')
+                            ->whereColumn('LAST_PTN_CD', 'MT04.SHIFTPTN_CD');
+                    })
+                    ->orderBy('DEPT_CD')
+                    ->get();
+    }
+
+    public function existWithPrimary($year, $month, $dept_cd, $closing_date_cd)
+    {
+        return TR03DeptCalendar::where('CALD_YEAR', $year)
+                            ->where('CALD_MONTH',$month)
+                            ->where('DEPT_CD', $dept_cd)
+                            ->where('CLOSING_DATE_CD', $closing_date_cd)
+                            ->exists();
+    }
+
+    public function insertRecord($record)
+    {
+        return TR03DeptCalendar::insert($record);
+    }
+}

@@ -1,0 +1,295 @@
+<!DOCTYPE html
+    PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+
+<html xmlns="http://www.w3.org/1999/xhtml">
+
+<head>
+    <title>
+        シフトパターン選択
+    </title>
+    <base target="_self" />
+    <link rel="Stylesheet" type="text/css" href="../common/theme/sick/css/base.css" />
+    <link rel="Stylesheet" type="text/css" href="../common/theme/sick/css/editor.css" />
+    <link rel="Stylesheet" type="text/css" href="../common/theme/sick/css/search_page.css" />
+    <script language="javascript" type="text/javascript" src="../common/js/common.js"></script>
+    <script language="javascript" type="text/javascript" src="../common/js/search.js"></script>
+    <script language="javascript" type="text/javascript" src="../common/js/check.js"></script>
+    <script language="javascript" type="text/javascript" src="../common/js/jquery.js"></script>
+    <script language="javascript" type="text/javascript">
+        function ChangeKeycode() {
+            if (event.keyCode == 13 && (event.srcElement.type == 'text' || event.srcElement.type == 'select-one' || event
+                    .srcElement.type == 'password' || event.srcElement.type == 'checkbox')) {
+                return false;
+            }
+        }
+        /*
+            $(window).blur(function()
+            {
+                window.focus();
+            });
+            */
+    </script>
+</head>
+
+<body>
+    <div id="search-container">
+        <form name="frmShiftPtnSearch" method="post"
+            action="ShiftPtnSearch.aspx?StartDate=2021%2f03%2f16&amp;EndDate=2021%2f04%2f15&amp;ClientId=ctl00_cphContentsArea_gvCalendar1_ctl02_ddlWorkPtn%2cctl00_cphContentsArea_gvCalendar1_ctl03_ddlWorkPtn%2cctl00_cphContentsArea_gvCalendar1_ctl04_ddlWorkPtn%2cctl00_cphContentsArea_gvCalendar1_ctl05_ddlWorkPtn%2cctl00_cphContentsArea_gvCalendar1_ctl06_ddlWorkPtn%2cctl00_cphContentsArea_gvCalendar1_ctl07_ddlWorkPtn%2cctl00_cphContentsArea_gvCalendar1_ctl08_ddlWorkPtn%2cctl00_cphContentsArea_gvCalendar1_ctl09_ddlWorkPtn%2cctl00_cphContentsArea_gvCalendar1_ctl10_ddlWorkPtn%2cctl00_cphContentsArea_gvCalendar1_ctl11_ddlWorkPtn%2cctl00_cphContentsArea_gvCalendar1_ctl12_ddlWorkPtn%2cctl00_cphContentsArea_gvCalendar1_ctl13_ddlWorkPtn%2cctl00_cphContentsArea_gvCalendar1_ctl14_ddlWorkPtn%2cctl00_cphContentsArea_gvCalendar1_ctl15_ddlWorkPtn%2cctl00_cphContentsArea_gvCalendar1_ctl16_ddlWorkPtn%2cctl00_cphContentsArea_gvCalendar2_ctl02_ddlWorkPtn%2cctl00_cphContentsArea_gvCalendar2_ctl03_ddlWorkPtn%2cctl00_cphContentsArea_gvCalendar2_ctl04_ddlWorkPtn%2cctl00_cphContentsArea_gvCalendar2_ctl05_ddlWorkPtn%2cctl00_cphContentsArea_gvCalendar2_ctl06_ddlWorkPtn%2cctl00_cphContentsArea_gvCalendar2_ctl07_ddlWorkPtn%2cctl00_cphContentsArea_gvCalendar2_ctl08_ddlWorkPtn%2cctl00_cphContentsArea_gvCalendar2_ctl09_ddlWorkPtn%2cctl00_cphContentsArea_gvCalendar2_ctl10_ddlWorkPtn%2cctl00_cphContentsArea_gvCalendar2_ctl11_ddlWorkPtn%2cctl00_cphContentsArea_gvCalendar2_ctl12_ddlWorkPtn%2cctl00_cphContentsArea_gvCalendar2_ctl13_ddlWorkPtn%2cctl00_cphContentsArea_gvCalendar2_ctl14_ddlWorkPtn%2cctl00_cphContentsArea_gvCalendar2_ctl15_ddlWorkPtn%2cctl00_cphContentsArea_gvCalendar2_ctl16_ddlWorkPtn%2cctl00_cphContentsArea_gvCalendar2_ctl17_ddlWorkPtn&amp;LastPtnCd=ctl00_cphContentsArea_hdnLastPtnCd&amp;LastDayNo=ctl00_cphContentsArea_hdnLastDayNo"
+            onsubmit="javascript:return WebForm_OnSubmit();" id="frmShiftPtnSearch">
+            <div>
+                <input type="hidden" name="__LASTFOCUS" id="__LASTFOCUS" value="" />
+                <input type="hidden" name="__EVENTTARGET" id="__EVENTTARGET" value="" />
+                <input type="hidden" name="__EVENTARGUMENT" id="__EVENTARGUMENT" value="" />
+                <input type="hidden" name="__VIEWSTATE" id="__VIEWSTATE"
+                    value="NZl3Cb8p7moRGJwejv3uwbD3BvzrgqyHggX29ziMG3llYY93uov7Lu1m60VfBB3utkrfIAgxX1ruCbVbGtE4o6gHq+MhIs1Qu/fGyL9F428oh8SiV5ImU4efYQPolNj7JlCbVEZJMzG38eTk7oS3W6SAKooIMI44Lfng9qiBaTsBLrWUOfmi4kIt2Sk7ZizLUrMDaWagmrpEPxZRYZHgCKpTcojOb2loxPLjFC3TnN1xOvowV/Y4RkstNtoWu9z8boh/HhvQF132sdIF/p2gp2c5oleCeyx+fdC5fsNtUMXHh/mJXGysoDmq89FknIKzrzpRpE6+3iUvxui7TWJcIeU3v7gbc1kB0lJoIbp+xdkqscRCQYon+v2Dwl1IizFv02W3wrIRdDXtHFw+Nj28VBDxPSSVQdrPCoDWi05Q2Dl4Ye4jCnS3CEYVefFOxAqzeXjR/A4xKHhqmoShurMcVqQ7FhlOj9mXduSIC5KenklKxlkg9OZ8Cp9hP3bjZgrYnpNbTayX52Zj/6lJrTI4S6tNr9teKEJ334XY8NPT2XtAztvWjN1lrIct2bOoirfFvR6SbP+G+yl0xxvDTSsK4IgGE3E7xYZ+OUPkvKBRvzblbZPEJyIVtwNVF23nTLu8lkNfoRG9qVbjxXzqZQafIQquAkzw0V9hfLrqxE9xZbJNLHDqv5Y94LuGTNjkMSYuqvdV7lhsq1WdLDmMwfCGhmgEaSMWiemQ3Ex/E9IB+oYmxFfJHDrb7ERNVZmyAvTsd5XKnIycX3N/EFe9gtfrmzwHw7hGFF7Ox9zjE4RbTg4SryveLldkUMf4FIP8G8KSQ//l1OjcTFqyTx7fPMOYljytu9tuShzLLdpACl1NAouIP0p7PWW10X5NQxPHuIZmrAlFF+4ZCUSevg65akQhwvXiC++nxK4RiWm2+E/57mZuZoLjeNonOZS0M+XSIxdhc1x7gQfM+8jVHYNAu7sbvYoHC3cKlAH5Okc308Gn9zpucqKDxigm/vceqB9Q+H8dpRpYbsvMaXtR3IpEbICJLdsNWReln5CYrQr0jOcLD++TrWY8ya29sroEc9gBay70VqdKj4zEE2f+FICppkZGcde3QZFdSS72YtaMLfvP5w4/H+YR93pzl5ORpbhYFQKYS/rSApRUAY/u2NorT5My8EKayFXiT3YvZGHYJ7JIvySb/m+sd+01Bqee/eIrGXFkUyDcsOVVxIRMjVsWy6b+F3mZ0gVIOSGy/HhyDtISHme2GGzav4+aROigokHvnw2C4SPHaq4hmOc3/2gMFCJn6+Be6/MN+YyhI52zCHpeTMTmW2axwjZWmjdv8gw0MgEWzmSzrV2GXdShdxAf5ghcMw4E2quErXFm/u1m4amEDmyFYYE3V588R7y74YFGXIkjrBZeP7j4AbQQI+IM8EtKaretUTKwAm2Iom2QXIOUi0SBdmQRjFRdWjQt2gewz47RcA8hKFyJhX7oSoNRoR79/cJxh11BwiJARJjoirbmVRHQojMR00YyCXuupkSrb6bgY3fanNisP2+l4xS92uLnXpnzTgSbaX0nQ1aEUE5vGoHUJyiAgjlGDaZI2kVcpjs8kS9oGEn2hxcIPgni5EOTw4HBsz14FEJTzLiULEr8mk0cVRn4x8PMr8o5VFrEOKvc2DMsbwOTvog3khgoLj8aHkNKLYVPHvMh7xqWiHVR+/8DjtoYdZM8VIFv9lA0pE/8FxZxir86CQiNdwlSS3XwiUHfAW1J1Bt+3Va+rmWS4G3iITbuG8oPQzSHMJPSzfMo0HX/VhN0EfgwBt4JHQ4wUCB2Vdw=" />
+            </div>
+
+            <script type="text/javascript">
+                //<![CDATA[
+                var theForm = document.forms['frmShiftPtnSearch'];
+                if (!theForm) {
+                    theForm = document.frmShiftPtnSearch;
+                }
+
+                function __doPostBack(eventTarget, eventArgument) {
+                    if (!theForm.onsubmit || (theForm.onsubmit() != false)) {
+                        theForm.__EVENTTARGET.value = eventTarget;
+                        theForm.__EVENTARGUMENT.value = eventArgument;
+                        theForm.submit();
+                    }
+                }
+                //]]>
+            </script>
+
+
+            <script src="/WebResource.axd?d=zAl1vmS6STqxEZB9hPJiO5SKwELMU7SVxywdXoCAbdrNdhdYEwnyOn0R8N7hbmW3ObpzHtvI7uGtnLQWswiYyq1DwDU1&amp;t=635668399640667405"
+                        type="text/javascript"></script>
+
+
+            <script src="/ScriptResource.axd?d=h5NWtjF2SfB367_DUOs-0X10_V9UDP8xasw--GMucZqns57ev2HLXuTGj82ODyse-Pi1gueQGbBuvR4mPV_hIZyGMlDMi5heqis3geuolVbLRAnTDnT-kglpB076-NkiXEkKx5kw4Ft9cbQ5p3P92ODM6cw1&amp;t=ffffffffe6d24adb"
+                        type="text/javascript"></script>
+            <script src="/ScriptResource.axd?d=JjuUuxZZeWny3HiZgyAZB8jm63gk419YKyZK9fxQwTtHLlI9ClnAc9agb7AcPO2SW3_qHC1pJA3CITxl8yE7NXdj2mvI8lHU5IK2X5LzC7O1jJO2NorpB9j3VXcWQNPILrN-Q2DFLhX4XfLpmxTJmHisXUdSZUxgejBluQKn0CQ-MdSZ0&amp;t=ffffffffbcb9b94a"
+                        type="text/javascript"></script>
+            <script type="text/javascript">
+                //<![CDATA[
+                if (typeof(Sys) === 'undefined') throw new Error('ASP.NET Ajax クライアント側フレームワークを読み込めませんでした。');
+                //]]>
+            </script>
+
+            <script src="/ScriptResource.axd?d=e4At87Cnxmfdqt_qM2aPGkBa-ue6lLJuzTBVApMaP8MxIrHgFJp_AUNbjG4NGk50gTen9bSs1SLNP0sIbUzhbcvfQ9EgAO4-kf9sFOtBvJ9pdTHRt570Tw35CpSBzUFb6BUMQ2hOb5hs_u89mt9OTGGqNegETP719FUIYjMvJp9O43Xs0&amp;t=ffffffffbcb9b94a"
+                        type="text/javascript"></script>
+            <script src="/ScriptResource.axd?d=iQ4SohymhAHJ5qomSsPNTXcQVjPX6Ahjz5I8EQlDu4N6rduz1vRVlKq-0987LkBzEP8jwfjKTmTYmjF-U-w6l3fiLJmcAvUyWbeeZ-ZLbWN94kC_xLWBdK9NCGsij11-6NoVb8GJDyJA8ODOyAAzgzcVVYI1&amp;t=ffffffff9b7d03cf"
+                        type="text/javascript"></script>
+            <script src="/ScriptResource.axd?d=0LPY3_NTn_bQLWhrFONgZ73aYIN0rPTsfERgH1f2FarIVmFt8NDLI0Cc0D4yAiLsf-5p8VWpu0IeYFDK-48G6iXZLpuERthHXFaWFo_Pvss2v94Q-ZxJmlf0b2-NXU4rVevnh3Wj9F45vwZY9Cp0FAPoyS81&amp;t=ffffffff9b7d03cf"
+                        type="text/javascript"></script>
+            <script src="/ScriptResource.axd?d=nTQJxWcUq1ot4iLStY7dfO2Zg28gf6KH9h_5pcEr4B0N_tgUSh36gFUFD74j2bFbrkpzajgzfNQISzv9qQbMSrOC-gXsooWulamXwxBwN3iufXI-xzkYfAUrmXEpxshF_JDHddyxuohl5Uy1DhRBXOcI7Fjvr84rdar1Ep0ZkrbfJzce2Zw-f-wyF57cgt2132tlQw2&amp;t=ffffffff9b7d03cf"
+                        type="text/javascript"></script>
+            <script src="/WebResource.axd?d=94joPtaUptvp_4-PFe7aDqN8Nk1V0kv3mjI5D0rsisowF0ZK60DxFYRS_t_PPvV8IBquonnqNN0c0PEDthPy7NZ80Ng1&amp;t=635668399640667405"
+                        type="text/javascript"></script>
+            <script type="text/javascript">
+                //<![CDATA[
+                function WebForm_OnSubmit() {
+                    if (typeof(ValidatorOnSubmit) == "function" && ValidatorOnSubmit() == false) return false;
+                    return true;
+                }
+                //]]>
+            </script>
+
+            <div>
+
+                <input type="hidden" name="__VIEWSTATEENCRYPTED" id="__VIEWSTATEENCRYPTED" value="" />
+                <input type="hidden" name="__EVENTVALIDATION" id="__EVENTVALIDATION"
+                    value="a9npZoJ0nx8IvR1zOhOY4IEdf9oK/O79PYvoiW4l/LtmIWwN0y9FnpgkgIp0D17D5NzzI6WiJm16wvwZp1dv5dODRgb4aGi8XilYQfoVI/m0X9Y2jjvsijFtuhXxmkSU71vHXp6xHyXrXXQKzG6h9UTdVYZIp86Ix1EG52p+ioVS1oSRhd119Yj7xkPxFkClWDMGD9i7S9i8RSxbj66TS0oEdMeimlp33+9NsXmKuzire6Oc9tw5G1ywZ2NkJF6R6+9dUaZUqzwktaiQ1gwfcFGH1XNEu8RZ2Vk/+TixgtMHBFtd2iL3ky85LlKgJDp/YiHBIHx7enSQ9VijICmFvWNyh1LBSeH6MK5sfaPxmJ5KidoKajg5grFPl15Iz8L0/DU79zFYA89CfP9cj7xf0eRiXu2FUjWkdT/Cro/isyZiXAU6" />
+            </div>
+            <script type="text/javascript">
+                //<![CDATA[
+                Sys.WebForms.PageRequestManager._initialize('ScriptManager1', document.getElementById('frmShiftPtnSearch'));
+                Sys.WebForms.PageRequestManager.getInstance()._updateControls(['tUpdatePanel1'], [], [], 90);
+                //]]>
+            </script>
+
+            <div id="contents-stage">
+
+                <div id="UpdatePanel1">
+
+
+                    <p class="ButtonField1">
+                        <input type="button" name="btnOK" value="ＯＫ" id="btnOK" disabled="disabled" tabindex="1" />
+                        <input type="button" name="btnCancel" value="ｷｬﾝｾﾙ"
+                            onclick="javascript:__doPostBack('btnCancel','')" id="btnCancel" tabindex="2" />
+                        <input type="button" name="btnBack" value="戻る" onclick="javascript:__doPostBack('btnBack','')"
+                            id="btnBack" tabindex="3" />
+                    </p>
+
+                    <table class="InputFieldStyle1">
+
+                        <tr>
+                            <th>パターンコード</th>
+                            <td>
+                                <select name="ddlShiftPtn"
+                                    onchange="javascript:setTimeout('__doPostBack(\'ddlShiftPtn\',\'\')', 0)"
+                                    id="ddlShiftPtn" tabindex="4" style="width:280px;">
+                                    <option selected="selected" value=""></option>
+                                    <option value="001">４勤２休</option>
+                                    <option value="002">３勤１休(Aパターン)</option>
+                                    <option value="003">３勤１休(Bパターン)</option>
+                                    <option value="004">5勤2休</option>
+                                    <option value="900">4勤2休(パターン２)</option>
+
+                                </select>
+                                <span id="cvShiftPtn" style="color:Red;display:none;">ErrorMessage</span>
+                            </td>
+                        </tr>
+                    </table>
+
+                    <div class="GridViewStyle1 mg10">
+                        <div id="pnlShiftPtn" class="GridViewPanelStyle4">
+
+
+                            <div>
+
+                            </div>
+
+                        </div>
+                    </div>
+                    <br />
+
+                    <table class="InputFieldStyle1">
+                        <tr>
+                            <th>起点日</th>
+                            <td>
+                                <select name="ddlCaldDate" id="ddlCaldDate" disabled="disabled" tabindex="6"
+                                    class="OutlineLabel" style="width:90px;">
+                                    <option selected="selected" value=""></option>
+                                    <option value="2021/03/16">3/16 (火)</option>
+                                    <option value="2021/03/17">3/17 (水)</option>
+                                    <option value="2021/03/18">3/18 (木)</option>
+                                    <option value="2021/03/19">3/19 (金)</option>
+                                    <option value="2021/03/20" style="color:red;">3/20 (土)</option>
+                                    <option value="2021/03/21" style="color:red;">3/21 (日)</option>
+                                    <option value="2021/03/22">3/22 (月)</option>
+                                    <option value="2021/03/23">3/23 (火)</option>
+                                    <option value="2021/03/24">3/24 (水)</option>
+                                    <option value="2021/03/25">3/25 (木)</option>
+                                    <option value="2021/03/26">3/26 (金)</option>
+                                    <option value="2021/03/27" style="color:red;">3/27 (土)</option>
+                                    <option value="2021/03/28" style="color:red;">3/28 (日)</option>
+                                    <option value="2021/03/29">3/29 (月)</option>
+                                    <option value="2021/03/30">3/30 (火)</option>
+                                    <option value="2021/03/31">3/31 (水)</option>
+                                    <option value="2021/04/01">4/1 (木)</option>
+                                    <option value="2021/04/02">4/2 (金)</option>
+                                    <option value="2021/04/03" style="color:red;">4/3 (土)</option>
+                                    <option value="2021/04/04" style="color:red;">4/4 (日)</option>
+                                    <option value="2021/04/05">4/5 (月)</option>
+                                    <option value="2021/04/06">4/6 (火)</option>
+                                    <option value="2021/04/07">4/7 (水)</option>
+                                    <option value="2021/04/08">4/8 (木)</option>
+                                    <option value="2021/04/09">4/9 (金)</option>
+                                    <option value="2021/04/10" style="color:red;">4/10 (土)</option>
+                                    <option value="2021/04/11" style="color:red;">4/11 (日)</option>
+                                    <option value="2021/04/12">4/12 (月)</option>
+                                    <option value="2021/04/13">4/13 (火)</option>
+                                    <option value="2021/04/14">4/14 (水)</option>
+                                    <option value="2021/04/15">4/15 (木)</option>
+
+                                </select>
+                                <span id="cvCaldDate" style="color:Red;display:none;">ErrorMessage</span>
+                            </td>
+                        </tr>
+                        <tr>
+                            <th>適用開始日</th>
+                            <td>
+                                シフトパターンの
+                                &nbsp;
+                                <input name="txtDays" type="text" maxlength="2" id="txtDays" disabled="disabled"
+                                    tabindex="7" class="OutlineLabel right" onfocus="this.select();"
+                                    style="width:30px;" />
+
+                                &nbsp;
+                                日目の勤務体系から順に反映
+                                <br />
+                                <span id="cvDays" style="color:Red;display:none;">ErrorMessage</span>
+                            </td>
+                        </tr>
+                    </table>
+
+                </div>
+
+            </div>
+
+            <script type="text/javascript">
+                //<![CDATA[
+                var Page_Validators = new Array(document.getElementById("cvShiftPtn"), document.getElementById("cvCaldDate"),
+                    document.getElementById("cvDays"));
+                //]]>
+            </script>
+
+            <script type="text/javascript">
+                //<![CDATA[
+                var cvShiftPtn = document.all ? document.all["cvShiftPtn"] : document.getElementById("cvShiftPtn");
+                cvShiftPtn.controltovalidate = "ddlShiftPtn";
+                cvShiftPtn.errormessage = "ErrorMessage";
+                cvShiftPtn.display = "Dynamic";
+                cvShiftPtn.validationGroup = "Select";
+                cvShiftPtn.evaluationfunction = "CustomValidatorEvaluateIsValid";
+                var cvCaldDate = document.all ? document.all["cvCaldDate"] : document.getElementById("cvCaldDate");
+                cvCaldDate.controltovalidate = "ddlCaldDate";
+                cvCaldDate.errormessage = "ErrorMessage";
+                cvCaldDate.display = "Dynamic";
+                cvCaldDate.validationGroup = "Select";
+                cvCaldDate.evaluationfunction = "CustomValidatorEvaluateIsValid";
+                var cvDays = document.all ? document.all["cvDays"] : document.getElementById("cvDays");
+                cvDays.controltovalidate = "txtDays";
+                cvDays.errormessage = "ErrorMessage";
+                cvDays.display = "Dynamic";
+                cvDays.validationGroup = "Select";
+                cvDays.evaluationfunction = "CustomValidatorEvaluateIsValid";
+                //]]>
+            </script>
+
+            <script language=javascript>
+                document.body.onkeydown = ChangeKeycode;
+            </script>
+            <script type="text/javascript">
+                //<![CDATA[
+
+                var Page_ValidationActive = false;
+                if (typeof(ValidatorOnLoad) == "function") {
+                    ValidatorOnLoad();
+                }
+
+                function ValidatorOnSubmit() {
+                    if (Page_ValidationActive) {
+                        return ValidatorCommonOnSubmit();
+                    } else {
+                        return true;
+                    }
+                }
+                WebForm_AutoFocus('ddlShiftPtn');
+                Sys.Application.initialize();
+
+                document.getElementById('cvShiftPtn').dispose = function() {
+                    Array.remove(Page_Validators, document.getElementById('cvShiftPtn'));
+                }
+
+                document.getElementById('cvCaldDate').dispose = function() {
+                    Array.remove(Page_Validators, document.getElementById('cvCaldDate'));
+                }
+                Sys.Application.add_init(function() {
+                    $create(AjaxControlToolkit.FilteredTextBoxBehavior, {
+                        "FilterType": 2,
+                        "id": "txtDays_FilteredTextBoxExtender"
+                    }, null, null, $get("txtDays"));
+                });
+
+                document.getElementById('cvDays').dispose = function() {
+                    Array.remove(Page_Validators, document.getElementById('cvDays'));
+                }
+                //]]>
+            </script>
+        </form>
+    </div>
+</body>
+
+</html>

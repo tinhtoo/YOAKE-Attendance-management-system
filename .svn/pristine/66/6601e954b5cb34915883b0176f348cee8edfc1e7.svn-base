@@ -1,0 +1,91 @@
+<?php
+
+namespace App\Http\Requests;
+
+use Illuminate\Foundation\Http\FormRequest;
+use App\Models\MT99Msg;
+use App\Models\MT10Emp;
+
+class MT02CalendarPtnUpdRequest extends FormRequest
+{
+    public function rules()
+    {
+        $rules = [];
+
+        $input_data = $this->request->all();
+        $workptn = $input_data['WorkPtn'];
+        $rules = [
+                'CalendarCd' => [
+                    function ($attribute, $value, $fail) {
+                        // チェック２処理（CD-4017）'社員情報で使用されているので削除できません。'
+                        $msg_4017 = MT99Msg::where('MSG_NO', '4017')->pluck('MSG_CONT')->first();
+                        $exitCheck = MT10Emp::where(['CALENDAR_CD' => $value])->exists();
+                        
+                        if($exitCheck){
+                            $fail($msg_4017);
+                        }
+    
+                    },
+                ]
+            ];
+        return $rules;
+
+        if (empty($input_data['CalendarPtnName'])){
+            $rules = [
+                    'CalendarCd' => [
+                        function ($attribute, $value, $fail) {
+                            // チェック２処理（CD-4017）'社員情報で使用されているので削除できません。'
+                            $msg_4017 = MT99Msg::where('MSG_NO', '4017')->pluck('MSG_CONT')->first();
+                            $exitCheck = MT10Emp::where(['CALENDAR_CD' => $value])->exists();
+                            dd($exitCheck);
+                            if($exitCheck){
+                                $fail($msg_4017);
+                            }
+        
+                        },
+                    ],
+                    'CalendarPtnName' => ['required'],
+                ];
+            return $rules;
+        }
+
+        // $input_data = $this->request->all();
+        if($workptn = 'rbUsuallyWork' && $workptn != 'rbShiftWork'){
+            if (($input_data = 'CalendarPtnName')) {
+                    $rules = [
+                        'ddlMonWorkPtn' => ['required'],
+                        'ddlTueWorkPtn' => ['required'],
+                        'ddlWedWorkPtn' => ['required'],
+                        'ddlThuWorkPtn' => ['required'],
+                        'ddlFriWorkPtn' => ['required'],
+                        'ddlSatWorkPtn' => ['required'],
+                        'ddlSunWorkPtn' => ['required'],
+                        'ddlHldWorkPtn' => ['required'],
+                    ];
+                    return $rules;
+                }
+            // }
+        }
+        return $rules;
+    }
+    
+
+
+    public function messages()
+    {
+        //（CD-2002）'必須入力項目です。'
+        $msg_2002 = MT99Msg::where('MSG_NO', '2002')->pluck('MSG_CONT')->first();
+        return [
+            'CalendarCd.required' => $msg_2002,
+            'CalendarPtnName.required' => $msg_2002,
+            'ddlMonWorkPtn.required' => $msg_2002,
+            'ddlTueWorkPtn.required' => $msg_2002,
+            'ddlWedWorkPtn.required' => $msg_2002,
+            'ddlThuWorkPtn.required' => $msg_2002,
+            'ddlFriWorkPtn.required' => $msg_2002,
+            'ddlSatWorkPtn.required' => $msg_2002,
+            'ddlSunWorkPtn.required' => $msg_2002,
+            'ddlHldWorkPtn.required' => $msg_2002,
+        ];
+    }
+}

@@ -1,0 +1,203 @@
+<?php
+
+namespace App\Http\Controllers\Mng_Oprt;
+
+use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
+use App\Models\MT03Calendar;
+use App\Repositories\MT93PgRepository;
+use App\Repositories\MT01ControlRepository;
+use App\Repositories\Master\MT02CalendarPtnRepository;
+use App\Repositories\MT03CalendarRepository;
+use App\Repositories\MT05WorkptnRepository;
+use App\Repositories\MT08HolidayRepository;
+use App\Repositories\MT22ClosingDateRepository;
+use App\Http\Requests\MT03CalendarEditorRequest;
+use App\Filters\MT03CalendarEditorFilter;
+use Illuminate\Support\Facades\DB;
+
+use Carbon\Carbon;
+use Carbon\CarbonPeriod;
+
+use function Symfony\Component\VarDumper\Dumper\esc;
+
+/**
+ * カレンダー情報入力画面
+ */
+
+class MT03CalendarEditorController extends Controller
+{
+    private $mt01_control;
+    private $mt02_cal_ptn;
+    private $mt03_calendar;
+    private $mt05_workptn;
+    private $mt08_holiday;
+    private $mt22_closing_date;
+    /**
+     * コントローラインスタンスの生成
+     * @param
+     * @return void
+     */
+    public function __construct(MT93PgRepository $pg_repository,
+                                MT01ControlRepository $mt01_control_rep,
+                                MT02CalendarPtnRepository $mt02_cal_ptn_rep,
+                                MT03CalendarRepository $mt03_calendar_rep,
+                                MT05WorkptnRepository $mt05_workptn_rep,
+                                MT08HolidayRepository $mt08_holiday_rep,
+                                MT22ClosingDateRepository $mt22_closing_date_rep)
+    {
+        parent::__construct($pg_repository, '040001');
+        $this->mt01_control = $mt01_control_rep;
+        $this->mt02_cal_ptn = $mt02_cal_ptn_rep;
+        $this->mt03_calendar = $mt03_calendar_rep;
+        $this->mt05_workptn = $mt05_workptn_rep;
+        $this->mt08_holiday = $mt08_holiday_rep;
+        $this->mt22_closing_date = $mt22_closing_date_rep;
+    }
+
+    /**
+     * カレンダー情報入力画面表示
+     * @return view
+     */
+    public function index(Request $request)
+    {
+        return parent::viewWithMenu('mng_oprt.MT03CalendarEditor', $this->createViewData());
+    }
+
+    public function view(Request  $request, MT03CalendarEditorFilter $filter)
+    {
+        $search_data = $request->input(['filter']);
+        $search_results = $this->mt03_calendar->search($filter);
+        if (empty($search_results) || count($search_results) === 0) {
+            $search_results = $this->createCalendar($filter->getFilters());
+        }
+        $workptn_names = $this->mt05_workptn->workptnsNormal();
+        $holidays = $this->mt08_holiday->getHolidays();
+
+        return parent::viewWithMenu('mng_oprt.MT03CalendarEditor',
+                                    array_merge($this->createViewData(),
+                                    compact('search_data', 'search_results', 'workptn_names', 'holidays')));
+    }
+
+    /**
+     * 登録更新
+     *
+     * @param MT03CalendarEditorRequest $request
+     * @return void
+     */
+    public function update(MT03CalendarEditorRequest $request)
+    {
+
+        // try {
+        //     DB::beginTransaction();
+        //     MT03_CALENDAR::upseart();
+        //     TR01_WORK
+        //     TR50_WORKTIME
+        //     TR01_WORK
+        //     MT17_PDHOLIDAY
+        //     DB::commit();
+        // } catch (\Throwable $e) {
+        //     DB::rollBack();
+        // }
+
+        return ;
+    }
+
+    /**
+     * 削除
+     *
+     * @param Request $request
+     * @return void
+     */
+    public function delete(Request $request)
+    {
+        $deleteKey = $request->all();
+
+        $calendarCd = $request['calendarCd'];
+        $caldYear = $request['caldYear'];
+        $caldMonth = $request['caldMonth'];
+        $closingDateCd = $request['closingDateCd'];
+
+        if (!empty($calendarCd)
+                && !empty($caldYear)
+                && !empty($caldMonth)
+                && !empty($closingDateCd)) {
+            $this->mt03_calendar->deleteCalendar(
+                $calendarCd,
+                $caldYear,
+                $caldMonth,
+                $closingDateCd);
+        }
+
+        return redirect('mng_oprt/MT03CalendarEditor');
+    }
+
+    private function createViewData()
+    {
+        $calendar_ptns = $this->mt02_cal_ptn->getNormalCalendarCd();
+        $control = $this->mt01_control->getMt01();
+        $today = date('Y-m-d H:i:s');
+        $def_cald_year = (int)substr($today, 0, 4);
+        $def_cald_month = (int)substr($today, 5, 2);
+        // 月の初期値設定
+        if ($control->MONTH_CLS_CD === '01' && $def_cald_month <= $control->CLOSING_DATE) {
+            // 「締日以降を当月度とする」（＝締日以前は先月度）設定をしていて、且つ締日以前の場合
+            if ($def_cald_month != 1) {
+                $def_cald_month--;
+            } else {
+                // 1月の場合は前年の12月にする
+                $def_cald_year--;
+                $def_cald_month = 12;
+            }
+        } else if ($control->MONTH_CLS_CD === '00' && $today > $control->CLOSING_DATE) {
+            // 「締日以前を当月度とする」（＝締日過ぎは来月度）設定をしていて、且つ締日過ぎの場合
+            if ($def_cald_month != 12) {
+                $def_cald_month++;
+            } else {
+                // 12月の場合は翌年の1月にする
+                $def_cald_year++;
+                $def_cald_month = 1;
+            }
+        }
+        $closing_dates = $this->mt22_closing_date->getMt22();
+        $def_closing_date_cd = $closing_dates->firstWhere('RSV1_CLS_CD', '01')->CLOSING_DATE_CD;
+        return compact('calendar_ptns', 'closing_dates', 'def_cald_year', 'def_cald_month', 'def_closing_date_cd');
+    }
+
+    private function createCalendar($filter)
+    {
+        $control = $this->mt01_control->getMt01();
+        $calendar_ptn = $this->mt02_cal_ptn->CalendarPtnsEdit($filter['calendarCd']);
+        $holidays = $this->mt08_holiday->getHolidays();
+        $year = $filter['caldYear'];
+        $month = $filter['caldMonth'];
+        $closing_date_cd = $filter['closingDateCd'];
+        $mt22 = $this->mt22_closing_date->getFirst($closing_date_cd);
+        $start_date = $start_date = (new Carbon($year."/". $month."/". "1"))->addMonth(1);
+
+        if ($mt22->CLOSING_DATE < 31) {
+            // 締日が末(31)ではない場合
+            $start_date = new Carbon($year."/". $month."/". ($mt22->CLOSING_DATE + 1));
+        }
+
+        if ($control->MONTH_CLS_CD === '00') {
+            // 「締日以前を当月度とする」（＝締日過ぎは来月度）場合
+            $start_date->subMonth(1);
+        }
+
+        $period = CarbonPeriod::start($start_date)->days(1)->end($start_date->addMonth(1), false);
+        $result = [];
+        foreach ($period as $day) {
+            $mt03_calendar = new MT03Calendar();
+            $mt03_calendar->WORKPTN_CD = "";
+            $mt03_calendar->CALD_DATE = $day;
+            if ($holidays->contains($day->format('md'))) {
+                $mt03_calendar->WORKPTN_CD = $calendar_ptn['HLD_WORKPTN_CD'];
+            } else {
+                $mt03_calendar->WORKPTN_CD = $calendar_ptn[strtoupper($day->format('D')). '_WORKPTN_CD'];
+            }
+            $result[] = $mt03_calendar;
+        }
+        return $result;
+    }
+}

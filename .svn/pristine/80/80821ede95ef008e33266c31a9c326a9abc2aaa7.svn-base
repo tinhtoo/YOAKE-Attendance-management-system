@@ -1,0 +1,214 @@
+<?php
+
+namespace App\Repositories\Work_Time;
+
+use Illuminate\Http\Request;
+use App\Models\TR01Work;
+use App\Models\MT99Msg;
+use App\Models\MT23Company;
+use App\Models\TR50WorkTime;
+use App\Models\MT95Term;
+use App\Http\Requests\EmpWorkStatusReferenceRequest;
+use App\Filters\EmpWorkStatusRefFilter;
+use Illuminate\Support\Facades\DB;
+
+use function PHPUnit\Framework\isNull;
+
+/**出退勤照会
+*[history date="2022/01/05" editor="カウン" ]
+ */
+
+class EmpWorkStatusReferenceRepository
+{
+    //** 出退勤照会 処理 */
+    /**
+     * ヘッダーの検索条件表示
+     * 「部門コード、部門名、社員番号、社員名、勤務体系、事由、出勤打刻場所、出勤、退出、退出打刻場所 データ取得」
+     * @return EmpWorkStatusReferenceController
+     */
+    public function empInput(EmpWorkStatusReferenceRequest $request, EmpWorkStatusRefFilter $filter)
+    {
+        $inputEmpData = $request->all();
+        $inputReason = $request->Input(['filter']);
+        $empCd = $inputReason['txtEmpCd'];
+        $totalDate = substr(($inputEmpData['ddlDate']), 0, 4) . '-' . substr(($inputEmpData['ddlDate']), 7, 2) . '-' . mb_substr(($inputEmpData['ddlDate']),8, 2);
+        $changeDateType = date('Y-m-d H:i:s', strtotime($totalDate));
+        $worktimeClsCd1 = "00";
+        $worktimeClsCd2 = "01";
+        $OfcTerm_name = $this->getTermName($empCd, $worktimeClsCd1);
+        $LevTerm_name = $this->getTermName($empCd, $worktimeClsCd2);
+        // dd($OfcTerm_name);
+        // dd($LevTerm_name);
+        // dd($changeDateType);
+        // $test = TR01Work::where('CALD_DATE','=',$changeDateType)->get();
+        // dd($test);
+        // dd($totalDate);
+        // dd($changeMonthDate);
+        // dd($inputEmp['txtEmpCd']);
+        // dd($filter);
+
+        $empWorkStatusResults = TR01Work::leftjoin('MT10_EMP', function ($join) {
+            $join->on('TR01_WORK.EMP_CD', '=', 'MT10_EMP.EMP_CD')
+                ->where('MT10_EMP.REG_CLS_CD', '=', '00');
+        })
+            ->leftjoin('TR50_WORKTIME', 'TR50_WORKTIME.EMP_CD', '=', 'TR01_WORK.EMP_CD')
+            ->leftjoin('MT95_TERM', 'TR50_WORKTIME.TERM_NO', '=', 'MT95_TERM.TERM_NO')
+            // ->leftjoin('MT23_COMPANY', 'MT10_EMP.COMPANY_CD', '=', 'MT23_COMPANY.COMPANY_CD')
+            ->leftjoin('MT05_WORKPTN', 'TR01_WORK.WORKPTN_CD', '=', 'MT05_WORKPTN.WORKPTN_CD')
+            ->leftjoin('MT09_REASON', 'TR01_WORK.REASON_CD', '=', 'MT09_REASON.REASON_CD')
+            ->leftjoin('MT12_DEPT', 'MT10_EMP.DEPT_CD', '=', 'MT12_DEPT.DEPT_CD')
+            ->filter($filter)
+            ->where('MT10_EMP.REG_CLS_CD', '=', '00')
+            ->where('TR01_WORK.CALD_DATE', '=', $changeDateType)
+            // ->where('TR50_WORKTIME.WORKTIME_CLS_CD','=',$worktimeClsCd1)
+            // ->where('TR50_WORKTIME.WORKTIME_CLS_CD','=',$worktimeClsCd2)
+            ->select(
+                'TR01_WORK.*',
+                'MT10_EMP.DEPT_CD',
+                'MT12_DEPT.DEPT_NAME',
+                'MT10_EMP.EMP_NAME',
+                // 'TR01_WORK.WORKPTN_CD',
+                'MT05_WORKPTN.WORKPTN_NAME',
+                'MT05_WORKPTN.WORK_CLS_CD',
+                // 'TR01_WORK.REASON_CD',
+                'MT09_REASON.REASON_NAME',
+                'MT09_REASON.REASON_PTN_CD',
+                // 'TR01_WORK.OFC_TIME_HH','TR01_WORK.OFC_CNT',
+                // 'TR01_WORK.LEV_TIME_HH','TR01_WORK.LEV_CNT'
+                'MT95_TERM.TERM_NAME'
+            )
+            // ->selectRaw('MT10_EMP.DEPT_CD')
+            // ->selectRaw('MT12_DEPT.DEPT_NAME')
+            // ->selectRaw('TR01_WORK.*')
+            // ->selectRaw('MT10_EMP.EMP_NAME')
+            // ->selectRaw('MT09_REASON.REASON_NAME')
+            // ->selectRaw('TR01_WORK.WORKPTN_CD')
+            // ->selectRaw('MT05_WORKPTN.WORKPTN_NAME')
+            // ->selectRaw('MT05_WORKPTN.WORK_CLS_CD')
+            // ->selectRaw('TR01_WORK.REASON_CD')
+            // ->selectRaw('MT09_REASON.REASON_PTN_CD')
+            // ->selectRaw('TR01_WORK.OFC_TIME_HH')
+            // ->selectRaw('TR01_WORK.OFC_CNT')
+            // ->selectRaw('TR01_WORK.LEV_TIME_HH')
+            // ->selectRaw('TR01_WORK.LEV_CNT')
+            // ->selectRaw('MT95_TERM.TERM_NAME')
+            ->selectRaw(("Case When TR01_WORK.OFC_TIME_HH Is Null THEN ''
+                        Else Cast(TR01_WORK.OFC_TIME_HH As VarChar) + ':' + RIGHT('00' + Cast(TR01_WORK.OFC_TIME_MI As VarChar), 2)
+                    End As OFC_TIME"))
+            ->selectRaw(("Case When TR01_WORK.LEV_TIME_HH Is Null Then ''
+                        Else Cast(TR01_WORK.LEV_TIME_HH As VarChar) + ':' + RIGHT('00' + Cast(TR01_WORK.LEV_TIME_MI As VarChar), 2)
+                    End As LEV_TIME"))
+            ->orderByRaw("MT10_EMP.DEPT_CD ASC,TR01_WORK.EMP_CD ASC")
+            // ->groupBy('TR50_WORKTIME.EMP_CD','TR50_WORKTIME.CALD_DATE','TR50_WORKTIME.TERM_NO','MT95_TERM.TERM_NAME')
+            // ->groupBy(
+            //     'MT10_EMP.DEPT_CD',
+            //     'MT12_DEPT.DEPT_NAME',
+            //     'TR01_WORK.EMP_CD',
+            //     'TR01_WORK.CALD_YEAR',
+            //     'MT10_EMP.EMP_NAME',
+            //     'TR01_WORK.WORKPTN_CD',
+            //     'MT05_WORKPTN.WORKPTN_NAME',
+            //     'TR01_WORK.REASON_CD',
+            //     'MT09_REASON.REASON_NAME',
+            //     'MT95_TERM.TERM_NAME',
+            //     'TR50_WORKTIME.EMP_CD',
+            //     'TR50_WORKTIME.CALD_DATE',
+            //     'TR01_WORK.OFC_TIME_HH ',
+            //     'TR01_WORK.OFC_TIME_MI',
+            //     'TR01_WORK.LEV_TIME_HH ',
+            //     'TR01_WORK.LEV_TIME_MI ',
+            //     'TR50_WORKTIME.TERM_NO',
+            //     'TR01_WORK.CALD_MONTH'
+            // )
+
+            //     ->tosql();
+            ->get();
+        // dd($empWorkStatusResults);
+        return $empWorkStatusResults;
+    }
+
+    public function getTermName($empCD, $worktimeClaCd)
+    {
+        $request = request();
+        $inputEmpData = $request->all();
+        $inputfilter = $request->Input(['filter']);
+        $worktimeClsCd1 = 00;
+        $worktimeClsCd2 = 01;
+        // dd($inputfilter);
+        // $changeMonth = date('m',$inputMonth);
+        // dd($changeMonth);
+        $totalDate = substr(($inputEmpData['ddlDate']), 0, 4) . '-' . substr(($inputEmpData['ddlDate']), 7, 2) . '-' . mb_substr(($inputEmpData['ddlDate']),8, 2);
+        $changeDateType = date('Y-m-d H:i:s', strtotime($totalDate));
+        // dd($changeDateType);
+        $termName = TR50WorkTime::leftjoin('MT95_TERM', 'TR50_WORKTIME.TERM_NO', '=', 'MT95_TERM.TERM_NO')
+            ->where('TR50_WORKTIME.EMP_CD', '=', $inputfilter['txtEmpCd'])
+            ->where('TR50_WORKTIME.CALD_DATE', '=', $changeDateType)
+            // ->where('TR50_WORKTIME.WORKTIME_CLS_CD','=',$worktimeClsCd1)
+            // ->orwhere('TR50_WORKTIME.WORKTIME_CLS_CD','=',$worktimeClsCd2)
+            ->select('MT95_TERM.TERM_NAME')
+            ->groupBy('TR50_WORKTIME.EMP_CD', 'TR50_WORKTIME.CALD_DATE', 'TR50_WORKTIME.TERM_NO', 'MT95_TERM.TERM_NAME')
+            ->get();
+
+        // $empCd = $inputEmpData['txtEmpCd'];
+        // ->tosql();
+        // dump($termName);
+        // dd($termName);
+        return $termName;
+    }
+
+    //** 該当データ無し時エラーメッセージ表示 */
+    /**カレンダー情報が作成されていません。
+     * @return $errMsg_4029 ->WorkTimeReferecneController
+     */
+    public function messages1()
+    {
+        $errMsg_4029 = MT99Msg::where('MSG_NO', '4029')->pluck('MSG_CONT')->first();
+        return $errMsg_4029;
+    }
+
+    //** フレームボックス未選択時エラーメッセージ表示 */
+    /**カレンダー情報が作成されていません。
+     * @return $errMsg_4029 ->WorkTimeReferecneController
+     */
+    public function checkMessage(Request $request, EmpWorkStatusRefFilter $filter)
+    {
+        $request = request();
+        $arr_checkBoxes = [];
+
+        $checkBoxes1 = $request->input('filter.ckWorkd');
+        $checkBoxes2 = $request->input('filter.ckPadh');
+        $checkBoxes3 = $request->input('filter.ckPadbh');
+        $checkBoxes4 = $request->input('filter.ckPadah');
+        $checkBoxes5 = $request->input('filter.ckCompd');
+        $checkBoxes6 = $request->input('filter.ckCompbd');
+        $checkBoxes7 = $request->input('filter.ckCompad');
+        $checkBoxes8 = $request->input('filter.ckSpch');
+        $checkBoxes9 = $request->input('filter.ckAbcd');
+        $checkBoxes10 = $request->input('filter.ckDirg');
+        $checkBoxes11 = $request->input('filter.ckDirr');
+        $checkBoxes12 = $request->input('filter.ckDirqr');
+        $checkBoxes13 = $request->input('filter.ckBusj');
+        $checkBoxes14 = $request->input('filter.ckDelay');
+        $arr_checkBoxes = [
+            $checkBoxes1, $checkBoxes2, $checkBoxes3, $checkBoxes4, $checkBoxes5, $checkBoxes6,
+            $checkBoxes7, $checkBoxes8, $checkBoxes9, $checkBoxes10, $checkBoxes11, $checkBoxes12,
+            $checkBoxes13, $checkBoxes14
+        ];
+        $errMsg_4005 = MT99Msg::where('MSG_NO', '4005')->pluck('MSG_CONT')->first();
+
+        if ($arr_checkBoxes) {
+            return $errMsg_4005;
+        }
+    }
+
+    //** 開始、終了所属表示 */
+    /**
+     * A派遣、B派遣、C派遣など
+     * @return $errMsg_4029 ->WorkTimeReferecneController
+     */
+    public function companyName()
+    {
+        $company = MT23Company::all();
+        return $company;
+    }
+}

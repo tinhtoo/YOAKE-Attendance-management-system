@@ -1,0 +1,34 @@
+<?php
+
+namespace App\Http\Controllers\Form_Print;
+
+use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
+use App\Repositories\MT93PgRepository;
+
+use function Symfony\Component\VarDumper\Dumper\esc;
+
+/**
+ * 事由／勤怠一覧表 処理
+ */
+class ReasonWorkPtnPrintController extends Controller
+{
+    /**
+     * コントローラインスタンスの生成
+     * @param
+     * @return void
+     */
+    public function __construct(MT93PgRepository $pg_repository)
+    {
+        parent::__construct($pg_repository, '020004');
+    }
+
+    /**
+     * 事由／勤怠一覧表 処理 画面
+     * @return view
+     */
+    public function index(Request $request)
+    {
+        return parent::viewWithMenu('form_print.ReasonWorkPtnPrint');
+    }
+}

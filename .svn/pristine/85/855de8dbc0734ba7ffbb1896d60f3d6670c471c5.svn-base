@@ -1,0 +1,377 @@
+<?php use Carbon\CarbonPeriod; ?>
+
+<html lang="ja">
+    <head>
+        <title>印刷</title>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+        <style>
+            @font-face{
+                font-family: "MS Pゴシック";
+                font-style: normal;
+                font-weight: normal;
+                src: url("{{ public_path('fonts/migmix-2p-regular.ttf')}}") format('truetype');
+            }
+            body {
+                font-family: "MS Pゴシック";
+                line-height: 80%;
+                text-align: center;
+                font-size: 8px;
+            }
+            .workTable {
+                border-collapse: collapse;
+                width: 100%;
+            }
+            .header {
+                font-size:large;
+                margin-bottom:2%;
+            }
+            .workTable tr th{
+                padding-top: 6px;
+                padding-bottom: 6px;
+                border-bottom: 1px solid black;
+                border-top: 1px solid black;
+                border-left: none;
+                border-right: none;
+                text-align: right;
+            }
+            .workTable tr td{
+                padding-top: 5px;
+                padding-bottom: 5px;
+                border-bottom: 1px black;
+                border-top: 1px black;
+                border-left: none;
+                border-right: none;
+                text-align: right;
+                border-bottom-style: dotted;
+            }
+            .date{
+                position: relative;
+                margin-left:80%;
+                margin-bottom:2%;
+                font-size: xx-small;
+            }
+            .record{
+                padding-bottom: 10px;
+                text-align:justify;
+                font-size: xx-small;
+                position: relative;
+            }
+
+        </style>
+    </head>
+    
+    <!-- 事由/勤怠の情報がない場合 -->
+    @if (!isset($work_ptn_datas) && count($reason_datas) < 1 || !isset($reason_datas) && count($work_ptn_datas) < 1)
+    <body>
+        <div class="date">
+            <span>作成日：</span>
+            <span>{{ $now_date }}</span>
+            <span style="margin-left:25%">1 / 1</span>
+        </div>
+        <div class="header">
+            @if ($input_datas['ReportCategory'] == 'rbReason')
+            <span>事由</span>
+            @else
+            <span>勤怠</span>
+            @endif
+            <span>一覧表</span>
+        </div>
+        <div class="record">
+            <span style="margin-left:10px;">対象日</span>
+            <span>:</span>
+            <span>{{ date('Y/m/d', strtotime($str_date)) }}({{ config('consts.weeks')[date('w', strtotime($str_date))] }})</span>
+            <span>～</span>
+            <span>{{ date('Y/m/d', strtotime($end_date)) }}({{ config('consts.weeks')[date('w', strtotime($end_date))] }})</span><br>
+        </div>
+        <div class="record">
+            <span style="margin-left:20px;">部門</span>
+            <span>:</span>
+            <span></span>
+            <span></span>
+        </div>
+        <table class="workTable" style="width: 100%;">
+            <thead>
+                <tr style="width: 100%;">
+                    <th style="width: 15px; padding-left: 5px; text-align: left;">社員</th>
+                    <th style="width:60px"></th>
+                    <th style="width:20px"></th>
+                    {{-- 事由 --}}
+                    @if ($input_datas['ReportCategory'] == 'rbReason')
+                    @foreach ($reason_names as $reason_name)
+                    <th style="padding-right: 5px;">{{ $reason_name['REASON_NAME'] }}</th>
+                    @endforeach
+                    @else
+                    <th>出勤日数</th>
+                    <th>休出日数</th>
+                    <th>特休日数</th>
+                    <th>有休日数</th>
+                    <th>欠勤日数</th>
+                    <th>代休日数</th>
+                    <th>遅刻回数</th>
+                    <th style="padding-right: 5px;">早退回数</th>
+                </tr>
+                    @endif
+                </tr>
+            </thead>
+            <tbody>
+                <tr>
+                    <td style="padding-left: 5px; text-align: left;"></td>
+                    <td style="padding-left: 25px; text-align: left;"></td>
+                    <td></td>
+                    <td style="padding-right: 5px;"></td>
+                    <td style="padding-right: 5px;"></td>
+                    <td style="padding-right: 5px;"></td>
+                    <td style="padding-right: 5px;"></td>
+                    <td style="padding-right: 5px;"></td>
+                    <td style="padding-right: 5px;"></td>
+                    <td style="padding-right: 5px;"></td>
+                    <td style="padding-right: 5px;"></td>
+                    @if ($input_datas['ReportCategory'] == 'rbReason')
+                    <td style="padding-right: 5px;"></td>
+                    <td style="padding-right: 5px;"></td>
+                    <td style="padding-right: 5px;"></td>
+                    <td style="padding-right: 5px;"></td>
+                    <td style="padding-right: 5px;"></td>
+                    <td style="padding-right: 5px;"></td>
+                    @endif
+                </tr>
+                <tr>
+                    <td style="border-bottom: none;"></td>
+                    <td style="border-bottom: none;"></td>
+                    <td style="border-bottom: none; width:75px;">部門計</td>
+                    <td style="border-bottom: none; padding-right: 5px;"></td>
+                    <td style="border-bottom: none; padding-right: 5px;"></td>
+                    <td style="border-bottom: none; padding-right: 5px;"></td>
+                    <td style="border-bottom: none; padding-right: 5px;"></td>
+                    <td style="border-bottom: none; padding-right: 5px;"></td>
+                    <td style="border-bottom: none; padding-right: 5px;"></td>
+                    <td style="border-bottom: none; padding-right: 5px;"></td>
+                    <td style="border-bottom: none; padding-right: 5px;"></td>
+                    @if ($input_datas['ReportCategory'] == 'rbReason')
+                    <td style="border-bottom: none; padding-right: 5px;"></td>
+                    <td style="border-bottom: none; padding-right: 5px;"></td>
+                    <td style="border-bottom: none; padding-right: 5px;"></td>
+                    <td style="border-bottom: none; padding-right: 5px;"></td>
+                    <td style="border-bottom: none; padding-right: 5px;"></td>
+                    <td style="border-bottom: none; padding-right: 5px;"></td>
+                    @endif
+                </tr>
+            </tbody>
+        </table>
+    </body>
+    @endif
+
+    @isset($reason_datas)
+    @foreach ($reason_datas->unique('DEPT_CD') as $reason_data)
+    <body>
+        <div class="date">
+            <span>作成日：</span>
+            <span>{{ $now_date }}</span>
+            <span style="margin-left:25%">{{ $loop->iteration }} / {{ $loop->count }}</span>
+        </div>
+        <div class="header">
+            <span>事由</span>
+            <span>一覧表</span>
+        </div>
+        <div class="record">
+            <span style="margin-left:10px;">対象日</span>
+            <span>:</span>
+            <span>{{ date('Y/m/d', strtotime($str_date)) }}({{ config('consts.weeks')[date('w', strtotime($str_date))] }})</span>
+            <span>～</span>
+            <span>{{ date('Y/m/d', strtotime($end_date)) }}({{ config('consts.weeks')[date('w', strtotime($end_date))] }})</span><br>
+        </div>
+        <div class="record">
+            <span style="margin-left:20px;">部門</span>
+            <span>:</span>
+            <span>{{ $reason_data['DEPT_CD'] }}</span>
+            <span>{{ $reason_data['DEPT_NAME'] }}</span>
+        </div>
+        <table class="workTable" style="width: 100%;">
+            <thead>
+                <tr style="width: 100%;">
+                    <th style="width: 15px; padding-left: 5px; text-align: left;">社員</th>
+                    <th style="width:60px"></th>
+                    <th style="width:20px"></th>
+                    {{-- 事由名 --}}
+                    @foreach ($reason_names as $reason_name)
+                        <th style="padding-right: 5px;">{{ $reason_name['REASON_NAME'] }}</th>
+                    @endforeach
+                </tr>
+            </thead>
+            @if ($input_datas['ReportCategory'] == 'rbReason')
+            <tbody>
+                @php
+                    $SUM_WORKD = 0;
+                    $SUM_PADH = 0;
+                    $SUM_PADBH = 0;
+                    $SUM_PADAH = 0;
+                    $SUM_COMPD = 0;
+                    $SUM_COMPBD = 0;
+                    $SUM_COMPAD = 0;
+                    $SUM_SPCH = 0;
+                    $SUM_ABCD = 0;
+                    $SUM_DIRG = 0;
+                    $SUM_DIRR = 0;
+                    $SUM_DIRQR = 0;
+                    $SUM_BUSJ = 0;
+                    $SUM_DELAY = 0;
+                @endphp
+                @foreach ($reason_datas->where('DEPT_CD', $reason_data['DEPT_CD'])->unique('EMP_CD') as $data)
+                <tr>
+                    <td style="padding-left: 5px; text-align: left;">{{ $data['EMP_CD'] }}</td>
+                    <td style="padding-left: 25px; text-align: left;">{{ $data['EMP_NAME'] }}</td>
+                    <td></td>
+                    <td style="padding-right: 5px;">{{ ($data['WORKD_COUNT'] == 0 ? '' : $data['WORKD_COUNT']) }}</td>
+                    <td style="padding-right: 5px;">{{ ($data['PADH_COUNT'] == 0 ? '' : $data['PADH_COUNT']) }}</td>
+                    <td style="padding-right: 5px;">{{ ($data['PADBH_COUNT'] == 0 ? '' : $data['PADBH_COUNT']) }}</td>
+                    <td style="padding-right: 5px;">{{ ($data['PADAH_COUNT'] == 0 ? '' : $data['PADAH_COUNT']) }}</td>
+                    <td style="padding-right: 5px;">{{ ($data['COMPD_COUNT'] == 0 ? '' : $data['COMPD_COUNT']) }}</td>
+                    <td style="padding-right: 5px;">{{ ($data['COMPBD_COUNT'] == 0 ? '' : $data['COMPBD_COUNT']) }}</td>
+                    <td style="padding-right: 5px;">{{ ($data['COMPAD_COUNT'] == 0 ? '' : $data['COMPAD_COUNT']) }}</td>
+                    <td style="padding-right: 5px;">{{ ($data['SPCH_COUNT'] == 0 ? '' : $data['SPCH_COUNT']) }}</td>
+                    <td style="padding-right: 5px;">{{ ($data['ABCD_COUNT'] == 0 ? '' : $data['ABCD_COUNT']) }}</td>
+                    <td style="padding-right: 5px;">{{ ($data['DIRG_COUNT'] == 0 ? '' : $data['DIRG_COUNT']) }}</td>
+                    <td style="padding-right: 5px;">{{ ($data['DIRR_COUNT'] == 0 ? '' : $data['DIRR_COUNT']) }}</td>
+                    <td style="padding-right: 5px;">{{ ($data['DIRQR_COUNT'] == 0 ? '' : $data['DIRQR_COUNT']) }}</td>
+                    <td style="padding-right: 5px;">{{ ($data['BUSJ_COUNT'] == 0 ? '' : $data['BUSJ_COUNT']) }}</td>
+                    <td style="padding-right: 5px;">{{ ($data['DELAY_COUNT'] == 0 ? '' : $data['DELAY_COUNT']) }}</td>
+                </tr>
+                @php
+                    $SUM_WORKD += $data['WORKD_COUNT'];
+                    $SUM_PADH += $data['PADH_COUNT'];
+                    $SUM_PADBH += $data['PADBH_COUNT'];
+                    $SUM_PADAH += $data['PADAH_COUNT'];
+                    $SUM_COMPD += $data['COMPD_COUNT'];
+                    $SUM_COMPBD += $data['COMPBD_COUNT'];
+                    $SUM_COMPAD += $data['COMPAD_COUNT'];
+                    $SUM_SPCH += $data['SPCH_COUNT'];
+                    $SUM_ABCD += $data['ABCD_COUNT'];
+                    $SUM_DIRG += $data['DIRG_COUNT'];
+                    $SUM_DIRR += $data['DIRR_COUNT'];
+                    $SUM_DIRQR += $data['DIRQR_COUNT'];
+                    $SUM_BUSJ += $data['BUSJ_COUNT'];
+                    $SUM_DELAY += $data['DELAY_COUNT'];
+                @endphp
+                @endforeach
+                <tr>
+                    <td style="border-bottom: none;"></td>
+                    <td style="border-bottom: none;"></td>
+                    <td style="border-bottom: none; width:75px;">部門計</td>
+                    <td style="border-bottom: none; padding-right: 5px;">{{ $SUM_WORKD }}</td>
+                    <td style="border-bottom: none; padding-right: 5px;">{{ $SUM_PADH }}</td>
+                    <td style="border-bottom: none; padding-right: 5px;">{{ $SUM_PADBH }}</td>
+                    <td style="border-bottom: none; padding-right: 5px;">{{ $SUM_PADAH }}</td>
+                    <td style="border-bottom: none; padding-right: 5px;">{{ $SUM_COMPD  }}</td>
+                    <td style="border-bottom: none; padding-right: 5px;">{{ $SUM_COMPBD }}</td>
+                    <td style="border-bottom: none; padding-right: 5px;">{{ $SUM_COMPAD }}</td>
+                    <td style="border-bottom: none; padding-right: 5px;">{{ $SUM_SPCH }}</td>
+                    <td style="border-bottom: none; padding-right: 5px;">{{ $SUM_ABCD }}</td>
+                    <td style="border-bottom: none; padding-right: 5px;">{{ $SUM_DIRG }}</td>
+                    <td style="border-bottom: none; padding-right: 5px;">{{ $SUM_DIRR }}</td>
+                    <td style="border-bottom: none; padding-right: 5px;">{{ $SUM_DIRQR }}</td>
+                    <td style="border-bottom: none; padding-right: 5px;">{{ $SUM_BUSJ }}</td>
+                    <td style="border-bottom: none; padding-right: 5px;">{{ $SUM_DELAY }}</td>
+                </tr>
+            </tbody>
+            @endif
+        </table>
+    </body>
+    @endforeach
+    @endisset
+
+    {{-- 勤怠一覧表 --}}
+    @isset($work_ptn_datas)
+    @foreach ($work_ptn_datas->unique('DEPT_CD') as $work_ptn_data)
+    <body>
+        <div class="date">
+            <span>作成日：</span>
+            <span>{{ $now_date }}</span>
+            <span style="margin-left:25%">{{ $loop->iteration }} / {{ $loop->count }}</span>
+        </div>
+        <div class="header">
+            <span>勤怠一覧表</span>
+        </div>
+        <div class="record">
+            <span style="margin-left:10px;">対象日</span>
+            <span>:</span>
+            <span>{{ $str_date }}({{ config('consts.weeks')[date('w', strtotime($str_date))] }})</span>
+            <span>～</span>
+            <span>{{ $end_date }}({{ config('consts.weeks')[date('w', strtotime($end_date))] }})</span><br>
+        </div>
+        <div class="record">
+            <span style="margin-left:20px;">部門</span>
+            <span>:</span>
+            <span>{{ $work_ptn_data['DEPT_CD'] }}</span>
+            <span>{{ $work_ptn_data['DEPT_NAME'] }}</span>
+        </div>
+        <table class="workTable" style="width: 100%;">
+            <thead>
+                <tr style="width: 100%;">
+                    <th style="width: 15px; padding-left: 5px; text-align: left;">社員</th>
+                    <th style="width:60px;"></th>
+                    <th style="width:20px"></th>
+                    <th>出勤日数</th>
+                    <th>休出日数</th>
+                    <th>特休日数</th>
+                    <th>有休日数</th>
+                    <th>欠勤日数</th>
+                    <th>代休日数</th>
+                    <th>遅刻回数</th>
+                    <th style="padding-right: 5px;">早退回数</th>
+                </tr>
+            </thead>
+            <tbody>
+                @php
+                    $SUM_WORKDAY = 0;
+                    $SUM_HOLWORK = 0;
+                    $SUM_SPCHOL = 0;
+                    $SUM_PADHOL = 0;
+                    $SUM_ABCWORK = 0;
+                    $SUM_COMPDAY = 0;
+                    $SUM_TARD = 0;
+                    $SUM_LEAVE = 0;
+                @endphp
+                @foreach ($work_ptn_datas->where('DEPT_CD', $work_ptn_data['DEPT_CD'])->unique('EMP_CD') as $data)
+                <tr>
+                    <td style="padding-left: 5px; text-align: left;">{{ $data['EMP_CD'] }}</td>
+                    <td style="padding-left: 25px; text-align: left;">{{ $data['EMP_NAME'] }}</td>
+                    <td></td>
+                    <td>{{ ($data['SUM_WORKDAY_CNT'] == 0 ? '' : $data['SUM_WORKDAY_CNT']) }}</td>
+                    <td>{{ ($data['SUM_HOLWORK_CNT'] == 0 ? '' : $data['SUM_HOLWORK_CNT']) }}</td>
+                    <td>{{ ($data['SUM_SPCHOL_CNT'] == 0 ? '' : $data['SUM_SPCHOL_CNT']) }}</td>
+                    <td>{{ ($data['SUM_PADHOL_CNT'] == 0 ? '' : $data['SUM_PADHOL_CNT']) }}</td>
+                    <td>{{ ($data['SUM_ABCWORK_CNT'] == 0 ? '' : $data['SUM_ABCWORK_CNT']) }}</td>
+                    <td>{{ ($data['SUM_COMPDAY_CNT'] == 0 ? '' : $data['SUM_COMPDAY_CNT']) }}</td>
+                    <td>{{ ($data['SUM_TARD_CNT'] == 0 ? '' : $data['SUM_TARD_CNT']) }}</td>
+                    <td style="padding-right: 5px;">{{ ($data['SUM_LEAVE_CNT'] == 0 ? '' : $data['SUM_LEAVE_CNT']) }}</td>
+                </tr>
+                @php
+                    $SUM_WORKDAY += $data['SUM_WORKDAY_CNT'];
+                    $SUM_HOLWORK += $data['SUM_HOLWORK_CNT'];
+                    $SUM_SPCHOL += $data['SUM_SPCHOL_CNT'];
+                    $SUM_PADHOL += $data['SUM_PADHOL_CNT'];
+                    $SUM_ABCWORK += $data['SUM_ABCWORK_CNT'];
+                    $SUM_COMPDAY += $data['SUM_COMPDAY_CNT'];
+                    $SUM_TARD += $data['SUM_TARD_CNT'];
+                    $SUM_LEAVE += $data['SUM_LEAVE_CNT'];
+                @endphp
+                @endforeach
+                <tr>
+                    <td style="border-bottom: none;"></td>
+                    <td style="border-bottom: none;"></td>
+                    <td style="border-bottom: none; width:75px;">部門計</td>
+                    <td style="border-bottom: none;">{{ number_format($SUM_WORKDAY, 1) }}</td>
+                    <td style="border-bottom: none;">{{ number_format($SUM_HOLWORK, 1) }}</td>
+                    <td style="border-bottom: none;">{{ number_format($SUM_SPCHOL, 1) }}</td>
+                    <td style="border-bottom: none;">{{ number_format($SUM_PADHOL, 1) }}</td>
+                    <td style="border-bottom: none;">{{ number_format($SUM_ABCWORK, 1)  }}</td>
+                    <td style="border-bottom: none;">{{ number_format($SUM_COMPDAY, 1) }}</td>
+                    <td style="border-bottom: none;">{{ $SUM_TARD }}</td>
+                    <td style="border-bottom: none; padding-right: 5px;">{{ $SUM_LEAVE }}</td>
+                </tr>
+            </tbody>
+        </table>
+    </body>
+    @endforeach
+    @endisset
+</html>

@@ -1,0 +1,169 @@
+<?php
+
+namespace App\Repositories\Work_Time;
+
+use Illuminate\Http\Request;
+use App\Models\MT08Holiday;
+use App\Models\MT10Emp;
+use App\Models\MT12Dept;
+use App\Models\TR01Work;
+use App\Models\MT99Msg;
+use App\Models\TR04WorkTimeFix;
+use Illuminate\Support\Facades\DB;
+
+/**勤務状況照会(個人用)
+ *[history date="2021/12/07" editor="カウン" ]
+ */
+
+class WorkTimeReferenceRepository
+{
+    //** 勤務状況照会(個人用) 処理 */
+    /**
+     * ヘッダーの検索条件表示
+     * 「日付、曜日、勤務体系、事由、出勤、退勤、外出１、再入１、外出２、再入２」データ取得
+     * @return WorkTimeReferenceController
+     */
+    public function empInput(Request $request)
+    {
+        $inputEmpData = $request->all();
+        $calYear = substr(($inputEmpData['ddlDate']), 0, 4);
+        $calMonth = substr(($inputEmpData['ddlDate']), 7, 2);
+
+        $empWorkTimeResults = TR01Work::select(
+            'TR01_WORK.*',
+            'MT05_WORKPTN.WORKPTN_NAME',
+            'MT05_WORKPTN.WORK_CLS_CD',
+            'MT09_REASON.REASON_NAME',
+            'MT09_REASON.REASON_PTN_CD',
+            'MT08_HOLIDAY.HLD_DATE'
+        )
+            ->join('MT05_WORKPTN', 'TR01_WORK.WORKPTN_CD', 'MT05_WORKPTN.WORKPTN_CD')
+            ->join('MT09_REASON', 'TR01_WORK.REASON_CD', 'MT09_REASON.REASON_CD')
+            ->join('MT10_EMP', 'TR01_WORK.EMP_CD', 'MT10_EMP.EMP_CD')
+            ->leftjoin('MT08_HOLIDAY', 'TR01_WORK.CALD_MONTH', 'MT08_HOLIDAY.HLD_MONTH')
+            ->where('CALD_YEAR', (int)$calYear)
+            ->where('CALD_MONTH', (int)$calMonth)
+            ->where('TR01_WORK.EMP_CD', $inputEmpData['txtEmpCd'])
+            ->where('MT10_EMP.REG_CLS_CD', '=', '00')
+            ->selectRaw("Case When TR01_WORK.OFC_TIME_HH Is Null THEN ''
+                        Else Cast(TR01_WORK.OFC_TIME_HH As VarChar) + ':' + RIGHT('00' + Cast(TR01_WORK.OFC_TIME_MI As VarChar), 2)
+                    End As OFC_TIME")
+            ->selectRaw("Case When TR01_WORK.LEV_TIME_HH Is Null Then ''
+                        Else Cast(TR01_WORK.LEV_TIME_HH As VarChar) + ':' + RIGHT('00' + Cast(TR01_WORK.LEV_TIME_MI As VarChar), 2)
+                    End As LEV_TIME")
+            ->selectRaw("Case When TR01_WORK.OUT1_TIME_HH Is Null Then ''
+                        Else Cast(TR01_WORK.OUT1_TIME_HH As VarChar) + ':' + RIGHT('00' + Cast(TR01_WORK.OUT1_TIME_MI As VarChar), 2)
+                    End As OUT1_TIME")
+            ->selectRaw("Case When TR01_WORK.IN1_TIME_HH Is Null Then ''
+                        Else Cast(TR01_WORK.IN1_TIME_HH As VarChar) + ':' + RIGHT('00' + Cast(TR01_WORK.IN1_TIME_MI As VarChar), 2)
+                    End As IN1_TIME")
+            ->selectRaw("Case When TR01_WORK.OUT2_TIME_HH Is Null Then ''
+                        Else Cast(TR01_WORK.OUT2_TIME_HH As VarChar) + ':' + RIGHT('00' + Cast(TR01_WORK.OUT2_TIME_MI As VarChar), 2)
+                    End As OUT2_TIME")
+            ->selectRaw("Case When TR01_WORK.IN2_TIME_HH Is Null Then ''
+                        Else Cast(TR01_WORK.IN2_TIME_HH As VarChar) + ':' + RIGHT('00' + Cast(TR01_WORK.IN2_TIME_MI As VarChar), 2)
+                    End As IN2_TIME")
+            ->selectRaw("Case When TR01_WORK.WORK_TIME_HH + TR01_WORK.WORK_TIME_MI = 0 Then ''
+                        Else Cast(TR01_WORK.WORK_TIME_HH  As VarChar) + ':' + RIGHT('00' + Cast(TR01_WORK.WORK_TIME_MI As VarChar), 2)
+                    End AS WORK_TIME")
+            ->selectRaw("Case When TR01_WORK.TARD_TIME_HH + TR01_WORK.TARD_TIME_MI = 0 Then ''
+                        Else Cast(TR01_WORK.TARD_TIME_HH  As VarChar) + ':' + RIGHT('00' + Cast(TR01_WORK.TARD_TIME_MI As VarChar), 2)
+                    End AS TARD_TIME")
+            ->selectRaw("Case When TR01_WORK.LEAVE_TIME_HH + TR01_WORK.LEAVE_TIME_MI = 0 Then ''
+                        Else Cast(TR01_WORK.LEAVE_TIME_HH As VarChar) + ':' + RIGHT('00' + Cast(TR01_WORK.LEAVE_TIME_MI As VarChar), 2)
+                    End AS LEAVE_TIME")
+            ->selectRaw("Case When TR01_WORK.OUT_TIME_HH + TR01_WORK.OUT_TIME_MI = 0 Then ''
+                        Else Cast(TR01_WORK.OUT_TIME_HH As VarChar) + ':' + RIGHT('00' + Cast(TR01_WORK.OUT_TIME_MI As VarChar), 2)
+                    End AS OUT_TIME")
+            // ->selectRaw("Case When TR01_WORK.OVTM1_TIME_HH + TR01_WORK.OVTM1_TIME_MI = 0 Then ''
+            //             Else Cast(TR01_WORK.OVTM1_TIME_HH As VarChar) + ':' + RIGHT('00' + Cast(TR01_WORK.OVTM1_TIME_MI As VarChar), 2)
+            //         End AS OVTM1_TIME")
+            // ->selectRaw("Case When TR01_WORK.OVTM2_TIME_HH + TR01_WORK.OVTM2_TIME_MI = 0 Then ''
+            //             Else Cast(TR01_WORK.OVTM2_TIME_HH As VarChar) + ':' + RIGHT('00' + Cast(TR01_WORK.OVTM2_TIME_MI As VarChar), 2)
+            //         End AS OVTM2_TIME")
+            // ->selectRaw("Case When TR01_WORK.OVTM3_TIME_HH + TR01_WORK.OVTM3_TIME_MI = 0 Then ''
+            //             Else Cast(TR01_WORK.OVTM3_TIME_HH As VarChar) + ':' + RIGHT('00' + Cast(TR01_WORK.OVTM3_TIME_MI As VarChar), 2)
+            //         End AS OVTM3_TIME")
+            // ->selectRaw("Case When TR01_WORK.OVTM4_TIME_HH + TR01_WORK.OVTM4_TIME_MI = 0 Then ''
+            //             Else Cast(TR01_WORK.OVTM4_TIME_HH As VarChar) + ':' + RIGHT('00' + Cast(TR01_WORK.OVTM4_TIME_MI As VarChar), 2)
+            //         End AS OVTM4_TIME")
+            // ->selectRaw("Case When TR01_WORK.OVTM5_TIME_HH + TR01_WORK.OVTM5_TIME_MI = 0 Then ''
+            //             Else Cast(TR01_WORK.OVTM5_TIME_HH As VarChar) + ':' + RIGHT('00' + Cast(TR01_WORK.OVTM5_TIME_MI As VarChar), 2)
+            //         End AS OVTM5_TIME")
+            // ->selectRaw("Case When TR01_WORK.OVTM6_TIME_HH + TR01_WORK.OVTM6_TIME_MI = 0 Then ''
+            //             Else Cast(TR01_WORK.OVTM6_TIME_HH As VarChar) + ':' + RIGHT('00' + Cast(TR01_WORK.OVTM6_TIME_MI As VarChar), 2)
+            //         End AS OVTM6_TIME")
+            // ->selectRaw("Case When TR01_WORK.EXT1_TIME_HH + TR01_WORK.EXT1_TIME_MI = 0 Then ''
+            //             Else Cast(TR01_WORK.EXT1_TIME_HH As VarChar) + ':' + RIGHT('00' + Cast(TR01_WORK.EXT1_TIME_MI As VarChar), 2)
+            //         End AS EXT1_TIME")
+            // ->selectRaw("Case When TR01_WORK.EXT2_TIME_HH + TR01_WORK.EXT2_TIME_MI = 0 Then ''
+            //             Else Cast(TR01_WORK.EXT2_TIME_HH As VarChar) + ':' + RIGHT('00' + Cast(TR01_WORK.EXT2_TIME_MI As VarChar), 2)
+            //         End AS EXT2_TIME")
+            // ->selectRaw("Case When TR01_WORK.EXT3_TIME_HH + TR01_WORK.EXT3_TIME_MI = 0 Then ''
+            //             Else Cast(TR01_WORK.EXT3_TIME_HH As VarChar) + ':' + RIGHT('00' + Cast(TR01_WORK.EXT3_TIME_MI As VarChar), 2)
+            //         End AS EXT3_TIME")
+            // ->selectRaw("Case When TR01_WORK.RSV1_TIME_HH + TR01_WORK.RSV1_TIME_MI = 0 Then ''
+            //             Else Cast(TR01_WORK.RSV1_TIME_HH As VarChar) + ':' + RIGHT('00' + Cast(TR01_WORK.RSV1_TIME_MI As VarChar), 2)
+            //         End AS RSV1_TIME")
+            ->get();
+        return $empWorkTimeResults;
+    }
+
+    /**
+     * 社員名の取得、表示
+     *
+     * @param Request $request
+     * @return void
+     */
+    public function depEmpName(Request $request)
+    {
+        $inputSearchName =  $request->Input();
+        if (!empty($inputSearchName['txtEmpCd'])) {
+            $emp_dep_name = MT10Emp::join('MT12_DEPT', 'MT10_EMP.DEPT_CD', 'MT12_DEPT.DEPT_CD',)
+                ->where('EMP_CD', $inputSearchName['txtEmpCd'])->get();
+            return $emp_dep_name;
+        }
+    }
+
+    //** 該当データ無し時エラーメッセージ表示 */
+    /**
+     * @return $errMsg_4029 ->WorkTimeReferecneController
+     */
+    public function messages()
+    {
+        $errMsg_4029 = MT99Msg::where('MSG_NO', '4029')->pluck('MSG_CONT')->first();
+        return $errMsg_4029;
+    }
+
+    //** 「曜日」データ表示 */
+    /**
+     * @return $weekday ->WorkTimeReferecneController
+     */
+    public function calHolidayDate()
+    {
+        $weekday = array("日", "月", "火", "水", "木", "金", "土");
+        return $weekday;
+    }
+
+    //** 確定済みのチャック */
+    /**
+     * @return $workTimeFix ->WorkTimeReferecneController
+     */
+    public function check(Request $request)
+    {
+        $inputEmpData = $request->all();
+        $calYear = substr(($inputEmpData['ddlDate']), 0, 4);
+        $calMonth = substr(($inputEmpData['ddlDate']), 7, 2);
+        $deptClsDate1 = MT10Emp::where('MT10_EMP.EMP_CD', $inputEmpData['txtEmpCd'])->pluck('DEPT_CD')->first();
+        $deptClsDate2 = MT10Emp::where('MT10_EMP.EMP_CD', $inputEmpData['txtEmpCd'])->pluck('CLOSING_DATE_CD')->first();
+        // dd($deptClsDate2);
+
+        $workTimeFix = TR04WorkTimeFix::where('CALD_YEAR', (int)$calYear)
+            ->where('CALD_MONTH', (int)$calMonth)
+            ->where('CLOSING_DATE_CD', $deptClsDate2)
+            ->where('DEPT_CD', $deptClsDate1)
+            // ->pluck('CALD_YEAR', 'CALD_MONTH', 'CLOSING_DATE_CD', 'DEPT_CD')
+            ->first();
+        return $workTimeFix;
+    }
+}

@@ -1,0 +1,136 @@
+<?php
+namespace App\Http\Requests;
+
+use Illuminate\Support\Facades\DB;
+use Illuminate\Foundation\Http\FormRequest;
+use App\Models\MT06OvertmLmt;
+use App\Models\MT99Msg;
+
+class MT06OverTmLmtEditorRequest extends FormRequest
+{
+    public function rules(){    
+
+        $rules = [];
+
+        $rules = [
+            'Ovtm1Cd' => [   
+            function ($attribute, $value, $fail) {                   
+               
+                //残業項目（n）時間/月の入力値
+                $Ovtm1Hrerror =  FormRequest::get('Ovtm1Hr');               
+                //残業項目(n)リストボックスの入力値
+                $Ovtm1Cderror =  FormRequest::get('Ovtm1Cd');
+               //dd($Ovtm1Cderror);
+                //2000メッセージ取得（該当データが存在しません)
+                $msg_2002 = MT99Msg::where('MSG_NO', '2002')->pluck('MSG_CONT')->first();
+                
+                //残業項目（n）時間/月の入力値がある場合
+                if(!empty($Ovtm1Hrerror)){
+                        //残業項目(n)リストボックスの入力値がない場合
+                        if($Ovtm1Cderror == "null"){
+                            $fail($msg_2002);
+                        }                
+                }                
+            }
+            ] ,
+            'Ovtm2Cd' => [   
+                function ($attribute, $value, $fail) {                   
+               
+                    //残業項目（n）時間/月の入力値
+                    $Ovtm2Hrerror =  FormRequest::get('Ovtm2Hr');               
+                    //残業項目(n)リストボックスの入力値
+                    $Ovtm2Cderror =  FormRequest::get('Ovtm2Cd');
+                    //2000メッセージ取得（該当データが存在しません)
+                    $msg_2002 = MT99Msg::where('MSG_NO', '2002')->pluck('MSG_CONT')->first();
+                   
+                    //残業項目（n）時間/月の入力値がある場合
+                     if(!empty($Ovtm2Hrerror)){
+                        //残業項目(n)リストボックスの入力値がない場合
+                          if($Ovtm2Cderror == "null"){
+                              $fail($msg_2002);
+                         }                
+                     }                    
+                }
+            ],
+            'Ovtm3Cd' => [   
+                function ($attribute, $value, $fail) {                   
+               
+                    //残業項目（n）時間/月の入力値
+                    $Ovtm3Hrerror =  FormRequest::get('Ovtm3Hr');               
+                    //残業項目(n)リストボックスの入力値
+                    $Ovtm3Cderror =  FormRequest::get('Ovtm3Cd');
+                    //2000メッセージ取得（該当データが存在しません)
+                    $msg_2002 = MT99Msg::where('MSG_NO', '2002')->pluck('MSG_CONT')->first();
+
+                    //残業項目（n）時間/月の入力値がある場合
+                    if(!empty($Ovtm3Hrerror)){
+                        //残業項目(n)リストボックスの入力値がない場合
+                          if($Ovtm3Cderror == "null"){
+                              $fail($msg_2002);
+                         }                
+                     }                    
+                }
+                ],
+            
+            'Ovtm4Cd' => [   
+                function ($attribute, $value, $fail) {                   
+               
+                    //残業項目（n）時間/月の入力値
+                    $Ovtm4Hrerror =  FormRequest::get('Ovtm4Hr');               
+                    //残業項目(n)リストボックスの入力値
+                    $Ovtm4Cderror =  FormRequest::get('Ovtm4Cd');
+                    //2000メッセージ取得（該当データが存在しません)
+                    $msg_2002 = MT99Msg::where('MSG_NO', '2002')->pluck('MSG_CONT')->first();
+
+                     //残業項目（n）時間/月の入力値がある場合
+                     if(!empty($Ovtm4Hrerror)){
+                        //残業項目(n)リストボックスの入力値がない場合
+                          if($Ovtm4Cderror == "null"){
+                              $fail($msg_2002);
+                         }                
+                     }                    
+                }
+            ],
+            'Ovtm5Cd' => [   
+                function ($attribute, $value, $fail) {                   
+               
+                    //残業項目（n）時間/月の入力値
+                    $Ovtm5Hrerror =  FormRequest::get('Ovtm5Hr');               
+                    //残業項目(n)リストボックスの入力値
+                    $Ovtm5Cderror =  FormRequest::get('Ovtm5Cd');
+                    //2000メッセージ取得（該当データが存在しません)
+                    $msg_2002 = MT99Msg::where('MSG_NO', '2002')->pluck('MSG_CONT')->first();
+
+                    //残業項目（n）時間/月の入力値がある場合
+                    if(!empty($Ovtm5Hrerror)){
+                        //残業項目(n)リストボックスの入力値がない場合
+                          if($Ovtm5Cderror == "null"){
+                              $fail($msg_2002);
+                         }                
+                     }                   
+                }
+            ],
+            'Ovtm6Cd' => [   
+                function ($attribute, $value, $fail) {                   
+               
+                    //残業項目（n）時間/月の入力値
+                    $Ovtm6Hrerror =  FormRequest::get('Ovtm6Hr');               
+                    //残業項目(n)リストボックスの入力値
+                    $Ovtm6Cderror =  FormRequest::get('Ovtm6Cd');
+                    //2000メッセージ取得（該当データが存在しません)
+                    $msg_2002 = MT99Msg::where('MSG_NO', '2002')->pluck('MSG_CONT')->first();
+
+                    //残業項目（n）時間/月の入力値がある場合
+                    if(!empty($Ovtm6Hrerror)){
+                        //残業項目(n)リストボックスの入力値がない場合
+                          if($Ovtm6Cderror == "null"){
+                              $fail($msg_2002);
+                         }                
+                     }                  
+                }
+            ]
+        ];
+                
+        return $rules;
+    }
+}

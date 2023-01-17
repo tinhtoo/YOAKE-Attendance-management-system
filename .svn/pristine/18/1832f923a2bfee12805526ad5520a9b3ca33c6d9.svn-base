@@ -1,0 +1,14 @@
+.buttonTest {
+    margin: 0;
+    padding: 5px;
+    display: inline;
+    font-size: 1.1em;
+    border: 1px solid #999;
+    text-decoration: none;
+    background: #fcfcfc;
+    color: #4B80EA;
+}
+
+.two-col {
+    column-count: 2;
+}

@@ -1,0 +1,60 @@
+<?php
+
+namespace App\Http\Controllers\Work_Time;
+
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Http\Request;
+use App\Http\Requests\WorkTimeReferenceRequest;
+use App\Repositories\Work_Time\WorkTimeReferenceRepository;
+use App\Models\TR01Work;
+use App\Models\MT99Msg;
+
+class WorkTimeReferenceController extends Controller
+{
+
+    /**
+     * $wtRef_Repositoryリポジトリの実装
+     *
+     * @var WorkTimeReferenceRepository
+     */
+    protected $wtRef_Repository;
+
+    /**
+     * 新しいコントローラインスタンスの生成
+     *
+     * @param  WorkTimeReferenceRepository  $wtRef_Repository
+     * @return void
+     */
+    public function __construct(WorkTimeReferenceRepository $wtRef_Repository)
+    {
+        $this->wtRef_Repository = $wtRef_Repository;
+    }
+
+
+    /**
+     * 勤務状況照会(個人用) 処理
+     *
+     * @return view
+     */
+    public function WorkTimeReference(Request $request)
+    {
+        return view('work_time.WorkTimeReference');
+    }
+
+    public function search(WorkTimeReferenceRequest $request)
+    {
+        $empWorkTimeResults = $this->wtRef_Repository->empInput($request);
+        // dd($empWorkTimeResults);
+
+        $errMsg_4029 = $this->wtRef_Repository->messages();
+        //dd($msg_4029);
+
+        $weekday = $this->wtRef_Repository->calHolidayDate();
+        $workClsCd = $this->wtRef_Repository->workClsday();
+        // $workClsdays = $this->wtRef_Repository->workClsdays($request);
+        // dd($workClsCd);
+
+        return view('work_time.WorkTimeReference', compact('empWorkTimeResults', 'weekday', 'errMsg_4029', 'workClsCd'));
+    }
+}

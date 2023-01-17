@@ -1,0 +1,144 @@
+<?php use Carbon\CarbonPeriod; ?>
+<html lang="ja">
+    <head>
+        <title>印刷</title>
+        <meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+        <style>
+            @font-face{
+                font-family: "MS Pゴシック";
+                font-style: normal;
+                font-weight: normal;
+                src: url("{{ public_path('fonts/migmix-2p-regular.ttf')}}") format('truetype');
+            }
+            body {
+                font-family: "MS Pゴシック";
+                line-height: 80%;
+                text-align: center;
+                font-size: 8px;
+            }
+            tbody {
+                border: 1px solid black;
+            }
+            .workTable {
+                border-collapse: collapse;
+                width: 100%;
+            }
+            .workTable tr th{
+                padding: 9px;
+                border: 1px solid black;
+                text-align: left;
+                font-size:10px;
+            }
+            .workTable tr td{
+                padding: 8px;
+                border-bottom: 1px black;
+                border-top: 1px black;
+                border-left: 1px black solid;
+                border-right: 1px black solid;
+                text-align: right;
+                border-top-style: dotted;
+            }
+            .date{
+                padding-bottom: 20px;
+                position: relative;
+                margin-left:70%;
+                font-size: xx-small;
+            }
+            .record{
+                padding-bottom: 10px;
+                text-align:justify;
+                font-size: xx-small;
+                position: relative;
+            }
+
+        </style>
+    </head>
+    @foreach ($overtime_datas->unique('EMP_CD') as $overtime_data)
+    <body>
+        <div class="date">
+            <span>作成日：</span>
+            <span>{{ date('Y/m/d', strtotime($now_date)) }}</span>
+            <span style="margin-left:10%;">{{ $loop->iteration }} / {{ $loop->count }}</span>
+        </div>
+        <div style="font-size:25px;">
+            <span>残業申請書</span>
+        </div>
+        <div class="record">
+            <span>対象月度</span>
+            <span>:</span>
+            <span>{{ $target_date }}</span>
+            <span>月度</span>
+        </div>
+        <div class="record">
+            <span style="margin-left:20px;">社員</span>
+            <span>:</span>
+            <span>{{ $overtime_data['EMP_CD'] }}</span>
+            <span style="margin-left:30px;">{{ $overtime_data['EMP_NAME'] }}</span>
+            <span style="margin-left:280px;">部門</span>
+            <span>:</span>
+            <span>{{ $overtime_data['DEPT_CD'] }}</span>
+            <span style="margin-left:20px;">{{ $overtime_data['DEPT_NAME'] }}</span>
+        </div>
+        <table class="workTable" style="width: 100%;">
+            <thead>
+                <tr style="width: 100%;">
+                    <th style="text-align: center; width:30px;">日付</th>
+                    <th style="text-align: center; width:80px;">開始時間 ～ 終了時間</th>
+                    <th style="text-align: center; width:20px;">普通</th>
+                    <th style="text-align: center; width:20px;">深夜</th>
+                    <th style="text-align: center; width:20px;">休出</th>
+                    <th style="text-align: center; width:20px;">休深</th>
+                    <th style="text-align: center; width:110px;">残業内容</th>
+                    <th style="text-align: center; width:20px;">承認</th>
+                </tr>
+            </thead>
+            <tbody >
+                @foreach ($period as $i => $day)
+                <tr>
+                    <td>
+                    @if ($i == 0)
+                    {{ (int)$day->format('m') }}月
+                    @elseif ($day->format('d') === "01")
+                    {{ (int)$day->format('m') }}月&nbsp;
+                    @else
+                    &nbsp;&nbsp;&nbsp;
+                    @endif
+                    &nbsp;&nbsp;&nbsp;
+                    {{ (int)$day->format('d') }} ({{ config('consts.weeks')[date('w', strtotime($day))] }})
+                    </td>
+                    <td style="text-align: center;">～</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                @endforeach
+                @for ($i; $i < 30; $i++)
+                <tr>
+                    <td>&nbsp;</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+                @endfor
+                <tr>
+                    <td></td>
+                    <td style="text-align: center;">合計</td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                    <td></td>
+                </tr>
+            </tbody>
+        </table>
+    </body>
+    @endforeach
+</html>

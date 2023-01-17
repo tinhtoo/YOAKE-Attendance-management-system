@@ -1,0 +1,428 @@
+<?php
+
+namespace App\Http\Controllers\Shift;
+
+use App\Http\Controllers\Controller;
+use App\Http\Requests\MonthShiftEmpUpdateRequest;
+use App\Http\Requests\MonthShiftEmpViewRequest;
+use App\Repositories\Master\MT10EmpRefRepository;
+use App\Repositories\MT01ControlRepository;
+use App\Repositories\MT05WorkptnRepository;
+use App\Repositories\MT08HolidayRepository;
+use App\Repositories\MT22ClosingDateRepository;
+use Illuminate\Http\Request;
+use App\Repositories\MT93PgRepository;
+use App\Repositories\TR01WorkRepository;
+use App\Repositories\TR02EmpCalendarRepository;
+use App\Repositories\TR04WorkTimeFixRepository;
+use App\Repositories\TR50WorkTimeRepository;
+use Carbon\Carbon;
+use Carbon\CarbonPeriod;
+
+/**
+ * 社員別月別シフト入力 処理
+ */
+class MonthShiftEmpEditorController extends Controller
+{
+    private $mt01;
+    private $mt05;
+    private $mt08;
+    private $mt10;
+    private $mt22;
+    private $tr01;
+    private $tr02;
+    private $tr04;
+    private $tr50;
+    /**
+     * コントローラインスタンスの生成
+     * @param
+     * @return void
+     */
+    public function __construct(
+        MT93PgRepository $pg_repository,
+        MT01ControlRepository $mt01_control_rep,
+        MT05WorkptnRepository $mt05_workptn_rep,
+        MT08HolidayRepository $mt08_holiday_rep,
+        MT10EmpRefRepository $mt10_emp_ref_rep,
+        MT22ClosingDateRepository $mt22_closing_date_rep,
+        TR01WorkRepository $tr01_work_rep,
+        TR02EmpCalendarRepository $tr02_emp_calendar_rep,
+        TR04WorkTimeFixRepository $tr04_work_time_fix_rep,
+        TR50WorkTimeRepository $tr50_work_time_rep
+    ) {
+        parent::__construct($pg_repository, '030004');
+        $this->mt01 = $mt01_control_rep;
+        $this->mt05 = $mt05_workptn_rep;
+        $this->mt08 = $mt08_holiday_rep;
+        $this->mt10 = $mt10_emp_ref_rep;
+        $this->mt22 = $mt22_closing_date_rep;
+        $this->tr01 = $tr01_work_rep;
+        $this->tr02 = $tr02_emp_calendar_rep;
+        $this->tr04 = $tr04_work_time_fix_rep;
+        $this->tr50 = $tr50_work_time_rep;
+    }
+
+    /**
+     * 社員別月別シフト入力 処理 画面表示
+     * @return view
+     */
+    public function index(Request $request)
+    {
+        return parent::viewWithMenu('shift.MonthShiftEmpEditor', $this->createViewData());
+    }
+
+    /**
+     * 画面初期表示用データを作成して配列で返す
+     *
+     * @return array
+     */
+    private function createViewData()
+    {
+        $control = $this->mt01->getMt01();
+        $today = date('Y-m-d');
+        // 月の初期値設定
+        $year_and_month = getYearAndMonthWithControl($today, $control->MONTH_CLS_CD, $control->CLOSING_DATE);
+        $def_cald_year = $year_and_month['year'];
+        $def_cald_month = $year_and_month['month'];
+
+        $closing_dates = $this->mt22->getMt22();
+        $def_closing_date_cd = $closing_dates->firstWhere('RSV1_CLS_CD', '01')->CLOSING_DATE_CD;
+        return compact('closing_dates', 'def_cald_year', 'def_cald_month', 'def_closing_date_cd');
+    }
+
+    /**
+     * カレンダーを表示
+     *
+     * @return array
+     */
+    public function view(MonthShiftEmpViewRequest $request)
+    {
+        $search_data = $request->input(['filter']);
+        $year = (int)substr($search_data['caldYearMonth'], 0, 4);
+        $month = (int)substr($search_data['caldYearMonth'], 7, 2);
+        $search_results = null;
+        $caldDays = null;
+        $workptn_names = null;
+        $holidays = null;
+        $fix_flg = null;
+        $def_closing_date_cd = null;
+
+        if ($search_data['searchCondition']) {
+            // 社員
+            $emp_cd = $search_data['txtEmpCd'];
+            $emp = $this->mt10->getEmp($emp_cd);
+            $dept_cd = $emp->DEPT_CD;
+            $closing_date_cd = $emp->CLOSING_DATE_CD;
+            $search_results = $this->tr01->getShiftWorkPtnInYearMonth($year, $month, null, null, $emp_cd);
+        } else {
+            // 部門
+            $dept_cd = $search_data['txtDeptCd'];
+            $closing_date_cd = $search_data['closingDateCd'];
+            $search_results = $this->tr01->getShiftWorkPtnInYearMonth($year, $month, $closing_date_cd, $dept_cd, null);
+        }
+
+        // 該当データがあれば、明細表示用データを取得
+        if (!$search_results->isEmpty()) {
+            $start_date = $search_results[0]->CALD_DATE;
+            $caldDays = CarbonPeriod::start($start_date)->days(1)->end($start_date->addMonth(1), false);
+            $workptn_names = $this->mt05->workptnsNormal();
+            $holidays = $this->mt08->getHolidays();
+            // 確定済みチェック
+            $fix_flg = $this->tr04->existWithDeptAndYM($dept_cd, $year, $month, $closing_date_cd);
+        } else {
+            // 該当データが無ければ、デフォルトの締日を取得
+            $def_closing_date_cd = $this->mt22->getMt22()->firstWhere('RSV1_CLS_CD', '01')->CLOSING_DATE_CD;
+        }
+
+        return parent::viewWithMenu(
+            'shift.MonthShiftEmpEditor',
+            array_merge(
+                $this->createViewData(),
+                compact('search_data', 'search_results', 'caldDays', 'workptn_names', 'holidays', 'fix_flg', 'def_closing_date_cd')
+            )
+        );
+    }
+
+    /**
+     * シフトカレンダーの作成
+     *
+     * @param MonthShiftEmpUpdateRequest $request
+     * @return void 入力エラーはRequestクラスでエラーメッセージを返すため、ここでは何も返さない。
+     */
+    public function update(MonthShiftEmpUpdateRequest $request)
+    {
+        $today = date('Y-m-d H:i:s');
+        $year = substr($request['caldYM'], 0, 4);
+        $month = (int) substr($request['caldYM'], 7, 2);
+
+        $calendar_data = $request['calendarData'];
+        $emp_cd_list = array_column($calendar_data, 'empCd');
+
+        try {
+            \DB::beginTransaction();
+            // TR02_EMPCALENDAR（まとめて更新）
+            $this->tr02Update($year, $month, $emp_cd_list, $calendar_data);
+
+            // TR01_WORK（社員ごとに更新）
+            foreach ($emp_cd_list as $index => $emp_cd) {
+                $calendar = $calendar_data[$index]['calendar'];
+                $this->tr01Update($year, $month, $emp_cd, $calendar, $today);
+            }
+            \DB::commit();
+        } catch (\Throwable $e) {
+            \Log::debug($e);
+            \DB::rollBack();
+        }
+
+        return ;
+    }
+
+    private function tr02Update($year, $month, $emp_cd_list, $calendar)
+    {
+        $records = [];
+        foreach ($emp_cd_list as $index => $emp_cd) {
+            // 登録済み、且つendShiftptnCdがnullの場合、更新しない
+            if (is_nullorempty($calendar[$index]['endShiftptnCd'])
+                    && $this->tr02->existWithPrimary($year, $month, $emp_cd)) {
+                continue;
+            }
+            $records[] = [
+                'CALD_YEAR' => $year,
+                'CALD_MONTH' => $month,
+                'EMP_CD' => $emp_cd,
+                'LAST_PTN_CD' => $calendar[$index]['endShiftptnCd'],
+                'LAST_DAY_NO' => $calendar[$index]['endDayNo']
+            ];
+        }
+        // TR02_EMPCALENDARをupseart
+        $update_target = [
+            'LAST_PTN_CD',
+            'LAST_DAY_NO'
+        ];
+        foreach (array_chunk($records, 200) as $record_chunk) {
+            $this->tr02->upsertRecord($record_chunk, $update_target);
+        }
+    }
+
+    private function tr01Update($year, $month, $emp_cd, $calendar, $today)
+    {
+        $work_records = $this->tr01->getWithEmpAndCaldYearMonth($emp_cd, $year, $month);
+        if ($work_records->isEmpty()) {
+            // 該当データが無ければ処理をしない
+            return ;
+        }
+
+        $calc_indexs = [];
+        $workptns = $this->mt05->getAll()->pluck(null, 'WORKPTN_CD');
+        $last_index = count($calendar) - 1;
+        $update_records = [];
+        foreach ($work_records as $work_i => $work_record) {
+            $cal_i = 0;
+            // 同じ日付まで移動
+            for ($cal_i; $calendar[$cal_i]['caldDate'] !== substr($work_record->CALD_DATE, 0, 10); $cal_i++);
+            if ($calendar[$cal_i]['workPtnCd'] === $work_record->WORKPTN_CD) {
+                // 変更なしの場合、更新しない
+                continue;
+            }
+
+            // 共通部分設定
+            $date = $calendar[$cal_i];
+            $workptn = $workptns[$date['workPtnCd']];
+            $str_hm = $workptn->TIME_DAILY_HH. ":". $workptn->TIME_DAILY_MI;
+            $str_time = (new Carbon($date['caldDate']))->format("Y/m/d"). " ". $str_hm;
+            $next_day = (new Carbon($date['caldDate']))->addDay();
+            $end_time = $next_day->format("Y/m/d"). " ". $str_hm;
+
+            if (0 === $cal_i) {
+                // 月度の初日の場合、前日の終了時間を初日の開始時間に更新する
+                $this->tr01->updateWithKey(
+                    $emp_cd,
+                    (new Carbon($date['caldDate']))->subDay(),
+                    [
+                        'WORKPTN_END_TIME' => $str_time,
+                        'UPD_DATE' => $today
+                    ]
+                );
+            } elseif ($work_records[$work_i - 1]->UPD_DATE !== $today) {
+                // 月度の初日以外且つ前日が更新対象でない場合、処理日の開始時間で前日の終了時間を更新する
+                $bef_work = $work_records[$work_i - 1];
+                $this->tr01->updateWithKey(
+                    $bef_work->EMP_CD,
+                    $bef_work->CALD_DATE,
+                    [
+                        'WORKPTN_END_TIME' => $str_time,
+                        'UPD_DATE' => $today
+                    ]
+                );
+            }
+            if ($last_index !== $cal_i) {
+                // 月度の末日以外は、適用終了時間には翌日の適用開始時間を設定する
+                $next_ptn = $workptns[$calendar[$cal_i + 1]['workPtnCd']];
+                $end_time = $next_day->format("Y/m/d"). " ". $next_ptn->TIME_DAILY_HH. ":". $next_ptn->TIME_DAILY_MI;
+            } else {
+                // 月度の末日の場合、データがあれば翌日の開始時間を終了時間にする
+                $next_month_first = $this->tr01->getWithPrimaryKey($emp_cd, $next_day);
+                if ($next_month_first != null) {
+                    // 最終日かつ翌日のレコードがある場合、適用終了時間には翌日の適用開始時間を設定する
+                    $end_time = $next_month_first->WORKPTN_STR_TIME;
+                }
+                // 最終日かつ翌日のレコードがない場合、適用終了時間には適用開始時間 + 1日の日次を設定する（初期値）
+            }
+            $work_records[$work_i]->WORKPTN_CD = $date['workPtnCd'];
+            $work_records[$work_i]->WORKPTN_STR_TIME = $str_time;
+            $work_records[$work_i]->WORKPTN_END_TIME = $end_time;
+            $work_records[$work_i]->UPD_DATE = $today;
+
+            if ($work_record->UPD_CLS_CD === '00' && $work_record->FIX_CLS_CD === '00') {
+                // TR01_WORK 初期化
+                // 対象日
+                $update_records[$work_i] = $this->setWorkForClear($work_records[$work_i])->toArray();
+                // TR50_WORKTIME 初期化
+                $this->tr50->update50WorkWithEmpCdCaldDate(
+                    $emp_cd,
+                    $calendar[$cal_i]['caldDate'],
+                    $this->createUpdateDataForWorkTimeClear()
+                );
+            } else {
+                // 再計算用の初期化
+                $update_records[$work_i] = $this->setWorkForCalc($work_records[$work_i]);
+                // 再計算対象にセット
+                $calc_indexs[] = $work_i;
+            }
+        }
+        foreach ($calc_indexs as $calc_index) {
+            // TR01_WORK 再計算
+            $update_records[$calc_index] = $this->tr01->recalcWork($update_records[$calc_index])->toArray();
+        }
+        foreach (array_chunk($update_records, 20) as $record_chunk) {
+            $this->tr01->upsertRecord($record_chunk);
+        }
+    }
+
+    private function setWorkForClear($work)
+    {
+        $work->OFC_TIME_HH = null;
+        $work->OFC_TIME_MI = null;
+        $work->OFC_CNT = 0;
+        $work->LEV_TIME_HH = null;
+        $work->LEV_TIME_MI = null;
+        $work->LEV_CNT = 0;
+        $work->OUT1_TIME_HH = null;
+        $work->OUT1_TIME_MI = null;
+        $work->OUT1_CNT = 0;
+        $work->IN1_TIME_HH = null;
+        $work->IN1_TIME_MI = null;
+        $work->IN1_CNT = 0;
+        $work->OUT2_TIME_HH = null;
+        $work->OUT2_TIME_MI = null;
+        $work->OUT2_CNT = 0;
+        $work->IN2_TIME_HH = null;
+        $work->IN2_TIME_MI = null;
+        $work->IN2_CNT = 0;
+        $work->WORK_TIME_HH = 0;
+        $work->WORK_TIME_MI = 0;
+        $work->TARD_TIME_HH = 0;
+        $work->TARD_TIME_MI = 0;
+        $work->LEAVE_TIME_HH = 0;
+        $work->LEAVE_TIME_MI = 0;
+        $work->OUT_TIME_HH = 0;
+        $work->OUT_TIME_MI = 0;
+        $work->OVTM1_TIME_HH = 0;
+        $work->OVTM1_TIME_MI = 0;
+        $work->OVTM2_TIME_HH = 0;
+        $work->OVTM2_TIME_MI = 0;
+        $work->OVTM3_TIME_HH = 0;
+        $work->OVTM3_TIME_MI = 0;
+        $work->OVTM4_TIME_HH = 0;
+        $work->OVTM4_TIME_MI = 0;
+        $work->OVTM5_TIME_HH = 0;
+        $work->OVTM5_TIME_MI = 0;
+        $work->OVTM6_TIME_HH = 0;
+        $work->OVTM6_TIME_MI = 0;
+        $work->OVTM7_TIME_HH = 0;
+        $work->OVTM7_TIME_MI = 0;
+        $work->OVTM8_TIME_HH = 0;
+        $work->OVTM8_TIME_MI = 0;
+        $work->OVTM9_TIME_HH = 0;
+        $work->OVTM9_TIME_MI = 0;
+        $work->OVTM10_TIME_HH = 0;
+        $work->OVTM10_TIME_MI = 0;
+        $work->EXT1_TIME_HH = 0;
+        $work->EXT1_TIME_MI = 0;
+        $work->EXT2_TIME_HH = 0;
+        $work->EXT2_TIME_MI = 0;
+        $work->EXT3_TIME_HH = 0;
+        $work->EXT3_TIME_MI = 0;
+        $work->EXT4_TIME_HH = 0;
+        $work->EXT4_TIME_MI = 0;
+        $work->EXT5_TIME_HH = 0;
+        $work->EXT5_TIME_MI = 0;
+        $work->RSV1_TIME_HH = 0;
+        $work->RSV1_TIME_MI = 0;
+        $work->RSV2_TIME_HH = 0;
+        $work->RSV2_TIME_MI = 0;
+        $work->RSV3_TIME_HH = 0;
+        $work->RSV3_TIME_MI = 0;
+        $work->WORKDAY_CNT = 0;
+        $work->HOLWORK_CNT = 0;
+        $work->SPCHOL_CNT = 0;
+        $work->PADHOL_CNT = 0;
+        $work->ABCWORK_CNT = 0;
+        $work->COMPDAY_CNT = 0;
+        $work->RSV1_CNT = 0;
+        $work->RSV2_CNT = 0;
+        $work->RSV3_CNT = 0;
+        $work->SUBHOL_CNT = 0;
+        $work->SUBWORK_CNT = 0;
+        return $work;
+    }
+
+    private function setWorkForCalc($work)
+    {
+        $work->WORK_TIME_HH = 0;
+        $work->WORK_TIME_MI = 0;
+        $work->TARD_TIME_HH = 0;
+        $work->TARD_TIME_MI = 0;
+        $work->LEAVE_TIME_HH = 0;
+        $work->LEAVE_TIME_MI = 0;
+        $work->OUT_TIME_HH = 0;
+        $work->OUT_TIME_MI = 0;
+        $work->OVTM1_TIME_HH = 0;
+        $work->OVTM1_TIME_MI = 0;
+        $work->OVTM2_TIME_HH = 0;
+        $work->OVTM2_TIME_MI = 0;
+        $work->OVTM3_TIME_HH = 0;
+        $work->OVTM3_TIME_MI = 0;
+        $work->OVTM4_TIME_HH = 0;
+        $work->OVTM4_TIME_MI = 0;
+        $work->OVTM5_TIME_HH = 0;
+        $work->OVTM5_TIME_MI = 0;
+        $work->OVTM6_TIME_HH = 0;
+        $work->OVTM6_TIME_MI = 0;
+        $work->EXT1_TIME_HH = 0;
+        $work->EXT1_TIME_MI = 0;
+        $work->EXT2_TIME_HH = 0;
+        $work->EXT2_TIME_MI = 0;
+        $work->EXT3_TIME_HH = 0;
+        $work->EXT3_TIME_MI = 0;
+        $work->WORKDAY_CNT = 0;
+        $work->HOLWORK_CNT = 0;
+        $work->SPCHOL_CNT = 0;
+        $work->PADHOL_CNT = 0;
+        $work->ABCWORK_CNT = 0;
+        $work->COMPDAY_CNT = 0;
+        $work->RSV1_CNT = 0;
+        $work->SUBHOL_CNT = 0;
+        $work->SUBWORK_CNT = 0;
+        return $work;
+    }
+
+    private function createUpdateDataForWorkTimeClear()
+    {
+        return [
+            'DATA_OUT_CLS_CD' => '00',
+            'DATA_OUT_DATE' => '',
+            'CALD_DATE' => null,
+        ];
+    }
+}

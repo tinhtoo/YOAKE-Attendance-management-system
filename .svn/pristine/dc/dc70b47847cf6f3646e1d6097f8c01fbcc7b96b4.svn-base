@@ -1,0 +1,27 @@
+<?php
+
+namespace App\Http\Controllers\Master;
+
+use App\Http\Controllers\Controller;
+use App\Repositories\MT93PgRepository;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Pagination\Paginator;
+use Illuminate\Http\Reques;
+
+class MT14PGAuthReferenceController extends Controller
+{
+    public function __construct(MT93PgRepository $pg_repository)
+    {
+            parent::__construct($pg_repository);
+    }
+
+    public function index(){
+        $all = DB::table('MT14_PG_AUTH')
+                    ->select('PG_AUTH_CD', 'PG_AUTH_NAME')
+                    ->groupByRaw('PG_AUTH_CD, PG_AUTH_NAME')
+                    ->orderBy('PG_AUTH_CD')
+                    ->paginate(40);
+
+        return parent::viewWithMenu('master.MT14PGAuthReference',compact('all'));
+    }
+}

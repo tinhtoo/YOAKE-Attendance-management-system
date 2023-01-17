@@ -1,0 +1,212 @@
+<?php
+
+namespace App\Http\Requests;
+
+use Illuminate\Foundation\Http\FormRequest;
+use App\Repositories\Search\MT12DeptSearchRepository;
+use App\Repositories\Search\MT10EmpSearchRepository;
+
+class BaseRequest extends FormRequest
+{
+    /**
+     * 年月日の入力チェック
+     * 「いずれか入力があれば必須」のチェックだが
+     * 「必須」も、該当の「～Year」のルールにrequiredを加えることで可能
+     *
+     * @param string $yearName　年のname要素
+     * @param string $monthName　月のname要素
+     * @param string $dayName　日のname要素
+     * @return void
+     */
+    public function ymdCheck($yearName = '', $monthName = '', $dayName = '')
+    {
+        return function($attribute, $value, $fail) use ($yearName, $monthName, $dayName)
+        {
+            $input_data = $this->all();
+            $year = $input_data[$yearName];
+            $month = $input_data[$monthName];
+            $day = $input_data[$dayName];
+
+            if ($year == null && $month == null && $day == null) {
+                // 全項目未入力 -> エラーなし
+
+            } else if ($year == null || $month == null || $day == null) {
+                // 年月日いずれか未入力 -> 必須エラー
+                $fail('2002');
+
+            } else if (!checkDate($month, $day, $year)) {
+                // 不正な日付
+                $fail('2004');
+
+            } else if ((int)$year < 1900 || 2100 < (int)$year) {
+                // 年が1900～2100の範囲外
+                $fail('2026');
+            }
+        };
+    }
+
+    /**
+     * 年月のみ（日無し）のチェック
+     * 
+     *
+     * @param string $yearName
+     * @param string $monthName
+     * @return void
+     */
+    public function ymCheck($yearName = '', $monthName = '') {
+        return function($attribute, $value, $fail) use($yearName, $monthName) {
+            $input_data = $this->all();
+            $year = $input_data[$yearName];
+            $month = $input_data[$monthName];
+
+            if ($year == null && $month == null) {
+                // 全項目未入力 -> エラーなし
+
+            } else if ($year == null || $month == null) {
+                // 年月日いずれか未入力 -> 必須エラー
+                $fail('2002');
+
+            } else if (!checkDate($month, 1, $year)) {
+                // 不正な日付
+                $fail('2004');
+
+            } else if ((int)$year < 1900 || 2100 < (int)$year) {
+                // 年が1900～2100の範囲外
+                $fail('2027');
+            }
+        };
+    }
+
+    /**
+     * 部門コードの存在チェック
+     * ログイン情報からユーザの権限情報の確認も行う
+     *
+     * @return void
+     */
+    public function existDeptCdWithAuth() {
+        return function($attribute, $value, $fail){
+            $mt12_dept_search_repository = new MT12DeptSearchRepository();
+            if ($mt12_dept_search_repository->getName($value) == null){
+                $fail('2000');
+            }
+        };
+    }
+
+    /**
+     * 社員コードの存在チェック
+     * ログイン情報からユーザの権限情報の確認も行う
+     *
+     * @return void
+     */
+    public function existEmpCdWithAuth() {
+        return function($attribute, $value, $fail){
+            $mt10_emp_search_repository = new MT10EmpSearchRepository();
+            if ($mt10_emp_search_repository->getName($value) == null){
+                $fail('2000');
+            }
+        };
+    }
+
+    /**
+     * 残業項目のチェック
+     * 時間入力時はプルダウンの選択が必須
+     *
+     * @param string $cdName
+     * @param string $hrName
+     * @return void
+     */
+    public function requiredOvtmCd($cdName = '', $hrName = '') {
+        return function ($attribute, $value, $fail) use($cdName, $hrName) {
+            // 残業項目（n）時間/月の入力値があり、残業項目(n)リストボックスの入力値がない場合
+            if(!empty(FormRequest::get($hrName)) && FormRequest::get($cdName) == null){
+                // 2002メッセージ（必須入力項目です。)
+                $fail('2002');
+            }
+        };
+    }
+
+    /**
+     * 年月日の入力チェック
+     *  [いずれか入力がなければ必須」のチェック
+     * 「いずれか入力があれば必須」のチェック
+     * 「必須」も、該当の「～Year」のルールにrequiredを加えることで可能
+     *
+     * @param string $yearName　年のname要素
+     * @param string $monthName　月のname要素
+     * @param string $dayName　日のname要素
+     * @return void
+     */
+    public function ymdCheckRequired($yearName = '', $monthName = '', $dayName = '')
+    {
+        return function($attribute, $value, $fail) use ($yearName, $monthName, $dayName)
+        {
+            $input_data = $this->all();
+            $year = $input_data[$yearName];
+            $month = $input_data[$monthName];
+            $day = $input_data[$dayName];
+
+            if ($year == null && $month == null && $day == null) {
+                // 全項目未入力 -> 必須エラー
+                $fail('2002');
+
+            } else if ($year == null || $month == null || $day == null) {
+                // 年月日いずれか未入力 -> 必須エラー
+                $fail('2002');
+
+            } else if (!checkDate($month, $day, $year)) {
+                // 不正な日付
+                $fail('2004');
+
+            } else if ((int)$year < 1900 || 2100 < (int)$year) {
+                // 年が1900～2100の範囲外
+                $fail('2026');
+            }
+        };
+    }
+
+    /**
+     *  大小関係チェック
+     *  [開始部門コード」と「終了部門コード」の大小関係チェック
+     *
+     * @param string $strDept　開始部門コードのname要素
+     * @param string $endDept　終了部門コードのname要素
+     * @return void
+     */
+    public function deptRelationCheck($strDeptCd = '', $endDeptCd = '')
+    {
+        return function($attribute, $value, $fail) use ($strDeptCd, $endDeptCd)
+        {
+            $input_data = $this->all();
+            $strDeptCd = $input_data['filter'][$strDeptCd];
+            $endDeptCd = $input_data['filter'][$endDeptCd];
+
+            if ($strDeptCd && $endDeptCd && ($strDeptCd > $endDeptCd)) {
+                // 開始値と終了値の大小関係が不正です。
+                $fail('2009');
+            } 
+        };
+    }
+
+    /**
+     *  大小関係チェック
+     *  [開始社員コード」と「終了社員コード」の大小関係チェック
+     *
+     * @param string $strEmp　開始社員コードのname要素
+     * @param string $endEmp　終了社員コードのname要素
+     * @return void
+     */
+    public function empRelationCheck($strEmpCd = '', $endEmpCd = '')
+    {
+        return function($attribute, $value, $fail) use ($strEmpCd, $endEmpCd)
+        {
+            $input_data = $this->all();
+            $strEmpCd = $input_data['filter'][$strEmpCd];
+            $endEmpCd = $input_data['filter'][$endEmpCd];
+
+            if ($strEmpCd && $endEmpCd && ($strEmpCd > $endEmpCd)) {
+                // 開始値と終了値の大小関係が不正です。
+                $fail('2009');
+            } 
+        };
+    }
+}

@@ -1,0 +1,166 @@
+<?php
+
+namespace App\Http\Requests;
+
+use Illuminate\Support\Facades\DB;
+use Illuminate\Foundation\Http\FormRequest;
+use App\Models\MT11Login;
+use App\Models\MT10Emp;
+use App\Models\MT12Dept;
+use App\Models\MT13DeptAuth;
+use App\Models\MT99Msg;
+use Illuminate\Http\Request;
+
+class EmpWorkStatusReferenceRequest extends FormRequest
+{
+    public function rules()
+    {
+        // $inputDeptCd = $_REQUEST['txtDeptCd'];
+        // $inputEmpCd = $_REQUEST['txtEmpCd'];
+        // dd($inputDeptCd);
+        $rules = [];
+        $rules = [
+            'filter.txtDeptCd' => [
+                'nullable',
+                function ($attribute, $value, $fail) {
+
+                    //** SessionでログインIDの取得 */
+                    $loginUser2 = session('id');
+                    //dd($loginUser2);
+
+                    //** ログインIDより社員CD取得 */
+                    $emp_cd = MT11Login::where(['LOGIN_ID' => $loginUser2])->pluck('EMP_CD')->first();
+
+                    //** (A-2)ログイン社員の所属部門取得 */
+                    $dept_cd = MT10Emp::join('MT11_LOGIN', 'MT10_EMP.EMP_CD', '=', 'MT11_LOGIN.EMP_CD')
+                        ->where('MT11_LOGIN.EMP_CD', $emp_cd)
+                        ->pluck('DEPT_CD')->first();
+
+                    //** (A-3)ログイン社員の部門権限取得 */
+                    $dept_auth_cd = MT10Emp::join('MT11_LOGIN', 'MT10_EMP.EMP_CD', '=', 'MT11_LOGIN.EMP_CD')
+                        ->where('MT11_LOGIN.EMP_CD', $emp_cd)
+                        ->pluck('DEPT_AUTH_CD')->first();
+
+                    //** (A-4)ログイン社員の権限部門の取得 */
+                    $dispcls_cd = MT12Dept::where('MT12_DEPT.DEPT_CD', $dept_cd)
+                        ->where('DISP_CLS_CD', '=', '01')
+                        ->pluck('DISP_CLS_CD')->first();
+
+                    $dept_auth = MT13DeptAuth::leftjoin('MT12_DEPT', 'MT13_DEPT_AUTH.DEPT_CD', '=', 'MT12_DEPT.DEPT_CD')
+                        ->where('DISP_CLS_CD', $dispcls_cd)
+                        ->pluck('MT13_DEPT_AUTH.DEPT_CD')->all();
+
+                    //**(E-2)チェック２処理 */
+                    $check_2 = MT12Dept::select('DEPT_CD')->where(['DEPT_CD' => $value])->where('DISP_CLS_CD', '=', '01')->exists();
+
+                    //**(E-3)チェック３処理 */
+                    $check3 = MT12Dept::where(['DEPT_CD' => $value])->pluck('DEPT_CD')->first();
+
+                    $array_2 = array($check3);
+
+                    $DeptCdCompare = array_intersect($dept_auth, $array_2);
+
+                    $msg_2000 = MT99Msg::where('MSG_NO', '2000')->pluck('MSG_CONT')->first();
+
+                    //** 確認処理 */
+                    if ((!$check_2) && (($value <> $emp_cd) && (empty($DeptCdCompare)))) {
+                        $fail($msg_2000);
+                    }
+                },
+            ],
+            'filter.txtEmpCd' => [
+                'nullable',
+                function ($attribute, $value, $fail) {
+
+                    //** SessionでログインIDの取得 */
+                    $loginUser2 = session('id');
+                    // dd($loginUser2);
+
+                    //** ログインIDより社員CD取得 */
+                    $emp_cd = MT11Login::where(['LOGIN_ID' => $loginUser2])->pluck('EMP_CD')->first();
+
+                    //** (A-2)ログイン社員の所属部門取得 */
+                    $dept_cd = MT10Emp::join('MT11_LOGIN', 'MT10_EMP.EMP_CD', '=', 'MT11_LOGIN.EMP_CD')
+                        ->where('MT11_LOGIN.EMP_CD', $emp_cd)
+                        ->pluck('DEPT_CD')->first();
+
+                    //** (A-3)ログイン社員の部門権限取得 */
+                    $dept_auth_cd = MT10Emp::join('MT11_LOGIN', 'MT10_EMP.EMP_CD', '=', 'MT11_LOGIN.EMP_CD')
+                        ->where('MT11_LOGIN.EMP_CD', $emp_cd)
+                        ->pluck('DEPT_AUTH_CD')->first();
+
+                    //** (A-4)ログイン社員の権限部門の取得 */
+                    $dispcls_cd = MT12Dept::where('MT12_DEPT.DEPT_CD', $dept_cd)
+                        ->where('DISP_CLS_CD', '=', '01')
+                        ->pluck('DISP_CLS_CD')->first();
+
+                    $dept_auth = MT13DeptAuth::leftjoin('MT12_DEPT', 'MT13_DEPT_AUTH.DEPT_CD', '=', 'MT12_DEPT.DEPT_CD')
+                        ->where('DISP_CLS_CD', $dispcls_cd)
+                        ->pluck('MT13_DEPT_AUTH.DEPT_CD')->all();
+
+                    //**(E-2)チェック２処理 */
+                    $check_2 = MT10Emp::select('EMP_CD')->where(['EMP_CD' => $value])->where('REG_CLS_CD', '<>', '02')->exists();
+
+                    //**(E-3)チェック３処理 */
+                    $for_check2 = MT10Emp::where(['EMP_CD' => $value])->pluck('DEPT_CD')->first();
+
+                    $array_2 = array($for_check2);
+
+                    $DeptCdCompare = array_intersect($dept_auth, $array_2);
+
+                    $msg_2000 = MT99Msg::where('MSG_NO', '2000')->pluck('MSG_CONT')->first();
+
+                    //** 確認処理 */
+                    if ((!$check_2) && (($value <> $emp_cd) && (empty($DeptCdCompare)))) {
+                        $fail($msg_2000);
+                    }
+                },
+            ],
+            'filter.ckWorkd' => 'required_without_all:filter.ckPadh, filter.ckPadbh, filter.ckPadah, filter.ckCompd, filter.ckCompbd, filter.ckCompad,
+                                filter.ckSpch, filter.ckAbcd, filter.ckDirg, filter.ckDirr, filter.ckDirqr, filter.ckBusj, filter.ckDelay',
+            'filter.ckPadh' => 'required_without_all:filter.ckWorkd, filter.ckPadbh, filter.ckPadah, filter.ckCompd, filter.ckCompbd, filter.ckCompad,
+                                filter.ckSpch, filter.ckAbcd, filter.ckDirg, filter.ckDirr, filter.ckDirqr, filter.ckBusj, filter.ckDelay',
+            'filter.ckPadbh' => 'required_without_all:filter.ckPadh, filter.ckWorkd, filter.ckPadah, filter.ckCompd, filter.ckCompbd, filter.ckCompad,
+                                filter.ckSpch, filter.ckAbcd, filter.ckDirg, filter.ckDirr, filter.ckDirqr, filter.ckBusj, filter.ckDelay',
+            'filter.ckPadah' => 'required_without_all:filter.ckPadh, filter.ckPadbh, filter.ckWorkd, filter.ckCompd, filter.ckCompbd, filter.ckCompad,
+                                filter.ckSpch, filter.ckAbcd, filter.ckDirg, filter.ckDirr, filter.ckDirqr, filter.ckBusj, filter.ckDelay',
+            'filter.ckCompd' => 'required_without_all:filter.ckPadh, filter.ckPadbh, filter.ckPadah, filter.ckWorkd, filter.ckCompbd, filter.ckCompad,
+                                filter.ckSpch, filter.ckAbcd, filter.ckDirg, filter.ckDirr, filter.ckDirqr, filter.ckBusj, filter.ckDelay',
+            'filter.ckCompbd' => 'required_without_all:filter.ckPadh, filter.ckPadbh, filter.ckPadah, filter.ckCompd, filter.ckWorkd, filter.ckCompad,
+                                filter.ckSpch, filter.ckAbcd, filter.ckDirg, filter.ckDirr, filter.ckDirqr, filter.ckBusj, filter.ckDelay',
+            'filter.ckCompad' => 'required_without_all:filter.ckPadh, filter.ckPadbh, filter.ckPadah, filter.ckCompd, filter.ckCompbd, filter.ckWorkd,
+                                filter.ckSpch, filter.ckAbcd, filter.ckDirg, filter.ckDirr, filter.ckDirqr, filter.ckBusj, filter.ckDelay',
+            'filter.ckSpch' => 'required_without_all:filter.ckPadh, filter.ckPadbh, filter.ckPadah, filter.ckCompd, filter.ckCompbd, filter.ckCompad,
+                                filter.ckWorkd, filter.ckAbcd, filter.ckDirg, filter.ckDirr, filter.ckDirqr, filter.ckBusj, filter.ckDelay',
+            'filter.ckAbcd' => 'required_without_all:filter.ckPadh, filter.ckPadbh, filter.ckPadah, filter.ckCompd, filter.ckCompbd, filter.ckCompad,
+                                filter.ckSpch, filter.ckWorkd, filter.ckDirg, filter.ckDirr, filter.ckDirqr, filter.ckBusj, filter.ckDelay',
+            'filter.ckDirg' => 'required_without_all:filter.ckPadh, filter.ckPadbh, filter.ckPadah, filter.ckCompd, filter.ckCompbd, filter.ckCompad,
+                                filter.ckSpch, filter.ckAbcd, filter.ckWorkd, filter.ckDirr, filter.ckDirqr, filter.ckBusj, filter.ckDelay',
+            'filter.ckDirr' => 'required_without_all:filter.ckPadh, filter.ckPadbh, filter.ckPadah, filter.ckCompd, filter.ckCompbd, filter.ckCompad,
+                                filter.ckSpch, filter.ckAbcd, filter.ckDirg, filter.ckWorkd, filter.ckDirqr, filter.ckBusj, filter.ckDelay',
+            'filter.ckDirqr' => 'required_without_all:filter.ckPadh, filter.ckPadbh, filter.ckPadah, filter.ckCompd, filter.ckCompbd, filter.ckCompad,
+                                filter.ckSpch, filter.ckAbcd, filter.ckDirg, filter.ckDirr, filter.ckWorkd, filter.ckBusj, filter.ckDelay',
+            'filter.ckBusj' => 'required_without_all:filter.ckPadh, filter.ckPadbh, filter.ckPadah, filter.ckCompd, filter.ckCompbd, filter.ckCompad,
+                                filter.ckSpch, filter.ckAbcd, filter.ckDirg, filter.ckDirr, filter.ckDirqr, filter.ckWorkd, filter.ckDelay',
+            'filter.ckDelay' => 'required_without_all:filter.ckPadh, filter.ckPadbh, filter.ckPadah, filter.ckCompd, filter.ckCompbd, filter.ckCompad,
+                                filter.ckSpch, filter.ckAbcd, filter.ckDirg, filter.ckDirr, filter.ckDirqr, filter.ckBusj, filter.ckWorkd'
+        ];
+        return $rules;
+    }
+
+    public function messages()
+    {
+        $msg_2002 = MT99Msg::where('MSG_NO', '2002')->pluck('MSG_CONT')->first();
+        $msg_4005 = MT99Msg::where('MSG_NO', '4005')->pluck('MSG_CONT')->first();
+        return [
+            'filter.txtEmpCd.required' => $msg_2002,
+            'filter.txtDeptCd.required' => $msg_2002,
+            'filter.ckWorkd.required_without_all' => $msg_4005
+        ];
+    }
+
+    // public function checkMessage(Request $request)
+    // {
+    //     $msg_4005 = MT99Msg::where('MSG_NO', '4005')->pluck('MSG_CONT')->first();
+    // }
+}

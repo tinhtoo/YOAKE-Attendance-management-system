@@ -1,0 +1,54 @@
+<?php
+
+namespace App\Http\Controllers\Search;
+
+use App\Http\Controllers\Controller;
+use App\Repositories\Search\MT12DeptSearchRepository;
+use PhpParser\Node\Expr\Cast\String_;
+
+class MT12DeptSearchController extends Controller
+{
+    /**
+     * Work_Timeリポジトリの実装
+     *
+     * @var MT12DeptSearchRepository
+     */
+
+    protected $dep_repository;
+
+    /**
+     * 新しいコントローラインスタンスの生成
+     *
+     * @param  UserRepository  $dep_Repository
+     * @return void
+     */
+    public function __construct(MT12DeptSearchRepository $dep_Repository)
+    {
+        $this->dep_repository = $dep_Repository;
+    }
+
+
+    /**
+     * 指定ユーザーのプロファイル表示
+     *
+     * @param  int  $request
+     * @return Response
+     */
+
+    public function search()
+    {
+        $dept_search = $this->dep_repository->data_search();
+        $allData = $this->dep_repository->allData();
+        // $count = count($dept_search);
+        // $dept_result = [];
+        // for($i=0; $i < $count; $i++){
+        //     $dept_cd = (string)$dept_search[$i]->DEPT_CD;
+        //     // dd($dept_cd);
+        //     $dept_name = (string)$dept_search[$i]->DEPT_NAME;
+        //     $level_no = (string)$dept_search[$i]->LEVEL_NO;
+        //     $dept_result = $dept_cd." : ". str_pad($dept_name,strlen($dept_name)+3," ",STR_PAD_LEFT);
+        //     // dd($dept_result);
+        // }
+        return view('search.MT12DeptSearch', compact('dept_search','allData'));
+    }
+}

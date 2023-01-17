@@ -1,0 +1,18 @@
+<!doctype html>
+<html lang="ja">
+@extends('layouts.app')
+
+<head>
+    @yield('header')
+    <!-- 自動翻訳させないための記述 -->
+    <meta http-equiv="Content-Language" content="ja">
+    <meta name="google" content="notranslate">
+</head>
+
+<body>
+    @yield('login')
+    @yield('main')
+    @yield('content_search')
+</body>
+
+</html>

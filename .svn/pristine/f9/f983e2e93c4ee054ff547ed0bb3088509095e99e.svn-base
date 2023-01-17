@@ -1,0 +1,45 @@
+<?php
+
+namespace App\Filters;
+
+use App\Filters\Filter;
+use Illuminate\Http\Request;
+
+class MT03CalendarEditorFilter extends Filter
+{
+    /**
+     * filter properties.
+     */
+    protected $filters = [
+        'filter' => [
+            'calendarCd',
+            'caldYear',
+            'caldMonth',
+            'closingDateCd',
+        ]
+    ];
+
+    // カレンダーコード
+    public function calendarCd($value)
+    {
+        $this->builder->where('MT03_CALENDAR.CALENDAR_CD', $value);
+    }
+
+    // 年
+    public function caldYear($value)
+    {
+        $this->builder->where('MT03_CALENDAR.CALD_YEAR', $value);
+    }
+
+    // 月
+    public function caldMonth($value)
+    {
+        $this->builder->where('MT03_CALENDAR.CALD_MONTH', (int)$value);
+    }
+
+    // 締日
+    public function closingDateCd($value)
+    {
+        $this->builder->where('MT03_CALENDAR.CLOSING_DATE_CD', $value);
+    }
+}

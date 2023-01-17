@@ -1,0 +1,190 @@
+<!-- 部門情報入力  -->
+@extends('menu.main')
+
+@section('title', '部門情報入力 ')
+
+@section('content')
+    <div id="contents-stage">
+        <table class="BaseContainerStyle2">
+            <tbody>
+                <tr>
+                    <td>
+                        <div id="ctl00_cphContentsArea_UpdatePanel1">
+                            <form action="" method="post" id="form">
+                                @csrf
+
+                                <table class="InputFieldStyle1">
+                                    <tbody>
+                                        <tr>
+                                            <th>親部門</th>
+                                            <td>
+                                                <input type="text "name="txtUpDeptCd" id="txtUpDeptCd"
+                                                        disabled="disabled" class="OutlineLabel"
+                                                        style="width: 50px;" maxlength="6" value="{{ old('txtUpDeptCd') ?? $dept_datas->DEPT_CD }}"
+                                                        @if(!empty($dept_datas->DEPT_CD))
+                                                        disabled
+                                                        @else
+                                                        autofocus
+                                                        onFocus="this.select()"
+                                                        @endif
+                                                        >
+                                                <input type="search" name="txtUpDeptName" tabindex="1"
+                                                        id="txtUpDeptName" style="width: 300px;" onfocus="this.select();"
+                                                        maxlength="20" value="{{ old('txtUpDeptName') ??$dept_datas ->DEPT_NAME }}"
+                                                        @if(!empty($dept_datas ->DEPT_NAME ))
+                                                        autofocus
+                                                        onFocus="this.select()"
+                                                        @endif
+                                                        >
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+
+                                <div class="line"></div>
+
+                                <input name="Add-NewRow" tabindex="2"  type="button"  id="coladd" onclick="appendRow()" value="新規行追加">
+                                <div class="GridViewStyle1 mg10" >
+                                    <div class="GridViewPanelStyle7" >
+                                        <table id="tbl" tabindex="3" style="border-collapse: collapse;" border="1" rules="all" cellspacing="0">
+                                            <tbody>
+                                                <tr>
+                                                    <th scope="col">部門コード</th>
+                                                    <th scope="col">部門名</th>
+                                                    <th scope="col">行削除</th>
+                                                </tr>
+                                                @foreach ($dept_lists as $dept_list )
+                                                <tr>
+                                                    <td>
+                                                        <input type="text" style="width: 55px;" name="deptCd[]"
+                                                            maxlength="6" tabindex="2" class="imeDisabled" onfocus="this.select();"
+                                                            value="{{ old('deptCd') ?? $dept_list->DEPT_CD }}"
+                                                            @if(!empty($dept_list->DEPT_CD))
+                                                            disabled
+                                                            @endif
+                                                            />
+                                                    </td>
+                                                    <td>
+                                                        <input type="search" style="width: 270px;" name="deptName[]"
+                                                            maxlength="20" tabindex="3" class="imeOn" onfocus="this.select();"
+                                                            value="{{ old('deptName') ??$dept_list ->DEPT_NAME }}"
+                                                            @if(!empty($dept_list ->DEPT_NAME ))
+                                                            onFocus="this.select()"
+                                                            @endif
+                                                            />
+                                                    </td>
+                                                    <span id="ctl00_cphContentsArea_gvDept_ctl02_cvDeptCd" style="color: red; display: none;">ErrorMessage</span>
+                                                    <span id="ctl00_cphContentsArea_gvDept_ctl02_cvDeptCdDelete" style="color: red; display: none;">ErrorMessage</span>
+                                                    <span id="ctl00_cphContentsArea_gvDept_ctl02_cvDeptName" style="color: red; display: none;">ErrorMessage</span>
+                                                    <td>
+                                                        <input type="button" name="dltBtn" style="width:75px;"  id="coladd" onclick="coldel(this)" class="ButtonStyle1"value="削除">
+                                                    </td>
+                                                </tr>
+                                                @endforeach
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+
+                                <div class="line"></div>
+                                <p class="ButtonField1">
+                                        <input type="button" value="更新" name="btnUpdate" tabindex="4" id="btnUpdate"
+                                            class="ButtonStyle1 update"
+                                            data-url="{{ url('master/MT12DeptUpdate') }}"
+                                            >
+                                        <input type="button" name="btnCancel" tabindex="5" id="btnCancel"
+                                            class="ButtonStyle1" value="キャンセル"
+                                            onclick="location.reload();"
+                                            >
+                                        <input type="button" value="削除" name="btnDelete" tabindex="6" id="btnDelete"
+                                            class="ButtonStyle1 delete" data-url="{{ url('master/MT12DeptDelete') }}"
+                                            >
+                                </p>
+
+                            </form>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+@endsection
+
+@section('script')
+<script>
+    // ENTER時に送信されないようにする
+    $('input').not('[type="button"]').keypress(function(e) {
+        if (e.which == 13) {
+            return false;
+        }
+    });
+
+    //キャンセルボタン
+    function Cancel() {
+        $("#PG_AUTH_CD, #PG_AUTH_NAME, #checkList").val('');
+    }
+
+    $(function() {
+        // 更新submit-form
+        $(document).on('click', '.update', function() {
+            if (window.confirm("{{ getArrValue($error_messages, '1005') }}")) {
+                var url = $(this).data('url');
+                $('#form').attr('action', url);
+                $('#form').submit();
+            }
+            return false;
+
+        });
+
+        // 削除処理submit-form
+        $(document).on('click', '.delete', function() {
+            if (window.confirm("{{ getArrValue($error_messages, '1004') }}")) {
+                var url = $(this).data('url');
+                $('#form').attr('action', url);
+                $('#form').submit();
+            }
+            return false;
+        });
+
+        //機能権限コード英数半角のみ入力可
+        onlyHalfNumber = n => n.replace(/[０-９]/g, s => String.fromCharCode(s.charCodeAt(0) - 65248))
+                                            .replace(/\D/g, '');
+        // 入力不可能文字：|
+        ngVerticalBar = n => n.replace(/\|/g, '');
+
+    });
+
+    /*
+    * appendRow: テーブルに行を追加
+    */
+    function appendRow()
+    {
+        var objTBL = document.getElementById("tbl");
+        if (!objTBL)
+            return;
+
+        var count = objTBL.rows.length;
+
+        // 最終行に新しい行を追加
+        var row = objTBL.insertRow(count);
+
+        // 列の追加
+        var c1 = row.insertCell(0);
+        var c2 = row.insertCell(1);
+        var c3 = row.insertCell(2);
+
+        // 各列に表示内容を設定
+        c1.innerHTML = '<input type="text" style="width: 55px;" name="deptCd[]" maxlength="6" tabindex="2" class="imeDisabled" onfocus="this.select();"/>';
+        c2.innerHTML = '<input type="search" style="width: 270px;" name="deptName[]"maxlength="20" tabindex="3" class="imeOn" onfocus="this.select();"/>';
+        c3.innerHTML = '<input type="button" name="dltBtn" style="width:75px;" id="coladd" onclick="coldel(this)" class="ButtonStyle1"value="削除">';
+
+    }
+
+    function coldel(obj) {
+        // 削除ボタンを押下された行を取得
+        tr = obj.parentNode.parentNode;
+        // trのインデックスを取得して行を削除する
+        tr.parentNode.deleteRow(tr.sectionRowIndex);
+    }
+</script>
+@endsection

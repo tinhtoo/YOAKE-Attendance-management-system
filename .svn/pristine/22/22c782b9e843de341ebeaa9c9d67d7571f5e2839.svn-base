@@ -1,0 +1,66 @@
+<!-- 部門情報入力  -->
+@extends('menu.main')
+
+@section('title', '部門情報入力 ')
+
+@section('content')
+    <div id="contents-stage">
+        <table class="BaseContainerStyle2">
+            <tbody>
+                <tr>
+                    <td>
+                        <div id="ctl00_cphContentsArea_UpdatePanel1">
+
+
+                            <table class="InputFieldStyle1">
+                                <tbody>
+                                    <tr>
+                                        <th>親部門</th>
+                                        <td>
+                                            <input type="text "name="txtUpDeptCd" id="txtUpDeptCd"
+                                                    disabled="disabled" class="OutlineLabel"
+                                                    style="width: 50px;" maxlength="6" value="">
+
+                                            <input name="txtUpDeptName" tabindex="1"
+                                                id="txtUpDeptName" style="width: 300px;" onfocus="this.select();"
+                                                type="text" maxlength="20" value="">
+                                        </td>
+                                    </tr>
+                                </tbody>
+                            </table>
+
+                            <div class="line"></div>
+
+                            <input name="Add-NewRow" tabindex="2" id="AddNewRow" type="button" value="新規行追加">
+
+                            <div class="GridViewStyle1 mg10" id="table">
+                                <div class="GridViewPanelStyle7" id="pnlDept">
+
+                                    <div>
+                                        <table tabindex="3" class="Center" style="border-collapse: collapse;"
+                                            border="1" rules="all" cellspacing="0">
+                                            <tbody class="gvDept">
+
+                                            </tbody>
+                                        </table>
+                                    </div>
+
+                                </div>
+                            </div>
+
+                            <div class="line"></div>
+                            <p class="ButtonField1">
+                                <input name="btnUpdate" tabindex="5" id="btnUpdate"
+                                    onclick="if(confirm('更新します。よろしいですか?') ==  false){ return false;};WebForm_DoPostBackWithOptions(new WebForm_PostBackOptions(&quot;btnUpdate&quot;, &quot;&quot;, true, &quot;Update&quot;, &quot;&quot;, false, true))"
+                                    type="button" value="更新">
+                                <input name="btnCancel" tabindex="6" id="btnCancel"
+                                    onclick="javascript:__doPostBack('btnCancel','')" type="button" value="キャンセル">
+                                <input name="btnDelete" tabindex="7" id="btnDelete" onclick="" type="button" value="削除">
+                            </p>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+@endsection

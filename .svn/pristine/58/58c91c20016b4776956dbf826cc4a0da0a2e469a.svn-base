@@ -1,0 +1,19 @@
+<?php
+
+namespace App\Repositories;
+
+use App\Models\MT95Term;
+
+class MT95TermRepository
+{
+    /**
+     * 全端末情報を取得
+     *
+     * @return
+     */
+    public function getList()
+    {
+        return MT95Term::orderBy('TERM_NO')
+                    ->get();
+    }
+}

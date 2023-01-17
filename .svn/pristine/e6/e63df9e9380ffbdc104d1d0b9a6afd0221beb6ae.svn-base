@@ -1,0 +1,573 @@
+<!-- 社員情報入力  -->
+@extends('menu.main')
+
+@section('title', '社員情報入力')
+
+@section('content')
+    <div id="contents-stage">
+        <table class="BaseContainerStyle1">
+            <form action="" method="post">
+                @csrf
+                <div id="ctl00_cphContentsArea_UpdatePanel1">
+                    <table class="InputFieldStyle1">
+                        <tbody>
+                            <tr>
+                                <th class="required">社員番号</th>
+                                <td>
+                                    <input type="text" name="txtEmpCd" id="txtEmpCd"
+                                        value="{{ $emp_data->EMP_CD ?? old('txtEmpCd') }}"
+                                        style="width: 80px;" maxlength="10" tabindex="1"
+                                        @if(!empty($emp_data->EMP_CD))
+                                        readonly
+                                        @endif
+                                    >
+                                    @error('EMP_CD')
+                                    {{ $message }}<br>
+                                    @enderror
+                                </td>
+                            </tr>
+                            <tr>
+                                <th class="required">社員名</th>
+                                <td>
+                                    <input type="text" name="txtEmpName" id="txtEmpName"
+                                        value="{{ $emp_data->EMP_NAME ?? old('txtEmpName') }}"
+                                        style="width: 300px;" maxlength="20" tabindex="2"
+                                        @if(!empty($emp_data->EMP_CD))
+                                        onfocus="this.select();"
+                                        @endif
+                                        >
+                                    @error('EMP_NAME')
+                                        {{ $message }}<br>
+                                    @enderror
+                                </td>
+                            </tr>
+                            <tr>
+                                <th class="required">社員カナ名</th>
+                                <td>
+                                    <input name="txtEmpKana" id="txtEmpKana"
+                                        value="{{ $emp_data->EMP_KANA ?? old('txtEmpKana') }}"
+                                        class="imeOn" tabindex="3"
+                                        style="width: 160px;" onfocus="this.select();" type="text" maxlength="20">
+                                    @error('EMP_KANA')
+                                        {{ $message }}<br>
+                                    @enderror
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>部門</th>
+                                <td>
+                                    <input name="txtDeptCd" 
+                                        class="imeDisabled" 
+                                        id="txtDeptCd" 
+                                        style="width: 50px;" 
+                                        type="text"
+                                        tabindex="4"
+                                        maxlength="6"
+                                        style="ime-inactive;"
+                                        value="{{ old('txtDeptCd', !empty($search_data['txtDeptCd']) ? $search_data['txtDeptCd'] : $emp_data->DEPT_CD) }}"
+                                        oninput="value = onlyHalfWord(value)"
+                                    >
+                                    <input name="btnSearchDeptCd" class="SearchButton" id="btnSearchDeptCd" type="button" value="?" onclick="SearchDept();return false">
+                                    <input 
+                                        name="deptName" 
+                                        class="OutlineLabel" 
+                                        type="text" 
+                                        style="width: 200px; height: 23px; display: inline-block;" 
+                                        id="deptName" 
+                                        value="{{ old('deptName', !empty($request_data['deptName']) ? $request_data['deptName']:'') }}"
+                                        readonly="readonly"
+                                    >
+                                    @if ($errors->has('filter.txtDeptCd'))
+                                    <span class="text-danger d-block">{{ $errors->first('filter.txtDeptCd')  }}</span>
+                                    @endif
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>入社年月日</th>
+                                <td>
+                                    <input type="text" name="txtEntYear" id="txtEntYear" value="{{ $emp_data->ENT_YEAR ?? old('txtEntYear') }}"
+                                        onchange="AddDropDownList('txtEntYear', 'ddlEntMonth', 'ddlEntDay')"
+                                        tabindex="5" style="width: 40px;" maxlength="4">
+                                    &nbsp;年&nbsp;
+                                    @error('ENT_YEAR')
+                                        {{ $message }}&nbsp;
+                                    @enderror
+                                    <select name="ddlEntMonth" id='ddlEntMonth' tabindex="6"
+                                                style="width: 50px;"
+                                                onchange="AddDropDownList('txtEntYear', 'ddlEntMonth', 'ddlEntDay')"> 
+                                    </select>
+                                    &nbsp;月&nbsp;
+                                    @error('ENT_MONTH')
+                                        {{ $message }}&nbsp;
+                                    @enderror
+                                    <select name="ddlEntDay" id="ddlEntDay" tabindex="7"
+                                        style="width: 50px;">
+                                    &nbsp;日&nbsp;
+                                    @error('ENT_DAY')
+                                        {{ $message }}&nbsp;
+                                    @enderror
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>退職年月日</th>
+                                <td>
+                                    <input type="text" name="txtRetYear" id="txtRetYear" value="{{ $emp_data->RET_YEAR ?? old('txtRetYear') }}"
+                                        onchange="AddDropDownList('txtRetYear', 'ddlRetMonth', 'ddlRetDay')"
+                                        tabindex="8" style="width: 40px;" maxlength="4">
+                                    &nbsp;年&nbsp;
+                                    @error('RET_YEAR')
+                                        {{ $message }}&nbsp;
+                                    @enderror
+                                    <select name="ddlRetMonth" id='ddlRetMonth' tabindex="9"
+                                                style="width: 50px;"
+                                                onchange="AddDropDownList('txtRetYear', 'ddlRetMonth', 'ddlRetDay')"> 
+                                    </select>
+                                    &nbsp;月&nbsp;
+                                    @error('RET_MONTH')
+                                        {{ $message }}&nbsp;
+                                    @enderror
+                                    <select name="ddlRetDay" id="ddlRetDay" tabindex="10"
+                                        style="width: 50px;">
+                                    &nbsp;日&nbsp;
+                                    @error('RET_DAY')
+                                        {{ $message }}&nbsp;
+                                    @enderror
+                                </td>
+                            </tr>
+                            <tr>
+                                <th class="required">在籍区分</th>
+                                <td>
+                                    <select name="ddlRegCls" tabindex="11"
+                                        id="ddlRegCls" style="width: 80px;">
+                                        <option value=""></option>
+                                    @foreach ($reg_cls_cd as $regClsCd)
+                                        <option value="{{ $regClsCd->CLS_DETAIL_CD }}"
+                                            {{ $regClsCd->CLS_DETAIL_CD == $emp_data->REG_CLS_CD ?? old('ddlRegCls') ? 'selected' : '' }}>
+                                            {{ $regClsCd->CLS_DETAIL_NAME }}
+                                        </option>
+                                    @endforeach
+                                    </select>
+                                    @error('REG_CLS_CD')
+                                        {{ $message }}<br>
+                                    @enderror
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>生年月日</th>
+                                <td>
+                                    {{-- <input name="ctl00$cphContentsArea$txtBirthYear" tabindex="13"
+                                                class="imeDisabled" id="ctl00_cphContentsArea_txtBirthYear"
+                                                style="width: 40px;" onfocus="this.select();"
+                                                onchange="AddDropDownList('ctl00_cphContentsArea_txtBirthYear', 'ctl00_cphContentsArea_ddlBirthMonth', 'ctl00_cphContentsArea_ddlBirthDay')"
+                                                type="text" maxlength="4"> --}}
+                                    @error('BIRTH_YEAR')
+                                        {{ $message }}<br>
+                                    @enderror
+                                    <input type="text" name="BIRTH_YEAR" id="BIRTH_YEAR" value="{{ old('BIRTH_YEAR') }}"
+                                        tabindex="13" style="width: 40px;" maxlength="4">
+
+                                    &nbsp;年&nbsp;
+                                    {{-- <select name="ctl00$cphContentsArea$ddlBirthMonth" tabindex="14"
+                                                class="imeDisabled" id="ctl00_cphContentsArea_ddlBirthMonth"
+                                                style="width: 50px;"
+                                                onchange="AddDropDownList('ctl00_cphContentsArea_txtBirthYear', 'ctl00_cphContentsArea_ddlBirthMonth', 'ctl00_cphContentsArea_ddlBirthDay')"> --}}
+                                    @error('BIRTH_MONTH')
+                                        {{ $message }}<br>
+                                    @enderror
+                                    <select name="BIRTH_MONTH" id="BIRTH_MONTH" tabindex="14" style="width: 50px;">
+                                        <option selected="selected" value="{{ old('BIRTH_MONTH') }}"></option>
+                                        <option value="1">1</option>
+                                        <option value="2">2</option>
+                                        <option value="3">3</option>
+                                        <option value="4">4</option>
+                                        <option value="5">5</option>
+                                        <option value="6">6</option>
+                                        <option value="7">7</option>
+                                        <option value="8">8</option>
+                                        <option value="9">9</option>
+                                        <option value="10">10</option>
+                                        <option value="11">11</option>
+                                        <option value="12">12</option>
+
+                                    </select>
+                                    &nbsp;月&nbsp;
+                                    {{-- <select name="ctl00$cphContentsArea$ddlBirthDay" tabindex="15"
+                                                class="imeDisabled" id="ctl00_cphContentsArea_ddlBirthDay"
+                                                style="width: 50px;"> --}}
+                                    @error('BIRTH_DAY')
+                                        {{ $message }}<br>
+                                    @enderror
+                                    <select name="BIRTH_DAY" id="BIRTH_DAY" tabindex="15" style="width: 50px;">
+                                        <option selected="selected" value="{{ old('BIRTH_DAY') }}"></option>
+                                        <option value="1">1</option>
+                                        <option value="2">2</option>
+                                        <option value="3">3</option>
+                                        <option value="4">4</option>
+                                        <option value="5">5</option>
+                                        <option value="6">6</option>
+                                        <option value="7">7</option>
+                                        <option value="8">8</option>
+                                        <option value="9">9</option>
+                                        <option value="10">10</option>
+                                        <option value="11">11</option>
+                                        <option value="12">12</option>
+                                        <option value="13">13</option>
+                                        <option value="14">14</option>
+                                        <option value="15">15</option>
+                                        <option value="16">16</option>
+                                        <option value="17">17</option>
+                                        <option value="18">18</option>
+                                        <option value="19">19</option>
+                                        <option value="20">20</option>
+                                        <option value="21">21</option>
+                                        <option value="22">22</option>
+                                        <option value="23">23</option>
+                                        <option value="24">24</option>
+                                        <option value="25">25</option>
+                                        <option value="26">26</option>
+                                        <option value="27">27</option>
+                                        <option value="28">28</option>
+                                        <option value="29">29</option>
+                                        <option value="30">30</option>
+                                        <option value="31">31</option>
+
+                                    </select>
+                                    &nbsp;日&nbsp;
+                                </td>
+                            </tr>
+                            <tr>
+                                <th class="required">性別</th>
+                                <td>
+                                    {{-- <select name="ctl00$cphContentsArea$ddlSexCls" tabindex="16"
+                                                id="ctl00_cphContentsArea_ddlSexCls" style="width: 50px;"> --}}
+                                    @error('SEX_CLS_CD')
+                                        {{ $message }}<br>
+                                    @enderror
+                                    <select name="SEX_CLS_CD" id="SEX_CLS_CD" tabindex="16" style="width: 50px;">
+                                        <option selected="selected" value="{{ old('SEX_CLS_CD') }}"></option>
+                                        <option value="00">男</option>
+                                        <option value="01">女</option>
+                                    </select>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th class="required">社員区分</th>
+                                <td>
+                                    {{-- <select name="ctl00$cphContentsArea$ddlEmpCls" tabindex="17"
+                                                id="ctl00_cphContentsArea_ddlEmpCls" style="width: 300px;"> --}}
+                                    @error('EMP_CLS1_CD')
+                                        {{ $message }}<br>
+                                    @enderror
+                                    <select name="EMP_CLS1_CD" id="EMP_CLS1_CD" tabindex="17" style="width: 300px;">
+                                        <option selected="selected" value="{{ old('EMP_CLS1_CD') }}"></option>
+                                        <option value="00">役員</option>
+                                        <option value="01">正社員</option>
+                                        <option value="02">派遣社員</option>
+                                        <option value="03">パート</option>
+                                        <option value="04">アルバイト</option>
+
+                                    </select>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th class="required">使用カレンダー</th>
+                                <td>
+                                    {{-- <select name="ctl00$cphContentsArea$ddlCalendar" tabindex="18"
+                                                id="ctl00_cphContentsArea_ddlCalendar" style="width: 300px;"> --}}
+                                    @error('CALENDAR_CD')
+                                        {{ $message }}<br>
+                                    @enderror
+                                    <select name="CALENDAR_CD" id="CALENDAR_CD" tabindex="18" style="width: 300px;">
+                                        <option selected="selected" value="{{ old('CALENDAR_CD') }}"></option>
+                                        <option value="001">通常１(8:00～17:00)</option>
+                                        <option value="002">通常2(7:00～16:00)</option>
+                                        <option value="003">通常3(9:00～1800)</option>
+                                        <option value="010">夜勤Ⅰ(20:00～29:00)</option>
+                                        <option value="011">夜勤Ⅱ(16:00～25:00)</option>
+                                        <option value="100">シフト勤務用</option>
+
+                                    </select>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>部門権限</th>
+                                <td>
+                                    {{-- <select name="ctl00$cphContentsArea$ddlDeptAuth" tabindex="19"
+                                                id="ctl00_cphContentsArea_ddlDeptAuth" style="width: 300px;"> --}}
+                                    @error('DEPT_AUTH_CD')
+                                        {{ $message }}<br>
+                                    @enderror
+                                    <select name="DEPT_AUTH_CD" id="DEPT_AUTH_CD" tabindex="19" style="width: 300px;">
+                                        <option selected="selected" value="{{ old('DEPT_AUTH_CD') }}"></option>
+                                        <option value="000010">営業部管理者</option>
+                                        <option value="000020">製造部管理者</option>
+                                        <option value="000030">経理部管理者</option>
+                                        <option value="000040">総務部管理者</option>
+                                        <option value="000050">購買部管理者</option>
+                                        <option value="000060">資材部管理者</option>
+                                        <option value="000070">品質保証部管理者</option>
+                                        <option value="999999">管理者</option>
+
+                                    </select>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>郵便番号</th>
+                                <td>
+                                    {{-- <input name="ctl00$cphContentsArea$txtPostCd" tabindex="20"
+                                                class="imeDisabled" id="ctl00_cphContentsArea_txtPostCd"
+                                                style="width: 70px;" onfocus="this.select();" type="text" maxlength="8"> --}}
+                                    @error('POST_CD')
+                                        {{ $message }}<br>
+                                    @enderror
+                                    <input type="text" name="POST_CD" id="POST_CD" value="{{ old('POST_CD') }}"
+                                        tabindex="20" style="width: 70px;" maxlength="8">
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>住所１</th>
+                                <td>
+                                    {{-- <input name="ctl00$cphContentsArea$txtAddress1" tabindex="21"
+                                                class="imeOn" id="ctl00_cphContentsArea_txtAddress1"
+                                                style="width: 430px;" onfocus="this.select();" type="text" maxlength="30"> --}}
+                                    @error('ADDRESS1')
+                                        {{ $message }}<br>
+                                    @enderror
+                                    <input type="text" name="ADDRESS1" id="ADDRESS1" value="{{ old('ADDRESS1') }}"
+                                        tabindex="21" style="width: 430px;" maxlength="30">
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>住所２</th>
+                                <td>
+                                    {{-- <input name="ctl00$cphContentsArea$txtAddress2" tabindex="22"
+                                                class="imeOn" id="ctl00_cphContentsArea_txtAddress2"
+                                                style="width: 430px;" onfocus="this.select();" type="text" maxlength="30"> --}}
+                                    @error('ADDRESS2')
+                                        {{ $message }}<br>
+                                    @enderror
+                                    <input type="text" name="ADDRESS2" id="ADDRESS2" value="{{ old('ADDRESS2') }}"
+                                        tabindex="22" style="width: 430px;" maxlength="30">
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>電話番号</th>
+                                <td>
+                                    {{-- <input name="ctl00$cphContentsArea$txtTel" tabindex="23" class="imeDisabled"
+                                                id="ctl00_cphContentsArea_txtTel" style="width: 120px;"
+                                                onfocus="this.select();" type="text" maxlength="15"> --}}
+                                    @error('TEL')
+                                        {{ $message }}<br>
+                                    @enderror
+                                    <input type="text" name="TEL" id="TEL" value="{{ old('TEL') }}" tabindex="23"
+                                        style="width: 120px;" maxlength="15">
+                                </td>
+
+
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>携帯番号</th>
+                                <td>
+                                    {{-- <input name="ctl00$cphContentsArea$txtCellular" tabindex="24"
+                                                class="imeDisabled" id="ctl00_cphContentsArea_txtCellular"
+                                                style="width: 120px;" onfocus="this.select();" type="text" maxlength="15"> --}}
+                                    @error('CELLULAR')
+                                        {{ $message }}<br>
+                                    @enderror
+                                    <input type="text" name="CELLULAR" id="CELLULAR" value="{{ old('CELLULAR') }}"
+                                        tabindex="24" style="width: 120px;" maxlength="15">
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>Ｅメール</th>
+                                <td>
+                                    {{-- <input name="ctl00$cphContentsArea$txtMail" tabindex="25" class="imeOff"
+                                                id="ctl00_cphContentsArea_txtMail" style="width: 360px;"
+                                                onfocus="this.select();" type="text" maxlength="50"> --}}
+                                    @error('MAIL')
+                                        {{ $message }}<br>
+                                    @enderror
+                                    <input type="text" name="MAIL" id="MAIL" value="{{ old('MAIL') }}" tabindex="25"
+                                        style="width: 360px;" maxlength="50">
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>有休付与算出基準年月</th>
+                                <td>
+                                    {{-- <input name="ctl00$cphContentsArea$txtPhGrantYear" tabindex="26"
+                                                class="imeDisabled" id="ctl00_cphContentsArea_txtPhGrantYear"
+                                                style="width: 40px;" onfocus="this.select();" type="text" maxlength="4"> --}}
+                                    @error('PH_GRANT_YEAR')
+                                        {{ $message }}<br>
+                                    @enderror
+                                    <input type="text" name="PH_GRANT_YEAR" id="PH_GRANT_YEAR"
+                                        value="{{ old('PH_GRANT_YEAR') }}" tabindex="26" style="width: 40px;"
+                                        maxlength="4">
+
+                                    &nbsp;年度&nbsp;
+                                    {{-- <select name="ctl00$cphContentsArea$ddlPhGrantMonth" tabindex="27"
+                                                class="imeDisabled" id="ctl00_cphContentsArea_ddlPhGrantMonth"
+                                                style="width: 50px;"> --}}
+                                    @error('PH_GRANT_MONTH')
+                                        {{ $message }}<br>
+                                    @enderror
+                                    <select name="PH_GRANT_MONTH" id="PH_GRANT_MONTH" tabindex="27" style="width: 50px;">
+                                        <option selected="selected" value=""></option>
+                                        <option value="1">1</option>
+                                        <option value="2">2</option>
+                                        <option value="3">3</option>
+                                        <option value="4">4</option>
+                                        <option value="5">5</option>
+                                        <option value="6">6</option>
+                                        <option value="7">7</option>
+                                        <option value="8">8</option>
+                                        <option value="9">9</option>
+                                        <option value="10">10</option>
+                                        <option value="11">11</option>
+                                        <option value="12">12</option>
+
+                                    </select>
+                                    &nbsp;月&nbsp;
+                                </td>
+                            </tr>
+                            <tr>
+                                <th class="required">職種区分</th>
+                                <td>
+                                    {{-- <select name="ctl00$cphContentsArea$ddlEmpCls2" tabindex="28"
+                                                id="ctl00_cphContentsArea_ddlEmpCls2" style="width: 300px;"> --}}
+                                    @error('EMP_CLS2_CD')
+                                        {{ $message }}<br>
+                                    @enderror
+                                    <select name="EMP_CLS2_CD" id="EMP_CLS2_CD" tabindex="28" style="width: 300px;">
+                                        <option selected="selected" value="{{ old('EMP_CLS2_CD') }}"></option>
+                                        <option value="00">管理者</option>
+                                        <option value="01">部長</option>
+                                        <option value="02">課長</option>
+                                        <option value="05">一般</option>
+
+                                    </select>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th class="required">締日</th>
+                                <td>
+                                    {{-- <select name="ctl00$cphContentsArea$ddlClosingDate" tabindex="29"
+                                                id="ctl00_cphContentsArea_ddlClosingDate" style="width: 150px;"> --}}
+                                    @error('CLOSING_DATE_CD')
+                                        {{ $message }}<br>
+                                    @enderror
+                                    <select name="CLOSING_DATE_CD" id="CLOSING_DATE_CD" tabindex="29" style="width: 150px;">
+                                        <option value="{{ old('CLOSING_DATE_CD') }}"></option>
+                                        <option value="15">１５日締</option>
+                                        <option value="25">２５日締</option>
+                                        <option selected="selected" value="31">末締</option>
+
+                                    </select>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>所属</th>
+                                <td>
+                                    {{-- <select name="ctl00$cphContentsArea$ddlCompany" tabindex="30"
+                                                id="ctl00_cphContentsArea_ddlCompany" style="width: 300px;"> --}}
+                                    @error('COMPANY_CD')
+                                        {{ $message }}<br>
+                                    @enderror
+                                    <select name="COMPANY_CD" id="COMPANY_CD" tabindex="30" style="width: 150px;">
+                                        <option selected="selected" value="{{ old('COMPANY_CD') }}"></option>
+                                        <option value="001">A派遣</option>
+                                        <option value="002">B派遣</option>
+                                        <option value="003">C派遣</option>
+                                    </select>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>社員番号２</th>
+                                <td>
+                                    {{-- <input name="ctl00$cphContentsArea$txtEmp2Cd" tabindex="31"
+                                                class="imeDisabled" id="ctl00_cphContentsArea_txtEmp2Cd"
+                                                style="width: 80px;"
+                                                onkeypress="if (WebForm_TextBoxKeyHandler(event) == false) return false;"
+                                                onfocus="this.select();"
+                                                onchange="javascript:setTimeout('__doPostBack(\'ctl00$cphContentsArea$txtEmp2Cd\',\'\')', 0)"
+                                                type="text" maxlength="10"> --}}
+                                    @error('EMP2_CD')
+                                        {{ $message }}<br>
+                                    @enderror
+                                    <input type="text" name="EMP2_CD" id="EMP2_CD" value="{{ old('EMP2_CD') }}"
+                                        tabindex="31" style="width: 80px;" maxlength="10">
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+
+                    <div class="line"></div>
+
+                    <p class="ButtonField1">
+                        <input type="button" value="更新" name="btnUpdate" tabindex="32" id="btnUpdate"
+                            class="ButtonStyle1 submit-form" onclick="return checkSubmit(this)"
+                            data-url="{{ url('master/MT10EmpUpdate') }}">
+                        
+                        <input type="button" name="btnCancel" tabindex="33" id="btnCancel"
+                            class="ButtonStyle1 submit-form" value="キャンセル"
+                            onclick="location.reload();"
+                        >
+                        <input type="button" name="btnDelete" tabindex="34" id="btnDelete"
+                            class="ButtonStyle1 submit-form" value="削除"
+                            @if(empty($emp_data->EMP_CD))
+                            disabled="disabled"
+                            @else
+                            data-url="{{ url('master/MT10EmpDelete') }}"
+                            @endif
+                        >
+                    </p>
+                </div>
+            </form>
+        </table>
+    </div>
+
+@endsection
+
+@section('script')
+<script>
+    // ENTER時に送信されないようにする
+    $(function() {
+        $('input').not('[type="button"]').keypress(function(e) {
+            if (e.which == 13) {
+                return false;
+            }
+        });
+    });
+
+    // 確認ダイアル
+    function checkSubmit() {
+        if (window.confirm("{{ $msg_1005 }}")) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+    
+    //キャセンル、削除処理submit-form
+    $(document).on('click', '.submit-form', function() {
+        var url = $(this).data('url');
+        $('#form').attr('action', url);
+        $('#form').submit();
+    });
+
+    // 全角なら自動で半角へ変更
+    $(document).on("change", 'input', function(){
+        let str = $(this).val()
+        str = str.replace(/[Ａ-Ｚａ-ｚ０-９]/g, function(s) {
+            return String.fromCharCode(s.charCodeAt(0) - 0xFEE0);
+        });
+        str = str.replace( /[^!-~]/g , "" );
+        $(this).val(str);
+    });
+    
+    // 入力不可能文字：|
+    ngVerticalBar = n => n.replace(/\|/g, '');
+
+</script>
+@endsection

@@ -1,0 +1,70 @@
+<?php
+
+namespace App\Http\Controllers\Work_Time;
+
+use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
+use App\Http\Requests\EmpWorkStatusReferenceRequest;
+use App\Repositories\Work_Time\EmpWorkStatusReferenceRepository;
+
+
+class EmpWorkStatusReferenceConttoller extends Controller
+{
+    //** $empWtStatusRef_Repositoryリポジトリの実装 */
+    /**
+     * @var EmpWorkStatusReferenceRepository
+     */
+    protected $empWtStatusRef_Repository;
+
+    //** コントローラインスタンスの生成 */
+    /**
+     * @param  EmpWorkStatusReferenceRepository $empWtStatusRef_Repository
+     * @return void
+     */
+    public function __construct(EmpWorkStatusReferenceRepository $empWtStatusRef_Repository)
+    {
+        $this->empWtStatusRef_Repository = $empWtStatusRef_Repository;
+    }
+
+    //**出退勤照会 画面表示 **//
+    /**
+     * @return view
+     */
+    public function EmpWorkStatusReference(Request $request)
+    {
+        $companyNames = $this->empWtStatusRef_Repository->companyName();
+        // dd($companyName);
+        return view('work_time.EmpWorkStatusReference', compact('companyNames'));
+    }
+
+    //** 出退勤照会 画面各機能(データ渡し)処理 */
+    /**
+     * @return view(EmpWorkStatusReference.blade)
+     */
+    public function searchData(EmpWorkStatusReferenceRequest $request)
+    {
+        $FIX_MSG = '確定済み';
+
+        $inputSearchData = $request->all();
+        $empWorkTimeResults = $this->empWtStatusRef_Repository->empInput($request);
+        $errMsg_4029 = $this->empWtStatusRef_Repository->messages();
+        $companyName = $this->empWtStatusRef_Repository->companyName();
+
+        return view('work_time.EmpWorkStatusReference', compact(
+            'empWorkTimeResults',
+            'errMsg_4029',
+            'FIX_MSG',
+            'inputSearchData',
+            'companyName'
+        ));
+    }
+
+    //** 出退勤照会 画面機能キャセンル処理 */
+    /**
+     * @return view(WorkTimeReference.blade)
+     */
+    public function cancelBtn(Request $request)
+    {
+        return redirect()->route('worktimeRef')->withInput($request->only(['ddlTargetYear', 'ddlTargetMonth']));
+    }
+}

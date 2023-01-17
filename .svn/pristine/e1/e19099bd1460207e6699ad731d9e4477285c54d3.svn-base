@@ -1,0 +1,91 @@
+<?php
+
+namespace App\Repositories\Master;
+
+use Illuminate\Http\Request;
+
+use App\Models\MT10Emp;
+use App\Models\MT91ClsDetail;
+use App\Models\MT99Msg;
+use App\Models\MT14PgAuth;
+
+use App\Filters\MT10EmpRefFilter;
+use App\Http\Requests\MT10EmpRefRequest;
+
+use Illuminate\Foundation\Testing\DatabaseTransactions;
+
+
+class MT10EmpRefRepository extends MT10Emp
+{
+    public function search(MT10EmpRefFilter $filter)
+    {
+
+        $query = MT10Emp::filter($filter)
+        ->orderBy('EMP_CD');
+
+        $head_filter = null;
+        if (isset($_GET['button_A'])) {
+            $head_filter = '[ァ-オ]';           
+        } else if (isset($_GET['button_KA'])) {
+            $head_filter = '[カ-ゴ]';           
+        } else if (isset($_GET['button_SA'])) {
+            $head_filter = '[サ-ゾ]';           
+        } else if (isset($_GET['button_TA'])) {
+            $head_filter = '[タ-ド]';           
+        } else if (isset($_GET['button_NA'])) {
+            $head_filter = '[ナ-ノ]';           
+        } else if (isset($_GET['button_HA'])) {
+            $head_filter = '[ハ-ポ]';           
+        } else if (isset($_GET['button_MA'])) {
+            $head_filter = '[マ-モ]';           
+        } else if (isset($_GET['button_YA'])) {
+            $head_filter = '[ャ-ヨ]';           
+        } else if (isset($_GET['button_RA'])) {
+            $head_filter = '[ラ-ロ]';           
+        } else if (isset($_GET['button_WA'])) {
+            $head_filter = '[ヮ-ン]';           
+        } else if (isset($_GET['button_EN'])) {
+            $head_filter = '[a-zA-Z]';           
+        }
+        if ($head_filter != null) {
+            $query->where('EMP_KANA', 'like', "{$head_filter}%");
+        }
+        $query_results = $query->paginate(40);
+
+        return $query_results;
+    }        
+
+    public function edit($id)
+    {
+        $emp_cd = MT10Emp::where('EMP_CD', $id)->first();
+        return $emp_cd;
+    }
+
+    public function regClsCd()
+    {
+        $reg_cls_cd = MT91ClsDetail::select('CLS_DETAIL_CD', 'CLS_DETAIL_NAME')
+                    ->where('CLS_CD', '02')
+                    ->get();
+
+        return $reg_cls_cd;
+    }
+    
+    public function upsertEmp($record)
+    {
+        return DB::table(MT10Emp.$table)
+                ->upsert($record, MT10Emp.$primaryKey, MT10Emp.$fillable);
+    }
+
+    public function deleteEmp($id)
+    {
+        return DB::table(MT10Emp.$table)
+                ->where('EMP_CD', $id)
+                ->delete();
+    }
+    
+    public function messages()
+    {
+        $msg_2000 = MT99Msg::where('MSG_NO', '2000')->pluck('MSG_CONT')->first();
+        return $msg_2000;
+    }
+}

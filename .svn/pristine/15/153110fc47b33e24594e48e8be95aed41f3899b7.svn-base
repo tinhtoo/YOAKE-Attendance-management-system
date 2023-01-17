@@ -1,0 +1,15 @@
+<html lang="ja">
+<head>
+<meta charset="utf-8">
+<title>親画面サンプル</title>
+<script>
+function openwindow(){
+  var win = window.open('testmodal');
+}
+</script>
+</head>
+<body>
+  <input type="text" id="oyaTxt1" value="">
+  <input type="button" value=" サブウィンドウを開く " onclick="openwindow();">
+</body>
+</html>

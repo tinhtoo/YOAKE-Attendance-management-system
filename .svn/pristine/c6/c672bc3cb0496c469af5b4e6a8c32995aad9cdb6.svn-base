@@ -1,0 +1,244 @@
+<?php
+use App\Http\Controllers\UserAuthController;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Work_Time\WorkTimeEditorController;
+use App\Http\Controllers\Work_Time\WorkTimeReferenceController;
+use App\Http\Controllers\Work_Time\EmpWorkTimeReferenceController;
+use App\Http\Controllers\Work_Time\EmpWorkStatusReferenceController;
+use App\Http\Controllers\Search\Mt10EmpSearchController;
+use App\Http\Controllers\MT01ControlEditorController;
+use App\Http\Controllers\MT06OverTmLmtEditorController;
+use App\Http\Controllers\MT11PasswordEditorController;
+use App\Http\Controllers\MT23CompanyReferenceController;
+use App\Http\Controllers\MT23CompanyEditorController;
+
+
+/*
+|--------------------------------------------------------------------------
+| Web Routes
+|--------------------------------------------------------------------------
+|
+| Here is where you can register web routes for your application. These
+| routes are loaded by the RouteServiceProvider within a group which
+| contains the "web" middleware group. Now create something great!
+|
+*/
+
+
+/**Routeの設定をしました。 */
+Auth::routes();
+
+//ログイン画面表示
+Route::get('/','App\Http\Controllers\UserAuthController@login');
+Route::post('check',[UserAuthController::class,'check'])->name('auth.check');
+
+//メインメニュー画面の表示
+Route::group(['middleware' => 'web'],function(){
+    Route::get('main',[UserAuthController::class, 'main']);
+});
+
+
+
+//***** 勤怠管理 *****//
+
+//出退勤入力画面表示
+Route::get('/work_time/WorkTimeEditor',[WorkTimeEditorController::class, 'worktimeeditor']) ->name('worktimeeditor');
+Route::post('/work_time/WorkTimeEditor',[WorkTimeEditorController::class, 'search']) ->name('wte.search');
+Route::post('/work_time/WorkTimeEditorEdit',[WorkTimeEditorController::class, 'edit']) ->name('wte.edit');
+Route::post('/work_time/WorkTimeEditorUpdate',[WorkTimeEditorController::class, 'update']) ->name('wte.update');
+Route::post('/work_time/WorkTimeEditorCancel',[WorkTimeEditorController::class, 'cancel']) ->name('wte.cancel');
+
+//出退勤入力（部門別）画面表示
+Route::get('work_time/WorkTimeDeptEditor','App\Http\Controllers\HomeController@WorkTimeDeptEditor');
+
+//出退勤照会　画面表示
+Route::get('work_time/EmpWorkStatusReference',[EmpWorkStatusReferenceController::class,'EmpWorkStatusReference']) ->name('empworkstatusRef');
+Route::post('work_time/EmpWorkStatusReference',[EmpWorkStatusReferenceController::class,'searchBtn']) ->name('empworkstatusRef.search');
+Route::post('work_time/EmpWorkStatusReferenceCancel',[EmpWorkStatusReferenceController::class,'cancelBtn']) ->name('empworkstatusRef.cancel');
+
+//勤務状況照会(個人用) 画面表示
+Route::get('work_time/WorkTimeReference',[WorkTimeReferenceController::class, 'WorkTimeReference']) ->name('worktimeRef');
+Route::post('/work_time/WorkTimeReference',[WorkTimeReferenceController::class, 'searchBtn']) ->name('worktimeRef.search');
+Route::post('/work_time/WorkTimeReferenceCancel',[WorkTimeReferenceController::class, 'cancelBtn']) ->name('worktimeRef.cancel');
+
+//勤務状況照会(管理者用) 画面表示
+Route::get('/work_time/EmpWorkTimeReference',[EmpWorkTimeReferenceController::class, 'empworktime_ref']) ->name('empworktime_ref');
+Route::post('/work_time/EmpWorkTimeReference',[EmpWorkTimeReferenceController::class, 'search']) ->name('ewtr.search');
+Route::post('/work_time/EmpWorkTimeReferenceCancel',[EmpWorkTimeReferenceController::class, 'cancel']) ->name('ewtr.cancel');
+
+//***** 帳票 *****//
+
+//勤務予定表(週・月別) 画面表示
+Route::get('form_print/WorkPlanPrint','App\Http\Controllers\HomeController@WorkPlanPrint');
+
+//勤務実績表(日・週・月別) 画面表示
+Route::get('form_print/WorkTimePrint','App\Http\Controllers\HomeController@WorkTimePrint');
+
+//未打刻／二重打刻一覧表  画面表示
+Route::get('form_print/TimeStampPrint','App\Http\Controllers\HomeController@TimeStampPrint');
+
+//事由／勤怠一覧表 画面表示
+Route::get('form_print/ReasonWorkPtnPrint','App\Http\Controllers\HomeController@ReasonWorkPtnPrint');
+
+//残業申請書 画面表示
+Route::get('form_print/OvertimeAplPrint','App\Http\Controllers\HomeController@OvertimeAplPrint');
+
+
+//***** シフト管理 *****//
+
+//シフトパターン情報入力 画面表示
+Route::get('shift/MT04ShiftPtnReference','App\Http\Controllers\HomeController@MT04ShiftPtnReference');
+
+//シフトパターン情報入力(新規シフトパタン登録) 画面表示
+Route::get('shift/MT04ShiftPtnEditor','App\Http\Controllers\HomeController@MT04ShiftPtnEditor');
+
+//月別シフト入力  画面表示
+Route::get('shift/MonthShiftEditor','App\Http\Controllers\HomeController@MonthShiftEditor');
+
+//社員別月別シフト入力 画面表示
+Route::get('shift/MonthShiftEmpEditor','App\Http\Controllers\HomeController@MonthShiftEmpEditor');
+
+
+
+//***** 管理業務 *****//
+
+//カレンダー情報入力画面表示
+Route::get('mng_oprt/MT03CalendarEditor','App\Http\Controllers\HomeController@MT03CalendarEditor');
+
+//シフト月次更新処理画面表示
+Route::get('mng_oprt/ShiftCalendarCarryOver','App\Http\Controllers\HomeController@ShiftCalendarCarryOver');
+
+//月次確定処理画面表示
+Route::get('mng_oprt/WorkTimeFix','App\Http\Controllers\HomeController@ShiftCalendarCarryOver');
+
+//月次確定状況照会画面
+Route::get('mng_oprt/WorkTimeFixReference','App\Http\Controllers\HomeController@WorkTimeFixReference');
+
+//最新打刻情報取得処理画面
+Route::get('mng_oprt/WorkTimeConvert','App\Http\Controllers\HomeController@WorkTimeConvert');
+
+//出退勤情報クリア処理画面表示
+Route::get('mng_oprt/WorkTimeClear','App\Http\Controllers\HomeController@WorkTimeClear');
+
+//カレンダー情報クリア処理画面表示
+Route::get('mng_oprt/CalendarClear','App\Http\Controllers\HomeController@CalendarClear');
+
+//勤務実績情報出力画面
+Route::get('mng_oprt/WorkTimeExport','App\Http\Controllers\HomeController@WorkTimeExport');
+
+
+//***** マスタ *****//
+
+//社員情報照会
+// Route::get('master/MT10EmpReference','App\Http\Controllers\HomeController@MT10EmpReference');
+//Route::get('master/MT10EmpReference','App\Http\Controllers\MT10EmpReferenceController@index');
+Route::get('master/MT10EmpReference','App\Http\Controllers\MT10EmpReferenceController@search')->name('LabelSearch');
+
+
+Route::get('master/MT10EmpEditor','App\Http\Controllers\HomeController@MT10EmpEditor');
+
+//社員情報入力
+//共用
+Route::get('master/edit','App\Http\Controllers\MT10EmpEditor@edit')->name('item.edit');
+//新規作成
+Route::post('master/create','App\Http\Controllers\MT10EmpEditor@create')->name('item.create');
+//編集
+Route::get('master/detail/{id}', 'App\Http\Controllers\MT10EmpEditor@detail')->name('item.detail');
+Route::post('master/edit', 'ItemController@edit')->name('item.edit');
+
+
+//ログイン情報入力
+Route::get('master/MT11LoginReference','App\Http\Controllers\HomeController@MT11LoginReference');
+
+//ログイン情報照会
+Route::get('master/MT11LoginEditor','App\Http\Controllers\HomeController@MT11LoginEditor');
+
+//パスワード変更入力
+Route::get('master/MT11PasswordEditor',[MT11PasswordEditorController::class, 'index']);
+Route::post('master/MT11PasswordEditor',[MT11PasswordEditorController::class, 'update']) ->name('MT11Pass.update');
+
+//機能権限情報照会
+Route::get('master/MT14PGAuthReference','App\Http\Controllers\HomeController@MT14PGAuthReference');
+
+//機能権限情報入力
+Route::get('master/MT14PGAuthEditor','App\Http\Controllers\HomeController@MT14PGAuthEditor');
+
+//部門情報照会
+Route::get('master/MT12DeptReference','App\Http\Controllers\HomeController@MT12DeptReference');
+
+//部門情報入力
+Route::get('master/MT12DeptEditor','App\Http\Controllers\HomeController@MT12DeptEditor');
+
+//組織変更照会
+Route::get('master/MT12OrgReference','App\Http\Controllers\HomeController@MT12OrgReference');
+
+//組織変更入力
+Route::get('master/MT12OrgEditor','App\Http\Controllers\HomeController@MT12OrgEditor');
+
+//部門情報検索（UpDeptSearch）
+Route::get('master/UpDeptSearch','App\Http\Controllers\HomeController@UpDeptSearch');
+
+//部門権限情報照会
+Route::get('master/MT13DeptAuthReference','App\Http\Controllers\HomeController@MT13DeptAuthReference');
+
+//部門権限情報入力
+Route::get('master/MT13DeptAuthEditor','App\Http\Controllers\HomeController@MT13DeptAuthEditor');
+
+//祝祭日・会社休日情報入力
+Route::get('master/MT08HolidayEditor','App\Http\Controllers\HomeController@MT08HolidayEditor');
+
+//勤務体系情報照会
+Route::get('master/MT05WorkPtnReference','App\Http\Controllers\HomeController@MT05WorkPtnReference');
+
+//勤務体系情報入力
+Route::get('master/MT05WorkPtnEditor','App\Http\Controllers\HomeController@MT05WorkPtnEditor');
+
+//端数処理情報入力
+Route::get('master/MT07FractionEditor','App\Http\Controllers\HomeController@MT07FractionEditor');
+
+//カレンダーパターン情報照会
+Route::get('master/MT02CalendarPtnReference','App\Http\Controllers\HomeController@MT02CalendarPtnReference');
+
+//カレンダーパターン情報入力
+Route::get('master/MT02CalendarPtnEditor','App\Http\Controllers\HomeController@MT02CalendarPtnEditor');
+
+//未実施*******未実装
+
+//残業上限情報入力
+Route::get('master/MT06OverTmLmtEditor',[MT06OverTmLmtEditorController::class, 'index'])->name('MT06.index');
+Route::post('master/MT06OverTmLmtEditor',[MT06OverTmLmtEditorController::class,  'update'])->name('MT06.update');
+
+//基本情報入力
+Route::get('master/MT01ControlEditor',[MT01ControlEditorController::class, 'index']);
+Route::post('master/MT01ControlEditor',[MT01ControlEditorController::class, 'update']) ->name('MT01.update');
+
+//社員番号一括変換
+Route::get('master/MT10EmpCnvert','App\Http\Controllers\HomeController@MT10EmpCnvert');
+
+//社員情報書出処理
+Route::get('master/EmpExport','App\Http\Controllers\HomeController@EmpExport');
+
+//社員情報取込処理
+Route::get('master/EmpImport','App\Http\Controllers\HomeController@EmpImport');
+
+//所属情報照会
+//Route::get('master/MT23CompanyReference','App\Http\Controllers\HomeController@MT23CompanyReference');
+Route::get('master/MT23CompanyReference',[MT23CompanyReferenceController::class, 'index']) ->name('MT23Re.index');
+
+//所属情報入力
+Route::get('master/MT23CompanyEditor',[MT23CompanyEditorController::class,'index'])->name('MT23.index');
+Route::post('master/MT23CompanyEditor',[MMT23CompanyEditorController::class, 'update']) ->name('MT23.update');
+//***** sub-画面追加*****//
+
+//部門情報検索（MT12DeptSearch）
+Route::get('search/MT12DeptSearch','App\Http\Controllers\HomeController@MT12DeptSearch');
+
+//社員情報検索（MT10EmpSearch）
+Route::get('search/MT10EmpSearch',[MT10EmpSearchController::class, 'searchEmp']) ->name('emp.search');
+
+
+
+//モーダルテスト
+// Route::get('test','App\Http\Controllers\TestController@index');
+// Route::get('testmodal','App\Http\Controllers\TestController@index2');

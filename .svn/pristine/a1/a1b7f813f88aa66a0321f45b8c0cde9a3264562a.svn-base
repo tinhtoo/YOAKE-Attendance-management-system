@@ -1,0 +1,53 @@
+<?php
+
+namespace App\Http\Controllers\Master;
+
+use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
+use App\Models\MT14PgAuth;
+use Illuminate\Support\Facades\DB;
+use Illuminate\Pagination\Paginator;
+use App\Repositories\MT93PgRepository;
+
+class MT14PGAuthEditorController extends Controller
+{
+        public function __construct(MT93PgRepository $pg_repository)
+        {
+                parent::__construct($pg_repository);
+        }
+
+
+        public function index(){
+               // $all = DB::select('select * from MT14_PG_AUTH', [1]);
+                $all = DB::table('MT93_PG')->get();
+                $all->orderBy('MCLS_CD', 'asc')->orderBy('PG_CD', 'desc')->get();
+                $all = MT14PgAuth::paginate(20);
+                Paginator::useBootstrap();
+
+                return parent::viewWithMenu('master.MT14PGAuthEditor',compact('all'));
+        }
+
+        public function input()
+        {
+            $user_infos = User::select('*')->get();
+            return parent::viewWithMenu('master.MT14PGAuthEditor', ['user_infos' => $user_infos]);
+        }
+    
+        public function register(Request $request)
+        {
+            $input_data = $request->all();
+    
+            foreach ($input_data['user_id'] as $key => $value) {
+                $user_info = User::select('*')->find($key);
+                $user_info->check_flag = $value;
+                $user_info->save();
+            }
+            return redirect(route('output'));
+        }
+    
+        public function output()
+        {
+            $user_infos = User::select('*')->get();
+            return parent::viewWithMenu('master.MT14PGAuthEditor', ['user_infos' => $user_infos]);
+        }
+    }

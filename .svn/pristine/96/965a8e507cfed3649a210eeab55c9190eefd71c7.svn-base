@@ -1,0 +1,58 @@
+<!-- 所属情報入力 -->
+@extends('menu.main')
+
+@section('title', '所属情報入力')
+
+@section('content')
+    <div id="contents-stage">
+        <table class="BaseContainerStyle1">
+            <tbody>
+                <tr>
+                    <td>
+                        <div id="UpdatePanel1">
+                            <p class="FunctionMenu1">
+                                <a id="AddSplyer" href="{{ Route('MT23.index') }}">新規所属登録</a>
+                            </p>
+                            <div class="line"></div>
+
+                            <div class="GridViewStyle1">
+                                <table>
+                                    <tbody>
+                                        <tr>
+                                            <th>
+                                                所属
+                                            </th>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </div>
+                            <div class="GridViewStyle1">
+                                <div class="two-col">
+                                    <table tabindex="7" class="GridViewSpace" id="gvEmp" style="border-collapse: collapse;"
+                                        border="1" rules="all" cellspacing="0">
+                                        <tbody>
+                                            @if (!empty($haken_company))
+                                                @foreach ($haken_company as $company)
+                                                    <tr>
+                                                        <td class="col-sm-4">
+                                                            <a href="{{ Route('MT23.index') }}">
+                                                                {{ $company->COMPANY_CD }} : {{ $company->COMPANY_NAME }}
+                                                            </a>
+                                                        </td>
+                                                    </tr>
+                                                @endforeach
+                                            @endif
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                            <div class="d-flex justify-content-center">
+                                {{ $haken_company->appends(request()->input())->render('pagination::bootstrap-4') }}
+                            </div>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+@endsection

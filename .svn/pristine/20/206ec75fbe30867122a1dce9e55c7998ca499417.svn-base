@@ -1,0 +1,35 @@
+<?php
+
+namespace App\Http\Controllers\Mng_Oprt;
+
+use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
+use App\Repositories\MT93PgRepository;
+
+use function Symfony\Component\VarDumper\Dumper\esc;
+
+/**
+ * 勤務実績情報出力画面
+ */
+
+class WorkTimeExportController extends Controller
+{
+    /**
+     * コントローラインスタンスの生成
+     * @param
+     * @return void
+     */
+    public function __construct(MT93PgRepository $pg_repository)
+    {
+        parent::__construct($pg_repository, '042000');
+    }
+
+    /**
+     * 勤務実績情報出力画面表示
+     * @return view
+     */
+    public function index(Request $request)
+    {
+        return parent::viewWithMenu('mng_oprt.WorkTimeExport');
+    }
+}

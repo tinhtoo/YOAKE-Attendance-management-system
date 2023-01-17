@@ -1,0 +1,82 @@
+<!-- 祝祭日・会社休日情報入力  -->
+@extends('menu.main')
+
+@section('title', '祝祭日・会社休日情報入力 ')
+
+@section('content')
+    <div id="contents-stage">
+        <table class="BaseContainerStyle3">
+            <tbody>
+                <tr>
+                    <td>
+                        <div id="UpdatePanel1">
+
+                            <div class="GridViewStyle1">
+                                <div class="flow">
+                                    <div class="pd5">
+
+                                        <p class="CategoryTitle1">祝祭日</p>
+
+                                        <input name="btnAddNationalHoliday" tabindex="1" class="ButtonStyle1"
+                                            id="btnAddNationalHoliday" onclick="" type="button" value="新規行追加">
+                                        <div class="GridViewPanelStyle3 mg10" id="NationalHoliday">
+
+                                            <div>
+                                                <table tabindex="2" class="GridViewBorder" id="gvNationalHoliday"
+                                                    style="border-collapse: collapse;" border="1" rules="all"
+                                                    cellspacing="0">
+                                                    <tbody class="gvDept_2">
+
+                                                    </tbody>
+                                                </table>
+                                            </div>
+
+                                        </div>
+
+                                    </div>
+                                </div>
+
+                                <div class="flow">
+                                    <div class="pd5">
+
+                                        <p class="CategoryTitle1">会社休日</p>
+                                        <input name="btnAddCompanyHoliday" tabindex="4" id="btnAddCompanyHoliday" onclick=""
+                                            type="button" value="新規行追加">
+                                        <div class="GridViewPanelStyle3 mg10" id="CompanyHoliday">
+
+                                            <div>
+                                                <table tabindex="5" class="GridViewBorder" id="gvCompanyHoliday"
+                                                    style="border-collapse: collapse;" border="1" rules="all"
+                                                    cellspacing="0">
+                                                    <tbody class="gvDept_3">
+
+                                                    </tbody>
+                                                </table>
+                                            </div>
+
+                                        </div>
+
+                                    </div>
+                                </div>
+
+                                <div class="clearBoth"></div>
+                            </div>
+
+                            <div class="line"></div>
+
+                            <p class="ButtonField1">
+                                <input name="btnUpdate" tabindex="7" id="btnUpdate"
+                                    onclick="if(confirm('更新します。よろしいですか?') ==  false){ return false;};" type="button"
+                                    value="更新">
+                                <input name="btnCancel" tabindex="8" id="btnCancel"
+                                    onclick="javascript:__doPostBack('btnCancel','')" type="button" value="キャンセル">
+                            </p>
+
+
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+@endsection

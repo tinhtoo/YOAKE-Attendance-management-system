@@ -1,0 +1,29 @@
+<?php
+
+namespace App\Repositories;
+
+use Illuminate\Http\Request;
+
+use App\Models\MT93Pg;
+
+use Illuminate\Foundation\Testing\DatabaseTransactions;
+use Illuminate\Support\Facades\DB;
+
+
+class MT93PgRepository
+{
+    public function getMenu($loginId)
+    {
+        $MT93pgs = MT93Pg::select('MT93_PG.PG_CD', 'MT93_PG.MCLS_CD')
+                ->join('MT14_PG_AUTH', 'MT93_PG.PG_CD', '=', 'MT14_PG_AUTH.PG_CD')
+                ->join('MT10_EMP', 'MT14_PG_AUTH.PG_AUTH_CD', '=', 'MT10_EMP.PG_AUTH_CD')
+                ->join('MT11_LOGIN', 'MT10_EMP.EMP_CD', '=', 'MT11_LOGIN.EMP_CD')
+                ->where('MT11_LOGIN.LOGIN_ID', '=', $loginId)
+                ->get();
+        $menu = [];
+        foreach ($MT93pgs as $MT93pg) {
+            $menu[$MT93pg->MCLS_CD][$MT93pg->PG_CD] = true;
+        }
+        return $menu;
+    }
+}

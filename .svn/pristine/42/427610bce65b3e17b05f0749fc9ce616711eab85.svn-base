@@ -1,0 +1,94 @@
+<!-- 部門情報検索  -->
+@extends('common.home')
+@section('title', '部門情報検索')
+@section('content_search')
+    <div id="search-container">
+        <form id="DeptModal" runat="server" name="DeptModal">
+            {{ csrf_field() }}
+            <div id="contents-stage">
+                <input name="btnBack" id="btnBack" style="width: 80px; height: 21px;" onclick="window.close();"
+                    type="button" value="戻る">
+
+                <div class="GridViewStyle1 mg10" id="search-gridview-container">
+                    <div class="GridViewPanelStyle3" id="pnlCalendarPtn">
+
+                        <div>
+                            <table class="GridViewPadding" id="gvDept" style="border-collapse: collapse;" border="1"
+                                rules="all" cellspacing="0">
+                                <tbody>
+                                    <tr>
+                                        <th scope="col">
+                                            選択
+                                        </th>
+                                        <th scope="col">
+                                            部門
+                                        </th>
+                                    </tr>
+                                    @isset($dept_search)
+                                        @foreach ($dept_search as $item)
+                                            <tr class="bkcolor" style="cursor: pointer;" backgroundColor="transparent">
+                                                <td style="width: 30px;">
+                                                    <input type="radio" name="dept" value="{{ $item->DEPT_CD }}"
+                                                        id="{{ $item->DEPT_NAME }}" onclick="Deptfunc();">
+                                                </td>
+                                                <td style="width: 200px; white-space: nowrap; cursor: pointer;">
+                                                    <label for="{{ $item->DEPT_NAME }}" style="width: 100%;">
+                                                        <span style="cursor: pointer;">{{ $item->DEPT_CD }} :
+                                                            {{ str_pad($item->DEPT_NAME, strlen($item->DEPT_NAME) + 3 * $item->LEVEL_NO, '　　　', STR_PAD_LEFT) }}</span>
+                                                    </label>
+                                                </td>
+                                            </tr>
+                                        @endforeach
+                                    @endisset
+                                </tbody>
+                            </table>
+                        </div>
+
+                    </div>
+                </div>
+
+            </div>
+        </form>
+    </div>
+@endsection
+@section('script')
+<script>
+    function Deptfunc() {
+        if (!window.opener || window.opener.closed) {
+            alert("呼び出し元が既に閉じられています。");
+            return false;
+        }
+
+        var Depts = document.getElementsByName("dept");
+        var parentTd;
+        var txtDeptCd;
+        var txtDeptName;
+        
+        for (var i = 0; i < Depts.length; i++) {
+            if (Depts[i].checked) {
+                deptCd = Depts[i].value
+                deptName = Depts[i].id
+            }
+        } 
+        
+        if (window.opener.$(".clickedTableRecord").length) {
+            parentTd = window.opener.$(".clickedTableRecord").closest("td");
+            txtDeptCd = parentTd.find('.txtDeptCd');
+            txtDeptName = parentTd.find('.txtDeptName');
+        } else {
+            parentTd = window.opener.$('#txtDeptCd').closest("td");
+            txtDeptCd = parentTd.find('#txtDeptCd');
+            txtDeptName = parentTd.find('#deptName');
+        }
+        
+        if (parentTd.length) {
+            txtDeptCd.val(deptCd);
+        }
+
+        if (parentTd.length) {
+            txtDeptName.val(deptName);
+        }
+        window.close();
+    }
+</script>
+@endsection

@@ -1,0 +1,349 @@
+<?php
+
+namespace App\Http\Controllers\Work_Time;
+
+use App\Http\Controllers\Controller;
+use Illuminate\Http\Request;
+use App\Http\Requests\WorkTimeRequest;
+use App\Models\TR01Work;
+use App\Repositories\Work_Time\WorkTimeRepository;
+use App\Repositories\MT93PgRepository;
+use App\Models\Wk01Work;
+
+class WorkTimeEditorController extends Controller
+{
+    /**
+     * Work_Timeリポジトリの実装
+     *
+     * @var WorkTimeRepository
+     */
+    protected $wtime_Repository;
+
+    /**
+     * 新しいコントローラインスタンスの生成
+     *
+     * @param 
+     * @return void
+     */
+    public function __construct(WorkTimeRepository $wtime_Repository
+                                , MT93PgRepository $pg_repository)
+    {
+        parent::__construct($pg_repository, '010001');
+        $this->wtime_Repository = $wtime_Repository;
+    }
+
+    /**
+     * 指定画面の表示
+     *
+     * @param $request
+     * @return view
+     */
+    public function worktimeeditor(Request $request)
+    {
+        $table_header_names = $this->wtime_Repository->getHeaderName(); // テーブルヘッダー
+        $search_data['txtEmpCd'] = session('emp_cd');
+        $is_index = true;
+        return parent::viewWithMenu('work_time.WorkTimeEditor', compact('table_header_names', 'search_data', 'is_index'));
+    }
+
+    /**
+     * 指定ユーザーのプロファイル表示
+     *
+     * @param $request
+     * @return Response
+     */
+    public function search(WorkTimeRequest $request)
+    {
+        $search_data = $request->all();
+
+        $results = $this->wtime_Repository->select($request); // 対象データ表示
+        $confirmCheck = $this->wtime_Repository->confirmCheck($request); //確定済みチェック
+        $workdaycnt = $this->wtime_Repository->workdaycnt($request); // 出勤回数の合計
+        $holdaycnt = $this->wtime_Repository->holworkcnt($request); // 休出回数の合計
+        $spcholcnt = $this->wtime_Repository->spcholcnt($request); // 特休回数の合計
+        $padholcnt = $this->wtime_Repository->padholcnt($request); // 有休回数の合計
+        $abcworkcnt = $this->wtime_Repository->abcworkcnt($request); // 欠勤回数の合計
+        $compdaycnt = $this->wtime_Repository->compdaycnt($request); // 代休回数の合計
+
+        $worktime = $this->wtime_Repository->worktime($request); // 出勤時間
+        $tardtime = $this->wtime_Repository->tardtime($request); // 遅刻時間
+        $leavetime = $this->wtime_Repository->leavetime($request); // 早退時間
+        $outtime = $this->wtime_Repository->outtime($request); // 外出時間
+        $ovtm1time = $this->wtime_Repository->ovtm1time($request); // 早出時間
+        $ovtm2time = $this->wtime_Repository->ovtm2time($request); // 普通残業時間
+        $ovtm3time = $this->wtime_Repository->ovtm3time($request); // 深夜残業時間
+        $ovtm4time = $this->wtime_Repository->ovtm4time($request); // 休日残業時間
+        $ovtm5time = $this->wtime_Repository->ovtm5time($request); // 休日深夜残業時間
+        $ovtm6time = $this->wtime_Repository->ovtm6time($request); // 空
+        $ext1time = $this->wtime_Repository->ext1time($request); // 深夜割増
+        $ext2time = $this->wtime_Repository->ext2time($request); // 空
+        $ext3time = $this->wtime_Repository->ext3time($request); // 空
+
+        $GetSumTimes = $this->wtime_Repository->GetSumTime($request); // 出勤時間、残業項目１～ｎの合計
+        $GetSumExtTimes = $this->wtime_Repository->GetSumExtTimes($request); // 割増項目１～ｎの合計
+
+        $messages = $this->wtime_Repository->messages(); // メッセージ表示
+        $workptn_names = $this->wtime_Repository->workptns(); // 勤務体系
+        $reason_names = $this->wtime_Repository->reasons(); // 事由
+
+        $request->session()->put('date', $search_data['ddlDate']);
+        $request->session()->put('emp_cd',$search_data['txtEmpCd']);
+
+        $table_header_names = $this->wtime_Repository->getHeaderName(); // テーブルヘッダー
+     
+        return parent::viewWithMenu('work_time.WorkTimeEditor', compact('results', 'confirmCheck', 'messages', 'workptn_names', 'reason_names', 'search_data', 
+                                                        'workdaycnt', 'holdaycnt', 'spcholcnt', 'padholcnt', 'abcworkcnt', 'compdaycnt',
+                                                        'worktime', 'tardtime', 'leavetime', 'outtime', 'ovtm1time', 'ovtm2time', 'ovtm3time', 'ovtm4time', 'ovtm5time', 'ovtm6time',
+                                                        'ext1time', 'ext2time', 'ext3time', 'GetSumTimes', 'GetSumExtTimes', 'table_header_names'));
+    }
+
+    /**
+     * 時間計算処理
+     *
+     * @param Request $request
+     * @return 時間計算データ
+     */
+    public function timeCal(Request $request)
+    {
+        $results = $this->wtime_Repository->timeCal($request); // 対象データ表示
+        return $results;
+    }
+
+    /**
+     * 日数計算処理
+     *
+     * @param Request $request
+     * @return 日数計算データ
+     */
+    public function dayCal(Request $request)
+    {
+        $results = $this->wtime_Repository->dayCal($request); // 対象データ表示
+        return $results;
+    }
+
+    /**
+     * キャンセルボタン
+     *
+     * @param Request $request
+     * @return back
+     */
+    public function cancel(Request $request)
+    {
+        $data = $request->session()->all();
+          if(!empty($data['emp_cd'])){
+            $request->session()->forget('emp_cd');
+        }
+      
+        if(!empty($data['date'])){
+            return redirect()->back()->with('date', $data['date']);
+        }else{
+            return redirect()->back();
+        }
+    }
+
+    public function update(Request $request)
+    {
+        $today = date('Y-m-d H:i:s');
+        $date = session('date');
+        $emp_cd = session('emp_cd');
+        $year = (int)substr($date, 0, 4);
+        $month = (int)abs(substr($date, 7, 2));
+        
+        $update_records = $this->update_records($request, $emp_cd, $year, $month, $today);
+        foreach ($update_records as $record) {
+            TR01Work::upsert($record, ['EMP_CD', 'CALD_DATE'], $this->udpate_cols());
+        }
+
+        return redirect()->route('wte.search');
+    }
+
+    private function update_records($request, $emp_cd, $cald_year, $cald_month, $today) {
+        $update_records = [];
+        $wk01_records = $this->wtime_Repository
+                    ->getWithEmpAndYearMonth($emp_cd, $cald_year, $cald_month)
+                    ->pluck(null, "CALD_DATE");
+        foreach ($request->input('worktime') as $index => $data) {
+            $wk01_record = $wk01_records[$data['CALD_DATE']. " 00:00:00.000"];
+            $record = [
+                'EMP_CD' => $emp_cd,
+                'CALD_DATE' => $data['CALD_DATE'],
+                'WORKPTN_CD' => $data['WORKPTN_CD'],
+                'WORKPTN_STR_TIME' => $wk01_record->WORKPTN_STR_TIME,
+                'WORKPTN_END_TIME' => $wk01_record->WORKPTN_END_TIME,
+                'REASON_CD' => $data['REASON_CD'],
+                'OFC_TIME_HH' => !empty($data['OFC_TIME']) ? explode(":", $data['OFC_TIME'])[0] : 0,
+                'OFC_TIME_MI' => !empty($data['OFC_TIME']) ? explode(":", $data['OFC_TIME'])[1] : 0,
+                'OFC_CNT' => $wk01_record->OFC_CNT,
+                'LEV_TIME_HH' => !empty($data['LEV_TIME']) ? explode(":", $data['LEV_TIME'])[0] : 0,
+                'LEV_TIME_MI' => !empty($data['LEV_TIME']) ? explode(":", $data['LEV_TIME'])[1] : 0,
+                'LEV_CNT' => $wk01_record->LEV_CNT,
+                'OUT1_TIME_HH' => !empty($data['OUT1_TIME']) ? explode(":", $data['OUT1_TIME'])[0] : 0,
+                'OUT1_TIME_MI' => !empty($data['OUT1_TIME']) ? explode(":", $data['OUT1_TIME'])[1] : 0,
+                'OUT1_CNT' => $wk01_record->OUT1_CNT,
+                'IN1_TIME_HH' => !empty($data['IN1_TIME']) ? explode(":", $data['IN1_TIME'])[0] : 0,
+                'IN1_TIME_MI' => !empty($data['IN1_TIME']) ? explode(":", $data['IN1_TIME'])[1] : 0,
+                'IN1_CNT' => $wk01_record->IN1_CNT,
+                'OUT2_TIME_HH' => !empty($data['OUT2_TIME']) ? explode(":", $data['OUT2_TIME'])[0] : 0,
+                'OUT2_TIME_MI' => !empty($data['OUT2_TIME']) ? explode(":", $data['OUT2_TIME'])[1] : 0,
+                'OUT2_CNT' => $wk01_record->OUT2_CNT,
+                'IN2_TIME_HH' => !empty($data['IN2_TIME']) ? explode(":", $data['IN2_TIME'])[0] : 0,
+                'IN2_TIME_MI' => !empty($data['IN2_TIME']) ? explode(":", $data['IN2_TIME'])[1] : 0,
+                'IN2_CNT' => $wk01_record->IN2_CNT,
+                'WORK_TIME_HH' => !empty($data['WORK_TIME']) ? explode(":", $data['WORK_TIME'])[0] : 0,
+                'WORK_TIME_MI' => !empty($data['WORK_TIME']) ? explode(":", $data['WORK_TIME'])[1] : 0,
+                'TARD_TIME_HH' => !empty($data['TARD_TIME']) ? explode(":", $data['TARD_TIME'])[0] : 0,
+                'TARD_TIME_MI' => !empty($data['TARD_TIME']) ? explode(":", $data['TARD_TIME'])[1] : 0,
+                'LEAVE_TIME_HH' => !empty($data['LEAVE_TIME']) ? explode(":", $data['LEAVE_TIME'])[0] : 0,
+                'LEAVE_TIME_MI' => !empty($data['LEAVE_TIME']) ? explode(":", $data['LEAVE_TIME'])[1] : 0,
+                'OUT_TIME_HH' => !empty($data['OUT_TIME']) ? explode(":", $data['OUT_TIME'])[0] : 0,
+                'OUT_TIME_MI' => !empty($data['OUT_TIME']) ? explode(":", $data['OUT_TIME'])[1] : 0,
+                'OVTM1_TIME_HH' => !empty($data['OVTM1_TIME']) ? explode(":", $data['OVTM1_TIME'])[0] : 0,
+                'OVTM1_TIME_MI' => !empty($data['OVTM1_TIME']) ? explode(":", $data['OVTM1_TIME'])[1] : 0,
+                'OVTM2_TIME_HH' => !empty($data['OVTM2_TIME']) ? explode(":", $data['OVTM2_TIME'])[0] : 0,
+                'OVTM2_TIME_MI' => !empty($data['OVTM2_TIME']) ? explode(":", $data['OVTM2_TIME'])[1] : 0,
+                'OVTM3_TIME_HH' => !empty($data['OVTM3_TIME']) ? explode(":", $data['OVTM3_TIME'])[0] : 0,
+                'OVTM3_TIME_MI' => !empty($data['OVTM3_TIME']) ? explode(":", $data['OVTM3_TIME'])[1] : 0,
+                'OVTM4_TIME_HH' => !empty($data['OVTM4_TIME']) ? explode(":", $data['OVTM4_TIME'])[0] : 0,
+                'OVTM4_TIME_MI' => !empty($data['OVTM4_TIME']) ? explode(":", $data['OVTM4_TIME'])[1] : 0,
+                'OVTM5_TIME_HH' => !empty($data['OVTM5_TIME']) ? explode(":", $data['OVTM5_TIME'])[0] : 0,
+                'OVTM5_TIME_MI' => !empty($data['OVTM5_TIME']) ? explode(":", $data['OVTM5_TIME'])[1] : 0,
+                'OVTM6_TIME_HH' => !empty($data['OVTM6_TIME']) ? explode(":", $data['OVTM6_TIME'])[0] : 0,
+                'OVTM6_TIME_MI' => !empty($data['OVTM6_TIME']) ? explode(":", $data['OVTM6_TIME'])[1] : 0,
+                'OVTM7_TIME_HH' => $wk01_record->OVTM7_TIME_HH,
+                'OVTM7_TIME_MI' => $wk01_record->OVTM7_TIME_MI,
+                'OVTM8_TIME_HH' => $wk01_record->OVTM8_TIME_HH,
+                'OVTM8_TIME_MI' => $wk01_record->OVTM8_TIME_MI,
+                'OVTM9_TIME_HH' => $wk01_record->OVTM9_TIME_HH,
+                'OVTM9_TIME_MI' => $wk01_record->OVTM9_TIME_MI,
+                'OVTM10_TIME_HH' => $wk01_record->OVTM10_TIME_HH,
+                'OVTM10_TIME_MI' => $wk01_record->OVTM10_TIME_MI,
+                'EXT1_TIME_HH' => !empty($data['EXT1_TIME']) ? explode(":", $data['EXT1_TIME'])[0] : 0,
+                'EXT1_TIME_MI' => !empty($data['EXT1_TIME']) ? explode(":", $data['EXT1_TIME'])[1] : 0,
+                'EXT2_TIME_HH' => !empty($data['EXT2_TIME']) ? explode(":", $data['EXT2_TIME'])[0] : 0,
+                'EXT2_TIME_MI' => !empty($data['EXT2_TIME']) ? explode(":", $data['EXT2_TIME'])[1] : 0,
+                'EXT3_TIME_HH' => !empty($data['EXT3_TIME']) ? explode(":", $data['EXT3_TIME'])[0] : 0,
+                'EXT3_TIME_MI' => !empty($data['EXT3_TIME']) ? explode(":", $data['EXT3_TIME'])[1] : 0,
+                'EXT4_TIME_HH' => $wk01_record->EXT4_TIME_HH,
+                'EXT4_TIME_MI' => $wk01_record->EXT4_TIME_MI,
+                'EXT5_TIME_HH' => $wk01_record->EXT5_TIME_HH,
+                'EXT5_TIME_MI' => $wk01_record->EXT5_TIME_MI,
+                'RSV1_TIME_HH' => $wk01_record->RSV1_TIME_HH,
+                'RSV1_TIME_MI' => $wk01_record->RSV1_TIME_MI,
+                'RSV2_TIME_HH' => $wk01_record->RSV2_TIME_HH,
+                'RSV2_TIME_MI' => $wk01_record->RSV2_TIME_MI,
+                'RSV3_TIME_HH' => $wk01_record->RSV3_TIME_HH,
+                'RSV3_TIME_MI' => $wk01_record->RSV3_TIME_MI,
+                'WORKDAY_CNT' => $wk01_record->WORKDAY_CNT,
+                'HOLWORK_CNT' => $wk01_record->HOLWORK_CNT,
+                'SPCHOL_CNT' => $wk01_record->SPCHOL_CNT,
+                'PADHOL_CNT' => $wk01_record->PADHOL_CNT,
+                'ABCWORK_CNT' => $wk01_record->ABCWORK_CNT,
+                'COMPDAY_CNT' => $wk01_record->COMPDAY_CNT,
+                'RSV1_CNT' => $wk01_record->RSV1_CNT,
+                'RSV2_CNT' => $wk01_record->RSV2_CNT,
+                'RSV3_CNT' => $wk01_record->RSV3_CNT,
+                'UPD_CLS_CD' => $wk01_record->UPD_CLS_CD,
+                'FIX_CLS_CD' => $wk01_record->FIX_CLS_CD,
+                'RSV1_CLS_CD' => $wk01_record->RSV1_CLS_CD,
+                'RSV2_CLS_CD' => $wk01_record->RSV2_CLS_CD,
+                'ADD_DATE' => $today,
+                'UPD_DATE' => $today,
+                'REMARK' => $data['REMARK'] ?? "",
+                'SUBHOL_CNT' => $wk01_record->SUBHOL_CNT,
+                'SUBWORK_CNT' => $wk01_record->SUBWORK_CNT
+            ];
+            $update_records[floor($index/10)][] = $record;
+        }
+        return $update_records;
+    }
+
+    private function udpate_cols() {
+        return [
+            'WORKPTN_CD',
+            'WORKPTN_STR_TIME',
+            'WORKPTN_END_TIME',
+            'REASON_CD',
+            'OFC_TIME_HH',
+            'OFC_TIME_MI',
+            'OFC_CNT',
+            'LEV_TIME_HH',
+            'LEV_TIME_MI',
+            'LEV_CNT',
+            'OUT1_TIME_HH',
+            'OUT1_TIME_MI',
+            'OUT1_CNT',
+            'IN1_TIME_HH',
+            'IN1_TIME_MI',
+            'IN1_CNT',
+            'OUT2_TIME_HH',
+            'OUT2_TIME_MI',
+            'OUT2_CNT',
+            'IN2_TIME_HH',
+            'IN2_TIME_MI',
+            'IN2_CNT',
+            'WORK_TIME_HH',
+            'WORK_TIME_MI',
+            'TARD_TIME_HH',
+            'TARD_TIME_MI',
+            'LEAVE_TIME_HH',
+            'LEAVE_TIME_MI',
+            'OUT_TIME_HH',
+            'OUT_TIME_MI',
+            'OVTM1_TIME_HH',
+            'OVTM1_TIME_MI',
+            'OVTM2_TIME_HH',
+            'OVTM2_TIME_MI',
+            'OVTM3_TIME_HH',
+            'OVTM3_TIME_MI',
+            'OVTM4_TIME_HH',
+            'OVTM4_TIME_MI',
+            'OVTM5_TIME_HH',
+            'OVTM5_TIME_MI',
+            'OVTM6_TIME_HH',
+            'OVTM6_TIME_MI',
+            'OVTM7_TIME_HH',
+            'OVTM7_TIME_MI',
+            'OVTM8_TIME_HH',
+            'OVTM8_TIME_MI',
+            'OVTM9_TIME_HH',
+            'OVTM9_TIME_MI',
+            'OVTM10_TIME_HH',
+            'OVTM10_TIME_MI',
+            'EXT1_TIME_HH',
+            'EXT1_TIME_MI',
+            'EXT2_TIME_HH',
+            'EXT2_TIME_MI',
+            'EXT3_TIME_HH',
+            'EXT3_TIME_MI',
+            'EXT4_TIME_HH',
+            'EXT4_TIME_MI',
+            'EXT5_TIME_HH',
+            'EXT5_TIME_MI',
+            'RSV1_TIME_HH',
+            'RSV1_TIME_MI',
+            'RSV2_TIME_HH',
+            'RSV2_TIME_MI',
+            'RSV3_TIME_HH',
+            'RSV3_TIME_MI',
+            'WORKDAY_CNT',
+            'HOLWORK_CNT',
+            'SPCHOL_CNT',
+            'PADHOL_CNT',
+            'ABCWORK_CNT',
+            'COMPDAY_CNT',
+            'RSV1_CNT',
+            'RSV2_CNT',
+            'RSV3_CNT',
+            'UPD_CLS_CD',
+            'FIX_CLS_CD',
+            'RSV1_CLS_CD',
+            'RSV2_CLS_CD',
+            'ADD_DATE',
+            'UPD_DATE',
+            'REMARK',
+            'SUBHOL_CNT',
+            'SUBWORK_CNT'
+        ];
+    }
+}
+

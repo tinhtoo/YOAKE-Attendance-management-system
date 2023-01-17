@@ -1,0 +1,64 @@
+<?php
+
+namespace App\Filters;
+
+use App\Filters\Filter;
+use Illuminate\Http\Request;
+
+class TimeStampPrintFilter extends Filter
+{
+    /**
+     * filter properties.
+     */
+    protected $filters = [
+        'filter' => [
+            'txtStartDeptCd',
+            'txtEndDeptCd',
+            'txtStartEmpCd',
+            'txtEndEmpCd',
+            'chkRegCls',
+        ]
+    ];
+
+    //開始部門コード
+    public function txtStartDeptCd($value)
+    {
+        if(!empty($value)){
+            $this->builder->where('MT10.DEPT_CD', '>=', $value);
+        }        
+    }
+
+    //終了部門コード
+    public function txtEndDeptCd($value)
+    {
+        if(!empty($value)){
+            $this->builder->where('MT10.DEPT_CD', '<=', $value);
+        }
+    }
+
+    //開始社員コード
+    public function txtStartEmpCd($value)
+    {
+        if(!empty($value)){
+            $this->builder->where('TR01.EMP_CD', '>=', $value);
+        }        
+    }
+
+    //終了社員コード
+    public function txtEndEmpCd($value)
+    {
+        if(!empty($value)){
+            $this->builder->where('TR01.EMP_CD', '<=', $value);
+        }
+    }
+
+    //在籍のみ表示
+    public function chkRegCls($value)
+    {
+        if(!empty($value)){
+            $this->builder->where('MT10.REG_CLS_CD', '=', '00');
+        }
+    }
+
+
+}

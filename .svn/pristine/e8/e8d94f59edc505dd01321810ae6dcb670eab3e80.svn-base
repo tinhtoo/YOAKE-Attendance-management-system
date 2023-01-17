@@ -1,0 +1,123 @@
+<?php
+
+namespace App\Http\Requests;
+
+use App\Models\MT10Emp;
+use App\Models\MT12Dept;
+use App\Models\MT13DeptAuth;
+use App\Models\MT99Msg;
+use App\Http\Requests\BaseRequest;
+
+class MT12DeptEditorRequest extends BaseRequest
+{
+    public function rules()
+    {
+        return $rules = [
+            'txtUpDeptCd' => [
+                'required',
+                'regex:/^[a-zA-Z0-9]{1,6}$/',
+            ],
+            'deltTxtUpDeptCd'=> [
+                function ($attribute, $value, $fail) {
+                    // 4016,'部門権限情報で使用されているので削除できません。'
+                    $dept_auth_dept_cd_exists = MT13DeptAuth::where('DEPT_CD', $value)->exists();
+                    if ($dept_auth_dept_cd_exists) {
+                        $msg_4016 = MT99Msg::where('MSG_NO', '4016')->pluck('MSG_CONT')->first();
+                        $fail($msg_4016);
+                        return;
+                    }
+                }
+            ],
+            'txtUpDeptName' => [
+                'required',
+                'regex:/^[^|]+$/',
+            ],
+            'deptData.*.deptCd' => [
+                'required',
+                'regex:/^[a-zA-Z0-9]{1,6}$/',
+            ],
+            'deptData.*.deptName' => [
+                'required',
+                'regex:/^[^|]+$/',
+            ],
+            'deptDataNew.*.deptCdNew' => [
+                function ($attribute, $value, $fail) {
+                    if (!isset($value)) {
+                        return;
+                    }
+                    $inputdata = $this->all();
+                    $new_dept_data = $inputdata['deptDataNew'];
+                    $exist_dept_cd = MT12Dept::where('DEPT_CD', $value)->exists();
+                    // 2001メッセージ取得（該当データが存在します。
+                    if ($new_dept_data != null && $exist_dept_cd) {
+                        $msg_2001 = MT99Msg::where('MSG_NO', '2001')->pluck('MSG_CONT')->first();
+                        $fail($msg_2001);
+                        return ;
+                    }
+
+                    $count = 0;
+                    foreach ($new_dept_data as $new_dept_dataRecord) {
+                        if ($new_dept_dataRecord['deptCdNew'] === $value) {
+                            $count++;
+                        }
+                    }
+                    if ($count > 1) {
+                        $msg_4018 = MT99Msg::where('MSG_NO', '4018')->pluck('MSG_CONT')->first();
+                        $fail($msg_4018);
+                        return ;
+                    }
+                }
+            ],
+            'delRowCdData.*.deptCdRow' => [
+                function ($attribute, $value, $fail) {
+                    if (!isset($value)) {
+                        return;
+                    }
+                    // 4015,'親部門として使用されているので削除できません。'
+                    $up_dept_cd_exists = MT12Dept::where('UP_DEPT_CD', $value)->exists();
+                    if ($up_dept_cd_exists) {
+                        $msg_4015 = MT99Msg::where('MSG_NO', '4015')->pluck('MSG_CONT')->first();
+                        $fail($msg_4015);
+                        return;
+                    }
+                    // 4016,'部門権限情報で使用されているので削除できません。'
+                    $deptAuth_dept_cd_exists = MT13DeptAuth::where('DEPT_CD', $value)->exists();
+                    if ($deptAuth_dept_cd_exists) {
+                        $msg_4016 = MT99Msg::where('MSG_NO', '4016')->pluck('MSG_CONT')->first();
+                        $fail($msg_4016);
+                        return;
+                    }
+
+                    // 4017,'社員情報で使用されているので削除できません。'
+
+                    $emp_dept_cd_exists = MT10Emp::where('DEPT_CD', $value)->exists();
+                    if ($emp_dept_cd_exists) {
+                        $msg_4017 = MT99Msg::where('MSG_NO', '4017')->pluck('MSG_CONT')->first();
+                        $fail($msg_4017);
+                        return;
+                    }
+                }
+            ],
+        ];
+    }
+    public function messages()
+    {
+        // 2002メッセージ取得（必須入力項目です)
+        $msg_2002 = MT99Msg::where('MSG_NO', '2002')->pluck('MSG_CONT')->first();
+        // 2025メッセージ取得(英数字以外の文字が含まれています。)
+        $msg_2025 = MT99Msg::where('MSG_NO', '2025')->pluck('MSG_CONT')->first();
+        // 4001メッセージ取得(禁則文字([|])が含まれています。)
+        $msg_4001 = MT99Msg::where('MSG_NO', '4001')->pluck('MSG_CONT')->first();
+
+        return [
+            'txtUpDeptCd.required' => $msg_2002,
+            'txtUpDeptCd.regex' => $msg_2025,
+            'txtUpDeptName.required' => $msg_2002,
+            'txtUpDeptName.regex' => $msg_4001,
+            'deptData.*.deptCd.required' => $msg_2002,
+            'deptData.*.deptCd.regex' => $msg_4001,
+            'deptData.*.deptName.required' => $msg_2002,
+            'deptData.*.deptName.regex' => $msg_4001,
+        ];
+    }
+}

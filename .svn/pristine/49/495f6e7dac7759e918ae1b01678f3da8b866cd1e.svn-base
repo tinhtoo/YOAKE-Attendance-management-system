@@ -1,0 +1,296 @@
+@extends('common.home')
+
+@section('title', '勤怠管理システム_main')
+
+@include('common.header')
+@include('menu.index')
+
+@section('main')
+    <table id="body" style="height: 883px;">
+        <tr>
+            <td class="body-border"></td>
+            <td id="menu">
+                @if(isset($menu_list))
+                <div class="sidenav">
+                    {{-- <button class="WorkTmMngMenuFirst">勤怠管理システムメニュー</button> --}}
+                    <input type="button" class="WorkTmMngMenuFirst" value="勤怠管理システムメニュー" />
+                    @if(key_exists('01', $menu_list))
+                    <button class="dropdown-btn WorkTmMngMenuSecond">勤怠管理</button>
+                    <div id="01" class="WorkTmMngMenuThird">
+                        @if(key_exists('010001', $menu_list['01']))
+                        <a id="010001" href="{{ url('/work_time/WorkTimeEditor') }}">
+                            <i class="fas fa-caret-right pg-head"></i>出退勤入力
+                        </a>
+                        @endif
+                        @if(key_exists('010005', $menu_list['01']))
+                        <a id="010005" href="{{ url('/work_time/WorkTimeDeptEditor') }}">
+                            <i class="fas fa-caret-right pg-head"></i>出退勤入力(部門別)
+                        </a>
+                        @endif
+                        @if(key_exists('010004', $menu_list['01']))
+                        <a id="010004" href="{{ url('/work_time/EmpWorkStatusReference') }}">
+                            <i class="fas fa-caret-right pg-head"></i>出退勤照会
+                        </a>
+                        @endif
+                        @if(key_exists('010002', $menu_list['01']))
+                        <a id="010002" href="{{ url('/work_time/WorkTimeReference') }}">
+                            <i class="fas fa-caret-right pg-head"></i>勤務状況照会(個人用)
+                        </a>
+                        @endif
+                        @if(key_exists('010003', $menu_list['01']))
+                        <a id="010003" href="{{ url('/work_time/EmpWorkTimeReference') }}">
+                            <i class="fas fa-caret-right pg-head"></i>勤務状況照会(管理者用)
+                        </a>
+                        @endif
+                    </div>
+                    @endif
+                    @if(key_exists('02', $menu_list))
+                    <button class="dropdown-btn WorkTmMngMenuSecond">帳票</i></button>
+                    <div id="02" class="WorkTmMngMenuThird">
+                        @if(key_exists('020001', $menu_list['02']))
+                        <a id="020001" href="{{ url('/form_print/WorkPlanPrint') }}">
+                            <i class="fas fa-caret-right pg-head"></i>勤務予定表(週・月別)
+                        </a>
+                        @endif
+                        @if(key_exists('020002', $menu_list['02']))
+                        <a id="020002" href="{{ url('/form_print/WorkTimePrint') }}">
+                            <i class="fas fa-caret-right pg-head"></i>勤務実績表(日・週・月別)
+                        </a>
+                        @endif
+                        @if(key_exists('020003', $menu_list['02']))
+                        <a id="020003" href="{{ url('/form_print/TimeStampPrint') }}">
+                            <i class="fas fa-caret-right pg-head"></i>未打刻／二重打刻一覧表
+                        </a>
+                        @endif
+                        @if(key_exists('020004', $menu_list['02']))
+                        <a id="020004" href="{{ url('/form_print/ReasonWorkPtnPrint') }}">
+                            <i class="fas fa-caret-right pg-head"></i>事由／勤怠一覧表
+                        </a>
+                        @endif
+                        @if(key_exists('020005', $menu_list['02']))
+                        <a id="020005" href="{{ url('/form_print/OvertimeAplPrint') }}">
+                            <i class="fas fa-caret-right pg-head"></i>残業申請書
+                        </a>
+                        @endif
+                    </div>
+                    @endif
+                    @if(key_exists('03', $menu_list))
+                    <button class="dropdown-btn WorkTmMngMenuSecond">シフト管理</button>
+                    <div id="03" class="WorkTmMngMenuThird">
+                        @if(key_exists('030001', $menu_list['03']))
+                        <a id="030001" href="{{ url('/shift/MT04ShiftPtnReference') }}">
+                            <i class="fas fa-caret-right pg-head"></i>シフトパターン情報入力
+                        </a>
+                        @endif
+                        @if(key_exists('030003', $menu_list['03']))
+                        <a id="030003" href="{{ url('/shift/MonthShiftEditor') }}">
+                            <i class="fas fa-caret-right pg-head"></i>月別シフト入力
+                        </a>
+                        @endif
+                        @if(key_exists('030004', $menu_list['03']))
+                        <a id="030004" href="{{ url('/shift/MonthShiftEmpEditor') }}">
+                            <i class="fas fa-caret-right pg-head"></i>社員別月別シフト入力
+                        </a>
+                        @endif
+                    </div>
+                    @endif
+                    @if(key_exists('04', $menu_list))
+                    <button class="dropdown-btn WorkTmMngMenuSecond">管理業務</button>
+                    <div id="04" class="WorkTmMngMenuThird">
+                        @if(key_exists('040001', $menu_list['04']))
+                        <a id="040001" href="{{ url('/mng_oprt/MT03CalendarEditor') }}">
+                            <i class="fas fa-caret-right pg-head"></i>カレンダー情報入力
+                        </a>
+                        @endif
+                        @if(key_exists('040002', $menu_list['04']))
+                        <a id="040002" href="{{ url('/mng_oprt/ShiftCalendarCarryOver') }}">
+                            <i class="fas fa-caret-right pg-head"></i>シフト月次更新処理
+                        </a>
+                        @endif
+                        @if(key_exists('040006', $menu_list['04']))
+                        <a id="040006" href="{{ url('/mng_oprt/WorkTimeFix') }}">
+                            <i class="fas fa-caret-right pg-head"></i>月次確定処理
+                        </a>
+                        @endif
+                        @if(key_exists('040009', $menu_list['04']))
+                        <a id="040009" href="{{ url('/mng_oprt/WorkTimeFixReference') }}">
+                            <i class="fas fa-caret-right pg-head"></i>月次確定状況照会
+                        </a>
+                        @endif
+                        @if(key_exists('040003', $menu_list['04']))
+                        <a id="040003" href="{{ url('/mng_oprt/WorkTimeConvert') }}">
+                            <i class="fas fa-caret-right pg-head"></i>最新打刻情報取得処理
+                        </a>
+                        @endif
+                        @if(key_exists('040007', $menu_list['04']))
+                        <a id="040007" href="{{ url('/mng_oprt/WorkTimeClear') }}">
+                            <i class="fas fa-caret-right pg-head"></i>出退勤情報クリア処理
+                        </a>
+                        @endif
+                        @if(key_exists('040011', $menu_list['04']))
+                        <a id="040011" href="{{ url('/mng_oprt/CalendarClear') }}">
+                            <i class="fas fa-caret-right pg-head"></i>カレンダー情報クリア処理
+                        </a>
+                        @endif
+                        @if(key_exists('042000', $menu_list['04']))
+                        <a id="042000" href="{{ url('/mng_oprt/WorkTimeExport') }}">
+                            <i class="fas fa-caret-right pg-head"></i>勤務実績情報出力
+                        </a>
+                        @endif
+                    </div>
+                    @endif
+                    @if(key_exists('00', $menu_list))
+                    <button class="dropdown-btn WorkTmMngMenuSecond">マスタ</i></button>
+                    <div id="00" class="WorkTmMngMenuThird">
+                        @if(key_exists('000001', $menu_list['00']))
+                        <a id="000001" href="{{ url('/master/MT10EmpReference') }}">
+                            <i class="fas fa-caret-right pg-head"></i>社員情報入力
+                        </a>
+                        @endif
+                        @if(key_exists('000002', $menu_list['00']))
+                        <a id="000002" href="{{ url('/master/MT11LoginReference') }}">
+                            <i class="fas fa-caret-right pg-head"></i>ログイン情報入力
+                        </a>
+                        @endif
+                        @if(key_exists('000014', $menu_list['00']))
+                        <a id="000014" href="{{ url('/master/MT11PasswordEditor') }}">
+                            <i class="fas fa-caret-right pg-head"></i>パスワード変更入力
+                        </a>
+                        @endif
+                        @if(key_exists('000003', $menu_list['00']))
+                        <a id="000003" href="{{ url('/master/MT14PGAuthReference') }}">
+                            <i class="fas fa-caret-right pg-head"></i>機能権限情報入力
+                        </a>
+                        @endif
+                        @if(key_exists('000004', $menu_list['00']))
+                        <a id="000004" href="{{ url('/master/MT12DeptReference') }}">
+                            <i class="fas fa-caret-right pg-head"></i>部門情報入力
+                        </a>
+                        @endif
+                        @if(key_exists('000018', $menu_list['00']))
+                        <a id="000018" href="{{ url('/master/MT12OrgReference') }}">
+                            <i class="fas fa-caret-right pg-head"></i>組織変更入力
+                        </a>
+                        @endif
+                        @if(key_exists('000005', $menu_list['00']))
+                        <a id="000005" href="{{ url('/master/MT13DeptAuthReference') }}">
+                            <i class="fas fa-caret-right pg-head"></i>部門権限情報入力
+                        </a>
+                        @endif
+                        @if(key_exists('000012', $menu_list['00']))
+                        <a id="000012" href="{{ url('/master/MT08HolidayEditor') }}">
+                            <i class="fas fa-caret-right pg-head"></i>祝祭日・会社休日情報入力
+                        </a>
+                        @endif
+                        @if(key_exists('000006', $menu_list['00']))
+                        <a id="000006" href="{{ url('/master/MT05WorkPtnReference') }}">
+                            <i class="fas fa-caret-right pg-head"></i>勤務体系情報入力
+                        </a>
+                        @endif
+                        @if(key_exists('000007', $menu_list['00']))
+                        <a id="000007" href="{{ url('/master/MT07FractionEditor') }}">
+                            <i class="fas fa-caret-right pg-head"></i>端数処理情報入力
+                        </a>
+                        @endif
+                        @if(key_exists('000008', $menu_list['00']))
+                        <a id="000008" href="{{ url('/master/MT02CalendarPtnReference') }}">
+                            <i class="fas fa-caret-right pg-head"></i>カレンダーパターン情報入力
+                        </a>
+                        @endif
+                        @if(key_exists('000010', $menu_list['00']))
+                        <a id="000010" href="{{ url('/master/MT06OverTmLmtEditor') }}">
+                            <i class="fas fa-caret-right pg-head"></i>残業上限情報入力
+                        </a>
+                        @endif
+                        @if(key_exists('000011', $menu_list['00']))
+                        <a id="000011" href="{{ url('/master/MT01ControlEditor') }}">
+                            <i class="fas fa-caret-right pg-head"></i>基本情報入力
+                        </a>
+                        @endif
+                        @if(key_exists('000019', $menu_list['00']))
+                        <a id="000019" href="{{ url('/master/MT10EmpCnvert') }}">
+                            <i class="fas fa-caret-right pg-head"></i>社員番号一括変換
+                        </a>
+                        @endif
+                        @if(key_exists('000020', $menu_list['00']))
+                        <a id="000020" href="{{ url('/master/EmpExport') }}">
+                            <i class="fas fa-caret-right pg-head"></i>社員情報書出処理
+                        </a>
+                        @endif
+                        @if(key_exists('000021', $menu_list['00']))
+                        <a id="000021" href="{{ url('/master/EmpImport') }}">
+                            <i class="fas fa-caret-right pg-head"></i>社員情報取込処理
+                        </a>
+                        @endif
+                        @if(key_exists('000022', $menu_list['00']))
+                        <a id="000022" href="{{ url('/master/MT23CompanyReference') }}">
+                            <i class="fas fa-caret-right pg-head"></i>所属情報入力
+                        </a>
+                        @endif
+                    </div>
+                    @endif
+                </div>
+                @endif
+            </td>
+            <td class="body-border" id="vertical-splitter">
+                <p title="折り畳み/展開"></p>
+            </td>
+            <td id="contents">
+                <div id="contents-container">
+                    <div id="contents-sitemap">
+                        <span>
+                            <a href="#">
+                                <img style="width: 0px; height: 0px;" src="" alt="ナビゲーション リンクのスキップ">
+                            </a>
+                            <a id=""></a>
+                        </span>
+                    </div>
+                    @yield('content')
+                </div>
+            </td>
+        </tr>
+    </table>
+
+    <script>
+        //勤怠管理システムメニュー　一覧表示処理
+        var dropdown = document.getElementsByClassName("dropdown-btn");
+        var i;
+
+        for (i = 0; i < dropdown.length; i++) {
+            dropdown[i].addEventListener("click", function() {
+                this.classList.toggle("active");
+                var dropdownContent = this.nextElementSibling;
+                if (dropdownContent.style.display === "block") {
+                    dropdownContent.style.display = "none";
+                } else {
+                    dropdownContent.style.display = "block";
+                }
+            });
+        }
+
+        //折り畳み/展開処理
+        $(function(){
+            @if(isset($this_pg_cd) && $this_pg_cd['mcls'] != '')
+            $('#{{ $this_pg_cd['mcls'] }}').css('display', 'block');
+            $('#{{ $this_pg_cd['pg'] }}').addClass('WorkTmMngMenuStaticSelectedStyle');
+            $('#{{ $this_pg_cd['pg'] }}').css('padding-left', '16px');
+            $('#{{ $this_pg_cd['pg'] }}').find('i').remove();
+            @endif
+
+            $('#vertical-splitter').click(function() {
+                if ($('#menu').css('display') == 'none') {
+                    $('#menu').css('display', 'table-cell');
+                    $('#vertical-splitter p').removeClass('on');
+                } else {
+                    $('#menu').css('display', 'none');
+                    $('#vertical-splitter p').addClass('on');
+                }
+                $(window).resize();
+            });
+
+            // すべて閉じる
+            $('table.WorkTmMngMenuThird').parent().parent().css('display', 'none');
+        });
+
+    </script>
+@endsection

@@ -1,0 +1,82 @@
+<?php
+
+namespace App\Http\Requests;
+
+use App\Models\MT99Msg;
+use App\Models\MT10Emp;
+use App\Models\MT13DeptAuth;
+use App\Http\Requests\BaseRequest;
+
+class EmpWorkTimeReferenceRequest extends BaseRequest
+{
+
+    public function rules()
+    {
+
+        $rules = [];
+
+        $data = $this->all();
+        $prepare =  $data['filter'];
+        $chk = $prepare['SearchCondition'];
+        if ($chk == 'rbSearchDept'){
+            $rules = [
+                'filter.txtDeptCd' => [
+                    'required',
+                    parent::existDeptCdWithAuth('01', true),
+                ]
+            ];
+            return $rules;
+        }
+        if ($chk == 'rbSearchEmp'){
+            $rules = [
+                'filter.txtEmpCd' => [
+                    'required',
+                    function ($attribute, $value, $fail) {
+
+                        // ログインIDより社員CD取得
+                        $login_id = session('id');
+                        $login_emp = MT10Emp::select('MT10_EMP.EMP_CD', 'MT10_EMP.DEPT_AUTH_CD', 'MT10_EMP.DEPT_CD')
+                                    ->join("MT11_LOGIN", "MT10_EMP.EMP_CD", "=", "MT11_LOGIN.EMP_CD")
+                                    ->where(['LOGIN_ID' => $login_id])
+                                    ->first();
+
+                        $emp = MT10Emp::where(['EMP_CD' => $value])
+                                    ->where('REG_CLS_CD', '<>', '02')
+                                    ->first();
+
+                        // MT10に該当データ無し
+                        if (!$emp) {
+                            $fail('2000');
+                            return ;
+                        }
+
+                        $dept_auth = MT13DeptAuth::leftjoin('MT12_DEPT', 'MT13_DEPT_AUTH.DEPT_CD', '=', 'MT12_DEPT.DEPT_CD')
+                            ->where('DISP_CLS_CD', '=', '01')
+                            ->where('MT13_DEPT_AUTH.DEPT_AUTH_CD', $login_emp->DEPT_AUTH_CD)
+                            ->pluck('MT13_DEPT_AUTH.DEPT_CD')->all();
+
+                        $emp_dept = array($emp->DEPT_CD);
+
+                        // ログイン社員と異なり、且つ権限外の部門の社員の場合、該当なしとする
+                        if ($value <> $login_emp->EMP_CD && empty(array_intersect($dept_auth, $emp_dept))) {
+                            $fail('2000');
+                        }
+                    },
+                ]
+            ];
+            return $rules;
+        }
+        return $rules;
+    }
+
+
+    public function messages()
+    {
+        $msg_2002 = MT99Msg::where('MSG_NO', '2002')->pluck('MSG_CONT')->first();
+        return [
+            'filter.txtEmpCd.required' => $msg_2002,
+            'filter.txtDeptCd.required' => $msg_2002
+
+        ];
+    }
+}

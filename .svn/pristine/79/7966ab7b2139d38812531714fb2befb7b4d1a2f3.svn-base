@@ -1,0 +1,20 @@
+<?php
+
+namespace App\Repositories;
+
+use Illuminate\Http\Request;
+
+use App\Models\Wk01Work;
+
+use Illuminate\Support\Facades\DB;
+
+
+class Wk01WorkRepository
+{
+    public function getWithPrimary($emp_cd, $cald_date)
+    {
+        return Wk01Work::where("EMP_CD", $emp_cd)
+                    ->where("CALD_DATE", $cald_date)
+                    ->first();
+    }
+}

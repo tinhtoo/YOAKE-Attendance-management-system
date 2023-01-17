@@ -1,0 +1,216 @@
+<!-- 所属情報登録 -->
+@extends('menu.main')
+
+@section('title', '所属情報登録')
+
+@section('content')
+    <div id="contents-stage">
+        <table class="BaseContainerStyle1">
+            <tbody>
+                <tr>
+                    <td>
+                        <div id="UpdatePanel1">
+                            <form action="{{ route('MT23.companyRegister') }}" method="POST" enctype="multipart/form-data"
+                                id="form">
+                                @csrf
+                                <table class="InputFieldStyle1">
+                                    <tbody>
+                                        <tr>
+                                            <th>所属番号</th>
+                                            <td>
+                                                <input name="regCompanyCd" tabindex="1" oninput="value = onlyNumbers(value)"
+                                                    id="regCompanyCd" style="width: 80px;" type="text" maxlength="6"
+                                                    autofocus>
+                                                @if ($errors->has('regCompanyCd'))
+                                                    <span class="alert-danger">
+                                                        {{ $errors->first('regCompanyCd') }}
+                                                    </span>
+                                                @endif
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <th>所属先名</th>
+                                            <td>
+                                                <input name="regCompanyName" tabindex="2" class="imeOn"
+                                                    id="regCompanyName" style="width: 370px;" onfocus="this.select();"
+                                                    type="text" maxlength="20">
+                                                @if ($errors->has('regCompanyName'))
+                                                    <span class="alert-danger">
+                                                        {{ $errors->first('regCompanyName') }}
+                                                    </span>
+                                                @endif
+
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <th>所属先カナ名</th>
+                                            <td>
+                                                <input name="regCompanyKana" tabindex="3" class="imeOn"
+                                                    id="regCompanyKana" style="width: 370px;" onfocus="this.select();"
+                                                    type="text" maxlength="20">
+                                                @if ($errors->has('regCompanyKana'))
+                                                    <span class="alert-danger">
+                                                        {{ $errors->first('regCompanyKana') }}
+                                                    </span>
+                                                @endif
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <th>所属先略名</th>
+                                            <td>
+                                                <input name="regCompanyAbr" tabindex="4" class="imeOn"
+                                                    id="regCompanyAbr" style="width: 180px;" onfocus="this.select();"
+                                                    type="text" maxlength="10">
+                                                @if ($errors->has('regCompanyAbr'))
+                                                    <span class="alert-danger">
+                                                        {{ $errors->first('regCompanyAbr') }}
+                                                    </span>
+                                                @endif
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <th>郵便番号</th>
+                                            <td>
+                                                <input name="txtPostCd" tabindex="5" class="imeDisabled" id="txtPostCd"
+                                                    style="width: 70px;" onfocus="this.select();" type="text" maxlength="8">
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <th>住所１</th>
+                                            <td>
+                                                <input name="txtAddress1" tabindex="6" class="imeOn"
+                                                    id="txtAddress1" style="width: 430px;" onfocus="this.select();"
+                                                    type="text" maxlength="30">
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <th>住所２</th>
+                                            <td>
+                                                <input name="txtAddress2" tabindex="7" class="imeOn"
+                                                    id="txtAddress2" style="width: 430px;" onfocus="this.select();"
+                                                    type="text" maxlength="30">
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <th>住所３</th>
+                                            <td>
+                                                <input name="txtAddress3" tabindex="8" class="imeOn"
+                                                    id="txtAddress3" style="width: 430px;" onfocus="this.select();"
+                                                    type="text" maxlength="30">
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <th>電話番号</th>
+                                            <td>
+                                                <input name="txtTel" tabindex="9" class="imeDisabled" id="txtTel"
+                                                    style="width: 120px;" onfocus="this.select();" type="text"
+                                                    maxlength="15">
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <th>ＦＡＸ番号</th>
+                                            <td>
+                                                <input name="txtFax" tabindex="10" class="imeDisabled" id="txtFax"
+                                                    style="width: 120px;" onfocus="this.select();" type="text"
+                                                    maxlength="15">
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <th>表示区分</th>
+                                            <td>
+                                                <select name="ddlDispCls" tabindex="11" id="ddlDispCls"
+                                                    style="width: 100px;">
+                                                    <option value="00">非表示</option>
+                                                    <option selected="selected" value="01">表示</option>
+                                                </select>
+                                                <span id="cvDispCls" style="color: red; display: none;">
+                                                    ErrorMessage
+                                                </span>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+
+                                <div class="line"></div>
+                                <div class="ButtonField1">
+                                    <input type="submit" class="ButtonStyle1" id="btnUpdate" name="btnUpdate" tabindex="7"
+                                        value="更新" onclick="return checkSubmit(this)">
+                                    <input name="btnCancel" tabindex="13" id="btnCancel"
+                                        onclick="location.href='MT23CompanyReference'" type="button" value="キャンセル">
+                                </div>
+                            </form>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+@endsection
+@section('script')
+
+    <script>
+        $(document).on('click', '.submit-form', function() {
+            var url = $(this).data('url');
+            $('#form').attr('action', url);
+            $('#form').submit();
+        });
+
+        // ENTER時に送信されないようにする
+        $(function() {
+            $('input').keypress(function(e) {
+                if (e.which == 13) {
+                    return false;
+                }
+            });
+        });
+
+        // 確認ダイアル
+        function checkSubmit() {
+            if (window.confirm("{{ $msg_1005 }}")) {
+                return true;
+            } else {
+                return false;
+            }
+        }
+
+        //所属番号英数半角のみ入力可
+        const onlyNumbers = n => {
+            return n.replace(/[０-９]/g, s => String.fromCharCode(s.charCodeAt(0) - 65248)).replace(/\D/g, '');
+        }
+
+        // 入力可能文字：数値、ハイフン
+        $(function() {
+            $('#txtPostCd').on('keydown', function(e) {
+                var k = e.keyCode;
+                //* 0～9:code48-57, テンキ―0～9:code96-105, ハイフン:code189, テンキー:code109, backspace:code8, delete:code46, →:code39, ←:code37,Tab:code9,Enter:code13,insert:45 以外は入力キャンセル *//
+                if (!((k >= 48 && k <= 57) || (k >= 96 && k <= 105) || k == 189 || k == 109 || k == 8 ||
+                        k == 46 || k == 39 || k == 37 || k == 9 || k == 13 || k == 45)) {
+                    return false;
+                }
+            });
+        });
+
+        $(function() {
+            $('#txtTel').on('keydown', function(e) {
+                var k = e.keyCode;
+                // 0～9:code48-57, テンキ―0～9:code96-105, ハイフン:code189, テンキー:code109, backspace:code8, delete:code46, →:code39, ←:code37,Tab:code9,Enter:code13,insert:45 以外は入力キャンセル
+                if (!((k >= 48 && k <= 57) || (k >= 96 && k <= 105) || k == 189 || k == 109 || k == 8 ||
+                        k == 46 || k == 39 || k == 37 || k == 9 || k == 13 || k == 45)) {
+                    return false;
+                }
+            });
+        });
+
+        $(function() {
+            $('#txtFax').on('keydown', function(e) {
+                var k = e.keyCode;
+                // 0～9:code48-57, テンキ―0～9:code96-105, ハイフン:code189, テンキー:code109, backspace:code8, delete:code46, →:code39, ←:code37,Tab:code9,Enter:code13,insert:45 以外は入力キャンセル
+                if (!((k >= 48 && k <= 57) || (k >= 96 && k <= 105) || k == 189 || k == 109 || k == 8 ||
+                        k == 46 || k == 39 || k == 37 || k == 9 || k == 13 || k == 45)) {
+                    return false;
+                }
+            });
+        });
+    </script>
+
+@endsection

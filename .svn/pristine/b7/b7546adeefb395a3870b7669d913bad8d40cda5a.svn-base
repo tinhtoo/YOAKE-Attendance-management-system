@@ -1,0 +1,240 @@
+<!-- 勤務状況照会(個人用)  -->
+@extends('menu.main')
+
+@section('title', '勤務状況照会(個人用) ')
+@section('content')
+<?php use App\Repositories\Work_Time\WorkTimeReferenceRepository; ?>
+    <div id="contents-stage">
+        <table>
+            <tbody>
+                <tr>
+                    <td>
+                        <div id="UpdatePanel1">
+                            <!-- header -->
+                            <form action="{{ route('worktimeRef.search') }}" method="POST">
+                                @csrf
+                                <table class="InputFieldStyle1">
+                                    <tbody>
+                                        <tr>
+                                            <th>対象月度</th>
+                                            <td>
+                                                <select name="ddlTargetYear" tabindex="1" class="imeDisabled"
+                                                    id="ctl00_cphContentsArea_ddlTargetYear" style="width: 70px;"
+                                                    onchange="SetTargetDate()">
+                                                    <option value="2020">2020</option>
+                                                    <option selected="selected" value="2021">2021</option>
+                                                    <option value="2022">2022</option>
+                                                </select>
+                                                &nbsp;年
+
+                                                <input name="hdnTargetYear" id="ctl00_cphContentsArea_hdnTargetYear"
+                                                    type="hidden" value="2021">
+                                                <select name="ddlTargetMonth" tabindex="2" class="imeDisabled"
+                                                    id="ctl00_cphContentsArea_ddlTargetMonth" onchange="SetTargetDate()">
+                                                    <option value="1">1</option>
+                                                    <option value="2">2</option>
+                                                    <option value="3">3</option>
+                                                    <option selected="selected" value="4">4</option>
+                                                    <option value="5">5</option>
+                                                    <option value="6">6</option>
+                                                    <option value="7">7</option>
+                                                    <option value="8">8</option>
+                                                    <option value="9">9</option>
+                                                    <option value="10">10</option>
+                                                    <option value="11">11</option>
+                                                    <option value="12">12</option>
+                                                </select>
+                                                &nbsp;月度
+
+                                                <input name="TargetMonth" id="ctl00_cphContentsArea_hdnTargetMonth"
+                                                    type="hidden" value="5">
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <th>社員番号</th>
+                                            <td>
+                                                <input name="txtEmpCd" tabindex="3" class="imeDisabled"
+                                                    id="ctl00_cphContentsArea_txtEmpCd" style="width: 80px;"
+                                                    onkeypress="if (WebForm_TextBoxKeyHandler(event) == false) return false;"
+                                                    onfocus="this.select();"
+                                                    onchange="javascript:setTimeout('__doPostBack(\'ctl00$cphContentsArea$txtEmpCd\',\'\')', 0)"
+                                                    type="text" maxlength="10">
+                                                <input name="btnSearchEmpCd" tabindex="4" class="SearchButton"
+                                                    id="ctl00_cphContentsArea_btnSearchEmpCd"
+                                                    onclick="SetEmpItem();__doPostBack('ctl00$cphContentsArea$btnSearchEmpCd','')"
+                                                    type="button" value="?">
+                                                <span class="OutlineLabel" id="ctl00_cphContentsArea_lblEmpName"
+                                                    style="width: 200px; height: 17px; display: inline-block;"></span>
+                                                &nbsp;
+                                                @if ($errors->has('txtEmpCd'))
+                                                    <span class="alert-danger">{{ $errors->first('txtEmpCd') }}</span>
+                                                @endif
+                                            </td>
+                                        </tr>
+                                        <tr>
+                                            <th>部門</th>
+                                            <td>
+                                                <span class="OutlineLabel" id="ctl00_cphContentsArea_lblDeptName"
+                                                    style="width: 200px; height: 17px; display: inline-block;"></span>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+
+                                <div class="line"></div>
+
+                                <table>
+                                    <tbody>
+                                        <tr>
+                                            <td style="width: auto;">
+                                                <button type='submit' class="btn btn-secondary"
+                                                    style="padding: 2px 27px; margin-bottom: 3px;" id='btnshow'
+                                                    name="btnDisp">表示</button>
+                                                <input name="btnCancel2" tabindex="8" class="ButtonStyle1" id="btnCancel2"
+                                                    onclick="CloseSubWindow();__doPostBack('btnCancel2','')" type="button"
+                                                    value="キャンセル">
+                                                &nbsp;
+                                                <span id="lblNoStampColor" style="background-color: tomato;">　　　</span>
+                                                <span id="lblNoStamp">未打刻</span>
+                                                &nbsp;
+                                                <span id="lblDbStampColor" style="background-color: lightskyblue;"></span>
+                                                <span id="lblDbStamp">二重打刻</span>
+                                                &nbsp;
+                                                <span class="font-style2" id="lblFixMsg"></span>
+                                            </td>
+                                            <td class="right">
+                                                <span class="font-style1" id="lblDispCaldDate"></span>
+                                                &nbsp;
+                                                <span class="font-style1" id="lblDispOfcTime"></span>
+                                                &nbsp;
+                                                <span class="font-style1" id="lblDispLevTime"></span>
+                                            </td>
+                                        </tr>
+                                    </tbody>
+                                </table>
+                            </form>
+
+                            <!-- detail -->
+                            <div class="GridViewStyle1" id="gridview-container">
+                                <div class="GridViewPanelStyle5" id="ctl00_cphContentsArea_pnlWorkTime">
+                                    <div>
+                                        <table class="GridViewBorder GridViewPadding GridViewRowCenter"
+                                            id="ctl00_cphContentsArea_gvWorkTime" style="border-collapse: collapse;"
+                                            border="1" rules="all" cellspacing="0">
+                                            <tbody id="gridview-warp">
+                                                @isset($empWorkTimeResults)
+                                                    @if (count($empWorkTimeResults) < 1)
+                                                        <tr style="width: 70px;">
+                                                            <td><span>{{ $errMsg_4029 }}</span></td>
+                                                        </tr>
+                                                    @else
+                                                        <tr>
+                                                            <th scope="col">日付</th>
+                                                            <th scope="col">曜日</th>
+                                                            <th scope="col">勤務体系</th>
+                                                            <th scope="col">事由</th>
+                                                            <th scope="col">出勤</th>
+                                                            <th scope="col">退出</th>
+                                                            <th scope="col">外出1</th>
+                                                            <th scope="col">再入１</th>
+                                                            <th scope="col">外出２</th>
+                                                            <th scope="col">再入２</th>
+                                                        </tr>
+                                                        @foreach ($empWorkTimeResults as $empWorkTimeResult)
+                                                                <tr>
+
+                                                                    @if (
+                                                                    $weekday[date('w',strtotime($empWorkTimeResult->CALD_DATE))] == '日' ||
+                                                                    $weekday[date('w',strtotime($empWorkTimeResult->CALD_DATE))] == '土')
+                                                                    <td style="width: 70px;">
+                                                                        <span id=""
+                                                                            style="width: 70px; display: inline-block; color: red;">
+                                                                            {{ date('Y/m/d', strtotime($empWorkTimeResult->CALD_DATE)) }}
+                                                                        </span>
+                                                                    </td>
+                                                                    <td style="width: 30px;">
+                                                                        <span id=""
+                                                                            style="width: 30px; display: inline-block; color: red;">
+                                                                            {{ $weekday[date('w', strtotime($empWorkTimeResult->CALD_DATE))] }}
+                                                                        </span>
+                                                                    </td>
+                                                                    @else
+                                                                    <td style="width: 70px;">
+                                                                        <span id="" style="width: 70px; display: inline-block;">
+                                                                            {{ date('Y/m/d', strtotime($empWorkTimeResult->CALD_DATE)) }}
+                                                                        </span>
+                                                                    </td>
+                                                                    <td style="width: 30px;">
+                                                                        <span id="" style="width: 30px; display: inline-block;">
+                                                                            {{ $weekday[date('w', strtotime($empWorkTimeResult->CALD_DATE))] }}
+                                                                        </span>
+                                                                    </td>
+                                                                    @endif
+                                                                    
+                                                                    @if ($empWorkTimeResult->WORKPTN_NAME == '休日勤務' || $empWorkTimeResult->WORKPTN_NAME == '休日夜間勤務')
+                                                                    <td class="GridViewRowLeft" style="width: 160px;">
+                                                                        <span
+                                                                            id="ctl00_cphContentsArea_gvWorkTime_ctl02_lblWorkptnName"
+                                                                            style="width: 160px; display: inline-block; color: red;">{{ $empWorkTimeResult->WORKPTN_NAME }}</span>
+                                                                    </td>
+                                                                    @else
+                                                                    <td class="GridViewRowLeft" style="width: 160px;">
+                                                                        <span
+                                                                            id="ctl00_cphContentsArea_gvWorkTime_ctl02_lblWorkptnName"
+                                                                            style="width: 160px; display: inline-block;">{{ $empWorkTimeResult->WORKPTN_NAME }}</span>
+                                                                    </td>
+                                                                    @endif
+                                                                    <td style="width: 50px;">
+                                                                        <span
+                                                                            id="ctl00_cphContentsArea_gvWorkTime_ctl02_lblReasonName">{{ $empWorkTimeResult->REASON_NAME }}</span>
+                                                                    </td>
+                                                                    <td style="width: 40px;">
+                                                                        <a
+                                                                            id="ctl00_cphContentsArea_gvWorkTime_ctl02_hlOfcTime">{{ $empWorkTimeResult->OFC_TIME }}</a>
+                                                                    </td>
+                                                                    <td style="width: 40px;">
+                                                                        <a
+                                                                            id="ctl00_cphContentsArea_gvWorkTime_ctl02_hlLevTime">{{ $empWorkTimeResult->LEV_TIME }}</a>
+                                                                    </td>
+                                                                    <td style="width: 40px;">
+                                                                        <a
+                                                                            id="ctl00_cphContentsArea_gvWorkTime_ctl02_hlOut1Time">{{ $empWorkTimeResult->OUT1_TIME }}</a>
+                                                                    </td>
+                                                                    <td style="width: 40px;">
+                                                                        <a
+                                                                            id="ctl00_cphContentsArea_gvWorkTime_ctl02_hlIn1Time">{{ $empWorkTimeResult->IN1_TIME }}</a>
+                                                                    </td>
+                                                                    <td style="width: 40px;">
+                                                                        <a
+                                                                            id="ctl00_cphContentsArea_gvWorkTime_ctl02_hlOut2Time">{{ $empWorkTimeResult->OUT2_TIME }}</a>
+                                                                    </td>
+                                                                    <td style="width: 40px;">
+                                                                        <a
+                                                                            id="ctl00_cphContentsArea_gvWorkTime_ctl02_hlIn2Time">{{ $empWorkTimeResult->IN2_TIME }}</a>
+                                                                    </td>
+                                                                </tr>
+                                                        @endforeach
+                                                    @endisset
+                                                @endif
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- footer -->
+                            <div class="line"></div>
+                            <p class="ButtonField2">
+                                <input name="ctl00$cphContentsArea$btnCancel" tabindex="7"
+                                    id="ctl00_cphContentsArea_btnCancel"
+                                    onclick="CloseSubWindow();__doPostBack('ctl00$cphContentsArea$btnCancel','')"
+                                    type="button" value="キャンセル">
+                            </p>
+                        </div>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+
+@endsection
